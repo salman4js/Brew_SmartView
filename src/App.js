@@ -1,23 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import Login from './components/Login';
+import LandingPage from './components/LandingPage';
+import Rooms from './components/Rooms';
+import Dishes from './components/Dishes';
+import Notifications from './components/Notifications';
+import AddRooms from './components/AddRooms';
+import UpdateRooms from './components/UpdateRooms';
+import AddDishes from './components/AddDishes';
+import UpdateDishes from './components/UpdateDishes';
+import UserDb from './components/UserDb';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Router>
+        <Routes>
+          <Route path = "/login" exact element = {<Login />} />
+          <Route path = "/:id/landingpage" exact element = {<LandingPage />} />
+          <Route path = "/:id/rooms" exact element = {<Rooms />} />
+          <Route path = "/:id/dishes" exact element = {<Dishes />} />
+          <Route path = "/:id/notifications" exact element = {<Notifications />} />
+          <Route path = "/:id/addrooms" exact element = {<AddRooms />} />
+          <Route path = "/:id/updaterooms" exact element = {<UpdateRooms />} />
+          <Route path = "/:id/adddishes" exact element = {<AddDishes />} />
+          <Route path = "/:id/updatedishes" exact element = {<UpdateDishes />} />
+          <Route path = "/:id/userdb" exact element = {<UserDb />} />
+        </Routes>
+      </Router>
     </div>
   );
 }

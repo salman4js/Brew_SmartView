@@ -1,0 +1,50 @@
+<Alert variant="success">
+                <Alert.Heading>Room No : {props.roomno}</Alert.Heading>
+                <hr />
+                <p className="strong">
+                    Dish Name :  {props.dishname}
+                </p>
+                <p className='strong'>
+                    Quantity : {props.quantity}
+                </p>
+                <p className='strong'>
+                    Comments : {props.comments}
+                </p>
+                <p className="strong">
+                    Delivered : {props.delivered}
+                </p>
+                <hr />
+                {
+                    props.delivered == "Yes" ? (
+                        <div>
+
+                        </div>
+                    ) : (
+                        <div className="d-flex justify-content-end">
+                            <Button variant="outline-info" onClick={sendDelivered}>
+                                Delivered!
+                            </Button>
+                        </div>
+                    )
+                }
+            </Alert>
+
+
+
+ {
+                                            open ? (
+                                                <NoMessage />
+                                            ) : (
+
+                                                data.map((item, key) => {
+                                                    console.log(item.delivered)
+                                                    if (item.delivered == "No") {
+                                                        setOpen(false)
+                                                        return (
+                                                            <Notify dishname={item.dishName} roomno={item.roomno} delivered={item.delivered} comments={item.comments} quantity={item.quantity} id={id} userdishid={item._id} />
+                                                        )
+                                                    }
+                                                })
+
+                                            )
+                                        }

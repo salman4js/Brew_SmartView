@@ -7,6 +7,12 @@
   pointer-events: none;
 }
 
+#root{
+  background : rgba(0, 0, 0, 0) linear-gradient(45deg, rgb(9, 14, 44) 0%, rgb(18, 44, 105) 58.93%, rgb(7, 141, 179) 100%) repeat scroll 0% 0%;
+  min-height: 100vh;
+  color : white;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -36,3 +42,183 @@
     transform: rotate(360deg);
   }
 }
+
+.adjustingIcon{
+  position : relative;
+  left : 20px
+}
+
+.loginSection {
+  padding : 9px;
+  position : relative;
+  top : 150px;
+}
+
+.toggleButton{
+  position: relative;
+  right : 20px;
+}
+
+
+
+.heading-div2 {
+  position : relative;
+  top : 150px;
+}
+
+.form-control-inline {
+  min-width: 0;
+  width: 300px;
+  display: inline;
+}
+
+.topic{
+  font-weight : bold;
+  font-size : 20px;
+}
+
+.font-c{
+  color : white;
+}
+
+.card { background-color: rgba(245, 245, 245, 0); }
+.card-header, .card-footer { opacity: 1}
+
+.card {
+  border : 1px  white;
+}
+
+
+.striped-border { border: 1px solid rgb(0, 123, 255); width: 100%; margin: auto; margin-top: 5%; margin-bottom: 5%; }
+
+.content-wrapper{
+  flex : 1;
+}
+
+.page-container{
+  display : flex;
+  flex-direction : column;
+  min-height : 100vh;
+}
+
+.main-footer {
+  color: white;
+  padding-top: 1em;
+  padding-bottom : 1em;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.highlight{
+  background-color: white;
+}
+
+.serviceBox{
+  padding-top: 200px;
+}
+
+.dropdown-bottom{
+  margin-bottom: 150px;
+}
+
+.smallText{
+  margin-top : 90px;
+}
+
+.stock{
+  font-weight : bold;
+}
+
+.topic-off{
+  padding-top: 50px;
+}
+
+
+.topic-off1 {
+  margin-top : 6px;
+}
+
+.btn-circle.btn-sm {
+  width: 70px;
+  height: 30px;
+  border-radius: 15px;
+  font-size: 11px;
+  color : white;
+  text-align: center;
+}
+
+.heading-top{
+  font-weight: bold;
+}
+
+.grid-system{
+  margin-top : 90px;
+}
+
+.card-border{
+  padding : 10px;
+}
+
+.modal-gap{
+  margin-bottom : 10px;
+}
+
+.card-text{
+  font-weight: bold;
+}
+
+.card-title {
+  font-weight : bold;
+}
+
+.heading-title{
+  font-weight : bold;
+  font-size : 18px;
+}
+
+.me-auto{
+  padding-right : 150px;
+}
+
+.notifications-service{
+  padding-top : 50px;
+}
+
+.toast { 
+  max-width : 1500px !important;
+}
+
+.close-mark{
+  padding-left: 100vh;
+}
+
+.align-down {
+  padding-top: 150px;
+}
+
+.strong{
+  font-weight: bold;
+}
+
+.alert-heading{
+  font-size : 20px;
+  font-weight : bold;
+}
+
+.font-big {
+  font-size : 18px;
+}
+
+.acknowledgement{
+  font-size : 13px;
+}
+
+.modal-top{
+  padding-top : 20px;
+}
+
+
+
+
+
