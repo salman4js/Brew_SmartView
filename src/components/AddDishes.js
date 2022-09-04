@@ -6,11 +6,12 @@ import Alert from "react-bootstrap/Alert";
 import Button from 'react-bootstrap/Button';
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import CustomError from './CustomError';
 
 const AddDishes = () => {
 
     const { id } = useParams();
-
+    const token = localStorage.getItem("token");
     const splitedIds = id.split(/[-]/);
 
 
@@ -63,71 +64,81 @@ const AddDishes = () => {
 
 
     return (
-        <div className="container">
-            <Navbar id={id} name={splitedIds[1]} />
-            <div className="align-down">
-                <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
-                    <div className='row text-center'>
-                        <div className='col'>
-                            {
-                                invaliddata ? (
-                                    
-                                        <Alert show={invaliddata}>
-                                           <div className = "container text-center">
-                                                That's a bad input!
-                                           </div>
-                                        </Alert>
-                                ) : (
-                                    <div>
+        <div>
+            {
+                token ? (
+                    <div className="container">
+                        <Navbar id={id} name={splitedIds[1]} />
+                        <div className="align-down">
+                            <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
+                                <div className='row text-center'>
+                                    <div className='col'>
+                                        {
+                                            invaliddata ? (
+
+                                                <Alert show={invaliddata}>
+                                                    <div className="container text-center">
+                                                        That's a bad input!
+                                                    </div>
+                                                </Alert>
+                                            ) : (
+                                                <div>
+                                                </div>
+                                            )
+                                        }
+                                        <div class="card text-center" style={{ width: "50vh" }}>
+                                            <div class="card-header" style={{ color: "black" }}>
+                                                Add Dishes -  Featured
+                                            </div>
+                                            <div class="card-body">
+                                                <div className='modal-gap'>
+                                                    <label style={{ color: "black" }}> Dish Name </label>
+                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value)} />
+                                                </div>
+                                                <div className='modal-gap'>
+                                                    <label style={{ color: "black" }}> Dish Rate </label>
+                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Rate' name={dishrate} value={dishrate} onChange={(e) => setDishrate(e.target.value)} />
+                                                </div>
+                                                <div className='modal-gap'>
+                                                    <label style={{ color: "black" }}> Dish Type </label>
+                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish-Type' name={dishtype} value={dishtype} onChange={(e) => setDishtype(e.target.value)} />
+                                                </div>
+                                                <br />
+                                                <button className='btn btn-info' onClick={processData}> Add Data </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                )
-                            }
-                            <div class="card text-center" style={{ width: "50vh" }}>
-                                <div class="card-header" style={{ color: "black" }}>
-                                    Add Dishes -  Featured
+
                                 </div>
-                                <div class="card-body">
-                                    <div className='modal-gap'>
-                                        <label style={{ color: "black" }}> Dish Name </label>
-                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value)} />
-                                    </div>
-                                    <div className='modal-gap'>
-                                        <label style={{ color: "black" }}> Dish Rate </label>
-                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Rate' name={dishrate} value={dishrate} onChange={(e) => setDishrate(e.target.value)} />
-                                    </div>
-                                    <div className='modal-gap'>
-                                        <label style={{ color: "black" }}> Dish Type </label>
-                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish-Type' name={dishtype} value={dishtype} onChange={(e) => setDishtype(e.target.value)} />
-                                    </div>
-                                    <br />
-                                    <button className='btn btn-info' onClick={processData}> Add Data </button>
-                                </div>
+                                {
+                                    error == undefined ? (
+                                        <div>
+                                        </div>
+                                    ) : (
+                                        <Modal
+                                            show={show}
+                                            onHide={handleClose}
+                                            backdrop="static"
+                                            keyboard={false}
+                                            className="my-modal"
+                                        >
+                                            <Modal.Header closeButton>
+                                                <Modal.Body className="text-center">
+                                                    {error}
+                                                </Modal.Body>
+                                            </Modal.Header>
+                                        </Modal>
+                                    )
+                                }
                             </div>
                         </div>
-
                     </div>
-                    {
-                        error == undefined ? (
-                            <div>
-                            </div>
-                        ) : (
-                            <Modal
-                                show={show}
-                                onHide={handleClose}
-                                backdrop="static"
-                                keyboard={false}
-                                className="my-modal"
-                            >
-                                <Modal.Header closeButton>
-                                    <Modal.Body className="text-center">
-                                        {error}
-                                    </Modal.Body>
-                                </Modal.Header>
-                            </Modal>
-                        )
-                    }
-                </div>
-            </div>
+                ) : (
+                    <div>
+                        <CustomError />
+                    </div>
+                )
+            }
         </div>
     )
 }
