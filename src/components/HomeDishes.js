@@ -58,9 +58,14 @@ const HomeDishes = (props) => {
         .then(res => {
             if(res.data.success){
                 handleClose();
-                setShowerror(true);
-                setSuccess(res.data.message)
-                props.setLoad(!props.setLoad);
+                if(res.data.message == "false"){
+                    setShowerror(true);
+                    setSuccess(`The room no: ${roomno} is not engaged`)
+                } else {
+                    setShowerror(true);
+                    setSuccess(res.data.message)
+                    props.setLoad(!props.setLoad);
+                }
             } else {
                 setShowerror(true);
                 setSuccess(res.data.message)

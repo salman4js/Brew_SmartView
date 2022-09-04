@@ -1,10 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import Variables from './Variables';
 import axios from 'axios';
 import Modals from "./Modals"
-
-
 
 const Login = () => {
 
@@ -33,6 +31,7 @@ const Login = () => {
       axios.post(`${Variables.hostId}/loginlodge`, credentials)
       .then(res => {if(res.data.success){
         setError("");
+        localStorage.setItem("token", res.data.token);
         navigate(`/${res.data.hostId}-${res.data.lodgename}/landingpage`, {replace : true})
       } else {
         setError(res.data)
@@ -41,6 +40,10 @@ const Login = () => {
     }
     setTimeout(handleShow(), 3000)
   }
+
+  useEffect(() => {
+    localStorage.clear();
+  }, [])
 
   return (
     <div>
