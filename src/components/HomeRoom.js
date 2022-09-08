@@ -11,6 +11,9 @@ import ModalCheckOut from './ModalCheckOut';
 
 const HomeRoom = (props) => {
 
+    const current = new Date();
+    const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+
     const [show, setShow] = useState(false);
     const [success, setSuccess] = useState(false);
     const [showerror, setShowerror] = useState(false);
@@ -44,6 +47,8 @@ const HomeRoom = (props) => {
 
     // Add Data to the model
     const processData = () => {
+
+        console.log(date);
         const credentials = {
             customername: customername,
             phonenumber: customerphonenumber,
@@ -51,7 +56,7 @@ const HomeRoom = (props) => {
             adults: adults,
             childrens: childrens,
             aadhar: aadhar,
-            checkin: Date.now(),
+            checkin: `${current.getDate()}/${current.getMonth()}/${current.getFullYear()}`,
             roomid: props.roomid,
             roomno : props.roomno
         }
@@ -61,7 +66,7 @@ const HomeRoom = (props) => {
                     handleClose();
                     setShowerror(true);
                     setSuccess(res.data.message)
-                    props.setLoad(!props.setLoad);
+                    props.load(!props.load);
                 } else {
                     setShowerror(true);
                     setSuccess(res.data.message)
@@ -191,7 +196,7 @@ const HomeRoom = (props) => {
                     }
                     <Modal.Footer>
                         <Button className="btn btn-secondary" onClick={handleModal}>Close</Button>
-                        <Button className="btn btn-info" onClick={clearData}> Check-Out </Button>
+                        <Button className="btn btn-info" onClick={clearData}> Check-Out & Generate Bill </Button>
                     </Modal.Footer>
                 </Modal>
                 <div>
