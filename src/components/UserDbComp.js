@@ -46,7 +46,13 @@ const UserDbComp = (props) => {
               Aadhar Number -- {props.aadharcard}
             </p>
             <p className="font-big">
-              Checked In Days -- {props.staydays}
+              Checked In Days -- {props.stayeddays}
+            </p>
+            <p className="font-big">
+              Checked In  -- {props.checkin}
+            </p>
+            <p className="font-big">
+              Checked Out -- {props.checkout}
             </p>
           </Modal.Body>
           <Modal.Footer>

@@ -1,19 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from "react-bootstrap/Modal";
 import axios from 'axios';
 
 const ModalCheckOut = (props) => {
 
+    const [stay, setStay] = useState();
+
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
 
     useEffect(() => {
+        console.log(props.user);
+        props.userid(props.user)
         const date1 = new Date(props.checkin);
         const date2 = new Date(date);
         const diffTime = Math.abs(date2 - date1);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         console.log(diffTime + " milliseconds");
-        console.log(diffDays + " days");
+        props.stayeddays(diffDays + " days");
+        props.checkoutdate(date);
+        setStay(diffDays + " days");
     }, [])
     return (
         <div>
@@ -38,7 +44,7 @@ const ModalCheckOut = (props) => {
                     Check-Out Date : {date}
                 </p>
                 <p className='font-big'>
-                    No.Of.Days Stay :
+                    No.Of.Days Stay : {stay}
                 </p>
                 <p className="acknowledgement">
                     (Please verify all the above details before checking out a customer!)

@@ -56,7 +56,7 @@ const UserDb = () => {
                                     {
                                         data.map((item, key) => {
                                             return (
-                                                <UserDbComp roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} />
+                                                <UserDbComp roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout = {item.dateofcheckout} stayeddays = {item.stayedDays} />
                                             )
                                         })
                                     }

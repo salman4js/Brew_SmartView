@@ -27,6 +27,8 @@ const HomeRoom = (props) => {
     const [adults, setAdults] = useState();
     const [childrens, setChildrens] = useState();
     const [day, setDay] = useState(null);
+    const [stayeddays, setStayeddays] = useState();
+    const [checkoutdate, setCheckoutdate] = useState();
     const [aadhar, setAadhar] = useState();
     const [showmodal, setShowmodal] = useState();
     const [userid, setUserid] = useState();
@@ -56,7 +58,7 @@ const HomeRoom = (props) => {
             adults: adults,
             childrens: childrens,
             aadhar: aadhar,
-            checkin: `${current.getDate()}/${current.getMonth()}/${current.getFullYear()}`,
+            checkin: date,
             roomid: props.roomid,
             roomno : props.roomno
         }
@@ -93,10 +95,15 @@ const HomeRoom = (props) => {
 
     // Check Out Customer Data
     const clearData = () => {
+        console.log(stayeddays);
+        console.log(checkoutdate);
         const credentials = {
             userid : userid,
-            roomid : props.roomid
+            roomid : props.roomid,
+            stayeddays : stayeddays,
+            checkoutdate : checkoutdate
         }
+        console.log(credentials);
         axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
         .then(res => {
             if(res.data.success){
@@ -108,7 +115,7 @@ const HomeRoom = (props) => {
                 setShowerror(true);
                 setSuccess(res.data.message)
             }
-        }) 
+        })
     }
 
     return (
@@ -190,7 +197,7 @@ const HomeRoom = (props) => {
                     {
                         userdata.map((item, key) => {
                             return (
-                                <ModalCheckOut roomno={props.roomno} username={item.username} phone={item.phonenumber} adults={item.adults} childrens={item.childrens} user = {item._id} userid = {setUserid} checkin = {item.dateofcheckin} />
+                                <ModalCheckOut roomno={props.roomno} username={item.username} phone={item.phonenumber} adults={item.adults} childrens={item.childrens} user = {item._id} userid = {setUserid} checkin = {item.dateofcheckin} stayeddays = {setStayeddays} checkoutdate = {setCheckoutdate} />
                             )
                         })
                     }
