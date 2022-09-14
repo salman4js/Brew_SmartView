@@ -10,6 +10,8 @@ import UpdateRooms from './components/UpdateRooms';
 import AddDishes from './components/AddDishes';
 import UpdateDishes from './components/UpdateDishes';
 import UserDb from './components/UserDb';
+import ConfigureBill from './components/ConfigureBill';
+import EditConfig from './components/EditConfig';
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
           <Route path = "/:id/adddishes" exact element = {<AddDishes />} />
           <Route path = "/:id/updatedishes" exact element = {<UpdateDishes />} />
           <Route path = "/:id/userdb" exact element = {<UserDb />} />
+          <Route path = "/:id/configure" exact element = {<ConfigureBill />} />
+          <Route path = "/:id/editconfig" exact element = {<EditConfig />} />
         </Routes>
       </Router>
     </div>

@@ -7,15 +7,18 @@ const ModalCheckOut = (props) => {
     const [stay, setStay] = useState();
 
     const current = new Date();
-    const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
+    const date = `${current.getFullYear()}/${current.getMonth()+1}/${current.getDate()}`;
 
     useEffect(() => {
         console.log(props.user);
         props.userid(props.user)
         const date1 = new Date(props.checkin);
+        console.log(date1);
         const date2 = new Date(date);
+        
         const diffTime = Math.abs(date2 - date1);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        console.log(diffTime);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
         console.log(diffTime + " milliseconds");
         props.stayeddays(diffDays + " days");
         props.checkoutdate(date);

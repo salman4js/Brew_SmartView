@@ -20,6 +20,7 @@ const AddRooms = () => {
     const [roomno, setRoomno] = useState("");
     const [bedcount, setBedcount] = useState("");
     const [suitetype, setSuitetype] = useState("");
+    const [option, setOption] = useState([]);
 
     // Error Messages
     const [error, setError] = useState();
@@ -58,10 +59,23 @@ const AddRooms = () => {
             })
     }
 
+    // Getting Options
+    const G_Options = () => {
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/allroomtype`)
+            .then(data => {
+                console.log(data.data.suiteType);
+                setOption(data.data);
+            })
+    }
+
 
     useEffect(() => {
         setTimeout(handleInvalid, 4000)
     }, [invaliddata])
+
+    useEffect(() => {
+        G_Options()
+    }, [])
 
     return (
         <div>
@@ -101,7 +115,16 @@ const AddRooms = () => {
                                                 </div>
                                                 <div className='modal-gap'>
                                                     <label style={{ color: "black" }}> Suite Type </label>
-                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Suite-Type' name={suitetype} value={suitetype} onChange={(e) => setSuitetype(e.target.value)} />
+                                                    <select class="form-select" aria-label="Default select example" onChange={(e) => setSuitetype(e.target.value)}>
+                                                        {
+                                                            option.map((item, key) => {
+                                                                return (
+                                                                    <option>{item.suiteType}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </select>
+
                                                 </div>
                                                 <br />
                                                 <button className='btn btn-info' onClick={processData}> Add Data </button>

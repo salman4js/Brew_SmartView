@@ -57,7 +57,7 @@ const LandingPage = () => {
                                     {
                                         room.map((item, key) => {
                                             return (
-                                                <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} load={setLoad} />
+                                                <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} />
                                             )
                                         })
                                     }

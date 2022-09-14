@@ -1,50 +1,9 @@
-<Alert variant="success">
-                <Alert.Heading>Room No : {props.roomno}</Alert.Heading>
-                <hr />
-                <p className="strong">
-                    Dish Name :  {props.dishname}
-                </p>
-                <p className='strong'>
-                    Quantity : {props.quantity}
-                </p>
-                <p className='strong'>
-                    Comments : {props.comments}
-                </p>
-                <p className="strong">
-                    Delivered : {props.delivered}
-                </p>
-                <hr />
-                {
-                    props.delivered == "Yes" ? (
-                        <div>
-
-                        </div>
-                    ) : (
-                        <div className="d-flex justify-content-end">
-                            <Button variant="outline-info" onClick={sendDelivered}>
-                                Delivered!
-                            </Button>
-                        </div>
-                    )
-                }
-            </Alert>
-
-
-
- {
-                                            open ? (
-                                                <NoMessage />
-                                            ) : (
-
-                                                data.map((item, key) => {
-                                                    console.log(item.delivered)
-                                                    if (item.delivered == "No") {
-                                                        setOpen(false)
-                                                        return (
-                                                            <Notify dishname={item.dishName} roomno={item.roomno} delivered={item.delivered} comments={item.comments} quantity={item.quantity} id={id} userdishid={item._id} />
-                                                        )
-                                                    }
-                                                })
-
-                                            )
-                                        }
+<Link class="nav-link dropdown-toggle" to={`/login`} id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {/* <img src={settings} width="30" height="30" alt="" /> */}
+                                    Settings
+                                </Link>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <Link className='nav-link dropdown-item' to={`/${props.id}/configure`} style={{ color: "black" }}> Configure Bill </Link>
+                                    <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}> Booking History </Link>
+                                    <Link className='nav-link dropdown-item' to={`/login`} style={{ color: "black" }}> LogOut </Link>
+                                </div>

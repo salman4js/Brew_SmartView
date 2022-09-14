@@ -58,7 +58,7 @@ const HomeRoom = (props) => {
             adults: adults,
             childrens: childrens,
             aadhar: aadhar,
-            checkin: date,
+            checkin: new Date(current.getFullYear(), current.getMonth(), current.getDate()+1),
             roomid: props.roomid,
             roomno : props.roomno
         }
@@ -68,7 +68,7 @@ const HomeRoom = (props) => {
                     handleClose();
                     setShowerror(true);
                     setSuccess(res.data.message)
-                    props.load(!props.load);
+                    props.setLoad(!props.setLoad);
                 } else {
                     setShowerror(true);
                     setSuccess(res.data.message)
@@ -110,7 +110,7 @@ const HomeRoom = (props) => {
                 handleModal();
                 setShowerror(true);
                 setSuccess(res.data.message)
-                props.load("false");
+                props.setLoad(!props.setLoad);
             } else {
                 setShowerror(true);
                 setSuccess(res.data.message)

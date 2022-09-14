@@ -1,7 +1,6 @@
 import React from 'react'
 import LogoTop from '../Assets/logo512.png';
 import { Link } from "react-router-dom";
-import settings from "../Assets/settings_icon.png";
 
 const Navbar = (props) => {
     console.log(props.id)
@@ -11,10 +10,10 @@ const Navbar = (props) => {
                 <div className="container">
                     <a className="navbar-brand" href="#">
                         <div className='row'>
-                            <div className = "col">
+                            <div className="col">
                                 <img src={LogoTop} width="30" height="30" className="d-inline-block align-top" alt="" />
                             </div>
-                            <div className = "col stock">
+                            <div className="col stock">
                                 {props.name}
                             </div>
                         </div>
@@ -56,9 +55,16 @@ const Navbar = (props) => {
                                     Settings
                                 </Link>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}> Booking History </Link>
-                                    <Link className='nav-link dropdown-item' to={`/${props.id}/adddishes`} style={{ color: "black" }}> Lodge Settings </Link>
-                                    <Link className='nav-link dropdown-item' to={`/login`} style={{ color: "black" }}> LogOut </Link>
+                                    {/* <Link className='nav-link dropdown-item' to={`/${props.id}/configure`} style={{ color: "black" }}> Configure Bill </Link> */}
+                                    <li>
+                                        <a class="dropdown-item" href="#"> Configure Settings &raquo; </a>
+                                        <ul class="dropdown-menu dropdown-submenu dropdown-submenu-left">
+                                            <Link className='nav-link dropdown-item' to={`/${props.id}/configure`} style={{ color: "black" }}> Add Room Type </Link>
+                                            <Link className='nav-link dropdown-item' to = {`/${props.id}/editconfig`} style = {{color : "black"}}> Edit Room Type Data</Link>
+                                        </ul>
+                                    </li>
+                                    <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}>   Booking History </Link>
+                                    <Link className='nav-link dropdown-item' to={`/login`} style={{ color: "black" }}>   LogOut </Link>
                                 </div>
                             </li>
                         </ul>
