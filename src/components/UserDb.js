@@ -18,7 +18,7 @@ const UserDb = () => {
         if (!token) {
             setData(false)
         } else {
-            axios.post(`${Variables.hostId}/${id}/userdb`, {
+            axios.post(`${Variables.hostId}/${splitedIds[0]}/userdb`, {
                 headers: {
                     "x-access-token": localStorage.getItem("token"),
                 }

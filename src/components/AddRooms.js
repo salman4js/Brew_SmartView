@@ -116,6 +116,7 @@ const AddRooms = () => {
                                                 <div className='modal-gap'>
                                                     <label style={{ color: "black" }}> Suite Type </label>
                                                     <select class="form-select" aria-label="Default select example" onChange={(e) => setSuitetype(e.target.value)}>
+                                                    <option selected>Open this select menu</option>
                                                         {
                                                             option.map((item, key) => {
                                                                 return (

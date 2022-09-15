@@ -12,13 +12,14 @@ import ModalCheckOut from './ModalCheckOut';
 const HomeRoom = (props) => {
 
     const current = new Date();
-    const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+    const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
 
     const [show, setShow] = useState(false);
     const [success, setSuccess] = useState(false);
     const [showerror, setShowerror] = useState(false);
     const [userdata, setUserdata] = useState([]);
-
+    const [showGeneratedBill, setShowGeneratedBill] = useState(false);
+    const [amount, setAmount] = useState();
 
     // Customer Data
     const [customername, setCustomername] = useState();
@@ -46,6 +47,10 @@ const HomeRoom = (props) => {
         setShowerror(!showerror)
     }
 
+    const handleCloseGeneratedBill = () => {
+        setShowGeneratedBill(!showGeneratedBill);
+    }
+
 
     // Add Data to the model
     const processData = () => {
@@ -58,11 +63,11 @@ const HomeRoom = (props) => {
             adults: adults,
             childrens: childrens,
             aadhar: aadhar,
-            checkin: new Date(current.getFullYear(), current.getMonth(), current.getDate()+1),
+            checkin: new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1),
             roomid: props.roomid,
-            roomno : props.roomno
+            roomno: props.roomno
         }
-        axios.post(`${Variables.hostId}/${props.id}/adduserrooms`, credentials)
+        axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
             .then(res => {
                 if (res.data.success) {
                     handleClose();
@@ -98,13 +103,53 @@ const HomeRoom = (props) => {
         console.log(stayeddays);
         console.log(checkoutdate);
         const credentials = {
-            userid : userid,
-            roomid : props.roomid,
-            stayeddays : stayeddays,
-            checkoutdate : checkoutdate
+            userid: userid,
+            roomid: props.roomid,
+            stayeddays: stayeddays,
+            checkoutdate: checkoutdate,
+            roomtype: props.roomtype
         }
+
+        const generation = {
+            roomtype: props.roomtype,
+            stayeddays: stayeddays.slice(0, 1)
+        }
+
         console.log(credentials);
-        axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
+        // axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
+        // .then(res => {
+        //     if(res.data.success){
+        //         handleModal();
+        //         setShowerror(true);
+        //         setSuccess(res.data.message)
+        //         props.setLoad(!props.setLoad);
+        //     } else {
+        //         setShowerror(true);
+        //         setSuccess(res.data.message)
+        //     }
+        // })
+        axios.post(`${Variables.hostId}/${props.lodgeid}/generatebill`, generation)
+            .then(res => {
+                if (res.data.success) {
+                    handleCloseGeneratedBill();
+                    setAmount(res.data.message);
+                } else {
+                    setShowerror(true);
+                    setSuccess(res.data.message)
+                }
+            })
+    }
+
+    const checkedOut = () => {
+        handleCloseGeneratedBill();
+        const credentials = {
+            userid: userid,
+            roomid: props.roomid,
+            stayeddays: stayeddays,
+            checkoutdate: checkoutdate,
+            roomtype: props.roomtype
+        }
+         axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
         .then(res => {
             if(res.data.success){
                 handleModal();
@@ -197,13 +242,34 @@ const HomeRoom = (props) => {
                     {
                         userdata.map((item, key) => {
                             return (
-                                <ModalCheckOut roomno={props.roomno} username={item.username} phone={item.phonenumber} adults={item.adults} childrens={item.childrens} user = {item._id} userid = {setUserid} checkin = {item.dateofcheckin} stayeddays = {setStayeddays} checkoutdate = {setCheckoutdate} />
+                                <ModalCheckOut roomno={props.roomno} username={item.username} phone={item.phonenumber} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} />
                             )
                         })
                     }
                     <Modal.Footer>
                         <Button className="btn btn-secondary" onClick={handleModal}>Close</Button>
                         <Button className="btn btn-info" onClick={clearData}> Check-Out & Generate Bill </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                {/* Generated Bill */}
+                <Modal
+                    show={showGeneratedBill}
+                    onHide={handleCloseGeneratedBill}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Generated Bill - Feautured</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                       Total Amount to be paid - {amount}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseGeneratedBill}>
+                            Not Paid
+                        </Button>
+                        <Button variant="primary" onClick={checkedOut}>Paid</Button>
                     </Modal.Footer>
                 </Modal>
                 <div>
