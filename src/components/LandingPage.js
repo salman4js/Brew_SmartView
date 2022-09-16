@@ -29,7 +29,12 @@ const LandingPage = () => {
                 }
             })
                 .then(res => {
-                    setRoom(res.data)
+                    if(res.data.success){
+                        setRoom(res.data.message)
+                        console.log(res.data.message)
+                    } else {
+                        localStorage.clear();
+                    }
                 })
         }
     }
