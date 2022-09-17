@@ -6,6 +6,7 @@ import Variables from './Variables';
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import CustomError from './CustomError';
+import changeScreen from './Action';
 
 
 const Notifications = () => {
@@ -27,8 +28,13 @@ const Notifications = () => {
         axios.post(`${Variables.hostId}/${splitedIds[0]}/notifications`)
             .then(res => {
                 console.log(res.data.message)
-                setData(res.data.message)
-                setLoad(!load)
+                if(res.data.success){
+                    setData(res.data.message)
+                    setLoad(!load)
+                } else {
+                    localStorage.clear();
+                    changeScreen();
+                }
             })
     }
 
@@ -37,8 +43,13 @@ const Notifications = () => {
         axios.post(`${Variables.hostId}/${splitedIds[0]}/checkdelivered`)
             .then(res => {
                 console.log(res.data.message)
-                setCheck(res.data.message)
-                setLoad(!load)
+                if(res.data.success){
+                    setCheck(res.data.message)
+                    setLoad(!load)
+                } else {
+                    localStorage.clear();
+                    changeScreen();
+                }
             })
         console.log(typeof (check))
     }

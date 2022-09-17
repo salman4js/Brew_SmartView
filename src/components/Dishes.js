@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Variables from './Variables';
+import changeScreen from './Action';
 import HomeDishes from './HomeDishes';
 import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
@@ -27,7 +28,14 @@ const Dishes = () => {
                 }
             })
                 .then(res => {
-                    setData(res.data);
+                    console.log(res.data.success);
+                    console.log(res.data.message);
+                    if(res.data.success){
+                        setData(res.data.message);
+                    } else {
+                        localStorage.clear();
+                        changeScreen();
+                    }
                 })
         }
     }
