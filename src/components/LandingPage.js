@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import CustomError from './CustomError';
+import changeScreen from './Action';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Variables from './Variables';
 import axios from "axios";
@@ -11,12 +12,13 @@ const LandingPage = () => {
 
     const { id } = useParams();
 
+    let navigate = useNavigate();
+
     const splitedIds = id.split(/[-]/);
 
     const [room, setRoom] = useState([]);
 
     const [load, setLoad] = useState("");
-
 
     const getData = () => {
         const token = localStorage.getItem("token");
@@ -34,6 +36,7 @@ const LandingPage = () => {
                         console.log(res.data.message)
                     } else {
                         localStorage.clear();
+                        changeScreen();
                     }
                 })
         }

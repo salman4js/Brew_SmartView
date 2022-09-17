@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
+import changeScreen from './Action';
 import Variables from './Variables';
 import HomeRoom from './HomeRoom';
 import CustomError from './CustomError';
@@ -27,8 +28,13 @@ const Rooms = () => {
                     "x-access-token": localStorage.getItem("token"),
                 }
             })
-                .then(data => {
-                    setRoom(data.data);
+                .then(res => {
+                    if(res.data.success){
+                        setRoom(res.data.message)
+                    } else {
+                        localStorage.clear();
+                        changeScreen();
+                    }
                 })
         }
     }

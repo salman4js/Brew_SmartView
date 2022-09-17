@@ -5,6 +5,7 @@ import Variables from './Variables';
 import UserDbComp from './UserDbComp';
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import changeScreen from './Action';
 
 const UserDb = () => {
 
@@ -27,7 +28,8 @@ const UserDb = () => {
                     if (res.data.success) {
                         setData(res.data.message)
                     } else {
-                        console.log("Some internal error occured..")
+                        localStorage.clear();
+                        changeScreen();
                     }
                 })
         }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Variables from './Variables';
 import DishUpdate from './DishUpdate';
+import changeScreen from "./Action";
 import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 import CustomError from './CustomError';
@@ -25,7 +26,12 @@ const UpdateDishes = () => {
                 }
             })
                 .then(res => {
-                    setData(res.data);
+                    if(res.data.success){
+                        setData(res.data.message)
+                    } else {
+                        localStorage.clear();
+                        changeScreen();
+                    }
                 })
         }
     }

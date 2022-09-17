@@ -5,6 +5,7 @@ import Navbar from './Navbar';
 import Variables from './Variables';
 import { Link, useParams } from "react-router-dom";
 import RoomsUpdate from './RoomsUpdate';
+import changeScreen from './Action';
 
 const UpdateRooms = () => {
 
@@ -28,7 +29,12 @@ const UpdateRooms = () => {
                 }
             })
                 .then(res => {
-                    setRoom(res.data)
+                    if(res.data.success){
+                        setRoom(res.data.message);
+                    } else {
+                        localStorage.clear();
+                        changeScreen();
+                    }
                 })
         }
     }
