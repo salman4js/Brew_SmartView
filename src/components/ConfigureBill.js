@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from './Navbar';
+import changeScreen from './Action';
 import Variables from './Variables';
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
@@ -58,6 +59,35 @@ const ConfigureBill = () => {
     useEffect(() => {
         setTimeout(handleInvalid, 4000)
     }, [invaliddata])
+
+    const parseJwt = (token) => {
+        try {
+          return JSON.parse(atob(token.split(".")[1]));
+        } catch (e) {
+          return null;
+        }
+      };
+
+    const AuthVerify = () => {
+          const user = localStorage.getItem("token");
+      
+          if (user) {
+            const decodedJwt = parseJwt(user);
+      
+            if (decodedJwt.exp * 1000 < Date.now()) {
+              localStorage.clear();
+              changeScreen();
+            }
+          }
+    }
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            AuthVerify();
+        }, 9000)
+        return () => clearInterval(interval)
+    }, [])
 
 
     return (

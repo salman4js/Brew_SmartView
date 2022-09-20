@@ -156,6 +156,7 @@ const HomeRoom = (props) => {
                 setShowerror(true);
                 setSuccess(res.data.message)
                 props.setLoad(!props.setLoad);
+                window.location.reload(false);
             } else {
                 setShowerror(true);
                 setSuccess(res.data.message)

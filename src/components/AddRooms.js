@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CustomError from './CustomError';
+import changeScreen from './Action';
 import Navbar from './Navbar';
 import Variables from './Variables';
 import Modal from "react-bootstrap/Modal";
@@ -75,6 +76,35 @@ const AddRooms = () => {
 
     useEffect(() => {
         G_Options()
+    }, [])
+
+    const parseJwt = (token) => {
+        try {
+          return JSON.parse(atob(token.split(".")[1]));
+        } catch (e) {
+          return null;
+        }
+      };
+
+    const AuthVerify = () => {
+          const user = localStorage.getItem("token");
+      
+          if (user) {
+            const decodedJwt = parseJwt(user);
+      
+            if (decodedJwt.exp * 1000 < Date.now()) {
+              localStorage.clear();
+              changeScreen();
+            }
+          }
+    }
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            AuthVerify();
+        }, 9000)
+        return () => clearInterval(interval)
     }, [])
 
     return (
