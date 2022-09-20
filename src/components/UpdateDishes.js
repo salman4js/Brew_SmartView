@@ -41,6 +41,35 @@ const UpdateDishes = () => {
         getData()
     }, [load])
 
+    const parseJwt = (token) => {
+        try {
+          return JSON.parse(atob(token.split(".")[1]));
+        } catch (e) {
+          return null;
+        }
+      };
+
+    const AuthVerify = () => {
+          const user = localStorage.getItem("token");
+      
+          if (user) {
+            const decodedJwt = parseJwt(user);
+      
+            if (decodedJwt.exp * 1000 < Date.now()) {
+              localStorage.clear();
+              changeScreen();
+            }
+          }
+    }
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            AuthVerify();
+        }, 9000)
+        return () => clearInterval(interval)
+    }, [])
+
     return (
         <div>
             {
