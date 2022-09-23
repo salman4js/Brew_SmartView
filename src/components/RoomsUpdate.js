@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Variables from './Variables';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -8,7 +8,13 @@ import axios from "axios";
 const RoomsUpdate = (props) => {
 
     const [show, setShow] = useState(false);
-    const [showerror, setShowerror] = useState(false)
+    const [showerror, setShowerror] = useState(false);
+    const [option, setOption] = useState([]);
+
+
+    const splitedIds = (props.id).split(/[-]/);
+    console.log(splitedIds[0])
+
 
     // Udpate Rooms
     const [roomno, setRoomno] = useState(props.roomno);
@@ -40,6 +46,15 @@ const RoomsUpdate = (props) => {
             })
     }
 
+     // Getting Options
+     const G_Options = () => {
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/allroomtype`)
+            .then(data => {
+                console.log(data.data.suiteType);
+                setOption(data.data);
+            })
+    }
+
     const handleClose = () => {
         setShow(!show);
     }
@@ -47,6 +62,10 @@ const RoomsUpdate = (props) => {
     const handleCloseModal = () => {
         setShowerror(!showerror)
     }
+
+    useEffect(() => {
+        G_Options()
+    }, [])
 
     return (
 
@@ -74,7 +93,7 @@ const RoomsUpdate = (props) => {
                 className="text-center"
             >
                 <Modal.Header>
-                    <Modal.Title id="contained-modal-title-vcenter" className = "container text-center">
+                    <Modal.Title id="contained-modal-title-vcenter" className="container text-center">
                         Update Room Data - Featured
                     </Modal.Title>
                 </Modal.Header>
@@ -90,7 +109,17 @@ const RoomsUpdate = (props) => {
                     </div>
                     <div className='modal-gap'>
                         <label style={{ color: "black" }}> Suite Type </label>
-                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Suite-Type' name={suitetype} value={suitetype} onChange={(e) => setSuitetype(e.target.value)} />
+                        <select class="form-select" aria-label="Default select example" onChange={(e) => setSuitetype(e.target.value)}>
+                            <option selected>Choose...</option>
+                            {
+                                option.map((item, key) => {
+                                    return (
+                                        <option>{item.suiteType}</option>
+                                    )
+                                })
+                            }
+                        </select>
+
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -99,25 +128,25 @@ const RoomsUpdate = (props) => {
                 </Modal.Footer>
             </Modal>
             <div>
-            {
-                success == undefined ? (
-                    <div>
-                    </div>
-                ) : (
-                    <Modal
-                        show={showerror}
-                        onHide={handleCloseModal}
-                        backdrop="static"
-                        keyboard={false}
-                    >
-                        <Modal.Header closeButton>
-                            <Modal.Body className="text-center">
-                                {success}
-                            </Modal.Body>
-                        </Modal.Header>
-                    </Modal>
-                )
-            }   
+                {
+                    success == undefined ? (
+                        <div>
+                        </div>
+                    ) : (
+                        <Modal
+                            show={showerror}
+                            onHide={handleCloseModal}
+                            backdrop="static"
+                            keyboard={false}
+                        >
+                            <Modal.Header closeButton>
+                                <Modal.Body className="text-center">
+                                    {success}
+                                </Modal.Body>
+                            </Modal.Header>
+                        </Modal>
+                    )
+                }
             </div>
         </div>
 

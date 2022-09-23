@@ -12,6 +12,8 @@ const Notify = (props) => {
         const credentials = {
             userdishId: props.userdishid
         }
+        console.log(props.userdishid);
+        console.log(props.id);
         axios.post(`${Variables.hostId}/${props.id}/senddelivered`, credentials)
             .then(res => {
                 console.log(res.data.message);
