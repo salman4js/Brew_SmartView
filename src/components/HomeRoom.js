@@ -83,6 +83,7 @@ const HomeRoom = (props) => {
 
     // Retrieve User Room data from the API
     const getUserData = () => {
+        console.log(props.roomid);
         const credentials = {
             roomid: props.roomid
         }

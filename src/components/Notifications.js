@@ -87,6 +87,14 @@ const Notifications = () => {
         }, 9000)
         return () => clearInterval(interval)
     }, [])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            getData();
+            checkDelivered();
+        }, 9000)
+        return () => clearInterval(interval);
+    })
     
 
 
@@ -129,7 +137,7 @@ const Notifications = () => {
                                                         ) : (
                                                             data.map((item, key) => {
                                                                 return (
-                                                                    <Notify dishname={item.dishName} roomno={item.roomno} delivered={item.delivered} reboot={setReboot} comments={item.comments} quantity={item.quantity} id={id} userdishid={item._id} />
+                                                                    <Notify dishname={item.dishName} roomno={item.roomno} delivered={item.delivered} setReboot={setReboot} comments={item.comments} quantity={item.quantity} id={splitedIds[0]} userdishid={item._id} />
                                                                 )
                                                             })
                                                         )
