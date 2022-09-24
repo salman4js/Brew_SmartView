@@ -12,6 +12,7 @@ import UpdateDishes from './components/UpdateDishes';
 import UserDb from './components/UserDb';
 import ConfigureBill from './components/ConfigureBill';
 import EditConfig from './components/EditConfig';
+import Generator from './components/Generator';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path = "/:id/userdb" exact element = {<UserDb />} />
           <Route path = "/:id/configure" exact element = {<ConfigureBill />} />
           <Route path = "/:id/editconfig" exact element = {<EditConfig />} />
+          <Route path = "/:id/generator" exact element = {<Generator /> } />
         </Routes>
       </Router>
     </div>
