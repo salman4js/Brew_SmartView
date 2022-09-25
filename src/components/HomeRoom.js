@@ -33,6 +33,7 @@ const HomeRoom = (props) => {
     const [aadhar, setAadhar] = useState();
     const [showmodal, setShowmodal] = useState();
     const [userid, setUserid] = useState();
+    const [dishrate, setDishrate] = useState([]);
 
     const handleClose = () => {
         setShow(!show)
@@ -100,7 +101,7 @@ const HomeRoom = (props) => {
     }
 
     // Check Out Customer Data
-    const clearData = () => {
+    const clearData = async () => {
         console.log(stayeddays);
         console.log(checkoutdate);
         const credentials = {
@@ -113,8 +114,24 @@ const HomeRoom = (props) => {
 
         const generation = {
             roomtype: props.roomtype,
-            stayeddays: stayeddays.slice(0, 1)
+            stayeddays: stayeddays.slice(0, 1),
+            roomid: props.roomid
         }
+
+        const generateDishRate = {
+            roomid: props.roomid
+        }
+
+        await axios.post(`${Variables.hostId}/${props.lodgeid}/dishuserrate`, generateDishRate)
+            .then(res => {
+                console.log("Accessing Dish Rate Generator!")
+                if (res.data.success) {
+                    setDishrate(res.data.message)
+                    console.log(res.data.message);
+                } else {
+                    setDishrate("User Dish Prices can't be retrived at this moment!")
+                }
+            })
 
         console.log(credentials);
         // axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
@@ -129,7 +146,7 @@ const HomeRoom = (props) => {
         //         setSuccess(res.data.message)
         //     }
         // })
-        axios.post(`${Variables.hostId}/${props.lodgeid}/generatebill`, generation)
+        await axios.post(`${Variables.hostId}/${props.lodgeid}/generatebill`, generation)
             .then(res => {
                 if (res.data.success) {
                     handleCloseGeneratedBill();
@@ -150,19 +167,19 @@ const HomeRoom = (props) => {
             checkoutdate: checkoutdate,
             roomtype: props.roomtype
         }
-         axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
-        .then(res => {
-            if(res.data.success){
-                handleModal();
-                setShowerror(true);
-                setSuccess(res.data.message)
-                props.setLoad(!props.setLoad);
-                window.location.reload(false);
-            } else {
-                setShowerror(true);
-                setSuccess(res.data.message)
-            }
-        })
+        axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
+            .then(res => {
+                if (res.data.success) {
+                    handleModal();
+                    setShowerror(true);
+                    setSuccess(res.data.message)
+                    props.setLoad(!props.setLoad);
+                    window.location.reload(false);
+                } else {
+                    setShowerror(true);
+                    setSuccess(res.data.message)
+                }
+            })
     }
 
     return (
@@ -265,7 +282,40 @@ const HomeRoom = (props) => {
                         <Modal.Title>Generated Bill - Feautured</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                       Total Amount to be paid - {amount}
+                        <h5>Amount to be paid for the suite - {amount}</h5>
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Dish Name
+                                    </th>
+                                    <th>
+                                        Quantity
+                                    </th>
+                                    <th>
+                                        Dish Rate
+                                    </th>
+                                </tr>
+                                {
+                                    dishrate.map((item, key) => {
+                                        return (
+                                            <tr>
+                                                <th>
+                                                    {item.dishName}
+                                                </th>
+                                                <th>
+                                                    {item.quantity}
+                                                </th>
+                                                <th>
+                                                    {item.dishRate}
+                                                </th>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </thead>
+                        </table>
+
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleCloseGeneratedBill}>

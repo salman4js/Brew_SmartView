@@ -119,7 +119,7 @@ const Notifications = () => {
                                                         ) : (
                                                             check.map((item, key) => {
                                                                 return (
-                                                                    <Notify dishname={item.dishName} roomno={item.roomno} delivered={item.delivered} comments={item.comments} setReboot={setReboot} quantity={item.quantity} id={id} userdishid={item._id} />
+                                                                    <Notify dishname={item.dishName} roomno={item.roomno} delivered={item.delivered} comments={item.comments} setReboot={setReboot} quantity={item.quantity} id={splitedIds[0]} userdishid={item._id} />
                                                                 )
                                                             })
                                                         )

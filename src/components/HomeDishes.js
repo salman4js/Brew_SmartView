@@ -52,7 +52,9 @@ const HomeDishes = (props) => {
             quantity : quantity,
             comments : comments,
             roomno : roomno,
-            roomid : roomid
+            roomid : roomid,
+            lodgeid : props.lodgeid,
+            dishrate : props.dishrate
         }
         await axios.post(`${Variables.hostId}/${props.id}/adddishroom`, credentials)
         .then(res => {
