@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Modal from "react-bootstrap/Modal";
 import axios from 'axios';
+import { MinimizeOutlined } from '@material-ui/icons';
 
 const ModalCheckOut = (props) => {
 
@@ -15,14 +16,31 @@ const ModalCheckOut = (props) => {
         const date1 = new Date(props.checkin);
         console.log(date1);
         const date2 = new Date(date);
+        console.log(date2);
         
         const diffTime = Math.abs(date2 - date1);
         console.log(diffTime);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
         console.log(diffTime + " milliseconds");
-        props.stayeddays(diffDays + " days");
-        props.checkoutdate(date);
-        setStay(diffDays + " days");
+        if(diffDays == 0) {
+            props.stayeddays(diffDays+1 + " Days");
+            setStay(diffDays+1 + " Days");
+        } else {
+                props.stayeddays(diffDays + " days");
+                props.checkoutdate(date);
+                setStay(diffDays + " Days");
+        }
+      
+
+
+        // let difference = date2.getTime() - date1.getTime();
+        // console.log(difference);
+        // let minutesInDay = 1000 * 3600 * 24;
+        // console.log(minutesInDay);
+        // console.log(difference/minutesInDay);
+        // props.stayeddays(difference/minutesInDay);
+        // setStay(difference/minutesInDay);
+
     }, [])
     return (
         <div>

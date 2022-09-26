@@ -13,6 +13,7 @@ import UserDb from './components/UserDb';
 import ConfigureBill from './components/ConfigureBill';
 import EditConfig from './components/EditConfig';
 import Generator from './components/Generator';
+import EditDish from './components/EditDish';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path = "/:id/configure" exact element = {<ConfigureBill />} />
           <Route path = "/:id/editconfig" exact element = {<EditConfig />} />
           <Route path = "/:id/generator" exact element = {<Generator /> } />
+          <Route path = "/:id/editdish" exact element = {<EditDish />} />
         </Routes>
       </Router>
     </div>

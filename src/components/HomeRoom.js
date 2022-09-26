@@ -3,6 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import Variables from './Variables';
+import Table from './Table';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ModalCheckOut from './ModalCheckOut';
@@ -12,7 +13,7 @@ import ModalCheckOut from './ModalCheckOut';
 const HomeRoom = (props) => {
 
     const current = new Date();
-    const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
+    const date = `${current.getFullYear()}/${current.getMonth()+1}/${current.getDate()}`;
 
     const [show, setShow] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -33,6 +34,8 @@ const HomeRoom = (props) => {
     const [aadhar, setAadhar] = useState();
     const [showmodal, setShowmodal] = useState();
     const [userid, setUserid] = useState();
+    const [dishrate, setDishrate] = useState([]);
+    const [totaldishrate, setTotaldishrate] = useState(0);
 
     const handleClose = () => {
         setShow(!show)
@@ -63,7 +66,7 @@ const HomeRoom = (props) => {
             adults: adults,
             childrens: childrens,
             aadhar: aadhar,
-            checkin: new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1),
+            checkin: date,
             roomid: props.roomid,
             roomno: props.roomno
         }
@@ -100,7 +103,7 @@ const HomeRoom = (props) => {
     }
 
     // Check Out Customer Data
-    const clearData = () => {
+    const clearData = async () => {
         console.log(stayeddays);
         console.log(checkoutdate);
         const credentials = {
@@ -113,8 +116,24 @@ const HomeRoom = (props) => {
 
         const generation = {
             roomtype: props.roomtype,
-            stayeddays: stayeddays.slice(0, 1)
+            stayeddays: stayeddays.slice(0, 1),
+            roomid: props.roomid
         }
+
+        const generateDishRate = {
+            roomid: props.roomid
+        }
+
+        await axios.post(`${Variables.hostId}/${props.lodgeid}/dishuserrate`, generateDishRate)
+            .then(res => {
+                console.log("Accessing Dish Rate Generator!")
+                if (res.data.success) {
+                    setDishrate(res.data.message)
+                    console.log(res.data.message);
+                } else {
+                    setDishrate("User Dish Prices can't be retrived at this moment!")
+                }
+            })
 
         console.log(credentials);
         // axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
@@ -129,7 +148,7 @@ const HomeRoom = (props) => {
         //         setSuccess(res.data.message)
         //     }
         // })
-        axios.post(`${Variables.hostId}/${props.lodgeid}/generatebill`, generation)
+        await axios.post(`${Variables.hostId}/${props.lodgeid}/generatebill`, generation)
             .then(res => {
                 if (res.data.success) {
                     handleCloseGeneratedBill();
@@ -150,19 +169,19 @@ const HomeRoom = (props) => {
             checkoutdate: checkoutdate,
             roomtype: props.roomtype
         }
-         axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
-        .then(res => {
-            if(res.data.success){
-                handleModal();
-                setShowerror(true);
-                setSuccess(res.data.message)
-                props.setLoad(!props.setLoad);
-                window.location.reload(false);
-            } else {
-                setShowerror(true);
-                setSuccess(res.data.message)
-            }
-        })
+        axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
+            .then(res => {
+                if (res.data.success) {
+                    handleModal();
+                    setShowerror(true);
+                    setSuccess(res.data.message)
+                    props.setLoad(!props.setLoad);
+                    window.location.reload(false);
+                } else {
+                    setShowerror(true);
+                    setSuccess(res.data.message)
+                }
+            })
     }
 
     return (
@@ -265,7 +284,30 @@ const HomeRoom = (props) => {
                         <Modal.Title>Generated Bill - Feautured</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                       Total Amount to be paid - {amount}
+                        <h5>Amount to be paid for the suite - {amount}</h5>
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Dish Name
+                                    </th>
+                                    <th>
+                                        Quantity
+                                    </th>
+                                    <th>
+                                        Dish Rate
+                                    </th>
+                                </tr>
+                                {
+                                    dishrate.map((item, key) => {
+                                        return (
+                                            <Table dishName = {item.dishName} quantity = {item.quantity} dishRate = {item.dishRate} setTotaldishrate = {setTotaldishrate} roomid = {props.roomid}/>
+                                        )
+                                    })
+                                }
+                            </thead>
+                        </table>
+
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleCloseGeneratedBill}>
