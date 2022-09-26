@@ -3,6 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import Variables from './Variables';
+import Table from './Table';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ModalCheckOut from './ModalCheckOut';
@@ -12,7 +13,7 @@ import ModalCheckOut from './ModalCheckOut';
 const HomeRoom = (props) => {
 
     const current = new Date();
-    const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
+    const date = `${current.getFullYear()}/${current.getMonth()+1}/${current.getDate()}`;
 
     const [show, setShow] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -34,6 +35,7 @@ const HomeRoom = (props) => {
     const [showmodal, setShowmodal] = useState();
     const [userid, setUserid] = useState();
     const [dishrate, setDishrate] = useState([]);
+    const [totaldishrate, setTotaldishrate] = useState(0);
 
     const handleClose = () => {
         setShow(!show)
@@ -64,7 +66,7 @@ const HomeRoom = (props) => {
             adults: adults,
             childrens: childrens,
             aadhar: aadhar,
-            checkin: new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1),
+            checkin: date,
             roomid: props.roomid,
             roomno: props.roomno
         }
@@ -299,17 +301,7 @@ const HomeRoom = (props) => {
                                 {
                                     dishrate.map((item, key) => {
                                         return (
-                                            <tr>
-                                                <th>
-                                                    {item.dishName}
-                                                </th>
-                                                <th>
-                                                    {item.quantity}
-                                                </th>
-                                                <th>
-                                                    {item.dishRate}
-                                                </th>
-                                            </tr>
+                                            <Table dishName = {item.dishName} quantity = {item.quantity} dishRate = {item.dishRate} setTotaldishrate = {setTotaldishrate} roomid = {props.roomid}/>
                                         )
                                     })
                                 }
