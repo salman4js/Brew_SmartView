@@ -11,6 +11,8 @@ const ModalCheckOut = (props) => {
     const date = `${current.getFullYear()}/${current.getMonth()+1}/${current.getDate()}`;
 
     useEffect(() => {
+
+        props.checkoutdate(date);
         console.log(props.user);
         props.userid(props.user)
         const date1 = new Date(props.checkin);

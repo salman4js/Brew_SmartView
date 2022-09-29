@@ -35,7 +35,7 @@ const HomeRoom = (props) => {
     const [showmodal, setShowmodal] = useState();
     const [userid, setUserid] = useState();
     const [dishrate, setDishrate] = useState([]);
-    const [totaldishrate, setTotaldishrate] = useState(0);
+    const [totaldishrate, setTotaldishrate] = useState([]);
 
     const handleClose = () => {
         setShow(!show)
@@ -104,6 +104,9 @@ const HomeRoom = (props) => {
 
     // Check Out Customer Data
     const clearData = async () => {
+
+        var totalDishrate = 0;
+
         console.log(stayeddays);
         console.log(checkoutdate);
         const credentials = {
@@ -158,6 +161,19 @@ const HomeRoom = (props) => {
                     setSuccess(res.data.message)
                 }
             })
+
+        await axios.post(`${Variables.hostId}/${props.lodgeid}/dishuserrate`, generateDishRate)
+        .then(res => {
+            if(res.data.success){
+                res.data.message.map((item,key) => {
+                    for(var i = 0; i < (res.data.message).length; i++){
+                        totalDishrate += Number(item.dishRate) * Number(item.quantity)
+                    }
+                })
+            }
+            setTotaldishrate(totalDishrate + Number(amount));
+            console.log(Number(totalDishrate));
+        })
     }
 
     const checkedOut = () => {
@@ -307,7 +323,7 @@ const HomeRoom = (props) => {
                                 }
                             </thead>
                         </table>
-
+                        <h5 style = {{fontWeight : "bold"}}>Total amount to be paid - {totaldishrate} Rs</h5>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleCloseGeneratedBill}>

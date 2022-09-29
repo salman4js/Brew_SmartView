@@ -103,7 +103,7 @@ const Notifications = () => {
             {
                 token ? (
                     <div>
-                        <Navbar id={id} />
+                        <Navbar id={id} name = {splitedIds[1]} />
                         <div className="notifications-service">
                             <div className='container'>
                                 <div class="container">
