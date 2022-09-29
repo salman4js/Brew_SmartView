@@ -79,7 +79,7 @@ const Dishes = () => {
             {
                 data ? (
                     <div className='container'>
-                        <Navbar id={id} />
+                        <Navbar id={id} name = {splitedIds[1]} />
                         <div className="text-center">
                             <div>
                                 <h3 className='heading-top topic-off'>

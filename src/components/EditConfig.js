@@ -139,6 +139,8 @@ useEffect(() => {
                         <div className='modal-gap'>
                           <label style={{ color: "black" }}> Suite Type </label>
                           <select class="form-select" aria-label="Default select example" onChange={(e) => setSelected(e.target.value)}>
+                          <option selected>Choose...</option>
+
                             {
                               option.map((item, key) => {
                                 return (
