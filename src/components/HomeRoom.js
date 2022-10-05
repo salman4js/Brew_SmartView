@@ -108,6 +108,7 @@ const HomeRoom = (props) => {
         var totalDishrate = 0;
 
         console.log(stayeddays);
+        console.log(stayeddays.slice(0,1));
         console.log(checkoutdate);
         const credentials = {
             userid: userid,
@@ -120,7 +121,8 @@ const HomeRoom = (props) => {
         const generation = {
             roomtype: props.roomtype,
             stayeddays: stayeddays.slice(0, 1),
-            roomid: props.roomid
+            roomid: props.roomid,
+            lodgeid : props.lodgeid
         }
 
         const generateDishRate = {

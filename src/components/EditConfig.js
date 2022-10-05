@@ -46,7 +46,8 @@ const EditConfig = () => {
     console.log(selected);
     const credentials = {
       suitetype: selected,
-      price: price
+      price: price,
+      lodgeid : splitedIds[0]
     }
     axios.post(`${Variables.hostId}/${splitedIds[0]}/edittypedata`, credentials)
       .then(res => {
