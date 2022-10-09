@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal from "react-bootstrap/Modal";
 import axios from 'axios';
-import { MinimizeOutlined } from '@material-ui/icons';
 
 const ModalCheckOut = (props) => {
 

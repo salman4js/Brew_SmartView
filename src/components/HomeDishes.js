@@ -3,7 +3,6 @@ import Variables from './Variables';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
-import { AirlineSeatLegroomExtraOutlined } from '@material-ui/icons';
 
 const HomeDishes = (props) => {
 
