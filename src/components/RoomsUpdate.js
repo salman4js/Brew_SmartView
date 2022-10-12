@@ -10,6 +10,8 @@ const RoomsUpdate = (props) => {
     const [show, setShow] = useState(false);
     const [showerror, setShowerror] = useState(false);
     const [option, setOption] = useState([]);
+    const [deletemodal, setDeletemodal] = useState(false);
+    const [occupied, setOccupied] = useState(false);
 
 
     const splitedIds = (props.id).split(/[-]/);
@@ -54,6 +56,31 @@ const RoomsUpdate = (props) => {
                 setOption(data.data);
             })
     }
+    
+
+    // Delete Room Data...
+
+    const deleteRoom = () => {
+        console.log("Delete config triggered!");
+        const credentials = {
+            roomId : props.roomid
+        }
+        axios.post(`${Variables.hostId}/deleteroom`, credentials)
+        .then(res => {
+            if(res.data.success){
+                setShowerror(true);
+                setSuccess(res.data.message);
+                deleteModal();
+                setTimeout(() => {
+                    props.setLoad(!props.setLoad);
+                }, 2000);
+            } else {
+                setShowerror(true);
+                setSuccess(res.data.message)
+                deleteModal();
+            }
+        })
+    }
 
     const handleClose = () => {
         setShow(!show);
@@ -61,6 +88,18 @@ const RoomsUpdate = (props) => {
 
     const handleCloseModal = () => {
         setShowerror(!showerror)
+    }
+
+    const deleteModal = () => {
+        if(props.engaged === "false"){
+            setDeletemodal(!deletemodal)
+        } else {
+            setOccupied(!occupied);
+        }
+    }
+
+    const Occupied = () => {
+        setOccupied(!occupied);
     }
 
     useEffect(() => {
@@ -81,6 +120,9 @@ const RoomsUpdate = (props) => {
                 </div>
                 <div className='btn btn-success' onClick={handleClose}>
                     Update Room Data
+                </div>
+                <div className = "btn btn-danger minute-space" onClick={deleteModal}>
+                    Delete Room Data
                 </div>
             </div>
             <Modal
@@ -145,6 +187,61 @@ const RoomsUpdate = (props) => {
                                 </Modal.Body>
                             </Modal.Header>
                         </Modal>
+                    )
+                }
+            </div>
+            <div>
+                {
+                    deletemodal ? (
+                        <Modal
+                            show={deletemodal}
+                            onHide={deleteModal}
+                            backdrop="static"
+                            keyboard={false}
+                        >
+                            <Modal.Header closeButton>
+                            <Modal.Title>Workflow Panel</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                Do you really want to delete {props.roomno}'s data permanently?
+                            </Modal.Body>
+                            <Modal.Footer>
+                            <Button variant="secondary" onClick={deleteModal}>
+                                No
+                            </Button>
+                            <Button variant="primary" onClick={deleteRoom}>Yes</Button>
+                            </Modal.Footer>
+                        </Modal>
+                    ) : (
+                        <div>
+                        </div>
+                    )
+                }
+            </div>
+            <div>
+                {
+                    occupied ? (
+                        <Modal
+                            show={occupied}
+                            onHide={Occupied}
+                            backdrop="static"
+                            keyboard={false}
+                        >
+                            <Modal.Header closeButton>
+                            <Modal.Title>Workflow Panel</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                               Room no: {props.roomno} already occupied, Can't delete occupied room data!
+                            </Modal.Body>
+                            <Modal.Footer>
+                            <Button variant="secondary" onClick={Occupied}>
+                                Close
+                            </Button>
+                            </Modal.Footer>
+                        </Modal>
+                    ) : (
+                        <div>
+                        </div>
                     )
                 }
             </div>
