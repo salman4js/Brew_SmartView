@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Variables from './Variables';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -17,6 +17,9 @@ const HomeDishes = (props) => {
     const [comments, setComments] = useState();
     const [roomid, setRoomid] = useState();
 
+    // Occupied
+    const [occupied, setOccupied] = useState([]);
+
     const handleClose = () => {
         setShow(!show);
     }
@@ -30,49 +33,66 @@ const HomeDishes = (props) => {
         setShowerror(!showerror)
     }
 
+    // Get occupied rooms only.
+
+    const Occupied = () => {
+        axios.post(`${Variables.hostId}/${props.lodgeid}/occupied`)
+            .then(res => {
+                if (res.data.success) {
+                    setOccupied(res.data.message)
+                } else {
+                    setOccupied("Some internal error occured, please try again later!");
+                }
+            })
+    }
+
     const processData = async () => {
         const validation = {
-            roomno : roomno,
-            lodgeid : props.lodgeid
+            roomno: roomno,
+            lodgeid: props.lodgeid
         }
         axios.post(`${Variables.hostId}/${props.lodgeid}/getroomid`, validation)
-        .then(res => {
-            if(res.data.success){
-                res.data.message.map((item,key) => {
-                    processReq(item._id)
-                })
-            }
-        })
+            .then(res => {
+                if (res.data.success) {
+                    res.data.message.map((item, key) => {
+                        processReq(item._id)
+                    })
+                }
+            })
     }
 
     const processReq = async (roomid) => {
         const credentials = {
-            dishname : props.dishname,
-            quantity : quantity,
-            comments : comments,
-            roomno : roomno,
-            roomid : roomid,
-            lodgeid : props.lodgeid,
-            dishrate : props.dishrate
+            dishname: props.dishname,
+            quantity: quantity,
+            comments: comments,
+            roomno: roomno,
+            roomid: roomid,
+            lodgeid: props.lodgeid,
+            dishrate: props.dishrate
         }
         await axios.post(`${Variables.hostId}/${props.id}/adddishroom`, credentials)
-        .then(res => {
-            if(res.data.success){
-                handleClose();
-                if(res.data.message == "false"){
-                    setShowerror(true);
-                    setSuccess(`The room no: ${roomno} is not engaged`)
+            .then(res => {
+                if (res.data.success) {
+                    handleClose();
+                    if (res.data.message == "false") {
+                        setShowerror(true);
+                        setSuccess(`The room no: ${roomno} is not engaged`)
+                    } else {
+                        setShowerror(true);
+                        setSuccess(res.data.message)
+                        props.setLoad(!props.setLoad);
+                    }
                 } else {
                     setShowerror(true);
                     setSuccess(res.data.message)
-                    props.setLoad(!props.setLoad);
                 }
-            } else {
-                setShowerror(true);
-                setSuccess(res.data.message)
-            }
-        })
+            })
     }
+
+    useEffect(() => {
+        Occupied();
+    }, [])
 
     return (
         <div class="col-4" style={{ paddingBottom: "10vh" }}>
@@ -97,24 +117,34 @@ const HomeDishes = (props) => {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className = "modal-top text-center">
+                        <div className="modal-top text-center">
                             <div className="modal-gap">
                                 <label style={{ color: "black" }}> Quantity </label>
-                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Quantity" name = {quantity} value = {quantity} onChange = {(e) => setQuantity(e.target.value)} />
+                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Quantity" name={quantity} value={quantity} onChange={(e) => setQuantity(e.target.value)} />
                             </div>
                             <div className='modal-gap'>
                                 <label style={{ color: "black" }}> Room No </label>
-                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Room No' name = {roomno} value = {roomno} onChange = {(e) => setRoomno(e.target.value)} />
+                                <select class="form-select" aria-label="Default select example" onChange={(e) => setRoomno(e.target.value)}>
+                                    <option selected>Choose...</option>
+                                    {
+                                        occupied.map((item, key) => {
+                                            return (
+                                                <option>{item.roomno}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+
                             </div>
                             <div className='modal-gap'>
                                 <label style={{ color: "black" }}> Comments </label>
-                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Comments' name = {comments} value = {comments} onChange = {(e) => setComments(e.target.value)} />
+                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Comments' name={comments} value={comments} onChange={(e) => setComments(e.target.value)} />
                             </div>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button className='btn btn-secondary' onClick={handleClose}>Close</Button>
-                        <Button className = "btn btn-info" onClick={processData}>Save & Close</Button>
+                        <Button className="btn btn-info" onClick={processData}>Save & Close</Button>
                     </Modal.Footer>
                 </Modal>
                 <div>

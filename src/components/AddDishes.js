@@ -27,6 +27,9 @@ const AddDishes = () => {
     const [invaliddata, setInvaliddata] = useState(false);
     const [show, setShow] = useState(false);
 
+    // Options
+    const [options, setOptions] = useState([]);
+
 
     // Process Data
 
@@ -57,6 +60,18 @@ const AddDishes = () => {
     const handleInvalid = () => {
         console.log(invaliddata)
         setInvaliddata(false);
+    }
+
+    // Dish Type data.
+    const getData = () => {
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/alldishtype`)
+            .then(res => {
+                if(res.data.success){
+                    setOptions(res.data.message);
+                } else {
+                    return;
+                }
+            })
     }
 
     useEffect(() => {
@@ -93,7 +108,9 @@ const AddDishes = () => {
         return () => clearInterval(interval)
     }, [])
 
-  
+    useEffect(() => {
+        getData();
+    }, [])
 
     return (
         <div>
@@ -133,8 +150,16 @@ const AddDishes = () => {
                                                 </div>
                                                 <div className='modal-gap'>
                                                     <label style={{ color: "black" }}> Dish Type </label>
-                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish-Type' name={dishtype} value={dishtype} onChange={(e) => setDishtype(e.target.value)} />
-                                                </div>
+                                                    <select class="form-select" aria-label="Default select example" onChange={(e) => setDishtype(e.target.value)}>
+                                                    <option selected>Choose...</option>
+                                                        {
+                                                            options.map((item, key) => {
+                                                                return (
+                                                                    <option>{item.dishType}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </select>                                                </div>
                                                 <br />
                                                 <button className='btn btn-info' onClick={processData}> Add Data </button>
                                             </div>

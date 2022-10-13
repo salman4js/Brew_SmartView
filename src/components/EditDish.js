@@ -1,12 +1,19 @@
 import React, {useState, useEffect} from 'react';
 import Navbar from './Navbar';
+import axios from 'axios';
 import { Link, useParams } from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
 import CustomError from './CustomError';
 import changeScreen from './Action';
+import Variables from './Variables';
 
 const EditDish = () => {
 
   const { id } = useParams();
+
+  const [dishtype, setDishtype] = useState();
+  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState(false);
 
   const splitedIds = id.split(/[-]/);
 
@@ -33,6 +40,31 @@ const EditDish = () => {
     }
   }
 
+  const ShowSuccess = () => {
+    setSuccess(!success);
+  }
+
+  // Adding data to the database
+  const addData = (e) => {
+    e.preventDefault();
+    console.log(dishtype);
+    const credentials = {
+      dishtype : dishtype
+    }
+    axios.post(`${Variables.hostId}/${splitedIds[0]}/createdishtype`, credentials)
+      .then(res => {
+        if(res.data.success){
+          setSuccess(true);
+          setMessage(res.data.message);
+          setDishtype("");
+        } else {
+          setSuccess(true);
+          setMessage(res.data.message);
+          setDishtype("");
+        }
+      })
+  }
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -57,13 +89,34 @@ const EditDish = () => {
                   <div class="card-body">
                     <div className='modal-gap'>
                       <label style={{ color: "black" }}> Dish Type </label>
-                      <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Type" />
+                      <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Type" value = {dishtype} name = {dishtype} onChange = {((e) => setDishtype(e.target.value))}/>
                     </div>
                     <br />
-                    <button className='btn btn-info'> Add Data </button>
+                    <button className='btn btn-info' onClick={addData}> Add Data </button>
                   </div>
                 </div>
               </div>
+            </div>
+            <div>
+              {
+                success == undefined ? (
+                  <div>
+                  </div>
+                ) : (
+                    <Modal
+                      show={success}
+                      onHide={ShowSuccess}
+                      backdrop="static"
+                      keyboard={false}
+                    >
+                      <Modal.Header closeButton>
+                          <Modal.Body className="text-center">
+                              {message}
+                          </Modal.Body>
+                      </Modal.Header>
+                    </Modal>
+                )
+              }
             </div>
           </div>
         ) : (
