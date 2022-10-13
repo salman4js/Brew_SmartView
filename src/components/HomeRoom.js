@@ -57,31 +57,47 @@ const HomeRoom = (props) => {
 
     // Add Data to the model
     const processData = () => {
-
-        console.log(date);
-        const credentials = {
-            customername: customername,
-            phonenumber: customerphonenumber,
-            secondphonenumber: secondphonenumber,
-            adults: adults,
-            childrens: childrens,
-            aadhar: aadhar,
-            checkin: date,
-            roomid: props.roomid,
-            roomno: props.roomno
+        const isnum = /^\d+$/;
+        if(!isnum.test(customerphonenumber)){
+            setShowerror(true);
+            setSuccess("Phone Number is not valid...")
+        } else if(!isnum.test(secondphonenumber)){
+            setShowerror(true);
+            setSuccess("Phone Number is not valid...")
+        } else if(!isnum.test(adults)){
+            setShowerror(true);
+            setSuccess("Adults count should be in Numbers format...")
+        } else if(!isnum.test(childrens)){
+            setShowerror(true);
+            setSuccess("Childrens count should be in Numbers format...")
+        } else if(!isnum.test(aadhar)){
+            setShowerror(true);
+            setSuccess("Aadhar Number should be in Number format...")
+        } else {
+            const credentials = {
+                customername: customername,
+                phonenumber: customerphonenumber,
+                secondphonenumber: secondphonenumber,
+                adults: adults,
+                childrens: childrens,
+                aadhar: aadhar,     
+                checkin: date,
+                roomid: props.roomid,
+                roomno: props.roomno
+            }
+            axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
+                .then(res => {
+                    if (res.data.success) {
+                        handleClose();
+                        setShowerror(true);
+                        setSuccess(res.data.message)
+                        props.setLoad(!props.setLoad);
+                    } else {
+                        setShowerror(true);
+                        setSuccess(res.data.message)
+                    }
+                })
         }
-        axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
-            .then(res => {
-                if (res.data.success) {
-                    handleClose();
-                    setShowerror(true);
-                    setSuccess(res.data.message)
-                    props.setLoad(!props.setLoad);
-                } else {
-                    setShowerror(true);
-                    setSuccess(res.data.message)
-                }
-            })
     }
 
     // Retrieve User Room data from the API
