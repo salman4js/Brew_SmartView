@@ -34,23 +34,29 @@ const AddDishes = () => {
     // Process Data
 
     const processData = () => {
-        const credentials = {
-            dishname: dishname,
-            dishrate: dishrate,
-            dishtype: dishtype
+        const isnum = /^\d+$/;
+        if(!isnum.test(dishrate)){
+            setShow(true)
+            setError("Dish Rate should be in Numbers format...")
+        } else {
+            const credentials = {
+                dishname: dishname,
+                dishrate: dishrate,
+                dishtype: dishtype
+            }
+            axios.post(`${Variables.hostId}/${splitedIds[0]}/adddish`, credentials)
+                .then(res => {
+                    if (res.data.success) {
+                        setError(res.data.message)
+                        setShow(true)
+                        setDishname("");
+                        setDishrate("");
+                        setDishtype("");
+                    } else {
+                        setInvaliddata(true)
+                    }
+                })
         }
-        axios.post(`${Variables.hostId}/${splitedIds[0]}/adddish`, credentials)
-            .then(res => {
-                if (res.data.success) {
-                    setError(res.data.message)
-                    setShow(true)
-                    setDishname("");
-                    setDishrate("");
-                    setDishtype("");
-                } else {
-                    setInvaliddata(true)
-                }
-            })
     }
 
     const handleClose = () => {
@@ -159,7 +165,8 @@ const AddDishes = () => {
                                                                 )
                                                             })
                                                         }
-                                                    </select>                                                </div>
+                                                    </select>                                                
+                                                </div>
                                                 <br />
                                                 <button className='btn btn-info' onClick={processData}> Add Data </button>
                                             </div>
