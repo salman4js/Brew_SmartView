@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Navbar from './Navbar';
 import changeScreen from './Action';
 import Variables from './Variables';
+import Loading from './Loading';
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import axios from "axios";
@@ -15,7 +16,8 @@ const ConfigureBill = () => {
     const [price, setPrice] = useState();
     const token = localStorage.getItem("token");
 
-
+    // Loader
+    const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState();
     const [show, setShow] = useState(false);
@@ -34,6 +36,7 @@ const ConfigureBill = () => {
     const splitedIds = id.split(/[-]/);
 
     const processData = (e) => {
+        setLoading(!loading);
         e.preventDefault();
         console.log(suitetype);
         console.log(price);
@@ -45,11 +48,13 @@ const ConfigureBill = () => {
             .then(res => {
                 {
                     if (res.data.success) {
+                        setLoading(!loading);
                         setError(res.data);
                         setShow(true);
                         setSuitetype("");
                         setPrice("");
                     } else {
+                        setLoading(!loading);
                         setInvaliddata(true)
                     }
                 }
@@ -94,7 +99,10 @@ const ConfigureBill = () => {
         <div>
             {
                 token ? (
-                    <div className='container'>
+                    loading ? (
+                        <Loading />
+                    ) : (
+                        <div className='container'>
                         <Navbar id={id} name={splitedIds[1]} />
                         <div className="align-down">
 
@@ -154,7 +162,8 @@ const ConfigureBill = () => {
                                 </Modal>
                             )
                         }
-                    </div>
+                        </div>
+                    )
                 ) : (
                     <CustomError />
                 )

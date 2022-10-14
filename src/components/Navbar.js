@@ -63,6 +63,7 @@ const Navbar = (props) => {
                                             <Link className='nav-link dropdown-item' to = {`/${props.id}/editconfig`} style = {{color : "black"}}> Edit Room Type Data</Link>
                                             <Link className = 'nav-link dropdown-item' to = {`/${props.id}/editdish`} style = {{color : "black"}}> Add Dish Type </Link>
                                             <Link className = 'nav-link dropdown-item' to = {`/${props.id}/generator`} style = {{color : "black"}}> Generate QR code  </Link>
+                                            <Link className = 'nav-link dropdown-item' to = {`/${props.id}/loading`} style = {{color : "black"}}> Loading </Link>
                                         </ul>
                                     </li>
                                     <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}>   Booking History </Link>
