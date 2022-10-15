@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Variables from './Variables';
+import Loading from './Loading';
 import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 import changeScreen from './Action';
@@ -15,7 +16,11 @@ const Generator = () => {
 
   const [data, setData] = useState([]);
 
+  //Loader
+  const [loading, setLoading] = useState(false);
+
   const getData = () => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) {
       setData(false);
@@ -28,7 +33,9 @@ const Generator = () => {
         .then(res => {
           if (res.data.success) {
             setData(res.data.message)
+            setLoading(false);
           } else {
+            setLoading(false);
             localStorage.clear();
             changeScreen();
           }
@@ -74,7 +81,10 @@ const Generator = () => {
 
       {
         data ? (
-          <div>
+          loading ? (
+            <Loading />
+          ) : (
+            <div>
             <Navbar id={id} name={splitedIds[1]} />
             <div>
               <div className='grid-system'>
@@ -92,6 +102,7 @@ const Generator = () => {
               </div>
             </div>
           </div>
+          )
         ) : (
           <CustomError />
         )

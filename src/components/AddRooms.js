@@ -41,7 +41,7 @@ const AddRooms = () => {
     // Add rooms
     const processData = (e) => {
         e.preventDefault();
-        setLoading(!loading);
+        setLoading(true);
         const credentials = {
             roomno: roomno,
             bedcount: bedcount,
@@ -51,14 +51,14 @@ const AddRooms = () => {
             .then(res => {
                 {
                     if (res.data.success) {
-                        setLoading(!loading);
+                        setLoading(false);
                         setError(res.data);
                         setShow(true);
                         setRoomno("");
                         setBedcount("");
                         setSuitetype("");
                     } else {
-                        setLoading(!loading);
+                        setLoading(false);
                         setInvaliddata(true)
                     }
                 }

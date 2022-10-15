@@ -22,7 +22,7 @@ const Dishes = () => {
     const[loading, setLoading] = useState(false);
 
     const getData = () => {
-        setLoading(!loading);
+        setLoading(true);
         const token = localStorage.getItem("token");
         if (!token) {
             setData(false)
@@ -34,10 +34,10 @@ const Dishes = () => {
             })
                 .then(res => {
                     if(res.data.success){
-                        setLoading(!loading);
+                        setLoading(false);
                         setData(res.data.message);
                     } else {
-                        setLoading(!loading);
+                        setLoading(false);
                         localStorage.clear();
                         changeScreen();
                     }

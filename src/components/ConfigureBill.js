@@ -36,8 +36,8 @@ const ConfigureBill = () => {
     const splitedIds = id.split(/[-]/);
 
     const processData = (e) => {
-        setLoading(!loading);
         e.preventDefault();
+        setLoading(true);
         console.log(suitetype);
         console.log(price);
         const data = {
@@ -48,13 +48,13 @@ const ConfigureBill = () => {
             .then(res => {
                 {
                     if (res.data.success) {
-                        setLoading(!loading);
+                        setLoading(false);
                         setError(res.data);
                         setShow(true);
                         setSuitetype("");
                         setPrice("");
                     } else {
-                        setLoading(!loading);
+                        setLoading(false);
                         setInvaliddata(true)
                     }
                 }

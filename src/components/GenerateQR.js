@@ -10,6 +10,9 @@ const GenerateQR = (props) => {
     const [show, setShow] = useState(false);
     const [data, setData] = useState();
 
+    //Loader
+    const [loading, setLoading] = useState(false);
+
     const handleClose = () => {
         setShow(!show);
     }
@@ -20,6 +23,7 @@ const GenerateQR = (props) => {
     }
 
     const generateQR = () => {
+        setLoading(true);
         const roomspec = props.lodgeid.concat('-' + props.roomid);
         console.log(roomspec);
         const credentials = {
@@ -28,10 +32,12 @@ const GenerateQR = (props) => {
         axios.post(`${Variables.hostId}/${props.id}/generator`, credentials)
             .then(res => {
                 if (res.data.success) {
+                    setLoading(false);
                     console.log("Generated successfully!");
                     setData(res.data.message);
                     handleClose();
                 } else {
+                    setLoading(false);
                     console.log(res.data.message)
                 }
             })

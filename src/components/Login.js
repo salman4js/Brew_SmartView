@@ -42,7 +42,7 @@ const Login = () => {
           } else {
             setLoading(false);
             setError(res.data)
-            setShow(!loading);
+            setShow(!show);
           }
         })
     }

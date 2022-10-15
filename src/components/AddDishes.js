@@ -39,6 +39,7 @@ const AddDishes = () => {
 
     const processData = () => {
         setLoading(true);
+        console.log("Loader function has been called")
         const isnum = /^\d+$/;
         if (!isnum.test(dishrate)) {
             setShow(true)
@@ -53,6 +54,7 @@ const AddDishes = () => {
                 .then(res => {
                     if (res.data.success) {
                         setLoading(false);
+                        console.log("Loader function has been called with 200");
                         setError(res.data.message)
                         setShow(true)
                         setDishname("");
@@ -60,6 +62,7 @@ const AddDishes = () => {
                         setDishtype("");
                     } else {
                         setLoading(false);
+                        console.log("Loader has been called with 404");
                         setInvaliddata(true)
                     }
                 })

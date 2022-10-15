@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Navbar from './Navbar';
+import Loading from './Loading';
 import axios from 'axios';
 import { Link, useParams } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
@@ -14,6 +15,9 @@ const EditDish = () => {
   const [dishtype, setDishtype] = useState();
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState(false);
+
+  // Loader
+  const[loading, setLoading] = useState(false);
 
   const splitedIds = id.split(/[-]/);
 
@@ -47,6 +51,7 @@ const EditDish = () => {
   // Adding data to the database
   const addData = (e) => {
     e.preventDefault();
+    setLoading(true);
     console.log(dishtype);
     const credentials = {
       dishtype : dishtype
@@ -54,10 +59,12 @@ const EditDish = () => {
     axios.post(`${Variables.hostId}/${splitedIds[0]}/createdishtype`, credentials)
       .then(res => {
         if(res.data.success){
+          setLoading(false);
           setSuccess(true);
           setMessage(res.data.message);
           setDishtype("");
         } else {
+          setLoading(false);
           setSuccess(true);
           setMessage(res.data.message);
           setDishtype("");
@@ -78,7 +85,10 @@ const EditDish = () => {
     <div>
       {
         token ? (
-          <div>
+          loading ? (
+            <Loading />
+          ) : (
+            <div>
             <Navbar id={id} name={splitedIds[1]} />
             <div className='align-down'>
               <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
@@ -119,6 +129,7 @@ const EditDish = () => {
               }
             </div>
           </div>
+          )
         ) : (
           <CustomError />
         )
