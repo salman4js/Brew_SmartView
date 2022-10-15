@@ -4,6 +4,7 @@ import CustomError from './CustomError';
 import changeScreen from './Action';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Variables from './Variables';
+import Loading from './Loading';
 import axios from "axios";
 import HomeRoom from './HomeRoom';
 
@@ -19,8 +20,12 @@ const LandingPage = () => {
     const [room, setRoom] = useState([]);
 
     const [load, setLoad] = useState("");
+    
+    //Loader
+    const [loading, setLoading] = useState(false);
 
     const getData = () => {
+        setLoading(true);
         const token = localStorage.getItem("token");
         if (!token) {
             setRoom(false)
@@ -32,9 +37,11 @@ const LandingPage = () => {
             })
                 .then(res => {
                     if(res.data.success){
+                        setLoading(false);
                         setRoom(res.data.message)
                         console.log(res.data.message)
                     } else {
+                        setLoading(false);
                         localStorage.clear();
                         changeScreen();
                     }
@@ -79,29 +86,33 @@ const LandingPage = () => {
         <div>
             {
                 room ? (
-                    <div>
-                        <Navbar id={id} name={splitedIds[1]} />
-                        <div className="text-center">
-                            <div>
-                                <h3 className='heading-top topic-off'>
-                                    {splitedIds[1]}
-                                </h3>
-                            </div>
-                        </div>
-                        <div className='grid-system'>
-                            <div class="container">
-                                <div class="row">
-                                    {
-                                        room.map((item, key) => {
-                                            return (
-                                                <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} />
-                                            )
-                                        })
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div >
+                    loading ? (
+                      <Loading />
+                    ) : (
+                      <div>
+                          <Navbar id={id} name={splitedIds[1]} />
+                          <div className="text-center">
+                              <div>
+                                  <h3 className='heading-top topic-off'>
+                                      {splitedIds[1]}
+                                  </h3>
+                              </div>
+                          </div>
+                          <div className='grid-system'>
+                              <div class="container">
+                                  <div class="row">
+                                      {
+                                          room.map((item, key) => {
+                                              return (
+                                                  <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} />
+                                              )
+                                          })
+                                      }
+                                  </div>
+                              </div>
+                          </div>
+                      </div >
+                    )
                 ) : (
                     <div>
                         <CustomError />
