@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import Variables from './Variables';
+import Loading from "./Loading";
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import Button from 'react-bootstrap/Button';
@@ -15,6 +16,9 @@ const AddDishes = () => {
     const { id } = useParams();
     const token = localStorage.getItem("token");
     const splitedIds = id.split(/[-]/);
+
+    // Loader
+    const [loading, setLoading] = useState(false);
 
 
     // Add Dishes
@@ -34,8 +38,10 @@ const AddDishes = () => {
     // Process Data
 
     const processData = () => {
+        setLoading(true);
+        console.log("Loader function has been called")
         const isnum = /^\d+$/;
-        if(!isnum.test(dishrate)){
+        if (!isnum.test(dishrate)) {
             setShow(true)
             setError("Dish Rate should be in Numbers format...")
         } else {
@@ -47,12 +53,16 @@ const AddDishes = () => {
             axios.post(`${Variables.hostId}/${splitedIds[0]}/adddish`, credentials)
                 .then(res => {
                     if (res.data.success) {
+                        setLoading(false);
+                        console.log("Loader function has been called with 200");
                         setError(res.data.message)
                         setShow(true)
                         setDishname("");
                         setDishrate("");
                         setDishtype("");
                     } else {
+                        setLoading(false);
+                        console.log("Loader has been called with 404");
                         setInvaliddata(true)
                     }
                 })
@@ -72,7 +82,7 @@ const AddDishes = () => {
     const getData = () => {
         axios.post(`${Variables.hostId}/${splitedIds[0]}/alldishtype`)
             .then(res => {
-                if(res.data.success){
+                if (res.data.success) {
                     setOptions(res.data.message);
                 } else {
                     return;
@@ -87,23 +97,23 @@ const AddDishes = () => {
 
     const parseJwt = (token) => {
         try {
-          return JSON.parse(atob(token.split(".")[1]));
+            return JSON.parse(atob(token.split(".")[1]));
         } catch (e) {
-          return null;
+            return null;
         }
-      };
+    };
 
     const AuthVerify = () => {
-          const user = localStorage.getItem("token");
-      
-          if (user) {
+        const user = localStorage.getItem("token");
+
+        if (user) {
             const decodedJwt = parseJwt(user);
-      
+
             if (decodedJwt.exp * 1000 < Date.now()) {
-              localStorage.clear();
-              changeScreen();
+                localStorage.clear();
+                changeScreen();
             }
-          }
+        }
     }
 
 
@@ -122,81 +132,85 @@ const AddDishes = () => {
         <div>
             {
                 token ? (
-                    <div className="container">
-                        <Navbar id={id} name={splitedIds[1]} />
-                        <div className="align-down">
-                            <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
-                                <div className='row text-center'>
-                                    <div className='col'>
-                                        {
-                                            invaliddata ? (
+                    loading ? (
+                        <Loading />
+                    ) : (
+                        <div className="container">
+                            <Navbar id={id} name={splitedIds[1]} />
+                            <div className="align-down">
+                                <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
+                                    <div className='row text-center'>
+                                        <div className='col'>
+                                            {
+                                                invaliddata ? (
 
-                                                <Alert show={invaliddata}>
-                                                    <div className="container text-center">
-                                                        That's a bad input!
+                                                    <Alert show={invaliddata}>
+                                                        <div className="container text-center">
+                                                            That's a bad input!
+                                                        </div>
+                                                    </Alert>
+                                                ) : (
+                                                    <div>
                                                     </div>
-                                                </Alert>
-                                            ) : (
-                                                <div>
+                                                )
+                                            }
+                                            <div class="card text-center" style={{ width: "50vh" }}>
+                                                <div class="card-header" style={{ color: "black" }}>
+                                                    Add Dishes -  Featured
                                                 </div>
-                                            )
-                                        }
-                                        <div class="card text-center" style={{ width: "50vh" }}>
-                                            <div class="card-header" style={{ color: "black" }}>
-                                                Add Dishes -  Featured
-                                            </div>
-                                            <div class="card-body">
-                                                <div className='modal-gap'>
-                                                    <label style={{ color: "black" }}> Dish Name </label>
-                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value)} />
+                                                <div class="card-body">
+                                                    <div className='modal-gap'>
+                                                        <label style={{ color: "black" }}> Dish Name </label>
+                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value)} />
+                                                    </div>
+                                                    <div className='modal-gap'>
+                                                        <label style={{ color: "black" }}> Dish Rate </label>
+                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Rate' name={dishrate} value={dishrate} onChange={(e) => setDishrate(e.target.value)} />
+                                                    </div>
+                                                    <div className='modal-gap'>
+                                                        <label style={{ color: "black" }}> Dish Type </label>
+                                                        <select class="form-select" aria-label="Default select example" onChange={(e) => setDishtype(e.target.value)}>
+                                                            <option selected>Choose...</option>
+                                                            {
+                                                                options.map((item, key) => {
+                                                                    return (
+                                                                        <option>{item.dishType}</option>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <br />
+                                                    <button className='btn btn-info' onClick={processData}> Add Data </button>
                                                 </div>
-                                                <div className='modal-gap'>
-                                                    <label style={{ color: "black" }}> Dish Rate </label>
-                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Rate' name={dishrate} value={dishrate} onChange={(e) => setDishrate(e.target.value)} />
-                                                </div>
-                                                <div className='modal-gap'>
-                                                    <label style={{ color: "black" }}> Dish Type </label>
-                                                    <select class="form-select" aria-label="Default select example" onChange={(e) => setDishtype(e.target.value)}>
-                                                    <option selected>Choose...</option>
-                                                        {
-                                                            options.map((item, key) => {
-                                                                return (
-                                                                    <option>{item.dishType}</option>
-                                                                )
-                                                            })
-                                                        }
-                                                    </select>                                                
-                                                </div>
-                                                <br />
-                                                <button className='btn btn-info' onClick={processData}> Add Data </button>
                                             </div>
                                         </div>
-                                    </div>
 
+                                    </div>
+                                    {
+                                        error == undefined ? (
+                                            <div>
+                                            </div>
+                                        ) : (
+                                            <Modal
+                                                show={show}
+                                                onHide={handleClose}
+                                                backdrop="static"
+                                                keyboard={false}
+                                                className="my-modal"
+                                            >
+                                                <Modal.Header closeButton>
+                                                    <Modal.Body className="text-center">
+                                                        {error}
+                                                    </Modal.Body>
+                                                </Modal.Header>
+                                            </Modal>
+                                        )
+                                    }
                                 </div>
-                                {
-                                    error == undefined ? (
-                                        <div>
-                                        </div>
-                                    ) : (
-                                        <Modal
-                                            show={show}
-                                            onHide={handleClose}
-                                            backdrop="static"
-                                            keyboard={false}
-                                            className="my-modal"
-                                        >
-                                            <Modal.Header closeButton>
-                                                <Modal.Body className="text-center">
-                                                    {error}
-                                                </Modal.Body>
-                                            </Modal.Header>
-                                        </Modal>
-                                    )
-                                }
                             </div>
                         </div>
-                    </div>
+                    )
                 ) : (
                     <div>
                         <CustomError />

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Variables from './Variables';
+import Loading from "./Loading";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
@@ -8,7 +9,10 @@ import axios from "axios";
 const DishUpdate = (props) => {
 
     const [show, setShow] = useState(false);
-    const [showerror, setShowerror] = useState(false)
+    const [showerror, setShowerror] = useState(false);
+
+    // Loader
+    const [loading, setLoading] = useState(false);
 
     // Udpate Rooms
     const [dishname, setDishname] = useState(props.dishname);
@@ -20,7 +24,7 @@ const DishUpdate = (props) => {
 
 
     const updateDish = () => {
-        console.log(available);
+        setLoading(true);
         const credentials = {
             dishname: dishname,
             dishrate: dishrate,
@@ -31,12 +35,14 @@ const DishUpdate = (props) => {
         axios.post(`${Variables.hostId}/${props.id}/dishupdater`, credentials)
             .then(res => {
                 console.log(res.data);
-                if(res.data.success){
+                if (res.data.success) {
+                    setLoading(false);
                     setShowerror(true);
                     setSuccess(res.data.message)
                     handleClose();
                     props.setLoad(!props.setLoad)
                 } else {
+                    setLoading(false);
                     setShowerror(true);
                     setSuccess(res.data.message)
                     props.setLoad(!props.setLoad)
@@ -53,95 +59,101 @@ const DishUpdate = (props) => {
     }
 
     return (
-
-        <div class="col-4" style={{ paddingBottom: "10vh" }}>
-            <div class="card text-center">
-                <div class="card-header" style={{ color: "black" }}>
-                    <strong>Dish Type:  {props.dishtype}</strong>
-                </div>
-                <div class="card-body">
-                    <p style={{ color: "black" }}>Dish Name: {props.dishname}</p>
-                    <p style={{ color: "black" }}>Dish Rate: {props.dishrate}</p>
-                    <p style={{ color: "black" }}>Stock: {props.engaged}</p>
-                </div>
-                <div className='btn btn-success' onClick={handleClose}>
-                    Update Dish Data
-                </div>
-            </div>
-            <Modal
-                show={show}
-
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-                keyboard={false}
-                background="static"
-                className="text-center"
-            >
-                <Modal.Header>
-                    <Modal.Title id="contained-modal-title-vcenter" className="container text-center">
-                        Update Dish Data - Featured
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <h4>Dish Name : {props.dishname}</h4>
-                    <div className='modal-gap'>
-                        <label style={{ color: "black" }}> Dish Name </label>
-                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value)} />
-                    </div>
-                    <div className='modal-gap'>
-                        <label style={{ color: "black" }}> Dish Rate </label>
-                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Rate' name={dishrate} value={dishrate} onChange={(e) => setDishrate(e.target.value)} />
-                    </div>
-                    <div className='modal-gap'>
-                        <label style={{ color: "black" }}> Dish Type </label>
-                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Type' name={dishtype} value={dishtype} onChange={(e) => setDishtype(e.target.value)} />
-                    </div>
-                    <div className = "modal-gap">
-                        <label style={{ color: "black" }}> Stock </label>
-                        <div class="input-group mb-3">
-                        <select class="custom-select" id="inputGroupSelect01" onChange={(e) => setAvailable(e.target.value)}>
-                                <option selected> Choose... </option>
-                                {
-                                    props.engaged == "In Stock" ? (
-                                        <option name = {available} value = "Out Of Stock"> Out Of Stock </option>
-
-                                    ) : (
-                                        <option name = {available} value = "In Stock"> In Stock </option>
-                                    )
-                                }
-                            </select>
+        <div>
+            {
+                loading ? (
+                    <Loading />
+                ) : (
+                    <div class="col-4" style={{ paddingBottom: "10vh" }}>
+                        <div class="card text-center">
+                            <div class="card-header" style={{ color: "black" }}>
+                                <strong>Dish Type:  {props.dishtype}</strong>
+                            </div>
+                            <div class="card-body">
+                                <p style={{ color: "black" }}>Dish Name: {props.dishname}</p>
+                                <p style={{ color: "black" }}>Dish Rate: {props.dishrate}</p>
+                                <p style={{ color: "black" }}>Stock: {props.engaged}</p>
+                            </div>
+                            <div className='btn btn-success' onClick={handleClose}>
+                                Update Dish Data
+                            </div>
                         </div>
-                    </div>
-
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className="btn btn-secondary" onClick={handleClose}>Close</Button>
-                    <Button className='btn btn-info' onClick={updateDish}> Save and Close </Button>
-                </Modal.Footer>
-            </Modal>
-            <div>
-                {
-                    success == undefined ? (
-                        <div>
-                        </div>
-                    ) : (
                         <Modal
-                            show={showerror}
-                            onHide={handleCloseModal}
-                            backdrop="static"
-                            keyboard={false}
-                        >
-                            <Modal.Header closeButton>
-                                <Modal.Body className="text-center">
-                                    {success}
-                                </Modal.Body>
-                            </Modal.Header>
-                        </Modal>
-                    )
-                }
-            </div>
-        </div>
+                            show={show}
 
+                            aria-labelledby="contained-modal-title-vcenter"
+                            centered
+                            keyboard={false}
+                            background="static"
+                            className="text-center"
+                        >
+                            <Modal.Header>
+                                <Modal.Title id="contained-modal-title-vcenter" className="container text-center">
+                                    Update Dish Data - Featured
+                                </Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <h4>Dish Name : {props.dishname}</h4>
+                                <div className='modal-gap'>
+                                    <label style={{ color: "black" }}> Dish Name </label>
+                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value)} />
+                                </div>
+                                <div className='modal-gap'>
+                                    <label style={{ color: "black" }}> Dish Rate </label>
+                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Rate' name={dishrate} value={dishrate} onChange={(e) => setDishrate(e.target.value)} />
+                                </div>
+                                <div className='modal-gap'>
+                                    <label style={{ color: "black" }}> Dish Type </label>
+                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Type' name={dishtype} value={dishtype} onChange={(e) => setDishtype(e.target.value)} />
+                                </div>
+                                <div className="modal-gap">
+                                    <label style={{ color: "black" }}> Stock </label>
+                                    <div class="input-group mb-3">
+                                        <select class="custom-select" id="inputGroupSelect01" onChange={(e) => setAvailable(e.target.value)}>
+                                            <option selected> Choose... </option>
+                                            {
+                                                props.engaged == "In Stock" ? (
+                                                    <option name={available} value="Out Of Stock"> Out Of Stock </option>
+
+                                                ) : (
+                                                    <option name={available} value="In Stock"> In Stock </option>
+                                                )
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button className="btn btn-secondary" onClick={handleClose}>Close</Button>
+                                <Button className='btn btn-info' onClick={updateDish}> Save and Close </Button>
+                            </Modal.Footer>
+                        </Modal>
+                        <div>
+                            {
+                                success == undefined ? (
+                                    <div>
+                                    </div>
+                                ) : (
+                                    <Modal
+                                        show={showerror}
+                                        onHide={handleCloseModal}
+                                        backdrop="static"
+                                        keyboard={false}
+                                    >
+                                        <Modal.Header closeButton>
+                                            <Modal.Body className="text-center">
+                                                {success}
+                                            </Modal.Body>
+                                        </Modal.Header>
+                                    </Modal>
+                                )
+                            }
+                        </div>
+                    </div>
+                )
+            }
+        </div>
     )
 }
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import changeScreen from './Action';
 import Variables from './Variables';
+import Loading from './Loading';
 import HomeRoom from './HomeRoom';
 import CustomError from './CustomError';
 import { Link, useParams } from "react-router-dom";
@@ -18,7 +19,11 @@ const Rooms = () => {
 
     const [load, setLoad] = useState("");
 
+    //Loader
+    const [loading, setLoading] = useState(false);
+
     const getData = () => {
+        setLoading(true);
         const token = localStorage.getItem("token");
         if (!token) {
             setRoom(false)
@@ -30,8 +35,10 @@ const Rooms = () => {
             })
                 .then(res => {
                     if(res.data.success){
+                        setLoading(false);
                         setRoom(res.data.message)
                     } else {
+                        setLoading(false); 
                         localStorage.clear();
                         changeScreen();
                     }
@@ -76,7 +83,10 @@ const Rooms = () => {
         <div>
             {
                 room ? (
-                    <div className='container'>
+                    loading ? (
+                        <Loading />
+                    ) : (
+                        <div className='container'>
                         <Navbar id={id} name={splitedIds[1]} />
                         <div className="text-center">
                             <div>
@@ -99,6 +109,7 @@ const Rooms = () => {
                             </div>
                         </div>
                     </div>
+                    )
                 ) : (
                     <CustomError />
                 )

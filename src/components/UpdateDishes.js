@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Variables from './Variables';
+import Loading from './Loading';
 import DishUpdate from './DishUpdate';
 import changeScreen from "./Action";
 import { Link, useParams } from "react-router-dom";
@@ -14,8 +15,12 @@ const UpdateDishes = () => {
 
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
+    
+    //Loader
+    const [loading, setLoading] = useState(false);
 
     const getData = () => {
+      setLoading(true);
         const token = localStorage.getItem("token");
         if (!token) {
             setData(false)
@@ -27,8 +32,10 @@ const UpdateDishes = () => {
             })
                 .then(res => {
                     if(res.data.success){
+                        setLoading(false);
                         setData(res.data.message)
                     } else {
+                        setLoading(false);
                         localStorage.clear();
                         changeScreen();
                     }
@@ -74,29 +81,33 @@ const UpdateDishes = () => {
         <div>
             {
                 data ? (
-                    <div>
-                        <Navbar id={id} name={splitedIds[1]} />
-                        <div className="text-center">
-                            <div>
-                                <h3 className='heading-top topic-off'>
-                                    Update Dish Data!
-                                </h3>
-                            </div>
-                        </div>
-                        <div className="grid-system">
-                            <div className="container">
-                                <div className='row'>
-                                    {
-                                        data.map((item, key) => {
-                                            return (
-                                                <DishUpdate dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} engaged={item.available} id={id} dishid={item._id} setLoad={setLoad} />
-                                            )
-                                        })
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    loading ? (
+                      <Loading />
+                    ) : (
+                      <div>
+                          <Navbar id={id} name={splitedIds[1]} />
+                          <div className="text-center">
+                              <div>
+                                  <h3 className='heading-top topic-off'>
+                                      Update Dish Data!
+                                  </h3>
+                              </div>
+                          </div>
+                          <div className="grid-system">
+                              <div className="container">
+                                  <div className='row'>
+                                      {
+                                          data.map((item, key) => {
+                                              return (
+                                                  <DishUpdate dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} engaged={item.available} id={id} dishid={item._id} setLoad={setLoad} />
+                                              )
+                                          })
+                                      }
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    )
                 ) : (
                     <div>
                         <CustomError />

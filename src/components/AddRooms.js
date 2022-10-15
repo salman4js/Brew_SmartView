@@ -3,6 +3,7 @@ import CustomError from './CustomError';
 import changeScreen from './Action';
 import Navbar from './Navbar';
 import Variables from './Variables';
+import Loading from './Loading';
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import { Link, useParams } from "react-router-dom";
@@ -15,7 +16,8 @@ const AddRooms = () => {
 
     const splitedIds = id.split(/[-]/);
 
-
+    //Loader
+    const [loading, setLoading] = useState(false);
 
     // Add Rooms 
     const [roomno, setRoomno] = useState("");
@@ -39,6 +41,7 @@ const AddRooms = () => {
     // Add rooms
     const processData = (e) => {
         e.preventDefault();
+        setLoading(true);
         const credentials = {
             roomno: roomno,
             bedcount: bedcount,
@@ -48,12 +51,14 @@ const AddRooms = () => {
             .then(res => {
                 {
                     if (res.data.success) {
+                        setLoading(false);
                         setError(res.data);
                         setShow(true);
                         setRoomno("");
                         setBedcount("");
                         setSuitetype("");
                     } else {
+                        setLoading(false);
                         setInvaliddata(true)
                     }
                 }
@@ -111,7 +116,10 @@ const AddRooms = () => {
         <div>
             {
                 token ? (
-                    <div className='container'>
+                    loading ? (
+                        <Loading />
+                    ) : (   
+                        <div className='container'>
                         <Navbar id={id} name={splitedIds[1]} />
                         <div className="align-down">
                             <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
@@ -186,6 +194,7 @@ const AddRooms = () => {
                             </div>
                         </div>
                     </div>
+                    )
                 ) : (
                     <CustomError />
                 )

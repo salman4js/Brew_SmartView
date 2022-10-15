@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Variables from './Variables';
+import Loading from "./Loading";
 import changeScreen from './Action';
 import HomeDishes from './HomeDishes';
 import { Link, useParams } from "react-router-dom";
@@ -17,7 +18,11 @@ const Dishes = () => {
 
     const [data, setData] = useState([]);
 
+    // Loader
+    const[loading, setLoading] = useState(false);
+
     const getData = () => {
+        setLoading(true);
         const token = localStorage.getItem("token");
         if (!token) {
             setData(false)
@@ -28,11 +33,11 @@ const Dishes = () => {
                 }
             })
                 .then(res => {
-                    console.log(res.data.success);
-                    console.log(res.data.message);
                     if(res.data.success){
+                        setLoading(false);
                         setData(res.data.message);
                     } else {
+                        setLoading(false);
                         localStorage.clear();
                         changeScreen();
                     }
@@ -78,7 +83,10 @@ const Dishes = () => {
         <div>
             {
                 data ? (
-                    <div className='container'>
+                    loading ? (
+                        <Loading />
+                    ) : (
+                        <div className='container'>
                         <Navbar id={id} name = {splitedIds[1]} />
                         <div className="text-center">
                             <div>
@@ -101,6 +109,7 @@ const Dishes = () => {
                             </div>
                         </div>
                     </div>
+                    )
                 ) : (
                     <div>
                         <CustomError /> 
