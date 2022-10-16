@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import CustomError from './CustomError';
 import Variables from './Variables';
+import Loading from './Loading';
 import UserDbComp from './UserDbComp';
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
@@ -14,7 +15,11 @@ const UserDb = () => {
 
     const [data, setData] = useState([]);
 
+    //Loader
+    const [loading, setLoading] = useState(false);
+
     const getData = () => {
+        setLoading(true);
         const token = localStorage.getItem("token");
         if (!token) {
             setData(false)
@@ -26,8 +31,10 @@ const UserDb = () => {
             })
                 .then(res => {
                     if (res.data.success) {
-                        setData(res.data.message)
+                        setLoading(false);
+                        setData(res.data.message);
                     } else {
+                        setLoading(false);
                         localStorage.clear();
                         changeScreen();
                     }
@@ -74,7 +81,10 @@ const UserDb = () => {
         <div>
             {
                 data ? (
-                    <div>
+                    loading ? (
+                        <Loading />
+                    ) : (
+                        <div>
                         <Navbar id={id} name={splitedIds[1]} />
                         <div className="text-center">
                             <div>
@@ -97,6 +107,7 @@ const UserDb = () => {
                             </div>
                         </div>
                     </div>
+                    )
                 ) : (
                 <div>
                     <CustomError />

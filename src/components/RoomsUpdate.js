@@ -24,8 +24,12 @@ const RoomsUpdate = (props) => {
     const [suitetype, setSuitetype] = useState(props.roomtype);
     const [success, setSuccess] = useState();
 
+    //Loader--Modal
+    const [loading, setLoading] = useState(false);
+
 
     const updateRooms = () => {
+        setLoading(true);
         const credentials = {
             roomno: roomno,
             bedcount: bedcount,
@@ -36,11 +40,13 @@ const RoomsUpdate = (props) => {
             .then(res => {
                 console.log(res.data);
                 if (res.data.success) {
+                    setLoading(false);
                     setShowerror(true)
                     setSuccess(res.data.message);
                     handleClose();
                     props.setLoad(!props.setLoad)
                 } else {
+                    setLoading(false);
                     setShowerror(true)
                     setSuccess(res.data.message)
                     props.setLoad(!props.setLoad)
@@ -61,6 +67,7 @@ const RoomsUpdate = (props) => {
     // Delete Room Data...
 
     const deleteRoom = () => {
+        setLoading(true);
         console.log("Delete config triggered!");
         const credentials = {
             roomId : props.roomid
@@ -68,6 +75,7 @@ const RoomsUpdate = (props) => {
         axios.post(`${Variables.hostId}/deleteroom`, credentials)
         .then(res => {
             if(res.data.success){
+                setLoading(false);
                 setShowerror(true);
                 setSuccess(res.data.message);
                 deleteModal();
@@ -75,6 +83,7 @@ const RoomsUpdate = (props) => {
                     props.setLoad(!props.setLoad);
                 }, 2000);
             } else {
+                setLoading(false);
                 setShowerror(true);
                 setSuccess(res.data.message)
                 deleteModal();
@@ -239,6 +248,23 @@ const RoomsUpdate = (props) => {
                             </Button>
                             </Modal.Footer>
                         </Modal>
+                    ) : (
+                        <div>
+                        </div>
+                    )
+                }
+            </div>
+            <div>
+                {
+                    loading ? (
+                        <Modal
+                        show={loading}
+                        backdrop="static"
+                      >
+                        <Modal.Body>
+                          Updaing, please wait!
+                        </Modal.Body>
+                      </Modal>
                     ) : (
                         <div>
                         </div>

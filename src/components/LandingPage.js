@@ -87,9 +87,9 @@ const LandingPage = () => {
             {
                 room ? (
                     loading ? (
-                      <Loading />
+                        <Loading />
                     ) : (
-                      <div>
+                        <div>
                           <Navbar id={id} name={splitedIds[1]} />
                           <div className="text-center">
                               <div>
@@ -113,6 +113,7 @@ const LandingPage = () => {
                           </div>
                       </div >
                     )
+                      
                 ) : (
                     <div>
                         <CustomError />

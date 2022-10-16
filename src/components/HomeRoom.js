@@ -23,7 +23,7 @@ const HomeRoom = (props) => {
     const [showGeneratedBill, setShowGeneratedBill] = useState(false);
     const [amount, setAmount] = useState();
     
-    //Loader
+    //Loader--Modal
     const [loading, setLoading] = useState(false);
 
     // Customer Data
@@ -196,7 +196,7 @@ const HomeRoom = (props) => {
                     }
                 })
             }
-            setTotaldishrate(totalDishrate + Number(amount));
+            setTotaldishrate(Number(totalDishrate) + Number(amount));
             console.log(Number(totalDishrate));
         })
     }
@@ -226,11 +226,6 @@ const HomeRoom = (props) => {
     }
 
     return (
-        <div>
-          {
-            loading ? (
-              <Loading />
-            ) : (
               <div class="col-4" style={{ paddingBottom: "10vh" }}>
                   <div class="card text-center">
                       <div class="card-header" style={{ color: "black" }}>
@@ -396,11 +391,27 @@ const HomeRoom = (props) => {
                           )
                           )
                       }
+                      {
+                        <div>
+                            {
+                                loading ? (
+                                    <Modal
+                                    show={loading}
+                                    backdrop="static"
+                                >
+                                    <Modal.Body>
+                                    Updaing, please wait!
+                                    </Modal.Body>
+                                </Modal>
+                                ) : (
+                                    <div>
+                                    </div>
+                                )
+                            }
+                        </div>
+                      }
                   </div>
               </div>
-            )
-          }
-        </div>
     )
 }
 

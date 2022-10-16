@@ -86,29 +86,31 @@ const Dishes = () => {
                     loading ? (
                         <Loading />
                     ) : (
-                        <div className='container'>
-                        <Navbar id={id} name = {splitedIds[1]} />
-                        <div className="text-center">
-                            <div>
-                                <h3 className='heading-top topic-off'>
-                                    Dishes!
-                                </h3>
-                            </div>
-                        </div>
-                        <div className='grid-system'>
-                            <div class="container">
-                                <div class="row">
-                                    {
-                                        data.map((item, key) => {
-                                            return (
-                                                <HomeDishes key={key} dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} available={item.available} load={setLoad} id={id} lodgeid={splitedIds[0]} />
-                                            )
-                                        })
-                                    }
+                        <div>
+                            <div className='container'>
+                                <Navbar id={id} name = {splitedIds[1]} />
+                                <div className="text-center">
+                                    <div>
+                                        <h3 className='heading-top topic-off'>
+                                            Dishes!
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div className='grid-system'>
+                                    <div class="container">
+                                        <div class="row">
+                                            {
+                                                data.map((item, key) => {
+                                                    return (
+                                                        <HomeDishes key={key} dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} available={item.available} load={setLoad} id={id} lodgeid={splitedIds[0]} />
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     )
                 ) : (
                     <div>
