@@ -258,3 +258,9 @@
 .top-align{
   margin-top: 300px;
 }
+
+.footer-pin {
+  position : relative;
+  left : 0;
+  bottom : 0;
+}

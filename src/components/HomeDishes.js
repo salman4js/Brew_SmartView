@@ -102,8 +102,7 @@ const HomeDishes = (props) => {
     }, [])
 
     return (
-        <div>
-          {
+         
             loading ? (
               <Loading />
             ) : (
@@ -194,8 +193,6 @@ const HomeDishes = (props) => {
                   </div>
               </div>
             )
-          }
-        </div>
     )
 }
 
