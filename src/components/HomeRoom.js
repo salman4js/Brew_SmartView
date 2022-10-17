@@ -64,18 +64,23 @@ const HomeRoom = (props) => {
         setLoading(true);
         const isnum = /^\d+$/;
         if(!isnum.test(customerphonenumber)){
+            setLoading(false);
             setShowerror(true);
             setSuccess("Phone Number is not valid...")
         } else if(!isnum.test(secondphonenumber)){
+            setLoading(false);
             setShowerror(true);
             setSuccess("Phone Number is not valid...")
         } else if(!isnum.test(adults)){
+            setLoading(false);
             setShowerror(true);
             setSuccess("Adults count should be in Numbers format...")
         } else if(!isnum.test(childrens)){
+            setLoading(false);
             setShowerror(true);
             setSuccess("Childrens count should be in Numbers format...")
         } else if(!isnum.test(aadhar)){
+            setLoading(false);
             setShowerror(true);
             setSuccess("Aadhar Number should be in Number format...")
         } else {
