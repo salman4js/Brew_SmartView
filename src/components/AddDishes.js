@@ -42,6 +42,7 @@ const AddDishes = () => {
         console.log("Loader function has been called")
         const isnum = /^\d+$/;
         if (!isnum.test(dishrate)) {
+            setLoading(false);
             setShow(true)
             setError("Dish Rate should be in Numbers format...")
         } else {
