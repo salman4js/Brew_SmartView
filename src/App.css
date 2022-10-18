@@ -169,6 +169,10 @@
   margin-top: 90px;
 }
 
+.grid-system-search{
+  margin-top : 50px;
+}
+
 .card-border {
   padding: 10px;
 }
@@ -263,4 +267,8 @@
   position : relative;
   left : 0;
   bottom : 0;
+}
+
+.top-gun {
+  margin-top : 30px;
 }

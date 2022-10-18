@@ -16,10 +16,16 @@ const Dishes = () => {
 
     const [load, setLoad] = useState(false);
 
+    // Search
+    const [search, setSearch] = useState("");
+
+    // Sort
+    const [sort, setSort] = useState("Show All");
+
     const [data, setData] = useState([]);
 
     // Loader
-    const[loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const getData = () => {
         setLoading(true);
@@ -33,7 +39,7 @@ const Dishes = () => {
                 }
             })
                 .then(res => {
-                    if(res.data.success){
+                    if (res.data.success) {
                         setLoading(false);
                         setData(res.data.message);
                     } else {
@@ -52,23 +58,23 @@ const Dishes = () => {
 
     const parseJwt = (token) => {
         try {
-          return JSON.parse(atob(token.split(".")[1]));
+            return JSON.parse(atob(token.split(".")[1]));
         } catch (e) {
-          return null;
+            return null;
         }
-      };
+    };
 
     const AuthVerify = () => {
-          const user = localStorage.getItem("token");
-      
-          if (user) {
+        const user = localStorage.getItem("token");
+
+        if (user) {
             const decodedJwt = parseJwt(user);
-      
+
             if (decodedJwt.exp * 1000 < Date.now()) {
-              localStorage.clear();
-              changeScreen();
+                localStorage.clear();
+                changeScreen();
             }
-          }
+        }
     }
 
 
@@ -88,7 +94,7 @@ const Dishes = () => {
                     ) : (
                         <div>
                             <div className='container'>
-                                <Navbar id={id} name = {splitedIds[1]} />
+                                <Navbar id={id} name={splitedIds[1]} />
                                 <div className="text-center">
                                     <div>
                                         <h3 className='heading-top topic-off'>
@@ -96,29 +102,58 @@ const Dishes = () => {
                                         </h3>
                                     </div>
                                 </div>
-                                <div className='grid-system'>
+                                <div className='grid-system-search'>
                                     <div class="container">
-                                        <div class="row">
-                                            {
-                                                data.map((item, key) => {
-                                                    return (
-                                                        <HomeDishes key={key} dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} available={item.available} load={setLoad} id={id} lodgeid={splitedIds[0]} />
-                                                    )
-                                                })
-                                            }
+                                        <div className = "row">
+                                            <div className = "col-8">
+                                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name={search} value={search} onChange={(e) => setSearch(e.target.value)} />
+                                            </div>
+                                            <div className = "col">
+                                                <select class = "form-select" arai-label = "Sort by" placeholder = "Sort By" onChange = {(e) => setSort(e.target.value)}>
+                                                    <option>
+                                                        Show All
+                                                    </option>
+                                                    <option>
+                                                        dishName
+                                                    </option>
+                                                    <option>
+                                                        dishType
+                                                    </option>
+                                                </select>
+                                            </div>
                                         </div>
+                                       
+                                    <div class="row top-gun">
+                                        {/* <HomeDishes key={key} dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} available={item.available} load={setLoad} id={id} lodgeid={splitedIds[0]} /> */}
+                                        {
+                                            data.filter((value) => {
+                                                console.log(sort);
+                                                if(sort == "dishName"){
+                                                    return value.dishName.toLowerCase().includes(search.toLowerCase());
+                                                } else if(sort == "dishType") {
+                                                    return value.dishType.toLowerCase().includes(search.toLowerCase());
+                                                } else if(sort == "Show All"){
+                                                    return value.dishName.toLowerCase().includes(search.toLowerCase());
+                                                }
+                                            }).map((item, key) => {
+                                                return (
+                                                    <HomeDishes key={key} dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} available={item.available} load={setLoad} id={id} lodgeid={splitedIds[0]} />
+                                                )
+                                            })
+                                        }
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    )
+                        </div>
+    )
                 ) : (
-                    <div>
-                        <CustomError /> 
-                    </div>
-                )
+    <div>
+        <CustomError />
+    </div>
+)
             }
-        </div>
+        </div >
     )
 }
 
