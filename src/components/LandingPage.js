@@ -24,6 +24,10 @@ const LandingPage = () => {
     //Loader
     const [loading, setLoading] = useState(false);
 
+    // Search Configuration
+    const [search, setSearch] = useState("");
+    const [sort, setSort] = useState("Show All");
+
     const getData = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
@@ -98,11 +102,38 @@ const LandingPage = () => {
                                   </h3>
                               </div>
                           </div>
-                          <div className='grid-system'>
+                          <div className='grid-system-search'>
                               <div class="container">
-                                  <div class="row">
+                                        <div className = "row">
+                                            <div className = "col-8">
+                                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name={search} value={search} onChange={(e) => setSearch(e.target.value)} />
+                                            </div>
+                                            <div className = "col">
+                                                <select class = "form-select" arai-label = "Sort by" placeholder = "Sort By" onChange = {(e) => setSort(e.target.value)}>
+                                                    <option>
+                                                        Show All
+                                                    </option>
+                                                    <option>
+                                                        Room No
+                                                    </option>
+                                                    <option>
+                                                        Room Type
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                  <div class="row top-gun">
                                       {
-                                          room.map((item, key) => {
+                                        room.filter((value) => {
+                                            console.log(sort)
+                                            if(sort == "Room No"){
+                                                return value.roomno.toLowerCase().includes(search.toLowerCase());
+                                            } else if(sort == "Room Type"){
+                                                return value.suiteName.toLowerCase().includes(search.toLowerCase());
+                                            } else if (sort == "Show All"){
+                                                return value.roomno.toLowerCase().includes(search.toLowerCase());
+                                            }
+                                        }).map((item, key) => {
                                               return (
                                                   <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} />
                                               )
