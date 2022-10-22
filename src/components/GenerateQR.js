@@ -64,7 +64,7 @@ const GenerateQR = (props) => {
                     keyboard={false}
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title>Generated QR Code - Feautured</Modal.Title>
+                        <Modal.Title>QR Code - Room No: {props.roomno} - Feautured</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <img src={data} alt="Girl in a jacket" width="450" height="400" />

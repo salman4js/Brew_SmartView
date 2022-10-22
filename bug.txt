@@ -1,0 +1,3 @@
+Customer checkin
+
+Add dish value.

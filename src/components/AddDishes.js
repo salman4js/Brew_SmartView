@@ -161,14 +161,6 @@ const AddDishes = () => {
                                                 </div>
                                                 <div class="card-body">
                                                     <div className='modal-gap'>
-                                                        <label style={{ color: "black" }}> Dish Name </label>
-                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value)} />
-                                                    </div>
-                                                    <div className='modal-gap'>
-                                                        <label style={{ color: "black" }}> Dish Rate </label>
-                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Rate' name={dishrate} value={dishrate} onChange={(e) => setDishrate(e.target.value)} />
-                                                    </div>
-                                                    <div className='modal-gap'>
                                                         <label style={{ color: "black" }}> Dish Type </label>
                                                         <select class="form-select" aria-label="Default select example" onChange={(e) => setDishtype(e.target.value)}>
                                                             <option selected>Choose...</option>
@@ -181,6 +173,15 @@ const AddDishes = () => {
                                                             }
                                                         </select>
                                                     </div>
+                                                    <div className='modal-gap'>
+                                                        <label style={{ color: "black" }}> Dish Name </label>
+                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value)} />
+                                                    </div>
+                                                    <div className='modal-gap'>
+                                                        <label style={{ color: "black" }}> Dish Rate </label>
+                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Rate' name={dishrate} value={dishrate} onChange={(e) => setDishrate(e.target.value)} />
+                                                    </div>
+                                
                                                     <br />
                                                     <button className='btn btn-info' onClick={processData}> Add Data </button>
                                                 </div>
