@@ -133,8 +133,8 @@ const Dishes = () => {
                                                 } else if(sort == "dishType") {
                                                     return value.dishType.toLowerCase().includes(search.toLowerCase());
                                                 } else if(sort == "Show All"){
-                                                    return value.dishName.toLowerCase().includes(search.toLowerCase());
-                                                }
+                                                    return value.dishName.toLowerCase().includes(search.toLowerCase()) || value.dishType.toLowerCase().includes(search.toLowerCase());
+                                                } 
                                             }).map((item, key) => {
                                                 return (
                                                     <HomeDishes key={key} dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} available={item.available} load={setLoad} id={id} lodgeid={splitedIds[0]} />

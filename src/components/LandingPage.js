@@ -131,7 +131,7 @@ const LandingPage = () => {
                                             } else if(sort == "Room Type"){
                                                 return value.suiteName.toLowerCase().includes(search.toLowerCase());
                                             } else if (sort == "Show All"){
-                                                return value.roomno.toLowerCase().includes(search.toLowerCase());
+                                                return value.roomno.toLowerCase().includes(search.toLowerCase()) || value.suiteName.toLowerCase().includes(search.toLowerCase());
                                             }
                                         }).map((item, key) => {
                                               return (
