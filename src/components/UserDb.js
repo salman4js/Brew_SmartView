@@ -151,7 +151,7 @@ const UserDb = () => {
                                                 } else if(sort == "Checked Out Date"){
                                                     return value.dateofcheckout.toLowerCase().includes(search.toLowerCase());
                                                 } else if(sort == "Show All"){
-                                                    return value.roomno.toLowerCase().includes(search.toLowerCase());
+                                                    return value.roomno.toLowerCase().includes(search.toLowerCase()) || value.username.toLowerCase().includes(search.toLowerCase());
                                                 }
                                             }).map((item,key) => {
                                                 return(
