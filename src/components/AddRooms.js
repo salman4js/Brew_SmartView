@@ -24,6 +24,7 @@ const AddRooms = () => {
     const [bedcount, setBedcount] = useState("");
     const [suitetype, setSuitetype] = useState("");
     const [option, setOption] = useState([]);
+    const [price, setPrice] = useState("");
 
     // Error Messages
     const [error, setError] = useState();
@@ -38,6 +39,21 @@ const AddRooms = () => {
         setInvaliddata(false);
     }
 
+    // Setter for the price value
+    const setValues = (value) => {
+        setSuitetype(value);
+        const values = {
+            suitename : value
+        }
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/getprice`, values)
+            .then(res => {
+                //console.log(res.data);
+                res.data.map((item,key) => {
+                    setPrice(item.price);
+                })
+            })
+    }
+
     // Add rooms
     const processData = (e) => {
         e.preventDefault();
@@ -45,7 +61,8 @@ const AddRooms = () => {
         const credentials = {
             roomno: roomno,
             bedcount: bedcount,
-            suitename: suitetype
+            suitename: suitetype,
+            price : price
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/createroom`, credentials)
             .then(res => {
@@ -85,25 +102,24 @@ const AddRooms = () => {
 
     const parseJwt = (token) => {
         try {
-          return JSON.parse(atob(token.split(".")[1]));
+            return JSON.parse(atob(token.split(".")[1]));
         } catch (e) {
-          return null;
+            return null;
         }
-      };
+    };
 
     const AuthVerify = () => {
-          const user = localStorage.getItem("token");
-      
-          if (user) {
-            const decodedJwt = parseJwt(user);
-      
-            if (decodedJwt.exp * 1000 < Date.now()) {
-              localStorage.clear();
-              changeScreen();
-            }
-          }
-    }
+        const user = localStorage.getItem("token");
 
+        if (user) {
+            const decodedJwt = parseJwt(user);
+
+            if (decodedJwt.exp * 1000 < Date.now()) {
+                localStorage.clear();
+                changeScreen();
+            }
+        }
+    }
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -118,82 +134,87 @@ const AddRooms = () => {
                 token ? (
                     loading ? (
                         <Loading />
-                    ) : (   
+                    ) : (
                         <div className='container'>
-                        <Navbar id={id} name={splitedIds[1]} />
-                        <div className="align-down">
-                            <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
-                                <div className='row text-center'>
-                                    <div className='col'>
-                                        {
-                                            invaliddata ? (
+                            <Navbar id={id} name={splitedIds[1]} />
+                            <div className="align-down">
+                                <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
+                                    <div className='row text-center'>
+                                        <div className='col'>
+                                            {
+                                                invaliddata ? (
 
-                                                <Alert show={invaliddata}>
-                                                    <div className="container text-center">
-                                                        That's a bad input!
+                                                    <Alert show={invaliddata}>
+                                                        <div className="container text-center">
+                                                            That's a bad input!
+                                                        </div>
+                                                    </Alert>
+                                                ) : (
+                                                    <div>
                                                     </div>
-                                                </Alert>
-                                            ) : (
-                                                <div>
+                                                )
+                                            }
+                                            <div class="card text-center" style={{ width: "50vh" }}>
+                                                <div class="card-header" style={{ color: "black" }}>
+                                                    Add Rooms -  Featured
                                                 </div>
-                                            )
-                                        }
-                                        <div class="card text-center" style={{ width: "50vh" }}>
-                                            <div class="card-header" style={{ color: "black" }}>
-                                                Add Rooms -  Featured
-                                            </div>
-                                            <div class="card-body">
-                                                <div className='modal-gap'>
-                                                    <label style={{ color: "black" }}> Room No </label>
-                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Room No" name={roomno} value={roomno} onChange={(e) => setRoomno(e.target.value)} />
-                                                </div>
-                                                <div className='modal-gap'>
-                                                    <label style={{ color: "black" }}> Bed Count </label>
-                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Bed Count' name={bedcount} value={bedcount} onChange={(e) => setBedcount(e.target.value)} />
-                                                </div>
-                                                <div className='modal-gap'>
-                                                    <label style={{ color: "black" }}> Suite Type </label>
-                                                    <select class="form-select" aria-label="Default select example" onChange={(e) => setSuitetype(e.target.value)}>
-                                                    <option selected>Choose...</option>
-                                                        {
-                                                            option.map((item, key) => {
-                                                                return (
-                                                                    <option>{item.suiteType}</option>
-                                                                )
-                                                            })
-                                                        }
-                                                    </select>
 
+                                                <div class="card-body">
+                                                    <div className='modal-gap'>
+                                                        <label style={{ color: "black" }}> Suite Type </label>
+                                                        <select class="form-select" aria-label="Default select example" onChange={(e) => setValues(e.target.value)}>
+                                                            <option selected>Choose...</option>
+                                                            {
+                                                                option.map((item, key) => {
+                                                                    return (
+                                                                        <option>{item.suiteType}</option>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </select>
+
+                                                    </div>
+                                                    <div className='modal-gap'>
+                                                        <label style={{ color: "black" }}> Room No </label>
+                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Room No" name={roomno} value={roomno} onChange={(e) => setRoomno(e.target.value)} />
+                                                    </div>
+                                                    <div className='modal-gap'>
+                                                        <label style={{ color: "black" }}> Bed Count </label>
+                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Bed Count' name={bedcount} value={bedcount} onChange={(e) => setBedcount(e.target.value)} />
+                                                    </div>
+                                                    <div className = 'moal-gap'>
+                                                        <label style = {{color : "black"}}> Price Per Day </label>
+                                                        <input type = "text" className = "form-control" id = "priceperday" aria-describedby="priceperday" placeholder='Price Per Day' name = {price} value = {price}/>
+                                                    </div>
+                                                    <br />
+                                                    <button className='btn btn-info' onClick={processData}> Add Data </button>
                                                 </div>
-                                                <br />
-                                                <button className='btn btn-info' onClick={processData}> Add Data </button>
                                             </div>
                                         </div>
+
                                     </div>
-
+                                    {
+                                        error == undefined ? (
+                                            <div>
+                                            </div>
+                                        ) : (
+                                            <Modal
+                                                show={show}
+                                                onHide={handleClose}
+                                                backdrop="static"
+                                                keyboard={false}
+                                            >
+                                                <Modal.Header closeButton>
+                                                    <Modal.Body className="text-center">
+                                                        {error.message} Successfully!
+                                                    </Modal.Body>
+                                                </Modal.Header>
+                                            </Modal>
+                                        )
+                                    }
                                 </div>
-                                {
-                                    error == undefined ? (
-                                        <div>
-                                        </div>
-                                    ) : (
-                                        <Modal
-                                            show={show}
-                                            onHide={handleClose}
-                                            backdrop="static"
-                                            keyboard={false}
-                                        >
-                                            <Modal.Header closeButton>
-                                                <Modal.Body className="text-center">
-                                                    {error.message} Successfully!
-                                                </Modal.Body>
-                                            </Modal.Header>
-                                        </Modal>
-                                    )
-                                }
                             </div>
                         </div>
-                    </div>
                     )
                 ) : (
                     <CustomError />

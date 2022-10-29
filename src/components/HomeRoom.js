@@ -240,6 +240,7 @@ const HomeRoom = (props) => {
                           <p style={{ color: "black" }}>Engaged : {props.engaged}</p>
                           <p style={{ color: "black" }}>Bed Count : {props.bedcount}</p>
                           <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
+                          <p style ={{color: "black"}}> Price Per Day : {props.price}</p>
                       </div>
 
                       {/* // Check In Modal */}
