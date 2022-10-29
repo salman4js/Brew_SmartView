@@ -15,6 +15,7 @@ import EditConfig from './components/EditConfig';
 import Generator from './components/Generator';
 import EditDish from './components/EditDish';
 import Loading from './components/Loading';
+import ContentNative from './components/ContentNative';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path = "/:id/generator" exact element = {<Generator /> } />
           <Route path = "/:id/editdish" exact element = {<EditDish />} />
           <Route path = "/:id/loading" exact element = {<Loading />} />
+          <Route path = "/:id/contentnative" exact element = {<ContentNative />} />
         </Routes>
       </Router>
     </div>
