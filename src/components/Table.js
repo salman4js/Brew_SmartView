@@ -11,7 +11,7 @@ const Table = (props) => {
                 {props.quantity}
             </th>
             <th>
-                {props.dishRate}
+                {props.dishRate * props.quantity}
             </th>
         </tr>
     )

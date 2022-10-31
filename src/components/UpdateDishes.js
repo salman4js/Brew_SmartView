@@ -11,7 +11,7 @@ import CustomError from './CustomError';
 const UpdateDishes = () => {
 
     const [data, setData] = useState([]);
-    const [load, setLoad] = useState();
+    const [load, setLoad] = useState("");
 
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
@@ -20,6 +20,7 @@ const UpdateDishes = () => {
     const [loading, setLoading] = useState(false);
 
     const getData = () => {
+        console.log(load);
       setLoading(true);
         const token = localStorage.getItem("token");
         if (!token) {
