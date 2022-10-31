@@ -7,6 +7,7 @@ const Variables = {
 //https://guileless-sundae-522a29.netlify.app/.netlify/functions/server
 //https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
 //https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
+//https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
 
 
 export default Variables;

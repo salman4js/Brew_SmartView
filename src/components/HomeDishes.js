@@ -51,19 +51,26 @@ const HomeDishes = (props) => {
     }
 
     const processData = async () => {
+        console.log(roomno);
         setLoading(true);
-        const validation = {
-            roomno: roomno,
-            lodgeid: props.lodgeid
-        }
-        axios.post(`${Variables.hostId}/${props.lodgeid}/getroomid`, validation)
-            .then(res => {
-                if (res.data.success) {
-                    res.data.message.map((item, key) => {
-                        processReq(item._id)
-                    })
-                }
-            })
+            const validation = {
+                roomno: roomno,
+                lodgeid: props.lodgeid
+            }
+            axios.post(`${Variables.hostId}/${props.lodgeid}/getroomid`, validation)
+                .then(res => {
+                    console.log(res.data.success)
+                    if (res.data.success) {
+                        res.data.message.map((item, key) => {
+                            processReq(item._id)
+                        })
+                    } else {
+                        console.log("Comes here!")
+                        setLoading(false);
+                        setShowerror(true);
+                        setSuccess(res.data.message)
+                    }
+                })
     }
 
     const processReq = async (roomid) => {
@@ -102,10 +109,6 @@ const HomeDishes = (props) => {
     }, [])
 
     return (
-         
-            loading ? (
-              <Loading />
-            ) : (
               <div class="col-4" style={{ paddingBottom: "10vh" }}>
 
                   <div class="card text-center">
@@ -190,10 +193,28 @@ const HomeDishes = (props) => {
                               </div>
                           )
                       }
+                       {
+                        <div>
+                            {
+                                loading ? (
+                                    <Modal
+                                    show={loading}
+                                    backdrop="static"
+                                >
+                                    <Modal.Body>
+                                    Updaing, please wait!
+                                    </Modal.Body>
+                                </Modal>
+                                ) : (
+                                    <div>
+                                    </div>
+                                )
+                            }
+                        </div>
+                      }
                   </div>
               </div>
             )
-    )
 }
 
 export default HomeDishes

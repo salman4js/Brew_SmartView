@@ -137,7 +137,7 @@ const Dishes = () => {
                                                 } 
                                             }).map((item, key) => {
                                                 return (
-                                                    <HomeDishes key={key} dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} available={item.available} load={setLoad} id={id} lodgeid={splitedIds[0]} />
+                                                    <HomeDishes key={key} dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} available={item.available} setLoad={setLoad} id={id} lodgeid={splitedIds[0]} />
                                                 )
                                             })
                                         }
