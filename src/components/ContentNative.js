@@ -17,6 +17,9 @@ const ContentNative = () => {
     const [sdate, setSdate] = useState("");
     const [edate, setEdate] = useState("");
 
+    // Dates Inbetween
+    const [datesbetween, setDatesbetween] = useState([]);
+
     // Data value
     const [data, setData] = useState([]);
 
@@ -48,9 +51,32 @@ const ContentNative = () => {
                         changeScreen();
                     }
                 })
-        }
+        } 
     }
 
+     // Generation of inbetween dates
+     const getDates = (sDate, eDate) => {
+        const startDate = new Date(sDate);
+        const endDate = new Date(eDate);
+        console.log("Dates function getting called...")
+        var dates = []
+        //to avoid modifying the original date
+        const theDate = new Date(startDate);
+        
+        const date = `${theDate.getFullYear()}/${theDate.getMonth()+1}/${theDate.getDate()}`
+        
+        console.log(theDate.getDate());
+        while (theDate < endDate) {
+        const date = `${theDate.getFullYear()}/${theDate.getMonth()+1}/${theDate.getDate()}`
+          //dates = [...dates, date]
+          dates.push(date)
+          theDate.setDate(theDate.getDate() + 1)
+          //theDate.getDate() + 1;
+          //new Date(date).getDate() + 1
+        }
+        console.log(dates);
+        setDatesbetween(dates);
+      }
 
     // Invoke function at the rendering of the page
     useEffect(() => {
@@ -110,7 +136,7 @@ const ContentNative = () => {
                                 <input class="form-control mr-sm-2" type="search" placeholder="End Date" aria-label="End Date" name = {edate} value = {edate} onChange = {(e) => setEdate(e.target.value)}  />
                             </div>
                             <div className = "col-2">
-                                <button className = "btn btn-outline-success">
+                                <button className = "btn btn-outline-success" onClick={() => getDates(sdate, edate)}>
                                     Search
                                 </button>
                             </div>
@@ -119,18 +145,14 @@ const ContentNative = () => {
                         <div className = "row top-gun">
                             {
                                 data.filter((value) => {
-                                    console.log(sdate, edate);
-                                    if(sdate == undefined){
-                                        return value;
-                                    } else if(edate == undefined) {
-                                        return value;
-                                    } else {
-                                        return value.dateofcheckin.includes(sdate) && value.dateofcheckout.includes(edate);
-                                    }
+                                    return value
                                 }).map((item,key) => {
-                                    return(
-                                        <GeneratorCN roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
-                                    )
+                                    console.log("Dates between value debugging",datesbetween.includes(item.dateofcheckin));
+                                    if(datesbetween.includes(item.dateofcheckin)){
+                                        return(
+                                            <GeneratorCN roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
+                                        )
+                                    }
                                 })
                                 // data.map((item,key) => {
                                 //     return(

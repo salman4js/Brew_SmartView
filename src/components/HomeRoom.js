@@ -202,7 +202,8 @@ const HomeRoom = (props) => {
                 })
             }
             setTotaldishrate(Number(totalDishrate) + Number(amount));
-            console.log(Number(totalDishrate));
+            console.log("Total dishrate ", Number(totalDishrate));
+            console.log("Total amount to be paid for the suite", Number(amount));
         })
     }
 
