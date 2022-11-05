@@ -1,3 +1,28 @@
-Customer checkin
+  if(datesbetween.includes(item.dateofcheckin)){
+                                        return(
+                                            <GeneratorCN roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
+                                        )
+                                    } else if(sdate == undefined && edate == undefined){
+                                        return(
+                                            <GeneratorCN roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
+                                        )
+                                    } else if(sdate == "" && edate == ""){
+                                        return(
+                                            <GeneratorCN roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
+                                        )
+                                    }
 
-Add dish value.
+
+console.log("Show All", sort)
+                                        if(sort == "Show All"){
+                                           return value
+                                        } else if(sort == "Date of check in"){
+                                            return value.dateofcheckin.toLowerCase().includes(sdate.toLowerCase())
+                                        } else if(sort == "Date of check out"){
+                                            return value.dateofcheckout.toLowerCase().includes(edate.toLowerCase())
+                                        } else if(sort == "Filter by date"){
+                                            console.log(value.dateofcheckin)
+                                            if(datesbetween.includes(value.dateofcheckin)){
+                                                return value
+                                            }
+                                        }
