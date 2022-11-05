@@ -153,13 +153,13 @@ const ContentNative = () => {
                                     </div>
                                     <div className="col">
                                         <select class="form-select" arai-label="Sort by" placeholder="Sort By" onChange={(e) => setSort(e.target.value)}>
-                                            <option onClick = {() => clearData()}>
+                                            <option onClick = {clearData}>
                                                 Show All
                                             </option>
-                                            <option onClick = {() => clearData()}>
+                                            <option onClick = {clearData}>
                                                 Date of check in
                                             </option>
-                                            <option onClick = {() => clearData()}>
+                                            <option onClick = {clearData}>
                                                 Date of check out
                                             </option>
                                             <option>
