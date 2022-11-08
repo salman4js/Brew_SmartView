@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios'
+import jsPDF from 'jspdf';
 import Navbar from './Navbar';
 import Variables from './Variables';
 import Loading from './Loading';
@@ -13,6 +14,9 @@ const ContentNative = () => {
     // Retriving the URL to pass it into Navbar.
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
+
+    // Reference for Generator
+    const reportTemplateRef = useRef(null);
 
     // Date value
     const [sdate, setSdate] = useState("");
@@ -61,7 +65,27 @@ const ContentNative = () => {
     // Changing the data back to its original form
     const clearData = () => {
         setSdate("");
-        setEdate("")   
+        setEdate("")
+        //setSort("Show All");
+    }
+
+    // Handle Generate PDF
+    const handleGeneratePdf = () => {
+        const doc = new jsPDF("landscape", "pt", "A3");
+        // Adding the fonts.
+        doc.setFont('Inter-Regular', 'normal');
+
+        doc.html(reportTemplateRef.current, {
+            async callback(doc) {
+                await doc.save('document');
+            },
+        });
+    };
+
+    // Search Function for all the configs
+    const SearchConfig = () => {
+        setLoading(true);
+        getDates(sdate, edate)
     }
 
     // Generation of inbetween dates
@@ -86,6 +110,7 @@ const ContentNative = () => {
         }
         console.log(dates);
         setDatesbetween(dates);
+        setLoading(false);
     }
 
     // Invoke function at the rendering of the page
@@ -148,41 +173,64 @@ const ContentNative = () => {
                                     <div className="col-4">
                                         <input class="form-control mr-sm-2" type="search" placeholder="End Date" aria-label="End Date" name={edate} value={edate} onChange={(e) => setEdate(e.target.value)} />
                                     </div>
-                                    <div className="col btn btn-success" onClick={() => getDates(sdate, edate)}>
+                                    <div className="col btn btn-success" onClick={() => SearchConfig()}>
                                         Search
                                     </div>
                                     <div className="col">
                                         <select class="form-select" arai-label="Sort by" placeholder="Sort By" onChange={(e) => setSort(e.target.value)}>
-                                            <option onClick = {clearData}>
+                                            <option onClick={clearData}>
                                                 Show All
                                             </option>
-                                            <option onClick = {clearData}>
-                                                Date of check in
+                                            <option onClick={clearData}>
+                                                Date of check in - Filter by date
                                             </option>
-                                            <option onClick = {clearData}>
-                                                Date of check out
+                                            <option onClick={clearData}>
+                                                Date of check out - Filter by date
                                             </option>
-                                            <option>
-                                                Filter by date
-                                            </option>
+
                                         </select>
+                                    </div>
+                                    <div className="col btn btn-primary" onClick={handleGeneratePdf}>
+                                        Download
                                     </div>
                                 </div>
                             </div>
-                            <div className="row top-gun">
+
+                            <div className="row top-gun" ref={reportTemplateRef} style={{ color: '#33959a' }}>
+                                <div className="sort text-center">
+                                    {sort}
+                                </div>
                                 {
                                     data.filter((value) => {
-                                        if(sort == "Show All"){
+                                        if (sort == "Show All") {
                                             return value
-                                        } else if(sort == "Date of check in"){
-                                            return value.dateofcheckin.toLowerCase().includes(sdate.toLowerCase())
-                                        } else if(sort == "Date of check out"){
-                                            return value.dateofcheckout.toLowerCase().includes(edate.toLowerCase())
-                                        } else if(sort == "Filter by date"){
-                                            return datesbetween.includes(value.dateofcheckin)
+                                        } else if (sort == "Date of check in - Filter by date") {
+                                            if(sdate == undefined){
+                                                return value;
+                                            } else if(edate == undefined){
+                                                return value;
+                                            } else if(sdate == "") {
+                                                return value;
+                                            } else if(edate == ""){
+                                                return value;
+                                            } else {
+                                                return datesbetween.includes(value.dateofcheckin);
+                                            }
+                                        } else if (sort == "Date of check out - Filter by date") {
+                                            if(sdate == undefined){
+                                                return value;
+                                            } else if(edate == undefined){
+                                                return value;
+                                            } else if(sdate == "") {
+                                                return value;
+                                            } else if(edate == ""){
+                                                return value;
+                                            } else {
+                                                return datesbetween.includes(value.dateofcheckout);
+                                            }
                                         }
                                     }).map((item, key) => {
-                                        return(
+                                        return (
                                             <GeneratorCN roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
                                         )
                                     })
