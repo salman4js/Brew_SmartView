@@ -77,7 +77,13 @@ const ContentNative = () => {
 
         doc.html(reportTemplateRef.current, {
             async callback(doc) {
-                await doc.save('document');
+                if(sdate == undefined && edate == undefined){
+                    await doc.save('document');
+                } else if(sdate == "" && edate == ""){
+                    await doc.save('document');
+                } else {
+                    await doc.save(`${sdate} to ${edate} -- ${sort}`);
+                }
             },
         });
     };
