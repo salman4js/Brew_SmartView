@@ -167,7 +167,7 @@ const ContentNative = () => {
                             <div className="text-center">
                                 <div>
                                     <h3 className='heading-top topic-off'>
-                                        Xplore Native
+                                        Content Native - Dashboard
                                     </h3>
                                 </div>
                             </div>
@@ -204,7 +204,16 @@ const ContentNative = () => {
 
                             <div className="row top-gun" ref={reportTemplateRef} style={{ color: '#33959a' }}>
                                 <div className="sort text-center">
-                                    {sort}
+                                    {
+                                        sort === "Show All" ? (
+                                            <div>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                {sort}
+                                            </div>
+                                        )
+                                    }
                                 </div>
                                 {
                                     data.filter((value) => {
@@ -237,7 +246,11 @@ const ContentNative = () => {
                                         }
                                     }).map((item, key) => {
                                         return (
-                                            <GeneratorCN roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
+                                            <GeneratorCN roomno={item.roomno} username={item.username} 
+                                            phonenumber={item.phonenumber} 
+                                            secphone={item.secondphonenumber} adults={item.adults} 
+                                            childrens={item.childrens} checkin={item.dateofcheckin} 
+                                            aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
                                         )
                                     })
                                 }
