@@ -83,7 +83,7 @@ const HomeDishes = (props) => {
             lodgeid: props.lodgeid,
             dishrate: props.dishrate
         }
-        await axios.post(`${Variables.hostId}/${props.id}/adddishroom`, credentials)
+        await axios.post(`${Variables.hostId}/${props.lodgeid}/adddishroom`, credentials)
             .then(res => {
                 if (res.data.success) {
                     handleClose();
