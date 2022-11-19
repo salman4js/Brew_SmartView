@@ -35,6 +35,7 @@ const AddRooms = () => {
         setShow(!show);
     }
 
+    // Error Handling
     const handleInvalid = () => {
         setInvaliddata(false);
     }
@@ -76,7 +77,11 @@ const AddRooms = () => {
                         setSuitetype("");
                     } else {
                         setLoading(false);
-                        setInvaliddata(true)
+                        setError(res.data.message)
+                        setInvaliddata(true);
+                        setRoomno("");
+                        setBedcount("");
+                        setSuitetype("");
                     }
                 }
             })
@@ -146,7 +151,7 @@ const AddRooms = () => {
 
                                                     <Alert show={invaliddata}>
                                                         <div className="container text-center">
-                                                            That's a bad input!
+                                                            {error}
                                                         </div>
                                                     </Alert>
                                                 ) : (
