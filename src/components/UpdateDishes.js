@@ -13,6 +13,9 @@ const UpdateDishes = () => {
     const [data, setData] = useState([]);
     const [load, setLoad] = useState("");
 
+    // Options
+    const [options, setOptions] = useState([]);
+
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
     
@@ -78,6 +81,26 @@ const UpdateDishes = () => {
         return () => clearInterval(interval)
     }, [])
 
+
+    const getOptions = () => {
+        setLoading(true);
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/alldishtype`)
+            .then(res => {
+                if (res.data.success) {
+                    setLoading(false);
+                    setOptions(res.data.message);
+                } else {         
+                    setLoading(false);
+                    return;
+                }
+            })
+    }
+
+    useEffect(() => {
+        getOptions();
+    }, [])
+
+
     return (
         <div>
             {
@@ -100,7 +123,7 @@ const UpdateDishes = () => {
                                       {
                                           data.map((item, key) => {
                                               return (
-                                                  <DishUpdate dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} engaged={item.available} id={id} dishid={item._id} setLoad={setLoad} />
+                                                  <DishUpdate dishname={item.dishName} dishrate={item.dishRate} dishtype={item.dishType} engaged={item.available} id={id} dishid={item._id} setLoad={setLoad} lodgeId = {splitedIds[1]} options = {options} />
                                               )
                                           })
                                       }
