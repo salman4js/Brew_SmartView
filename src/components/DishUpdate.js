@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Variables from './Variables';
 import Loading from "./Loading";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
+import { getMouseEventOptions } from '@testing-library/user-event/dist/utils';
 
 
 const DishUpdate = (props) => {
@@ -13,6 +14,9 @@ const DishUpdate = (props) => {
 
     // Loade--Modal
     const [loading, setLoading] = useState(false);
+
+    // Options
+    const [options, setOptions] = useState([]);
 
     // Udpate Rooms
     const [dishname, setDishname] = useState(props.dishname);
@@ -57,6 +61,7 @@ const DishUpdate = (props) => {
         setShowerror(!showerror)
     }
 
+    
     return (
                 <div class="col-4" style={{ paddingBottom: "10vh" }}>
                     <div class="card text-center">
@@ -98,7 +103,20 @@ const DishUpdate = (props) => {
                             </div>
                             <div className='modal-gap'>
                                 <label style={{ color: "black" }}> Dish Type </label>
-                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Dish Type' name={dishtype} value={dishtype} onChange={(e) => setDishtype(e.target.value)} />
+                                <div class="input-group mb-3">
+                                    <select class="custom-select" id="inputGroupSelect01"  onChange={(e) => setDishtype(e.target.value)}>
+                                        
+                                        {
+                                            props.options.map((item,key) => {
+                                                return(
+                                                    <option>
+                                                        {item.dishType}
+                                                    </option>
+                                                )
+                                            })
+                                        }
+                                    </select>
+                                </div>
                             </div>
                             <div className="modal-gap">
                                 <label style={{ color: "black" }}> Stock </label>

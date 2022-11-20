@@ -75,6 +75,7 @@ const AddRooms = () => {
                         setRoomno("");
                         setBedcount("");
                         setSuitetype("");
+                        setPrice("");
                     } else {
                         setLoading(false);
                         setError(res.data.message)
@@ -82,6 +83,7 @@ const AddRooms = () => {
                         setRoomno("");
                         setBedcount("");
                         setSuitetype("");
+                        setPrice("");
                     }
                 }
             })
@@ -89,10 +91,12 @@ const AddRooms = () => {
 
     // Getting Options
     const G_Options = () => {
+        setLoading(true);
         axios.post(`${Variables.hostId}/${splitedIds[0]}/allroomtype`)
             .then(data => {
                 console.log(data.data.suiteType);
                 setOption(data.data);
+                setLoading(false);
             })
     }
 

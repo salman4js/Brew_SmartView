@@ -36,7 +36,6 @@ const AddDishes = () => {
 
 
     // Process Data
-
     const processData = () => {
         setLoading(true);
         console.log("Loader function has been called")
@@ -63,6 +62,7 @@ const AddDishes = () => {
                         setDishtype("");
                     } else {
                         setLoading(false);
+                        setError(res.data.message);
                         console.log("Loader has been called with 404");
                         setInvaliddata(true)
                     }
@@ -81,11 +81,14 @@ const AddDishes = () => {
 
     // Dish Type data.
     const getData = () => {
+        setLoading(true);
         axios.post(`${Variables.hostId}/${splitedIds[0]}/alldishtype`)
             .then(res => {
                 if (res.data.success) {
                     setOptions(res.data.message);
+                    setLoading(false);
                 } else {
+                    setLoading(false);
                     return;
                 }
             })
@@ -147,7 +150,7 @@ const AddDishes = () => {
 
                                                     <Alert show={invaliddata}>
                                                         <div className="container text-center">
-                                                            That's a bad input!
+                                                            {error}
                                                         </div>
                                                     </Alert>
                                                 ) : (
@@ -175,7 +178,7 @@ const AddDishes = () => {
                                                     </div>
                                                     <div className='modal-gap'>
                                                         <label style={{ color: "black" }}> Dish Name </label>
-                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value)} />
+                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value.toUpperCase())} />
                                                     </div>
                                                     <div className='modal-gap'>
                                                         <label style={{ color: "black" }}> Dish Rate </label>
