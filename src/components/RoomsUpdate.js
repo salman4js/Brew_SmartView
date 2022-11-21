@@ -54,15 +54,15 @@ const RoomsUpdate = (props) => {
             })
     }
 
-     // Getting Options
-     const G_Options = () => {
+    // Getting Options
+    const G_Options = () => {
         axios.post(`${Variables.hostId}/${splitedIds[0]}/allroomtype`)
             .then(data => {
                 console.log(data.data.suiteType);
                 setOption(data.data);
             })
     }
-    
+
 
     // Delete Room Data...
 
@@ -70,25 +70,25 @@ const RoomsUpdate = (props) => {
         setLoading(true);
         console.log("Delete config triggered!");
         const credentials = {
-            roomId : props.roomid
+            roomId: props.roomid
         }
         axios.post(`${Variables.hostId}/deleteroom`, credentials)
-        .then(res => {
-            if(res.data.success){
-                setLoading(false);
-                setShowerror(true);
-                setSuccess(res.data.message);
-                deleteModal();
-                setTimeout(() => {
-                    props.setLoad(!props.setLoad);
-                }, 2000);
-            } else {
-                setLoading(false);
-                setShowerror(true);
-                setSuccess(res.data.message)
-                deleteModal();
-            }
-        })
+            .then(res => {
+                if (res.data.success) {
+                    setLoading(false);
+                    setShowerror(true);
+                    setSuccess(res.data.message);
+                    deleteModal();
+                    setTimeout(() => {
+                        props.setLoad(!props.setLoad);
+                    }, 2000);
+                } else {
+                    setLoading(false);
+                    setShowerror(true);
+                    setSuccess(res.data.message)
+                    deleteModal();
+                }
+            })
     }
 
     const handleClose = () => {
@@ -100,7 +100,7 @@ const RoomsUpdate = (props) => {
     }
 
     const deleteModal = () => {
-        if(props.engaged === "false"){
+        if (props.engaged === "false") {
             setDeletemodal(!deletemodal)
         } else {
             setOccupied(!occupied);
@@ -126,12 +126,21 @@ const RoomsUpdate = (props) => {
                     <p style={{ color: "black" }}>Engaged : {props.engaged}</p>
                     <p style={{ color: "black" }}>Bed Count : {props.bedcount}</p>
                     <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
+                    <p style = {{color  :"black"}}>Price Per Day : {props.price} </p>
                 </div>
-                <div className='btn btn-success' onClick={handleClose}>
-                    Update Room Data
-                </div>
+                {
+                    props.engaged == "false" ? (
+                        <div className='btn btn-success' onClick={handleClose}>
+                            Update Room Data
+                        </div>
+                    ) : (
+                        <div className='btn btn-dark disabled' onClick={handleClose}>
+                            Update Room Data
+                        </div>
+                    )
+                }
                 <div className = "btn btn-danger minute-space" onClick={deleteModal}>
-                    Delete Room Data
+                        Delete Room Data
                 </div>
             </div>
             <Modal
@@ -209,16 +218,16 @@ const RoomsUpdate = (props) => {
                             keyboard={false}
                         >
                             <Modal.Header closeButton>
-                            <Modal.Title>Workflow Panel</Modal.Title>
+                                <Modal.Title>Workflow Panel</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
                                 Do you really want to delete {props.roomno}'s data permanently?
                             </Modal.Body>
                             <Modal.Footer>
-                            <Button variant="secondary" onClick={deleteModal}>
-                                No
-                            </Button>
-                            <Button variant="primary" onClick={deleteRoom}>Yes</Button>
+                                <Button variant="secondary" onClick={deleteModal}>
+                                    No
+                                </Button>
+                                <Button variant="primary" onClick={deleteRoom}>Yes</Button>
                             </Modal.Footer>
                         </Modal>
                     ) : (
@@ -237,15 +246,15 @@ const RoomsUpdate = (props) => {
                             keyboard={false}
                         >
                             <Modal.Header closeButton>
-                            <Modal.Title>Workflow Panel</Modal.Title>
+                                <Modal.Title>Workflow Panel</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                               Room no: {props.roomno} already occupied, Can't delete occupied room data!
+                                Room no: {props.roomno} already occupied, Can't delete occupied room data!
                             </Modal.Body>
                             <Modal.Footer>
-                            <Button variant="secondary" onClick={Occupied}>
-                                Close
-                            </Button>
+                                <Button variant="secondary" onClick={Occupied}>
+                                    Close
+                                </Button>
                             </Modal.Footer>
                         </Modal>
                     ) : (
@@ -258,13 +267,13 @@ const RoomsUpdate = (props) => {
                 {
                     loading ? (
                         <Modal
-                        show={loading}
-                        backdrop="static"
-                      >
-                        <Modal.Body>
-                          Updaing, please wait!
-                        </Modal.Body>
-                      </Modal>
+                            show={loading}
+                            backdrop="static"
+                        >
+                            <Modal.Body>
+                                Updaing, please wait!
+                            </Modal.Body>
+                        </Modal>
                     ) : (
                         <div>
                         </div>

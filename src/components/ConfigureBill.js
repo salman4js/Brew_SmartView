@@ -55,6 +55,7 @@ const ConfigureBill = () => {
                         setPrice("");
                     } else {
                         setLoading(false);
+                        setError(res.data.message);
                         setInvaliddata(true)
                     }
                 }
@@ -114,7 +115,7 @@ const ConfigureBill = () => {
 
                                                 <Alert show={invaliddata}>
                                                     <div className="container text-center">
-                                                        That's a bad input!
+                                                        {error}
                                                     </div>
                                                 </Alert>
                                             ) : (

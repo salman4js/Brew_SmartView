@@ -53,6 +53,12 @@ const LandingPage = () => {
         }
     }
 
+    // Changing search and sort value back to original state or selected state!
+    const changeSearchConfig = (value) => {
+        setSort(value);
+        setSearch("");
+    }
+
     useEffect(() => {
         getData()
     }, [load])
@@ -109,7 +115,7 @@ const LandingPage = () => {
                                                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name={search} value={search} onChange={(e) => setSearch(e.target.value)} />
                                             </div>
                                             <div className = "col">
-                                                <select class = "form-select" arai-label = "Sort by" placeholder = "Sort By" onChange = {(e) => setSort(e.target.value)}>
+                                                <select class = "form-select" arai-label = "Sort by" placeholder = "Sort By" onChange = {(e) => changeSearchConfig(e.target.value)}>
                                                     <option>
                                                         Show All
                                                     </option>

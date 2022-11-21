@@ -105,14 +105,18 @@ const DishUpdate = (props) => {
                                 <label style={{ color: "black" }}> Dish Type </label>
                                 <div class="input-group mb-3">
                                     <select class="custom-select" id="inputGroupSelect01"  onChange={(e) => setDishtype(e.target.value)}>
-                                        
+                                        <option selected>{dishtype}</option>
                                         {
                                             props.options.map((item,key) => {
-                                                return(
-                                                    <option>
-                                                        {item.dishType}
-                                                    </option>
-                                                )
+                                                if(item.dishType == dishtype){
+                                                    return;
+                                                } else {
+                                                    return(
+                                                        <option>
+                                                            {item.dishType}
+                                                        </option>
+                                                    )
+                                                }
                                             })
                                         }
                                     </select>
