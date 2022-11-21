@@ -130,7 +130,7 @@ const ConfigureBill = () => {
                                             <div class="card-body">
                                                 <div className='modal-gap'>
                                                     <label style={{ color: "black" }}> Suite Type </label>
-                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Suite Type" name={suitetype} value={suitetype} onChange={(e) => setSuitetype(e.target.value)} />
+                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Suite Type" name={suitetype} value={suitetype} onChange={(e) => setSuitetype(e.target.value.toUpperCase())} />
                                                 </div>
                                                 <div className='modal-gap'>
                                                     <label style={{ color: "black" }}> Price </label>
