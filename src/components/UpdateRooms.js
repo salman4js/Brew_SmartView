@@ -102,7 +102,7 @@ const UpdateRooms = () => {
                                     {
                                         room.map((item, key) => {
                                             return (
-                                                <RoomsUpdate roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} />
+                                                <RoomsUpdate roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} price = {item.price} />
                                             )
                                         })
                                     }
