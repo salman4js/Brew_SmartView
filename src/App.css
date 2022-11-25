@@ -279,3 +279,20 @@
   margin-bottom : 10px;
 
 }
+
+.hide_tableFormat{
+  display : none;
+}
+
+.generate_table{
+  border : 1px solid blue;
+  text-align: center;
+}
+
+.tableFormatReport{
+  padding : 100px 10px 10px 100px;;
+}
+
+table, th, td{
+  border : 1px solid black;
+}

@@ -104,7 +104,7 @@ const LandingPage = () => {
                           <div className="text-center">
                               <div>
                                   <h3 className='heading-top topic-off'>
-                                      {splitedIds[1]}
+                                      {splitedIds[1]} - Dashboard
                                   </h3>
                               </div>
                           </div>
