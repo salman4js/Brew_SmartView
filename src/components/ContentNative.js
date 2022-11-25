@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios'
 import jsPDF from 'jspdf';
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import Navbar from './Navbar';
 import Variables from './Variables';
 import Loading from './Loading';
 import changeScreen from './Action';
 import CustomError from './CustomError';
 import GeneratorCN from './GeneratorCN';
+import TableFormatReport from './GenerateReportTableFormat/TableFormatReport';
 import { Link, useParams } from "react-router-dom";
 
 const ContentNative = () => {
@@ -16,7 +19,13 @@ const ContentNative = () => {
     const splitedIds = id.split(/[-]/);
 
     // Reference for Generator
-    const reportTemplateRef = useRef(null);
+    const reportTableTemp = useRef(null);
+    const reportLayoutTemp = useRef(null);
+
+    // Report Template Function
+    const reportTemp = (value) => {
+        setModel(value);
+    }
 
     // Date value
     const [sdate, setSdate] = useState("");
@@ -70,23 +79,55 @@ const ContentNative = () => {
     }
 
     // Handle Generate PDF
-    const handleGeneratePdf = () => {
-        const doc = new jsPDF("landscape", "pt", "A3");
-        // Adding the fonts.
-        doc.setFont('Inter-Regular', 'normal');
+    const [templateAlert, setTemplateAlert] = useState(false);
 
-        doc.html(reportTemplateRef.current, {
-            async callback(doc) {
-                if(sdate == undefined && edate == undefined){
-                    await doc.save('document');
-                } else if(sdate == "" && edate == ""){
-                    await doc.save('document');
-                } else {
-                    await doc.save(`${sdate} to ${edate} -- ${sort}`);
-                }
-            },
-        });
+    const handleTemplateAlert = () => {
+        setTemplateAlert(!templateAlert)
+    }
+    const handleGeneratePdf = () => {
+        if (model == "0") {
+            setTemplateAlert(true);
+        } else {
+            const doc = new jsPDF("landscape", "pt", "A3");
+            // Adding the fonts.
+            doc.setFont('Inter-Regular', 'normal');
+            if (model == "1") {
+                doc.html(reportTableTemp.current, {
+                    async callback(doc) {
+                        if (sdate == undefined && edate == undefined) {
+                            await doc.save('document');
+                        } else if (sdate == "" && edate == "") {
+                            await doc.save('document');
+                        } else {
+                            await doc.save(`${sdate} to ${edate} -- ${sort}`);
+                        }
+                    },
+                });
+            } else {
+                doc.html(reportLayoutTemp.current, {
+                    async callback(doc) {
+                        if (sdate == undefined && edate == undefined) {
+                            await doc.save('document');
+                        } else if (sdate == "" && edate == "") {
+                            await doc.save('document');
+                        } else {
+                            await doc.save(`${sdate} to ${edate} -- ${sort}`);
+                        }
+                    },
+                });
+            }
+        }
+
     };
+
+    // Toast Message for selection of report model
+    const [model, setModel] = useState("2");
+    const [alert, setAlert] = useState(false);
+    const toastModal = () => {
+        setAlert(!alert);
+        setModel("2");
+    }
+
 
     // Search Function for all the configs
     const SearchConfig = () => {
@@ -146,6 +187,7 @@ const ContentNative = () => {
         }
     }
 
+
     // Invoke function for checking the token value constantly
     useEffect(() => {
         const interval = setInterval(() => {
@@ -196,13 +238,27 @@ const ContentNative = () => {
 
                                         </select>
                                     </div>
-                                    <div className="col btn btn-primary" onClick={handleGeneratePdf}>
+                                    <div className="col btn btn-primary" onClick={toastModal}>
                                         Download
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="row top-gun" ref={reportTemplateRef} style={{ color: '#33959a' }}>
+                            {
+                                <Modal
+                                show={templateAlert}
+                                onHide={handleTemplateAlert}
+                                backdrop="static"
+                                keyboard={false}
+                                className="my-modal"
+                            >
+                                <Modal.Header closeButton>
+                                    <Modal.Body className="text-center">
+                                        Please choose a valid template!
+                                    </Modal.Body>
+                                </Modal.Header>
+                            </Modal>
+                            }
+                            <div className="row top-gun" ref={reportLayoutTemp} style={{ color: '#33959a' }}>
                                 <div className="sort text-center">
                                     {
                                         sort === "Show All" ? (
@@ -220,25 +276,25 @@ const ContentNative = () => {
                                         if (sort == "Show All") {
                                             return value
                                         } else if (sort == "Date of check in - Filter by date") {
-                                            if(sdate == undefined){
+                                            if (sdate == undefined) {
                                                 return value;
-                                            } else if(edate == undefined){
+                                            } else if (edate == undefined) {
                                                 return value;
-                                            } else if(sdate == "") {
+                                            } else if (sdate == "") {
                                                 return value;
-                                            } else if(edate == ""){
+                                            } else if (edate == "") {
                                                 return value;
                                             } else {
                                                 return datesbetween.includes(value.dateofcheckin);
                                             }
                                         } else if (sort == "Date of check out - Filter by date") {
-                                            if(sdate == undefined){
+                                            if (sdate == undefined) {
                                                 return value;
-                                            } else if(edate == undefined){
+                                            } else if (edate == undefined) {
                                                 return value;
-                                            } else if(sdate == "") {
+                                            } else if (sdate == "") {
                                                 return value;
-                                            } else if(edate == ""){
+                                            } else if (edate == "") {
                                                 return value;
                                             } else {
                                                 return datesbetween.includes(value.dateofcheckout);
@@ -246,16 +302,137 @@ const ContentNative = () => {
                                         }
                                     }).map((item, key) => {
                                         return (
-                                            <GeneratorCN roomno={item.roomno} username={item.username} 
-                                            phonenumber={item.phonenumber} 
-                                            secphone={item.secondphonenumber} adults={item.adults} 
-                                            childrens={item.childrens} checkin={item.dateofcheckin} 
-                                            aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
+                                            <GeneratorCN roomno={item.roomno} username={item.username}
+                                                phonenumber={item.phonenumber}
+                                                secphone={item.secondphonenumber} adults={item.adults}
+                                                childrens={item.childrens} checkin={item.dateofcheckin}
+                                                aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
                                         )
                                     })
                                 }
-                            </div>
 
+                            </div>
+                            <div className={`${model == "2" ? 'hide_tableFormat' : 'hide'}`} ref={reportTableTemp}>
+                                <div className="tableFormatReport">
+                                    {
+                                        sort === "Show All" ? (
+                                            <div>
+                                            </div>
+                                        ) : (
+                                            <div className = "container text-center" style = {{fontWeight : "bold", marginBottom : "10px"}}>
+                                                {sort}
+                                            </div>
+                                        )
+                                    }
+                                    <table className="table" style={{ width: "100%" }}>
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Date Of Check In
+                                                </th>
+                                                <th>
+                                                    Date Of Check Out
+                                                </th>
+                                                <th>
+                                                    Customer Name
+                                                </th>
+                                                <th>
+                                                    Room No
+                                                </th>
+                                                <th>
+                                                    Phone Number
+                                                </th>
+                                                <th>
+                                                    Adults
+                                                </th>
+                                                <th>
+                                                    Childrens
+                                                </th>
+                                                <th>
+                                                    Aadhar Number
+                                                </th>
+                                                <th>
+                                                    Stayed Days
+                                                </th>
+                                            </tr>
+                                            {
+                                                data.filter((value) => {
+                                                    if (sort == "Show All") {
+                                                        return value
+                                                    } else if (sort == "Date of check in - Filter by date") {
+                                                        if (sdate == undefined) {
+                                                            return value;
+                                                        } else if (edate == undefined) {
+                                                            return value;
+                                                        } else if (sdate == "") {
+                                                            return value;
+                                                        } else if (edate == "") {
+                                                            return value;
+                                                        } else {
+                                                            return datesbetween.includes(value.dateofcheckin);
+                                                        }
+                                                    } else if (sort == "Date of check out - Filter by date") {
+                                                        if (sdate == undefined) {
+                                                            return value;
+                                                        } else if (edate == undefined) {
+                                                            return value;
+                                                        } else if (sdate == "") {
+                                                            return value;
+                                                        } else if (edate == "") {
+                                                            return value;
+                                                        } else {
+                                                            return datesbetween.includes(value.dateofcheckout);
+                                                        }
+                                                    }
+                                                }).map((item, key) => {
+                                                    return (
+
+                                                        <TableFormatReport roomno={item.roomno} username={item.username}
+                                                            phonenumber={item.phonenumber}
+                                                            secphone={item.secondphonenumber} adults={item.adults}
+                                                            childrens={item.childrens} checkin={item.dateofcheckin}
+                                                            aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
+
+                                                    )
+                                                })
+                                            }
+                                        </thead>
+                                    </table>
+
+                                </div>
+                            </div>
+                            <div>
+                                <Modal
+                                    show={alert}
+                                    size="medium"
+                                    aria-labelledby="contained-modal-title-vcenter"
+                                    centered
+                                >
+                                    <Modal.Header>
+                                        <Modal.Title id="contained-modal-title-vcenter">
+                                            Choose Template
+                                        </Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <h4 className="text-center">Template</h4>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="inputGroupSelect01">Options</label>
+                                            </div>
+                                            <select class="custom-select" id="inputGroupSelect01" value={model} onChange={((e) => reportTemp(e.target.value))}>
+                                                <option selected value="0">Choose...</option>
+                                                <option value="1">Table View Format</option>
+                                                <option value="2">Layout View Format</option>
+                                            </select>
+                                        </div>
+
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button className="btn btn-secondary" onClick={toastModal}>Close</Button>
+                                        <Button onClick={handleGeneratePdf}> Generate </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                            </div>
                         </div>
                     )
                 ) : (
@@ -266,4 +443,4 @@ const ContentNative = () => {
     )
 }
 
-export default ContentNative
+export default ContentNative;

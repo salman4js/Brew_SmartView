@@ -99,7 +99,7 @@ const EditDish = () => {
                   <div class="card-body">
                     <div className='modal-gap'>
                       <label style={{ color: "black" }}> Dish Type </label>
-                      <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Type" value = {dishtype} name = {dishtype} onChange = {((e) => setDishtype(e.target.value.toUpperCase()))}/>
+                      <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Type" value = {dishtype} name = {dishtype} onChange = {((e) => setDishtype(e.target.value))}/>
                     </div>
                     <br />
                     <button className='btn btn-info' onClick={addData}> Add Data </button>

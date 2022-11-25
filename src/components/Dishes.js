@@ -98,7 +98,7 @@ const Dishes = () => {
                                 <div className="text-center">
                                     <div>
                                         <h3 className='heading-top topic-off'>
-                                            Dishes!
+                                            Dishes - Dashboard
                                         </h3>
                                     </div>
                                 </div>

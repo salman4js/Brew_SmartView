@@ -38,8 +38,6 @@ const ConfigureBill = () => {
     const processData = (e) => {
         e.preventDefault();
         setLoading(true);
-        console.log(suitetype);
-        console.log(price);
         const data = {
             suitetype: suitetype,
             price: price
@@ -56,7 +54,7 @@ const ConfigureBill = () => {
                     } else {
                         setLoading(false);
                         setError(res.data.message);
-                        setInvaliddata(true)
+                        setInvaliddata(true);
                     }
                 }
             })

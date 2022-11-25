@@ -178,7 +178,7 @@ const AddDishes = () => {
                                                     </div>
                                                     <div className='modal-gap'>
                                                         <label style={{ color: "black" }}> Dish Name </label>
-                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value.toUpperCase())} />
+                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Dish Name" name={dishname} value={dishname} onChange={(e) => setDishname(e.target.value)} />
                                                     </div>
                                                     <div className='modal-gap'>
                                                         <label style={{ color: "black" }}> Dish Rate </label>
