@@ -53,6 +53,12 @@ const ModalCheckOut = (props) => {
                 <p className="font-big">
                     Customer Phone Number : {props.phone}
                 </p>
+                <p className = "font-big">
+                    Second Number : {props.secondphonenumber}
+                </p>
+                <p className = "font-big">
+                    Aadhar Number : {props.aadharcard}
+                </p>
                 <p className="font-big">
                     Check-In Date : {props.checkin}
                 </p>

@@ -12,6 +12,7 @@ const RoomsUpdate = (props) => {
     const [option, setOption] = useState([]);
     const [deletemodal, setDeletemodal] = useState(false);
     const [occupied, setOccupied] = useState(false);
+    const [closeAlert, setCloseAlert] = useState(false);
 
 
     const splitedIds = (props.id).split(/[-]/);
@@ -99,6 +100,10 @@ const RoomsUpdate = (props) => {
         setShowerror(!showerror)
     }
 
+    const handleCloseAlert = () => {
+        setCloseAlert(!closeAlert);
+    }
+
     const deleteModal = () => {
         if (props.engaged === "false") {
             setDeletemodal(!deletemodal)
@@ -134,7 +139,7 @@ const RoomsUpdate = (props) => {
                             Update Room Data
                         </div>
                     ) : (
-                        <div className='btn btn-dark disabled' onClick={handleClose}>
+                        <div className='btn btn-dark' onClick={handleCloseAlert}>
                             Update Room Data
                         </div>
                     )
@@ -205,6 +210,25 @@ const RoomsUpdate = (props) => {
                                 </Modal.Body>
                             </Modal.Header>
                         </Modal>
+                    )
+                }
+                {
+                    closeAlert ? (
+                        <Modal
+                            show={closeAlert}
+                            onHide={handleCloseAlert}
+                            backdrop="static"
+                            keyboard={false}
+                        >
+                            <Modal.Header closeButton>
+                                <Modal.Body className="text-center">
+                                    Room Already Occupied, Cannot edit occupied room data!
+                                </Modal.Body>
+                            </Modal.Header>
+                        </Modal>
+                    ) : (
+                        <div>
+                        </div>
                     )
                 }
             </div>

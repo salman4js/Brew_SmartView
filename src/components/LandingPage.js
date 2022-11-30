@@ -19,7 +19,10 @@ const LandingPage = () => {
 
     const [room, setRoom] = useState([]);
 
-    const [load, setLoad] = useState("");
+    const [load, setLoad] = useState(false);
+
+    // Checking
+    console.log(load);
     
     //Loader
     const [loading, setLoading] = useState(false);
@@ -51,6 +54,7 @@ const LandingPage = () => {
                     }
                 })
         }
+        setLoad(false);
     }
 
     // Changing search and sort value back to original state or selected state!
@@ -61,8 +65,10 @@ const LandingPage = () => {
 
     useEffect(() => {
         getData()
-    }, [load])
+    }, [load]);
 
+
+    // Token expiration checking!
     const parseJwt = (token) => {
         try {
           return JSON.parse(atob(token.split(".")[1]));

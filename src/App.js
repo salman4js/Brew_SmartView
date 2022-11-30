@@ -16,6 +16,7 @@ import Generator from './components/Generator';
 import EditDish from './components/EditDish';
 import Loading from './components/Loading';
 import ContentNative from './components/ContentNative';
+import Prebook_rooms from './components/PreBook/Prebook_rooms';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path = "/login" exact element = {<Login />} />
           <Route path = "/:id/landingpage" exact element = {<LandingPage />} />
           <Route path = "/:id/rooms" exact element = {<Rooms />} />
+          <Route path = "/:id/prebookrooms" exact element = {<Prebook_rooms />} />
           <Route path = "/:id/dishes" exact element = {<Dishes />} />
           <Route path = "/:id/notifications" exact element = {<Notifications />} />
           <Route path = "/:id/addrooms" exact element = {<AddRooms />} />
