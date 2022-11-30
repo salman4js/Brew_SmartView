@@ -32,6 +32,7 @@ const Navbar = (props) => {
                                 </Link>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                     <Link className='nav-link dropdown-item' to={`/${props.id}/rooms`} style={{ color: "black" }}> Available Rooms</Link>
+                                    <Link className='nav-link dropdown-item' to={`/${props.id}/prebookrooms`} style={{ color: "black" }}> Pre-Book Rooms</Link>
                                     <Link className='nav-link dropdown-item' to={`/${props.id}/addrooms`} style={{ color: "black" }}> Add Rooms </Link>
                                     <Link className='nav-link dropdown-item' to={`/${props.id}/updaterooms`} style={{ color: "black" }}> Update Rooms </Link>
                                 </div>

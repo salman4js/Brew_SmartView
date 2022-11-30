@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import Variables from './Variables';
+import formatDate from './PreBook/Date_Format/DateFormatter';
 import Loading from './Loading';
 import Table from './Table';
 import DatePicker from 'react-datepicker';
@@ -41,6 +42,19 @@ const HomeRoom = (props) => {
     const [dishrate, setDishrate] = useState([]);
     const [totaldishrate, setTotaldishrate] = useState([]);
 
+    // Pre Book Customer Data
+    const [prebookusername, setPrebookusername] = useState();
+    const [prebookphonenumber, setPrebookphonenumber] = useState();
+    const [prebooksecondnumber, setPrebooksecondnumber] = useState();
+    const [prebookadults, setPrebookadults] = useState();
+    const [prebookchildren, setPrebookchildren] = useState();
+    const [prebookaadhar, setPrebookaadhar] = useState();
+    const [prebookadvance, setPrebookadvance] = useState();
+    const [prebookdateofcheckin, setPrebookdateofcheckin] = useState();
+    const [prebookdateofcheckout, setPrebookdateofcheckout] = useState();
+
+
+    // Modal Handler!
     const handleClose = () => {
         setShow(!show)
     }
@@ -51,16 +65,64 @@ const HomeRoom = (props) => {
 
 
     const handleCloseModal = () => {
-        setShowerror(!showerror)
+        setShowerror(!showerror);
     }
 
     const handleCloseGeneratedBill = () => {
         setShowGeneratedBill(!showGeneratedBill);
     }
 
+    // Pre Book Modal Method
+    const [prebookmodal, setPrebookmodal] = useState(false);
+    const preBookModal = () => {
+        setPrebookmodal(!prebookmodal);
+    }
+
+    // Add data to the prebook modal
+    const processDataPreBook = () => {
+        console.log(prebookdateofcheckin);
+        const changedDate = formatDate(prebookdateofcheckin);
+        console.log(changedDate);
+        console.log(prebookdateofcheckout);
+        setLoading(true);
+        const credentials = {
+            prebookusername : prebookusername,
+            prebookphonenumber : prebookphonenumber,
+            prebooksecondnumber : prebooksecondnumber,
+            prebookadults : prebookadults,
+            prebookchildren : prebookchildren,
+            prebookaadhar : prebookaadhar,
+            prebookdateofcheckin : formatDate(prebookdateofcheckin),
+            prebookdateofcheckout : formatDate(prebookdateofcheckout),
+            prebookadvance : prebookadvance,
+            roomid : props.roomid,
+        }
+        axios.post(`${Variables.hostId}/${props.lodgeid}/addprebookuserrooms`, credentials)
+            .then(res => {
+                if(res.data.success){
+                    setLoading(false);
+                    preBookModal();
+                    setShowerror(true);
+                    setSuccess(res.data.message);
+                    refresh();
+                } else {
+                    setLoading(false);
+                    setShowerror(true);
+                    setSuccess(res.data.message);
+                }
+            })
+    }
+
+    // Reload the page 
+    const refresh = () => {
+        console.log("Function getting called")
+        props.setLoad(true);
+    }
+
 
     // Add Data to the model
     const processData = () => {
+        
         setLoading(true);
         const isnum = /^\d+$/;
         if(!isnum.test(customerphonenumber)){
@@ -93,7 +155,7 @@ const HomeRoom = (props) => {
                 aadhar: aadhar,     
                 checkin: date,
                 roomid: props.roomid,
-                roomno: props.roomno
+                roomno: props.roomno,
             }
             axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
                 .then(res => {
@@ -101,8 +163,8 @@ const HomeRoom = (props) => {
                         setLoading(false);
                         handleClose();
                         setShowerror(true);
-                        setSuccess(res.data.message)
-                        props.setLoad(!props.setLoad);
+                        setSuccess(res.data.message);
+                        refresh();
                     } else {
                         setLoading(false);
                         setShowerror(true);
@@ -222,8 +284,7 @@ const HomeRoom = (props) => {
                     handleModal();
                     setShowerror(true);
                     setSuccess(res.data.message)
-                    props.setLoad(!props.setLoad);
-                    window.location.reload(false);
+                    refresh();
                 } else {
                     setShowerror(true);
                     setSuccess(res.data.message)
@@ -292,7 +353,65 @@ const HomeRoom = (props) => {
                           </Modal.Body>
                           <Modal.Footer>
                               <Button className="btn btn-secondary" onClick={handleClose}>Close</Button>
-                              <Button className='btn btn-info' onClick={processData}> Save and Close </Button>
+                              <Button className='btn btn-outline' onClick={processData}> Save and Close </Button>
+                          </Modal.Footer>
+                      </Modal>
+
+                      {/* // Pre Book Modal  */}
+                      <Modal
+                          show={prebookmodal}
+                          aria-labelledby="contained-modal-title-vcenter"
+                          centered
+                          background="static"
+                          className="text-center"
+                      >
+                          <Modal.Header>
+                              <Modal.Title id="contained-modal-title-vcenter">
+                                  Pre Book Check In - Feautured
+                              </Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                              <h4 className='strong'>{props.roomno}</h4>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Date Of Check In - (Default Date is Today's Date!) </label>
+                                  <DatePicker style={{ color: "black" }} className="form-control" selected={prebookdateofcheckin} dateFormat='y-MM-dd' minDate={new Date()} onChange = {((e) => setPrebookdateofcheckin(e))} isClearable />
+                              </div>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Date Of Check In - (Default Date is Today's Date!) </label>
+                                  <DatePicker style={{ color: "black" }} className="form-control" selected={prebookdateofcheckout} dateFormat='y-MM-dd' minDate={new Date()} onChange = {((e) => setPrebookdateofcheckout(e))} isClearable />
+                              </div>
+                              <div className="modal-gap">
+                                  <label style={{ color: "black" }}> Customer Name </label>
+                                  <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Customer Name" name={prebookusername} value={prebookusername} onChange={(e) => setPrebookusername(e.target.value)} />
+                              </div>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Customer Phone Number </label>
+                                  <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Customer Phone Number' name={prebookphonenumber} value={prebookphonenumber} onChange={(e) => setPrebookphonenumber(e.target.value)} />
+                              </div>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Customer Second Phone Number </label>
+                                  <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Customer Second Phone Number' name={prebooksecondnumber} value={prebooksecondnumber} onChange={(e) => setPrebooksecondnumber(e.target.value)} />
+                              </div>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Adults </label>
+                                  <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.adults' name={prebookadults} value={prebookadults} onChange={(e) => setPrebookadults(e.target.value)} />
+                              </div>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Childrens If Any! </label>
+                                  <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={prebookchildren} value={prebookchildren} onChange={(e) => setPrebookchildren(e.target.value)} />
+                              </div>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Aadhar Number of anyone adult </label>
+                                  <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Aadhar Card Number' name={prebookaadhar} value={prebookaadhar} onChange={(e) => setPrebookaadhar(e.target.value)} />
+                              </div>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Advance Amount </label>
+                                  <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={prebookadvance} value={prebookadvance} onChange={(e) => setPrebookadvance(e.target.value)} />
+                              </div>
+                          </Modal.Body>
+                          <Modal.Footer>
+                              <Button className="btn btn-secondary" onClick={preBookModal}>Close</Button>
+                              <Button className='btn btn-outline' onClick={processDataPreBook}> Save and Close </Button>
                           </Modal.Footer>
                       </Modal>
 
@@ -311,7 +430,7 @@ const HomeRoom = (props) => {
                           {
                               userdata.map((item, key) => {
                                   return (
-                                      <ModalCheckOut roomno={props.roomno} username={item.username} phone={item.phonenumber} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} />
+                                      <ModalCheckOut roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber = {item.secondphonenumber} aadharcard = {item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} />
                                   )
                               })
                           }
@@ -386,18 +505,29 @@ const HomeRoom = (props) => {
                           }
                       </div>
                       {
+                        (props.engaged == "true") ? (
+                            <div className = "btn btn-success disabled">
+                                Pre-Book
+                            </div>
+                        ) : (
+                            <div className = "btn btn-success" onClick={preBookModal}>
+                                Pre-Book
+                            </div>
+                        )
+                      }
+                      {
                           (props.engaged == "true" ? (
                               <div className="btn btn-dark" onClick={getUserData}>
                                   Check-Out
                               </div>
                           ) : (
-                              <div className="btn btn-info" onClick={handleClose}>
+                                <div className="btn btn-info" onClick={handleClose}>
                                   Check-In
                               </div>
-
                           )
                           )
                       }
+                      
                       {
                         <div>
                             {
