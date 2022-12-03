@@ -20,9 +20,6 @@ const LandingPage = () => {
     const [room, setRoom] = useState([]);
 
     const [load, setLoad] = useState(false);
-
-    // Checking
-    console.log(load);
     
     //Loader
     const [loading, setLoading] = useState(false);

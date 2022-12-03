@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Modal from "react-bootstrap/Modal";
-import axios from 'axios';
+import retrieveDate from './PreBook_Date_Spike/DateCorrector';
 
 const ModalCheckOut = (props) => {
 
     const [stay, setStay] = useState();
-
-    const current = new Date();
-    const date = `${current.getFullYear()}/${current.getMonth()+1}/${current.getDate()}`;
+    const date = retrieveDate();
 
     useEffect(() => {
-
+        console.log("Modal getting called!");
         props.checkoutdate(date);
         console.log(props.user);
         props.userid(props.user)
@@ -74,6 +72,29 @@ const ModalCheckOut = (props) => {
                 <p className='font-big'>
                     No.Of.Days Stay : {stay}
                 </p>
+                {
+                    props.tempData == undefined ? (
+                        <p className="acknowledgement">
+                            (Customer hasn't provided any checkout information, Hence taking today's date as checkout date!)
+                        </p>
+                    ) : (
+                        <p className="acknowledgement">
+                            {
+                                date == props.tempData ? (
+                                    <p>
+                                        Provided checkout date is matching with today's date, Customer is good to checkout!
+                                    </p>
+                                ) : (
+                                    <div>
+                                        <p className = "acknowledgement error-text">
+                                            Provided checkout date({props.tempData}) is not matching with the today's date({date})!
+                                        </p>
+                                    </div>
+                                )
+                            }
+                        </p>
+                    )
+                }
                 <p className="acknowledgement">
                     (Please verify all the above details before checking out a customer!)
                 </p>

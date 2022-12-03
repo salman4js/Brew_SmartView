@@ -1,5 +1,5 @@
 const Variables = {
-    hostId : "https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server"
+    hostId : "http://localhost:3002"
 }
 
 //http://localhost:9000/.netlify/functions/server/
@@ -9,5 +9,6 @@ const Variables = {
 //https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
 //https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
 // https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
+//https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
 
 export default Variables;
