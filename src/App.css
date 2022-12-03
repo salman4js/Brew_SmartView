@@ -231,6 +231,11 @@
   font-size: 13px;
 }
 
+.error-text {
+  color : red;
+  font-size : 18px;
+}
+
 .modal-top {
   padding-top: 20px;
 }

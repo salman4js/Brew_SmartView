@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import retrieveDate from '../../PreBook_Date_Spike/DateCorrector';
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Variables from '../../Variables';
@@ -9,8 +10,7 @@ import Button from "react-bootstrap/Button";
 const Prebook_component = (props) => {
 
   // Current Date
-  const current = new Date();
-  const date = `${current.getFullYear()}/${current.getMonth()+1}/${current.getDate()}`;
+  const date = retrieveDate();
 
   // More Details
   const [show, setShow] = useState(false);
@@ -48,6 +48,8 @@ const Prebook_component = (props) => {
   // Check-In to the model
   const processData = () => {
     setLoading(true);
+    console.log(props.dateofcheckin);
+    console.log(typeof(date));
     // Validating current date before booking
     if((date == props.dateofcheckin) === false){
       setLoading(false);
@@ -63,6 +65,7 @@ const Prebook_component = (props) => {
         childrens: props.childrens,
         aadhar: props.aadhar,
         checkin: props.dateofcheckin,
+        checkout : props.dateofcheckout,
         roomid: props.roomid,
         roomno: props.roomno,
       }

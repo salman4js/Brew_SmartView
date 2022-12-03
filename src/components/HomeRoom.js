@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import Variables from './Variables';
 import formatDate from './PreBook/Date_Format/DateFormatter';
+import retrieveDate from './PreBook_Date_Spike/DateCorrector';
 import Loading from './Loading';
 import Table from './Table';
 import DatePicker from 'react-datepicker';
@@ -41,6 +42,8 @@ const HomeRoom = (props) => {
     const [userid, setUserid] = useState();
     const [dishrate, setDishrate] = useState([]);
     const [totaldishrate, setTotaldishrate] = useState([]);
+    // Chek out date for normal bookers
+    const [checkedoutdate, setCheckedoutdate] = useState();
 
     // Pre Book Customer Data
     const [prebookusername, setPrebookusername] = useState();
@@ -124,6 +127,7 @@ const HomeRoom = (props) => {
     const processData = () => {
         
         setLoading(true);
+        // Keeping the checkout date optional as per the design!
         const isnum = /^\d+$/;
         if(!isnum.test(customerphonenumber)){
             setLoading(false);
@@ -153,7 +157,8 @@ const HomeRoom = (props) => {
                 adults: adults,
                 childrens: childrens,
                 aadhar: aadhar,     
-                checkin: date,
+                checkin: retrieveDate(),
+                checkout : formatDate(checkedoutdate),
                 roomid: props.roomid,
                 roomno: props.roomno,
             }
@@ -349,6 +354,11 @@ const HomeRoom = (props) => {
                                   <label style={{ color: "black" }}> Date Of Check In - (Default Date is Today's Date!) </label>
                                   <DatePicker style={{ color: "black" }} className="form-control" selected={Date.now()} dateFormat='y-MM-dd' minDate={new Date()} isClearable />
                               </div>
+                              {/* Optional Date of checkout for normal bookers */}
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Date Of Check Out </label>
+                                  <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={checkedoutdate} dateFormat='y-MM-dd' minDate={new Date()} onChange = {((e) => setCheckedoutdate(e))} isClearable />
+                              </div>
 
                           </Modal.Body>
                           <Modal.Footer>
@@ -373,12 +383,12 @@ const HomeRoom = (props) => {
                           <Modal.Body>
                               <h4 className='strong'>{props.roomno}</h4>
                               <div className='modal-gap'>
-                                  <label style={{ color: "black" }}> Date Of Check In - (Default Date is Today's Date!) </label>
-                                  <DatePicker style={{ color: "black" }} className="form-control" selected={prebookdateofcheckin} dateFormat='y-MM-dd' minDate={new Date()} onChange = {((e) => setPrebookdateofcheckin(e))} isClearable />
+                                  <label style={{ color: "black" }}> Date Of Check In </label>
+                                  <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} dateFormat='y-MM-dd' minDate={new Date()} onChange = {((e) => setPrebookdateofcheckin(e))} isClearable />
                               </div>
                               <div className='modal-gap'>
-                                  <label style={{ color: "black" }}> Date Of Check In - (Default Date is Today's Date!) </label>
-                                  <DatePicker style={{ color: "black" }} className="form-control" selected={prebookdateofcheckout} dateFormat='y-MM-dd' minDate={new Date()} onChange = {((e) => setPrebookdateofcheckout(e))} isClearable />
+                                  <label style={{ color: "black" }}> Date Of Check Out </label>
+                                  <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={prebookdateofcheckout} dateFormat='y-MM-dd' minDate={new Date()} onChange = {((e) => setPrebookdateofcheckout(e))} isClearable />
                               </div>
                               <div className="modal-gap">
                                   <label style={{ color: "black" }}> Customer Name </label>
@@ -430,7 +440,7 @@ const HomeRoom = (props) => {
                           {
                               userdata.map((item, key) => {
                                   return (
-                                      <ModalCheckOut roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber = {item.secondphonenumber} aadharcard = {item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} />
+                                      <ModalCheckOut roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber = {item.secondphonenumber} aadharcard = {item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData = {item.dateofcheckout} />
                                   )
                               })
                           }

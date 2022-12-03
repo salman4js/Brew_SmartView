@@ -11,5 +11,8 @@ function formatDate(date) {
 
     return [year, month, day].join('/');
 }
+
+export default formatDate;
  
-console.log(formatDate('Mon Nov 28 2022 02:34:52 GMT+0530 (India Standard Time)'));
+console.log(typeof(formatDate('Mon Nov 28 2022 02:34:52 GMT+0530 (India Standard Time)')));
+
