@@ -43,12 +43,12 @@ const DishUpdate = (props) => {
                     setShowerror(true);
                     setSuccess(res.data.message)
                     handleClose();
-                    props.setLoad(!props.setLoad)
+                    props.setLoad(true)
                 } else {
                     setLoading(false);
                     setShowerror(true);
                     setSuccess(res.data.message)
-                    props.setLoad(!props.setLoad)
+                    //props.setLoad(!props.setLoad)
                 }
             })
     }

@@ -11,7 +11,7 @@ import CustomError from './CustomError';
 const UpdateDishes = () => {
 
     const [data, setData] = useState([]);
-    const [load, setLoad] = useState("");
+    const [load, setLoad] = useState(false);
 
     // Options
     const [options, setOptions] = useState([]);
@@ -45,6 +45,7 @@ const UpdateDishes = () => {
                     }
                 })
         }
+        setLoad(false);
     }
 
 

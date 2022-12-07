@@ -154,8 +154,9 @@ const UserDb = () => {
                                                     return value.roomno.toLowerCase().includes(search.toLowerCase()) || value.username.toLowerCase().includes(search.toLowerCase());
                                                 }
                                             }).map((item,key) => {
+                                                console.log("Pre Booked User db", item.prebooked)
                                                 return(
-                                                    <UserDbComp roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
+                                                    <UserDbComp roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} prebooked = {item.prebooked} />
                                                 )
                                             })
                                         }
