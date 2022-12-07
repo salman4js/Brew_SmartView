@@ -36,6 +36,17 @@ const UserDbComp = (props) => {
             <p className="font-big">
               Alternative Contact Details -- {props.secphone}
             </p>
+              {
+                props.prebooked ==  true ? (
+                  <p className="font-big">
+                    PreBooked -- Yes
+                  </p>
+                ) : (
+                  <p className="font-big">
+                    PreBooked -- No
+                  </p>
+                )
+              }
             <p className="font-big">
               Adults -- {props.adults}
             </p>

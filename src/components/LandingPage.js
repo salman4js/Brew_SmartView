@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
+import SideBar from './Sidebar/SideBar';
 import CustomError from './CustomError';
 import changeScreen from './Action';
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -61,9 +62,8 @@ const LandingPage = () => {
     }
 
     useEffect(() => {
-        getData()
+        getData();
     }, [load]);
-
 
     // Token expiration checking!
     const parseJwt = (token) => {
@@ -144,7 +144,7 @@ const LandingPage = () => {
                                             }
                                         }).map((item, key) => {
                                               return (
-                                                  <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} price = {item.price} />
+                                                  <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} price = {item.price} prebook = {item.preBooked} prevalid = {item.preValid} />
                                               )
                                           })
                                       }
@@ -153,7 +153,6 @@ const LandingPage = () => {
                           </div>
                       </div >
                     )
-                      
                 ) : (
                     <div>
                         <CustomError />

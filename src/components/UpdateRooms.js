@@ -16,7 +16,7 @@ const UpdateRooms = () => {
 
     const [room, setRoom] = useState([]);
 
-    const [load, setLoad] = useState();
+    const [load, setLoad] = useState(false);
 
     //Loader
     const [loading, setLoading] = useState(false);
@@ -44,6 +44,7 @@ const UpdateRooms = () => {
                     }
                 })
         }
+        setLoad(false);
     }
 
     useEffect(() => {

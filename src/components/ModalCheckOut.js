@@ -9,6 +9,7 @@ const ModalCheckOut = (props) => {
 
     useEffect(() => {
         console.log("Modal getting called!");
+        // Assigning today's date as checkout date back to the component!
         props.checkoutdate(date);
         console.log(props.user);
         props.userid(props.user)
@@ -61,13 +62,13 @@ const ModalCheckOut = (props) => {
                     Check-In Date : {props.checkin}
                 </p>
                 <p className='font-big'>
+                    Check-Out Date : {date}
+                </p>
+                <p className='font-big'>
                     Head Count of Adults : {props.adults}
                 </p>
                 <p className="font-big">
                     Head Count of childrens : {props.childrens}
-                </p>
-                <p className='font-big'>
-                    Check-Out Date : {date}
                 </p>
                 <p className='font-big'>
                     No.Of.Days Stay : {stay}

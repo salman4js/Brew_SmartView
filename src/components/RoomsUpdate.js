@@ -80,9 +80,7 @@ const RoomsUpdate = (props) => {
                     setShowerror(true);
                     setSuccess(res.data.message);
                     deleteModal();
-                    setTimeout(() => {
-                        props.setLoad(!props.setLoad);
-                    }, 2000);
+                    props.setLoad(true)
                 } else {
                     setLoading(false);
                     setShowerror(true);

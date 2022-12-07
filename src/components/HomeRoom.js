@@ -150,6 +150,7 @@ const HomeRoom = (props) => {
             setShowerror(true);
             setSuccess("Aadhar Number should be in Number format...")
         } else {
+            //console.log(typeof(formatDate(checkedoutdate)));
             const credentials = {
                 customername: customername,
                 phonenumber: customerphonenumber,
@@ -276,12 +277,14 @@ const HomeRoom = (props) => {
 
     const checkedOut = () => {
         handleCloseGeneratedBill();
+        console.log(props.prebook);
         const credentials = {
             userid: userid,
             roomid: props.roomid,
             stayeddays: stayeddays,
             checkoutdate: checkoutdate,
-            roomtype: props.roomtype
+            roomtype: props.roomtype,
+            prebook : props.prebook
         }
         axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
             .then(res => {
@@ -515,13 +518,13 @@ const HomeRoom = (props) => {
                           }
                       </div>
                       {
-                        (props.engaged == "true") ? (
-                            <div className = "btn btn-success disabled">
-                                Pre-Book
+                        props.prevalid ? (
+                            <div className = "btn btn-success" onClick={preBookModal}>
+                                Pre Book
                             </div>
                         ) : (
-                            <div className = "btn btn-success" onClick={preBookModal}>
-                                Pre-Book
+                            <div className = "btn btn-success disabled">
+                                Pre Book
                             </div>
                         )
                       }
@@ -537,7 +540,6 @@ const HomeRoom = (props) => {
                           )
                           )
                       }
-                      
                       {
                         <div>
                             {
