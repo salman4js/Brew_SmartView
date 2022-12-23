@@ -1,6 +1,6 @@
 function retrieveDate(){
     const current = new Date();
-    if(current.getDate().length > 1){
+    if(current.getDate().toString().length > 1){
         const date = `${current.getFullYear()}/${current.getMonth()+1}/${current.getDate()}`;
         return date
     } else {
