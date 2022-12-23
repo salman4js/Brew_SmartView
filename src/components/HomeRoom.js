@@ -24,6 +24,9 @@ const HomeRoom = (props) => {
     const [userdata, setUserdata] = useState([]);
     const [showGeneratedBill, setShowGeneratedBill] = useState(false);
     const [amount, setAmount] = useState();
+
+    // Total dish rate calculation
+    const [calcdishrate, setCalcdishrate] = useState();
     
     //Loader--Modal
     const [loading, setLoading] = useState(false);
@@ -200,12 +203,6 @@ const HomeRoom = (props) => {
 
     // Check Out Customer Data
     const clearData = async () => {
-
-        var totalDishrate = 0;
-
-        console.log(stayeddays);
-        console.log(stayeddays.slice(0,1));
-        console.log(checkoutdate);
         const credentials = {
             userid: userid,
             roomid: props.roomid,
@@ -232,7 +229,8 @@ const HomeRoom = (props) => {
                     setDishrate(res.data.message)
                     console.log(res.data.message);
                 } else {
-                    setDishrate("User Dish Prices can't be retrived at this moment!")
+                    setShowerror(true);
+                    setSuccess(res.data.message);
                 }
             })
 
@@ -260,20 +258,19 @@ const HomeRoom = (props) => {
                 }
             })
 
-        await axios.post(`${Variables.hostId}/${props.lodgeid}/dishuserrate`, generateDishRate)
+        await axios.post(`${Variables.hostId}/${props.lodgeid}/calcdishuserrate`, generateDishRate)
         .then(res => {
             if(res.data.success){
-                res.data.message.map((item,key) => {
-                    for(var i = 0; i < (res.data.message).length; i++){
-                        totalDishrate += Number(item.dishRate) * Number(item.quantity)
-                    }
-                })
+                console.log(res.data.message);
+                setCalcdishrate(res.data.message);
+            } else {
+                setShowerror(true);
+                setSuccess(res.data.message);
             }
-            setTotaldishrate(Number(totalDishrate) + Number(amount));
-            console.log("Total dishrate ", Number(totalDishrate));
-            console.log("Total amount to be paid for the suite", Number(amount));
+            // setTotaldishrate(Number(totalDishrate) + Number(amount));
         })
     }
+
 
     const checkedOut = () => {
         handleCloseGeneratedBill();
@@ -487,7 +484,7 @@ const HomeRoom = (props) => {
                                       }
                                   </thead>
                               </table>
-                              <h5 style = {{fontWeight : "bold"}}>Total amount to be paid - {totaldishrate} Rs</h5>
+                              <h5 style = {{fontWeight : "bold"}}>Total amount to be paid - {Number(calcdishrate) + Number(amount)} Rs</h5>
                           </Modal.Body>
                           <Modal.Footer>
                               <Button variant="secondary" onClick={handleCloseGeneratedBill}>
@@ -496,6 +493,8 @@ const HomeRoom = (props) => {
                               <Button variant="primary" onClick={checkedOut}>Paid</Button>
                           </Modal.Footer>
                       </Modal>
+
+                      {/* Alert messages down here */}
                       <div>
                           {
                               success == undefined ? (
