@@ -269,6 +269,7 @@ const HomeRoom = (props) => {
             }
             // setTotaldishrate(Number(totalDishrate) + Number(amount));
         })
+
     }
 
 
@@ -484,7 +485,14 @@ const HomeRoom = (props) => {
                                       }
                                   </thead>
                               </table>
-                              <h5 style = {{fontWeight : "bold"}}>Total amount to be paid - {Number(calcdishrate) + Number(amount)} Rs</h5>
+                              <h5 style = {{fontWeight : "bold"}}>Total amount to be paid - 
+                              {
+                                isNaN(Number(calcdishrate) + Number(amount)) ? (
+                                        " Calculating..."
+                                ) : (
+                                     (" " +(Number(calcdishrate) + Number(amount)) + " Rs")
+                                )
+                              }</h5>
                           </Modal.Body>
                           <Modal.Footer>
                               <Button variant="secondary" onClick={handleCloseGeneratedBill}>
