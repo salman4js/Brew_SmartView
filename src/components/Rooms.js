@@ -86,7 +86,7 @@ const Rooms = () => {
                     loading ? (
                         <Loading />
                     ) : (
-                        <div className='container'>
+                        <div>
                         <Navbar id={id} name={splitedIds[1]} />
                         <div className="text-center">
                             <div>

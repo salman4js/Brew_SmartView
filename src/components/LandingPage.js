@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
-import SideBar from './Sidebar/SideBar';
 import CustomError from './CustomError';
 import changeScreen from './Action';
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -103,7 +102,7 @@ const LandingPage = () => {
                         <Loading />
                     ) : (
                         <div>
-                          <Navbar id={id} name={splitedIds[1]} />
+                          <Navbar id={id} name={splitedIds[1]} className = "sticky" />
                           <div className="text-center">
                               <div>
                                   <h3 className='heading-top topic-off'>

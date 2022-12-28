@@ -101,7 +101,7 @@ const ConfigureBill = () => {
                     loading ? (
                         <Loading />
                     ) : (
-                        <div className='container'>
+                        <div>
                         <Navbar id={id} name={splitedIds[1]} />
                         <div className="align-down">
 

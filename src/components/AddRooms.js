@@ -144,7 +144,7 @@ const AddRooms = () => {
                     loading ? (
                         <Loading />
                     ) : (
-                        <div className='container'>
+                        <div>
                             <Navbar id={id} name={splitedIds[1]} />
                             <div className="align-down">
                                 <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
