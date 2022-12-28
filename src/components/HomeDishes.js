@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import brewDate from 'brew-date';
 import Variables from './Variables';
 import Loading from './Loading';
 import Modal from "react-bootstrap/Modal";
@@ -79,6 +80,7 @@ const HomeDishes = (props) => {
             quantity: quantity,
             comments: comments,
             roomno: roomno,
+            time : brewDate.getDayTime('day', 'date', 'month', 'year', 'time'),
             roomid: roomid,
             lodgeid: props.lodgeid,
             dishrate: props.dishrate

@@ -5,8 +5,7 @@ import { Link } from "react-router-dom";
 const Navbar = (props) => {
     console.log(props.id)
     return (
-        <div>
-            <nav className="navbar navbar-expand-lg navbar-dark shadow-5-strong">
+            <nav className="navbar sticky-top navbar-expand-lg navbar-dark navbar-bg">
                 <div className="container">
                     <a className="navbar-brand" href="#">
                         <div className='row'>
@@ -75,7 +74,6 @@ const Navbar = (props) => {
                     </div>
                 </div>
             </nav>
-        </div>
     )
 }
 

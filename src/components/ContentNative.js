@@ -199,14 +199,15 @@ const ContentNative = () => {
     // JSX Content
     return (
         <div>
+            <Navbar id={id} name={splitedIds[1]} />
             {
                 token ? (
                     loading ? (
                         <Loading />
                     ) : (
-                        <div className="container">
-                            <Navbar id={id} name={splitedIds[1]} />
-                            <div className="text-center">
+                        <div className = "container">
+                            
+                            <div className="container text-center">
                                 <div>
                                     <h3 className='heading-top topic-off'>
                                         Content Native - Dashboard
