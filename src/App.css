@@ -214,6 +214,10 @@
   padding-top: 150px;
 }
 
+.align-down-tVehicle {
+  padding-top: 75px;
+}
+
 .strong {
   font-weight: bold;
 }
@@ -341,4 +345,28 @@ table, th, td{
 .navbar-bg{
   background: rgba(0, 0, 0, 0) linear-gradient(45deg, rgba(2, 129, 255, 0.087) 0%, rgb(18, 44, 105) 58.93%, rgba(7, 142, 179, 0) 100%) repeat scroll 0% 0%;
   color: white;
+}
+
+.t_mode {
+  background: #c2bfbf;
+  margin: 22px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.reminder {
+  border-left: 5px solid green;
+  margin-bottom :5px;
+}
+
+.vehicleEntry{
+  border-left : 1px solid green;
+  margin-bottom : 5px;
+}
+
+.overscroll{
+  margin: 0 auto;
+  height : auto;
+  max-height : 300px;
+  overflow: auto;
 }

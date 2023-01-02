@@ -9,6 +9,7 @@ const Variables = {
 //https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
 //https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
 // https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
-//https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
+// https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server
+// http://localhost:3002
 
 export default Variables;

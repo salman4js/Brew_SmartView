@@ -17,6 +17,8 @@ import EditDish from './components/EditDish';
 import Loading from './components/Loading';
 import ContentNative from './components/ContentNative';
 import Prebook_rooms from './components/PreBook/Prebook_rooms';
+import AddData from './components/Configure_Transport/src/AddData';
+import AddMode from './components/Configure_Transport/AddMode';
 
 function App() {
   return (
@@ -40,6 +42,8 @@ function App() {
           <Route path = "/:id/editdish" exact element = {<EditDish />} />
           <Route path = "/:id/loading" exact element = {<Loading />} />
           <Route path = "/:id/contentnative" exact element = {<ContentNative />} />
+          <Route path = "/:id/addData" exact element = {<AddData />} />
+          <Route path = "/:id/addmode" exact element = {<AddMode />} />
         </Routes>
       </Router>
     </div>
