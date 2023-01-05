@@ -22,6 +22,9 @@ const AddData = () => {
     const [error, setError] = useState(false);
     const [errorText, setErrorText] = useState();
 
+    // CSS handler!
+    const [duty, setDuty] = useState(false);
+
     // Success and error handler controller!
     const handleSuccess = () => {
         setSuccess(false);
@@ -37,6 +40,7 @@ const AddData = () => {
     // Vehicle entry data handler!
     const [loader, setLoader] = useState(false);
     const [data, setData] = useState([]);
+    const [compLoader, setCompLoader] = useState(false);
 
     // Options dropdown handler!
     const [options, setOptions] = useState([]);
@@ -63,12 +67,15 @@ const AddData = () => {
 
     // Getting the vehicle entry data before the dom renders!
     const vehicleEntry = () => {
+        // Re loading the component to make the changes visible!
+        setCompLoader(true);
         setLoader(true);
         axios.get(`${Variables.hostId}/${splitedIds[0]}/getAllVehicle`)
             .then(res => {
                 if (res.data.success) {
                     setLoader(false);
                     setData(res.data.message);
+                    setCompLoader(false);
                 } else {
                     setLoader(false);
                     setError(true);
@@ -102,6 +109,55 @@ const AddData = () => {
             })
     }
 
+    // API call for toggle the value!
+    const onToggle = (tid) => {
+        setLoader(true);
+        const data = {
+            id: tid
+        }
+        axios.put(`${Variables.hostId}/${splitedIds[0]}/ontoggle`, data)
+            .then(res => {
+                if (res.data.success) {
+                    setLoader(false);
+                    setSuccess(!success);
+                    if (res.data.response.duty) {
+                        setS_message(res.data.message + " to occupied");
+                    } else {
+                        setS_message(res.data.message + " to available");
+                    }
+                } else {
+                    setLoader(false);
+                    setError(!error);
+                    setErrorText(res.data.message);
+                }
+            })
+            // Gets the updated modal!
+            .then(vehicleEntry());
+    }
+
+    // API call for deleting the entry!
+    const deleteEntry = (tid) => {
+        setCompLoader(true);
+        setLoader(true);
+        const data = {
+            id : tid
+        }
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/deleteentry`, data)
+            .then(res => {
+                if(res.data.success){
+                    setCompLoader(false);
+                    setLoader(false);
+                    setSuccess(!success);
+                    setS_message(res.data.message);
+                } else {
+                    setCompLoader(false);
+                    setLoader(false);
+                    setError(!error);
+                    setErrorText(res.data.message);
+                }
+            })
+    }
+
     // Getting the data before the DOM loads
     useLayoutEffect(() => {
         getData();
@@ -115,12 +171,10 @@ const AddData = () => {
         }, 4000);
     }, [error])
 
-    // Reseting the success message back to the initial state
+    // Re-Loading the component everytime the duty gets changed!
     useEffect(() => {
-        setTimeout(() => {
-            handleSuccess();
-        }, 4000);
-    }, [success]);
+        vehicleEntry();
+    }, [compLoader])
 
     return (
         <div>
@@ -134,21 +188,21 @@ const AddData = () => {
                             <div className="align-down-tVehicle">
                                 <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
                                     <div className='row text-center'>
-                                        {/* Error and success handler */}
-                                        {
-                                            error ? (
-
-                                                <Alert show={error}>
-                                                    <div className="container text-center">
-                                                        {errorText}
-                                                    </div>
-                                                </Alert>
-                                            ) : (
-                                                <div>
-                                                </div>
-                                            )
-                                        }
                                         <div className='col'>
+                                            {/* Error and success handler */}
+                                                {
+                                                    error ? (
+
+                                                        <Alert show={error}>
+                                                            <div className="container text-center">
+                                                                {errorText}
+                                                            </div>
+                                                        </Alert>
+                                                    ) : (
+                                                        <div>
+                                                        </div>
+                                                    )
+                                                }
                                             <div class="card text-center" style={{ width: "50vh" }}>
                                                 <div class="card-header" style={{ color: "black" }}>
                                                     Add Transport Data -  Featured
@@ -189,7 +243,7 @@ const AddData = () => {
                                                                 {
                                                                     data.map((item, key) => {
                                                                         return (
-                                                                            <FeedVehicle vehicle={item.vehicle} charge={item.charge} mode={item.mode} duty={item.duty} />
+                                                                            <FeedVehicle id={item._id} vehicle={item.vehicle} charge={item.charge} mode={item.mode} duty={item.duty} onToggle={(id) => onToggle(id)} onDelete = {(id) => deleteEntry(id)}/>
                                                                         )
                                                                     })
                                                                 }
