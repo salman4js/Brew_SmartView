@@ -354,9 +354,14 @@ table, th, td{
   cursor: pointer;
 }
 
-.reminder {
+.onDuty {
   border-left: 5px solid green;
   margin-bottom :5px;
+}
+
+.offDuty{
+  border-left: 5px solid red;
+  margin-bottom: 5px;
 }
 
 .vehicleEntry{
