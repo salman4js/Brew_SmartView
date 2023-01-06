@@ -19,6 +19,8 @@ import ContentNative from './components/ContentNative';
 import Prebook_rooms from './components/PreBook/Prebook_rooms';
 import AddData from './components/Configure_Transport/src/AddData';
 import AddMode from './components/Configure_Transport/AddMode';
+import Admin from './components/Config/Admin';
+import Client from './components/Config/Client';
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
       <Router>
         <Routes>
           <Route path = "/login" exact element = {<Login />} />
+          <Route path = "/admin-config" exact element = {<Admin />} />
           <Route path = "/:id/landingpage" exact element = {<LandingPage />} />
           <Route path = "/:id/rooms" exact element = {<Rooms />} />
           <Route path = "/:id/prebookrooms" exact element = {<Prebook_rooms />} />
@@ -44,6 +47,7 @@ function App() {
           <Route path = "/:id/contentnative" exact element = {<ContentNative />} />
           <Route path = "/:id/addData" exact element = {<AddData />} />
           <Route path = "/:id/addmode" exact element = {<AddMode />} />
+          <Route path = "/:id/client-config" exact element = {<Client />} />
         </Routes>
       </Router>
     </div>
