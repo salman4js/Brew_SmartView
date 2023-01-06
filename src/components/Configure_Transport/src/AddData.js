@@ -68,19 +68,23 @@ const AddData = () => {
     // Getting the vehicle entry data before the dom renders!
     const vehicleEntry = () => {
         // Re loading the component to make the changes visible!
-        setCompLoader(true);
+        //setCompLoader(true);
         setLoader(true);
         axios.get(`${Variables.hostId}/${splitedIds[0]}/getAllVehicle`)
             .then(res => {
                 if (res.data.success) {
                     setLoader(false);
                     setData(res.data.message);
-                    setCompLoader(false);
+                    setCompLoader(true);
                 } else {
                     setLoader(false);
                     setError(true);
                     setErrorText(res.data.message);
                 }
+            })
+            .catch(err => {
+                setError(!error);
+                setErrorText(err);
             })
     }
 
@@ -131,8 +135,15 @@ const AddData = () => {
                     setErrorText(res.data.message);
                 }
             })
-            // Gets the updated modal!
-            .then(vehicleEntry());
+            .catch(err => {
+                setLoader(false);
+                setError(!error);
+                setErrorText(err);
+            })
+            .finally(() => {
+                vehicleEntry();
+            });
+        
     }
 
     // API call for deleting the entry!
@@ -156,6 +167,13 @@ const AddData = () => {
                     setErrorText(res.data.message);
                 }
             })
+            .catch(err => {
+                setError(!error);
+                setErrorText(err);
+            })
+            .finally(() => {
+                vehicleEntry();
+            })
     }
 
     // Getting the data before the DOM loads
@@ -168,13 +186,13 @@ const AddData = () => {
     useEffect(() => {
         setTimeout(() => {
             handleError();
-        }, 4000);
+        }, 6000);
     }, [error])
 
     // Re-Loading the component everytime the duty gets changed!
-    useEffect(() => {
-        vehicleEntry();
-    }, [compLoader])
+    // useEffect(() => {
+    //     vehicleEntry();
+    // }, [compLoader])
 
     return (
         <div>
