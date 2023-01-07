@@ -89,6 +89,26 @@ const AddMode = () => {
             })
     }
 
+     // Delete t_mode functionality
+    const onDelete = (id) => {
+        console.log(id)
+        setLoading(true);
+        const data = {
+        tMode_id : id
+        }
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/delete_tMode`, data)
+        .then(res => {
+            if (res.data.success) {
+            setLoading(false);
+            getData();
+            } else {
+            setLoading(false);
+            setShowerror(true);
+            setError(res.data.message);
+            }
+        })
+    }
+
     // Re-Rendering the error dialog back to the initial state
     useEffect(() => {
         setTimeout(handleError, 4000)
@@ -149,7 +169,7 @@ const AddMode = () => {
                                                                     {
                                                                         datamode.map((item,key) => {
                                                                             return(
-                                                                                <Feed t_mode = {item.tMode} t_mode_id = {item._id} lodgeId = {splitedIds[0]} loader = {setLoading} error = {setShowerror} errormessage = {setError} parentFunction = {() => getData()}/>
+                                                                                <Feed name = {item.tMode} id = {item._id} lodgeId = {splitedIds[0]} loader = {setLoading} error = {setShowerror} errormessage = {setError} onDelete = {(id) => onDelete(id)}/>
                                                                             )
                                                                         })
                                                                     }

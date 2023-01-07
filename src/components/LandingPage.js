@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Navbar from './Navbar';
 import CustomError from './CustomError';
 import changeScreen from './Action';
@@ -27,6 +27,22 @@ const LandingPage = () => {
     // Search Configuration
     const [search, setSearch] = useState("");
     const [sort, setSort] = useState("Show All");
+
+      // Config checking
+      const [configOptions, setConfigOptions] = useState(false);
+      const checkConfig = () => {
+          axios.get(`${Variables.hostId}/${splitedIds[0]}/config-checking`)
+              .then(res => {
+                  if(res.data.success){
+                      if(res.data.message.some(option => option.config === 'PreBook')){
+                          setConfigOptions(true);
+                      }
+                      //setConfigOptions(res.data.message);
+                  } else {
+                      console.error(res.data.message);
+                  }
+              })
+      }
 
     const getData = () => {
         setLoading(true);
@@ -94,6 +110,11 @@ const LandingPage = () => {
         return () => clearInterval(interval)
     }, [])
 
+    // Check config before the DOM renders!
+    useLayoutEffect(() => {
+        checkConfig();
+    }, [])
+
     return (
         <div>
             {
@@ -143,7 +164,7 @@ const LandingPage = () => {
                                             }
                                         }).map((item, key) => {
                                               return (
-                                                  <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} price = {item.price} prebook = {item.preBooked} prevalid = {item.preValid} />
+                                                  <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} price = {item.price} prebook = {item.preBooked} prevalid = {item.preValid} prebookconfig = {configOptions} />
                                               )
                                           })
                                       }

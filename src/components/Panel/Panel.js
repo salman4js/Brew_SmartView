@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 
 const Panel = (props) => {
   return (
-    <Modal.Body>
+    <Modal.Body className = {props.className}>
         {props.text}
     </Modal.Body>
   )

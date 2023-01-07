@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Footer from './Footer/Footer';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -526,14 +526,18 @@ const HomeRoom = (props) => {
                           }
                       </div>
                       {
-                        props.prevalid ? (
-                            <div className = "btn btn-success" onClick={preBookModal}>
-                                Pre Book
-                            </div>
+                        props.prebookconfig ? (
+                            props.prevalid ? (
+                                <div className = "btn btn-success" onClick={preBookModal}>
+                                    Pre Book
+                                </div>
+                            ) : (
+                                <div className = "btn btn-success disabled">
+                                    Pre Book
+                                </div>
+                            )
                         ) : (
-                            <div className = "btn btn-success disabled">
-                                Pre Book
-                            </div>
+                            null
                         )
                       }
                       {
