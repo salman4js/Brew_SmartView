@@ -174,7 +174,7 @@ const DishUpdate = (props) => {
                                 backdrop="static"
                             >
                                 <Modal.Body>
-                                Updaing, please wait!
+                                Updating, please wait!
                                 </Modal.Body>
                             </Modal>
                             ) : (

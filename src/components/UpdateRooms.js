@@ -44,12 +44,12 @@ const UpdateRooms = () => {
                     }
                 })
         }
-        setLoad(false);
+        //setLoad(false);
     }
 
     useEffect(() => {
         getData()
-    }, [load])
+    },[])
 
 
     const parseJwt = (token) => {
@@ -103,7 +103,7 @@ const UpdateRooms = () => {
                                     {
                                         room.map((item, key) => {
                                             return (
-                                                <RoomsUpdate roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} price = {item.price} />
+                                                <RoomsUpdate roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} load = {() => getData()} price = {item.price} lodgeId = {splitedIds[0]} />
                                             )
                                         })
                                     }

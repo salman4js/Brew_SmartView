@@ -125,9 +125,9 @@ const AddData = () => {
                     setLoader(false);
                     setSuccess(!success);
                     if (res.data.response.duty) {
-                        setS_message(res.data.message + " to occupied");
-                    } else {
                         setS_message(res.data.message + " to available");
+                    } else {
+                        setS_message(res.data.message + " to occupied");
                     }
                 } else {
                     setLoader(false);

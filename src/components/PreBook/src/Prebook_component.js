@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import retrieveDate from '../../PreBook_Date_Spike/DateCorrector';
 import axios from "axios";
+import brewDate from 'brew-date';
 import Modal from "react-bootstrap/Modal";
 import Variables from '../../Variables';
 import Button from "react-bootstrap/Button";
@@ -10,7 +11,7 @@ import Button from "react-bootstrap/Button";
 const Prebook_component = (props) => {
 
   // Current Date
-  const date = retrieveDate();
+  const date = brewDate.getFullDate("yyyy/mm/dd");
 
   // More Details
   const [show, setShow] = useState(false);
@@ -49,7 +50,7 @@ const Prebook_component = (props) => {
   const processData = () => {
     setLoading(true);
     console.log(props.dateofcheckin);
-    console.log(typeof(date));
+    console.log(date);
     // Validating current date before booking
     if((date == props.dateofcheckin) === false){
       setLoading(false);
@@ -229,7 +230,7 @@ const Prebook_component = (props) => {
         backdrop="static"
       >
         <Modal.Body>
-          Updaing, please wait!
+          Updating, please wait!
         </Modal.Body>
       </Modal>
 

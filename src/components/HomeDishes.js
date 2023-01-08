@@ -204,7 +204,7 @@ const HomeDishes = (props) => {
                                     backdrop="static"
                                 >
                                     <Modal.Body>
-                                    Updaing, please wait!
+                                    Updating, please wait!
                                     </Modal.Body>
                                 </Modal>
                                 ) : (

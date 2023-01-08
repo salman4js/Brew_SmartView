@@ -118,8 +118,12 @@ const Client = () => {
     // Getting the data before the DOM renders!
     useLayoutEffect(() => {
         showConfig();
-        checkConfig();
     }, [])
+
+    // Check the config collection when the DOM renders!
+    useEffect(() => {
+        checkConfig();
+    },[])
 
     // Reseting the error message back to the initial state
     useEffect(() => {

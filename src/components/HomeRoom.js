@@ -234,20 +234,7 @@ const HomeRoom = (props) => {
                     setSuccess(res.data.message);
                 }
             })
-
-        console.log(credentials);
-        // axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
-        // .then(res => {
-        //     if(res.data.success){
-        //         handleModal();
-        //         setShowerror(true);
-        //         setSuccess(res.data.message)
-        //         props.setLoad(!props.setLoad);
-        //     } else {
-        //         setShowerror(true);
-        //         setSuccess(res.data.message)
-        //     }
-        // })
+            
         await axios.post(`${Variables.hostId}/${props.lodgeid}/generatebill`, generation)
             .then(res => {
                 if (res.data.success) {
@@ -561,7 +548,7 @@ const HomeRoom = (props) => {
                                     backdrop="static"
                                 >
                                     <Modal.Body>
-                                    Updaing, please wait!
+                                    Updating, please wait!
                                     </Modal.Body>
                                 </Modal>
                                 ) : (
