@@ -16,7 +16,7 @@ const RoomsUpdate = (props) => {
 
 
     const splitedIds = (props.id).split(/[-]/);
-    console.log(splitedIds[0])
+    //console.log(splitedIds[0])
 
 
     // Udpate Rooms
@@ -45,13 +45,19 @@ const RoomsUpdate = (props) => {
                     setShowerror(true)
                     setSuccess(res.data.message);
                     handleClose();
-                    props.setLoad(!props.setLoad)
                 } else {
                     setLoading(false);
                     setShowerror(true)
                     setSuccess(res.data.message)
-                    props.setLoad(!props.setLoad)
                 }
+            })
+            .catch(err => {
+                setShowerror(true);
+                setSuccess("Some internal error occured!");
+            })
+            .finally(() => {
+                // Reloading the component everytime the value gets updated!
+                props.load();
             })
     }
 
@@ -73,7 +79,7 @@ const RoomsUpdate = (props) => {
         const credentials = {
             roomId: props.roomid
         }
-        axios.post(`${Variables.hostId}/deleteroom`, credentials)
+        axios.post(`${Variables.hostId}/${props.lodgeId}/deleteroom`, credentials)
             .then(res => {
                 if (res.data.success) {
                     setLoading(false);
@@ -87,6 +93,14 @@ const RoomsUpdate = (props) => {
                     setSuccess(res.data.message)
                     deleteModal();
                 }
+            })
+            .catch(err => {
+                setShowerror(true);
+                setSuccess("Some internal error occured!");
+            })
+            .finally(() => {
+                // Reloading the component after the deletion
+                props.load();
             })
     }
 
@@ -293,7 +307,7 @@ const RoomsUpdate = (props) => {
                             backdrop="static"
                         >
                             <Modal.Body>
-                                Updaing, please wait!
+                                Updating, please wait!
                             </Modal.Body>
                         </Modal>
                     ) : (
