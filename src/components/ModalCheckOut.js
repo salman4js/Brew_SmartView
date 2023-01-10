@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Modal from "react-bootstrap/Modal";
+import brewDate from 'brew-date';
 import retrieveDate from './PreBook_Date_Spike/DateCorrector';
 
 const ModalCheckOut = (props) => {
 
     const [stay, setStay] = useState();
-    const date = retrieveDate();
+    const date = brewDate.getFullDate("yyyy/mm/dd");
 
     useEffect(() => {
         console.log("Modal getting called!");

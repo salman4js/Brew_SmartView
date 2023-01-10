@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import Variables from './Variables';
+import brewDate from 'brew-date';
 import formatDate from './PreBook/Date_Format/DateFormatter';
 import retrieveDate from './PreBook_Date_Spike/DateCorrector';
 import Loading from './Loading';
@@ -161,7 +162,7 @@ const HomeRoom = (props) => {
                 adults: adults,
                 childrens: childrens,
                 aadhar: aadhar,     
-                checkin: retrieveDate(),
+                checkin: brewDate.getFullDate("yyyy/mm/dd"),
                 checkout : formatDate(checkedoutdate),
                 roomid: props.roomid,
                 roomno: props.roomno,
