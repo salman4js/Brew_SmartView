@@ -87,10 +87,8 @@ const HomeRoom = (props) => {
 
     // Add data to the prebook modal
     const processDataPreBook = () => {
-        console.log(prebookdateofcheckin);
+        console.log("Thing we need", props.price);
         const changedDate = formatDate(prebookdateofcheckin);
-        console.log(changedDate);
-        console.log(prebookdateofcheckout);
         setLoading(true);
         const credentials = {
             prebookusername : prebookusername,
@@ -102,6 +100,7 @@ const HomeRoom = (props) => {
             prebookdateofcheckin : formatDate(prebookdateofcheckin),
             prebookdateofcheckout : formatDate(prebookdateofcheckout),
             prebookadvance : prebookadvance,
+            prebookprice : props.price,
             roomid : props.roomid,
         }
         axios.post(`${Variables.hostId}/${props.lodgeid}/addprebookuserrooms`, credentials)
