@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios'
 import jsPDF from 'jspdf';
+import brewDate from 'brew-date';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Navbar from './Navbar';
@@ -144,11 +145,15 @@ const ContentNative = () => {
         //to avoid modifying the original date
         const theDate = new Date(startDate);
 
-        const date = `${theDate.getFullYear()}/${theDate.getMonth() + 1}/${theDate.getDate()}`
-
+        const date = `${theDate.getFullYear()}/${theDate.getMonth() + 1}/${theDate.getDate()}`;
+        
         console.log(theDate.getDate());
         while (theDate < endDate) {
-            const date = `${theDate.getFullYear()}/${theDate.getMonth() + 1}/${theDate.getDate()}`
+            var currentDate = theDate.getDate().toString().length > 1;
+            var currentMonth = theDate.getMonth().toString().length > 1;
+            const month = currentMonth ? (theDate.getMonth() + 1) : "0"+ (theDate.getMonth()+1);
+            const dat = currentDate ? theDate.getDate() : "0"+ theDate.getDate();
+            const date = `${theDate.getFullYear()}/${month}/${dat}`
             //dates = [...dates, date]
             dates.push(date)
             theDate.setDate(theDate.getDate() + 1)
