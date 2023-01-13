@@ -102,6 +102,7 @@ const HomeRoom = (props) => {
             prebookdateofcheckout : formatDate(prebookdateofcheckout),
             prebookadvance : prebookadvance,
             prebookprice : props.price,
+            suitetype : props.roomtype,
             roomid : props.roomid,
         }
         axios.post(`${Variables.hostId}/${props.lodgeid}/addprebookuserrooms`, credentials)
@@ -272,7 +273,7 @@ const HomeRoom = (props) => {
             roomtype: props.roomtype,
             prebook : props.prebook
         }
-        axios.post(`${Variables.hostId}/${props.id}/deleteuser`, credentials)
+        axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
             .then(res => {
                 if (res.data.success) {
                     handleModal();

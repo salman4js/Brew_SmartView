@@ -183,6 +183,10 @@ const Prebook_component = (props) => {
         </Modal.Header>
         <Modal.Body>
           <div className="container text-center">
+
+            <p className = "heading-title">
+                Pre Book Price : {props.prebookprice}
+            </p>
             <p className="heading-title">
               Customer Name: {props.customername}
             </p>
