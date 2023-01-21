@@ -94,7 +94,7 @@ const EditDish = () => {
               <div className='container text-center' style={{ display: "flex", justifyContent: "center" }}>
                 <div class="card text-center" style={{ width: "50vh" }}>
                   <div class="card-header" style={{ color: "black" }}>
-                    Edit Dish Data Type - Feautured
+                    Add Dish Data Type - Feautured
                   </div>
                   <div class="card-body">
                     <div className='modal-gap'>

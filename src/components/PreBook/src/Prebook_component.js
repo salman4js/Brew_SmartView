@@ -70,7 +70,8 @@ const Prebook_component = (props) => {
         roomid: props.roomid,
         roomno: props.roomno,
         prebookprice : props.prebookprice,
-        prebook : true
+        prebook : true,
+        advancePrebookPrice : props.advance
       }
       axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
         .then(res => {

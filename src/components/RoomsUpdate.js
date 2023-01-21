@@ -37,7 +37,7 @@ const RoomsUpdate = (props) => {
             suitename: suitetype,
             roomId: props.roomid
         }
-        axios.post(`${Variables.hostId}/${props.id}/roomupdater`, credentials)
+        axios.post(`${Variables.hostId}/${props.lodgeId}/roomupdater`, credentials)
             .then(res => {
                 console.log(res.data);
                 if (res.data.success) {
