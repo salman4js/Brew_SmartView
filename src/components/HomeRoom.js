@@ -222,6 +222,10 @@ const HomeRoom = (props) => {
             })
     }
 
+
+    // Error-Text for prebooked user!
+    const [advance, setAdvance] = useState(false);
+    const [amount_advance, setAmount_advance] = useState(0);
     // Check Out Customer Data
     const clearData = async () => {
         const credentials = {
@@ -259,7 +263,9 @@ const HomeRoom = (props) => {
             .then(res => {
                 if (res.data.success) {
                     handleCloseGeneratedBill();
-                    setAmount(res.data.message);
+                    setAmount(res.data.message - res.data.advance);
+                    setAmount_advance(res.data.advance);
+                    {res.data.prebook ? setAdvance(res.data.prebook) : setAdvance(!res.data.prebook)}
                 } else {
                     setShowerror(true);
                     setSuccess(res.data.message)
@@ -471,6 +477,15 @@ const HomeRoom = (props) => {
                           </Modal.Header>
                           <Modal.Body>
                               <h5>Amount to be paid for the suite - {amount}</h5>
+                              {
+                                advance ===  true ? (
+                                    <p>
+                                        Advance amount has been reduced in the total amount - {amount_advance} Rs!
+                                    </p>
+                                ) : (
+                                    null
+                                )
+                              }
                               <table className="table">
                                   <thead>
                                       <tr>
