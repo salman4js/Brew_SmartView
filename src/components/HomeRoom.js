@@ -20,6 +20,24 @@ const HomeRoom = (props) => {
     const current = new Date();
     const date = `${current.getFullYear()}/${current.getMonth()+1}/${current.getDate()}`;
 
+    // Exclude dates!
+    const [excludeDates, setExcludeDates] = useState([])
+    const getExcludeDates = async (roomid) =>{
+        console.log("Function getting called");
+        await axios.get(`${Variables.hostId}/${roomid}/excludedates`)
+        .then(res => {
+            if(res.data.success){
+                res.data.message.map((item) => {
+                    item.forEach(element => {
+                        setExcludeDates(oldValue => [...oldValue, new Date(element)]);
+                    })
+                })
+            } else {
+                // TODO: Error handling!
+            }
+        })
+    }
+
     const [show, setShow] = useState(false);
     const [success, setSuccess] = useState(false);
     const [showerror, setShowerror] = useState(false);
@@ -84,6 +102,7 @@ const HomeRoom = (props) => {
     const [prebookmodal, setPrebookmodal] = useState(false);
     const preBookModal = () => {
         setPrebookmodal(!prebookmodal);
+        getExcludeDates(props.roomid);
     }
 
     // Add data to the prebook modal
@@ -374,7 +393,7 @@ const HomeRoom = (props) => {
                               <h4 className='strong'>{props.roomno}</h4>
                               <div className='modal-gap'>
                                   <label style={{ color: "black" }}> Date Of Check In </label>
-                                  <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} dateFormat='y-MM-dd' minDate={new Date()} onChange = {((e) => setPrebookdateofcheckin(e))} isClearable />
+                                  <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} onChange = {((e) => setPrebookdateofcheckin(e))} isClearable />
                               </div>
                               <div className='modal-gap'>
                                   <label style={{ color: "black" }}> Date Of Check Out </label>
