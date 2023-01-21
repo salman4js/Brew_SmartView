@@ -238,7 +238,7 @@ const HomeRoom = (props) => {
 
         const generation = {
             roomtype: props.roomtype,
-            stayeddays: stayeddays.slice(0, 1),
+            stayeddays: stayeddays,
             roomid: props.roomid,
             lodgeid : props.lodgeid
         }
