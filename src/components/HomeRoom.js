@@ -265,7 +265,7 @@ const HomeRoom = (props) => {
                     handleCloseGeneratedBill();
                     setAmount(res.data.message - res.data.advance);
                     setAmount_advance(res.data.advance);
-                    {res.data.prebook ? setAdvance(res.data.prebook) : setAdvance(!res.data.prebook)}
+                    {res.data.prebook === true ? setAdvance(res.data.prebook) : setAdvance(res.data.prebook)};
                 } else {
                     setShowerror(true);
                     setSuccess(res.data.message)
