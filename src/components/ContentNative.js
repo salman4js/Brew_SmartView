@@ -308,7 +308,7 @@ const ContentNative = () => {
                                         }
                                     }).map((item, key) => {
                                         return (
-                                            <GeneratorCN roomno={item.roomno} username={item.username}
+                                            <GeneratorCN bill = {item.bill} roomno={item.roomno} username={item.username}
                                                 phonenumber={item.phonenumber}
                                                 secphone={item.secondphonenumber} adults={item.adults}
                                                 childrens={item.childrens} checkin={item.dateofcheckin}
