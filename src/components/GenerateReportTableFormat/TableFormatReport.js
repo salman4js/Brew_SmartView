@@ -10,6 +10,9 @@ const TableFormatReport = (props) => {
           {props.checkout}
         </td>
         <td>
+          {props.bill}
+        </td>
+        <td>
           {props.username}
         </td>
         <td>

@@ -340,6 +340,9 @@ const ContentNative = () => {
                                                     Date Of Check Out
                                                 </th>
                                                 <th>
+                                                    Amount Paid
+                                                </th>
+                                                <th>
                                                     Customer Name
                                                 </th>
                                                 <th>
@@ -393,7 +396,7 @@ const ContentNative = () => {
                                                 }).map((item, key) => {
                                                     return (
 
-                                                        <TableFormatReport roomno={item.roomno} username={item.username}
+                                                        <TableFormatReport bill = {item.bill} roomno={item.roomno} username={item.username}
                                                             phonenumber={item.phonenumber}
                                                             secphone={item.secondphonenumber} adults={item.adults}
                                                             childrens={item.childrens} checkin={item.dateofcheckin}
