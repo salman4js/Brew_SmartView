@@ -306,14 +306,15 @@ const HomeRoom = (props) => {
 
     const checkedOut = () => {
         handleCloseGeneratedBill();
-        console.log(props.prebook);
+        console.log(amount);
         const credentials = {
             userid: userid,
             roomid: props.roomid,
             stayeddays: stayeddays,
             checkoutdate: checkoutdate,
             roomtype: props.roomtype,
-            prebook : props.prebook
+            prebook : props.prebook,
+            amount: amount
         }
         axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
             .then(res => {

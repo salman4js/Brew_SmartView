@@ -10,6 +10,9 @@ const GeneratorCN = (props) => {
               Date of Checkout : {props.checkout}
             </p>
             <p style={{ color: "black" }}>
+              Amount paid : {props.bill}
+            </p>
+            <p style={{ color: "black" }}>
               Room No : {props.roomno}
             </p>
             <p style={{ color: "black" }}>
