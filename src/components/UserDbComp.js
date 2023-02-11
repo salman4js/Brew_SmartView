@@ -65,6 +65,31 @@ const UserDbComp = (props) => {
             <p className="font-big">
               Checked Out -- {props.checkout}
             </p>
+            {
+              props.discount ? (
+                <p className="font-big">
+                  Discount Applied -- True
+                </p>
+              ) : (
+                <p className="font-big">
+                  Discount Applied --  False
+                </p>
+              )
+            }
+            {
+              props.advance ? (
+                <p className="font-big">
+                  Advance Paid -- True
+                </p>
+              ) : (
+                <p className="font-big">
+                 Advance Paid -- False
+                </p>
+              )
+            }
+            <p className="font-big">
+                Amount Paid : {props.bill}
+            </p>
           </Modal.Body>
           <Modal.Footer>
             <Button className='btn btn-info' onClick={handleClose}>Close</Button>
