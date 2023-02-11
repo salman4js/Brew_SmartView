@@ -95,6 +95,7 @@ const HomeRoom = (props) => {
     const [prebookchildren, setPrebookchildren] = useState();
     const [prebookaadhar, setPrebookaadhar] = useState();
     const [prebookadvance, setPrebookadvance] = useState();
+    const [prebookdiscount, setPrebookdiscount] = useState();
     const [prebookdateofcheckin, setPrebookdateofcheckin] = useState();
     const [prebookdateofcheckout, setPrebookdateofcheckout] = useState();
 
@@ -129,7 +130,6 @@ const HomeRoom = (props) => {
 
     // Add data to the prebook modal
     const processDataPreBook = () => {
-        console.log("Thing we need", props.price);
         const changedDate = formatDate(prebookdateofcheckin);
         setLoading(true);
         const credentials = {
@@ -142,6 +142,7 @@ const HomeRoom = (props) => {
             prebookdateofcheckin : formatDate(prebookdateofcheckin),
             prebookdateofcheckout : formatDate(prebookdateofcheckout),
             prebookadvance : prebookadvance,
+            prebookdiscount: prebookdiscount,
             prebookprice : props.price,
             suitetype : props.roomtype,
             roomid : props.roomid,
@@ -291,19 +292,47 @@ const HomeRoom = (props) => {
                 if (res.data.success) {
                     handleCloseGeneratedBill();
                     setAmount(res.data.message);
-                    if(res.data.isAdvanced || res.data.discount){
-                        setAdvance(res.data.isAdvanced);
-                        setDiscountApplied(res.data.discount);
-                        setDiscountPrice(res.data.discountPrice);
-                        setAmount_advance(res.data.advanceCheckin);
-                        setTotalAmount(res.data.message - res.data.advanceCheckin- res.data.discountPrice)
-                    } else if(res.data.prebook){
-                        setTotalAmount(res.data.message - res.data.advance);
-                        setAmount_advance(res.data.advance)
-                        {res.data.prebook === true ? setAdvance(res.data.prebook) : setAdvance(res.data.prebook)};
+                    console.log(res.data.isAdvanced, res.data.discount)
+                    // if(res.data.isAdvanced || res.data.discount){
+                    //     if(!res.data.prebook){
+                    //         console.log("Its coming here!")
+                    //         setAdvance(res.data.isAdvanced);
+                    //         setDiscountApplied(res.data.discount);
+                    //         setDiscountPrice(res.data.discountPrice);
+                    //         setAmount_advance(res.data.advanceCheckin);
+                    //         setTotalAmount(res.data.message - res.data.advanceCheckin- res.data.discountPrice)
+                    //     } else {
+                    //         setTotalAmount(res.data.message - res.data.advance);
+                    //         setAmount_advance(res.data.advance)
+                    //         {res.data.prebook === true ? setAdvance(res.data.prebook) : setAdvance(res.data.prebook)};
+                    //     }
+                    // } else if(res.data.prebook){
+                    //     console.log("Hey there advance", res.data.advance)
+                    //     setTotalAmount(res.data.message - res.data.advance);
+                    //     setAmount_advance(res.data.advance)
+                    //     {res.data.prebook === true ? setAdvance(res.data.prebook) : setAdvance(res.data.prebook)};
+                    // } else {
+                    //     console.log("Program coming here!")
+                    //     setTotalAmount(res.data.message);
+                    // }
+                    if(res.data.prebook){
+                        setTotalAmount(res.data.message - res.data.advance - res.data.advanceDiscountPrice);
+                        setAmount_advance(res.data.advance);
+                        setDiscountPrice(res.data.advanceDiscountPrice);
+                        // {isNaN(res.data.advance) ? setAdvance(true) : setAdvance(false)};
+                        // {isNaN(res.data.advanceDiscountPrice) ? setDiscountApplied(true) : setDiscountApplied(false)}
+                        {(res.data.advance === undefined || res.data.advance === null) ? setAdvance(false) : setAdvance(true)}
+                        {(res.data.advanceDiscountPrice === undefined || res.data.advanceDiscountPrice === null) ? setDiscountApplied(false) : setDiscountApplied(true)}
                     } else {
-                        console.log("Program coming here!")
-                        setTotalAmount(res.data.message);
+                        if(res.data.isAdvanced || res.data.discount){
+                            setAdvance(res.data.isAdvanced);
+                            setDiscountApplied(res.data.discount);
+                            setDiscountPrice(res.data.discountPrice);
+                            setAmount_advance(res.data.advanceCheckin);
+                            setTotalAmount(res.data.message - res.data.advanceCheckin- res.data.discountPrice)
+                        } else {
+                            setTotalAmount(res.data.message);
+                        }
                     }
                 } else {
                     setShowerror(true);
@@ -335,7 +364,8 @@ const HomeRoom = (props) => {
             checkoutdate: checkoutdate,
             roomtype: props.roomtype,
             prebook : props.prebook,
-            amount: totalAmount
+            amount: totalAmount,
+            totalDishAmount: calcdishrate
         }
         axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
             .then(res => {
@@ -362,13 +392,6 @@ const HomeRoom = (props) => {
                           <p style={{ color: "black" }}>Bed Count : {props.bedcount}</p>
                           <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
                           <p style ={{color: "black"}}> Price Per Day : {props.price}</p>
-                          {
-                            props.discount ? (
-                                <p style ={{color: "black"}}> Discount Applied: True</p>
-                            ) : (
-                                <p style ={{color: "black"}}> Discount Applied: False</p>
-                            )
-                          }
                       </div>
 
                       {/* // Check In Modal */}
@@ -487,6 +510,10 @@ const HomeRoom = (props) => {
                                   <label style={{ color: "black" }}> Advance Amount </label>
                                   <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={prebookadvance} value={prebookadvance} onChange={(e) => setPrebookadvance(e.target.value)} />
                               </div>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Discount (Optional) </label>
+                                  <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name = {prebookdiscount} value = {prebookdiscount} onChange = {(e) => setPrebookdiscount(e.target.value)} />
+                              </div>
                           </Modal.Body>
                           <Modal.Footer>
                               <Button className="btn btn-secondary" onClick={preBookModal}>Close</Button>
@@ -509,7 +536,7 @@ const HomeRoom = (props) => {
                           {
                               userdata.map((item, key) => {
                                   return (
-                                      <ModalCheckOut roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber = {item.secondphonenumber} aadharcard = {item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData = {item.dateofcheckout} />
+                                      <ModalCheckOut discount = {props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber = {item.secondphonenumber} aadharcard = {item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData = {item.dateofcheckout} />
                                   )
                               })
                           }
