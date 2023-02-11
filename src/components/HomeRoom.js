@@ -81,6 +81,11 @@ const HomeRoom = (props) => {
     const [totaldishrate, setTotaldishrate] = useState([]);
     // Chek out date for normal bookers
     const [checkedoutdate, setCheckedoutdate] = useState();
+    // Discount Amount for the customer!
+    const [discount, setDiscount] = useState();
+    // Advance amount for the customer!
+    const [advanceCheckin, setAdvanceCheckin] = useState();
+
 
     // Pre Book Customer Data
     const [prebookusername, setPrebookusername] = useState();
@@ -203,6 +208,8 @@ const HomeRoom = (props) => {
                 checkout : formatDate(checkedoutdate),
                 roomid: props.roomid,
                 roomno: props.roomno,
+                discount: discount,
+                advance: advanceCheckin
             }
             axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
                 .then(res => {
@@ -241,8 +248,11 @@ const HomeRoom = (props) => {
 
 
     // Error-Text for prebooked user!
-    const [advance, setAdvance] = useState(false);
+    const [advance, setAdvance] = useState();
     const [amount_advance, setAmount_advance] = useState(0);
+    const [discountApplied, setDiscountApplied] = useState();
+    const [discountPrice, setDiscountPrice] = useState();
+    const [totalAmount, setTotalAmount] = useState()
     // Check Out Customer Data
     const clearData = async () => {
         const credentials = {
@@ -280,9 +290,21 @@ const HomeRoom = (props) => {
             .then(res => {
                 if (res.data.success) {
                     handleCloseGeneratedBill();
-                    setAmount(res.data.message - res.data.advance);
-                    setAmount_advance(res.data.advance);
-                    {res.data.prebook === true ? setAdvance(res.data.prebook) : setAdvance(res.data.prebook)};
+                    setAmount(res.data.message);
+                    if(res.data.isAdvanced || res.data.discount){
+                        setAdvance(res.data.isAdvanced);
+                        setDiscountApplied(res.data.discount);
+                        setDiscountPrice(res.data.discountPrice);
+                        setAmount_advance(res.data.advanceCheckin);
+                        setTotalAmount(res.data.message - res.data.advanceCheckin- res.data.discountPrice)
+                    } else if(res.data.prebook){
+                        setTotalAmount(res.data.message - res.data.advance);
+                        setAmount_advance(res.data.advance)
+                        {res.data.prebook === true ? setAdvance(res.data.prebook) : setAdvance(res.data.prebook)};
+                    } else {
+                        console.log("Program coming here!")
+                        setTotalAmount(res.data.message);
+                    }
                 } else {
                     setShowerror(true);
                     setSuccess(res.data.message)
@@ -306,7 +328,6 @@ const HomeRoom = (props) => {
 
     const checkedOut = () => {
         handleCloseGeneratedBill();
-        console.log(amount);
         const credentials = {
             userid: userid,
             roomid: props.roomid,
@@ -314,7 +335,7 @@ const HomeRoom = (props) => {
             checkoutdate: checkoutdate,
             roomtype: props.roomtype,
             prebook : props.prebook,
-            amount: amount
+            amount: totalAmount
         }
         axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
             .then(res => {
@@ -341,6 +362,13 @@ const HomeRoom = (props) => {
                           <p style={{ color: "black" }}>Bed Count : {props.bedcount}</p>
                           <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
                           <p style ={{color: "black"}}> Price Per Day : {props.price}</p>
+                          {
+                            props.discount ? (
+                                <p style ={{color: "black"}}> Discount Applied: True</p>
+                            ) : (
+                                <p style ={{color: "black"}}> Discount Applied: False</p>
+                            )
+                          }
                       </div>
 
                       {/* // Check In Modal */}
@@ -382,6 +410,14 @@ const HomeRoom = (props) => {
                               <div className='modal-gap'>
                                   <label style={{ color: "black" }}> Aadhar Number of anyone adult </label>
                                   <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Aadhar Card Number' name={aadhar} value={aadhar} onChange={(e) => setAadhar(e.target.value)} />
+                              </div>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Advance Amount(Optional) </label>
+                                  <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name = {advanceCheckin} value={advanceCheckin} onChange = {(e) => setAdvanceCheckin(e.target.value)} />
+                              </div>
+                              <div className='modal-gap'>
+                                  <label style={{ color: "black" }}> Discount Amount(Optional) </label>
+                                  <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name = {discount} value = {discount} onChange = {(e) => setDiscount(e.target.value)}/>
                               </div>
                               <div className='modal-gap'>
                                   <label style={{ color: "black" }}> Date Of Check In - (Default Date is Today's Date!) </label>
@@ -501,6 +537,15 @@ const HomeRoom = (props) => {
                                         Advance amount has been reduced in the total amount - {amount_advance} Rs!
                                     </p>
                                 ) : (
+                                   null
+                                )
+                              }
+                              {
+                                discountApplied === true ? (
+                                    <p>
+                                        Discount amount has been reduced in the total amount - {discountPrice} Rs!
+                                    </p>
+                                ) : (
                                     null
                                 )
                               }
@@ -528,10 +573,18 @@ const HomeRoom = (props) => {
                               </table>
                               <h5 style = {{fontWeight : "bold"}}>Total amount to be paid - 
                               {
-                                isNaN(Number(calcdishrate) + Number(amount)) ? (
+                                discountApplied === true ? (
+                                    isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
                                         " Calculating..."
+                                    ) : (
+                                        (" " +(Number(calcdishrate) + Number(totalAmount)) + " Rs")
+                                    )
                                 ) : (
-                                     (" " +(Number(calcdishrate) + Number(amount)) + " Rs")
+                                    isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
+                                        " Calculating..."
+                                    ) : (
+                                        (" " +(Number(calcdishrate) + Number(totalAmount)) + " Rs")
+                                    )
                                 )
                               }</h5>
                           </Modal.Body>
