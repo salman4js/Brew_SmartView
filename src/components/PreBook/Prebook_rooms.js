@@ -69,7 +69,7 @@ const Prebook_rooms = () => {
                                     {
                                         data.map((item, key) => {
                                             return (
-                                                <Prebook_component setLoad = {setLoad} roomno={item.roomno} customername = {item.prebookUsername} phonenumber = {item.prebookPhoneNumber} secphonenumber = {item.prebookSecondNumber} adults = {item.prebookAdults} childrens = {item.prebookChildren} aadhar = {item.prebookAadharCard} dateofcheckin = {item.prebookDateofCheckin} dateofcheckout = {item.prebookDateofCheckout} advance = {item.prebookAdvance} roomid = {item.room} lodgeid = {item.lodge} prebookuser = {item._id} prebookprice = {item.prebookprice}/>
+                                                <Prebook_component setLoad = {setLoad} roomno={item.roomno} customername = {item.prebookUsername} phonenumber = {item.prebookPhoneNumber} secphonenumber = {item.prebookSecondNumber} adults = {item.prebookAdults} childrens = {item.prebookChildren} aadhar = {item.prebookAadharCard} dateofcheckin = {item.prebookDateofCheckin} dateofcheckout = {item.prebookDateofCheckout} advance = {item.prebookAdvance} discount = {item.prebookdiscount} roomid = {item.room} lodgeid = {item.lodge} prebookuser = {item._id} prebookprice = {item.prebookprice}/>
                                             )
                                         })
                                     }

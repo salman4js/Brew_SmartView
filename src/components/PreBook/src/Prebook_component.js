@@ -71,7 +71,10 @@ const Prebook_component = (props) => {
         roomno: props.roomno,
         prebookprice : props.prebookprice,
         prebook : true,
-        advancePrebookPrice : props.advance
+        discount: props.discount, // Sending duplicate data to the server to prevent including more schema values
+        advance: props.advance, // Sending duplicate data to the server to prevent including more schema values
+        advancePrebookPrice : props.advance,
+        advanceDiscount: props.discount
       }
       axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
         .then(res => {
@@ -205,6 +208,9 @@ const Prebook_component = (props) => {
             </p>
             <p className="heading-title">
               Advance Paid: {props.advance}
+            </p>
+            <p className="heading-title">
+              Discount Amount : {props.discount}
             </p>
             <p className="heading-title">
               Adults Count: {props.adults}

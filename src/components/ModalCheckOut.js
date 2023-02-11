@@ -75,6 +75,17 @@ const ModalCheckOut = (props) => {
                     No.Of.Days Stay : {stay}
                 </p>
                 {
+                    props.discount ? (
+                        <p className='font-big'>
+                            Discount Applied: True
+                        </p>
+                    ) : (
+                        <p className='font-big'>
+                            Discount Applied:  False
+                        </p>
+                    )
+                }
+                {
                     props.tempData == undefined ? (
                         <p className="acknowledgement">
                             (Customer hasn't provided any checkout information, Hence taking today's date as checkout date!)

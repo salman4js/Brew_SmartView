@@ -159,7 +159,8 @@ const UserDb = () => {
                                                     <UserDbComp roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} 
                                                     secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} 
                                                     checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} 
-                                                    stayeddays={item.stayedDays} prebooked = {item.prebooked} discount = {item.discount} advance = {item.advance} bill = {item.bill} />
+                                                    stayeddays={item.stayedDays} prebooked = {item.prebooked} discount = {item.discount} 
+                                                    advance = {item.advance} bill = {item.bill} dishBill = {item.dishbill} />
                                                 )
                                             })
                                         }
