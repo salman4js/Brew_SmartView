@@ -375,3 +375,15 @@ table, th, td{
   max-height : 300px;
   overflow: auto;
 }
+
+.bottom-down{
+  margin-top: 10px;
+}
+
+.align-left{
+  margin-right: 10px;
+}
+
+.align-left-more{
+  margin-left: 5px;
+}

@@ -24,6 +24,11 @@ const LandingPage = () => {
     //Loader
     const [loading, setLoading] = useState(false);
 
+    // Counter for the dashboard!
+    const [totalcounter, setTotalcounter] = useState();
+    const [reservedcounter, setReservedcounter] = useState();
+    const [freecounter, setFreecounter] = useState();
+
     // Search Configuration
     const [search, setSearch] = useState("");
     const [sort, setSort] = useState("Show All");
@@ -50,7 +55,7 @@ const LandingPage = () => {
         if (!token) {
             setRoom(false)
         } else {
-            axios.post(`${Variables.hostId}/${splitedIds[0]}/roomlodge`, {
+            axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge`, {
                 headers: {
                     "x-access-token": localStorage.getItem("token"),
                 }
@@ -59,6 +64,8 @@ const LandingPage = () => {
                     if(res.data.success){
                         setLoading(false);
                         setRoom(res.data.message)
+                        setFreecounter(res.data.countAvailability);
+                        setReservedcounter(res.data.message.length - res.data.countAvailability);
                         console.log(res.data.message)
                     } else {
                         setLoading(false);
@@ -127,8 +134,22 @@ const LandingPage = () => {
                           <div className="text-center">
                               <div>
                                   <h3 className='heading-top topic-off'>
-                                      {splitedIds[1]} - Dashboard
+                                      {splitedIds[1]} - Dashboard 
                                   </h3>
+                                  <div className = "btn btn-primary">
+                                    <span className = "align-left">
+                                        Booked Rooms: 
+                                        <span class="align-left-more badge text-bg-secondary">{reservedcounter}</span>
+                                    </span>
+                                    <span className = "align-left">
+                                        Free Rooms: 
+                                        <span class="align-left-more badge text-bg-secondary">{freecounter}</span>
+                                    </span>
+                                    <span className = "align-left">
+                                        Total Rooms:
+                                        <span class="align-left-more badge text-bg-secondary">{room.length}</span>
+                                    </span>
+                                  </div>
                               </div>
                           </div>
                           <div className='grid-system-search'>
