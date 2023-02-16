@@ -25,7 +25,7 @@ const Generator = () => {
     if (!token) {
       setData(false);
     } else {
-      axios.post(`${Variables.hostId}/${splitedIds[0]}/roomlodge`, {
+      axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge`, {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         }
