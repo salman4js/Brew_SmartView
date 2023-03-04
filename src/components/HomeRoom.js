@@ -576,6 +576,24 @@ const HomeRoom = (props) => {
                                     null
                                 )
                               }
+                              {
+                                isNaN(Number(totalAmount)) ? (
+                                   <div>
+                                        <p>
+                                            Amount deducted for CGST - Calculating...
+                                        </p>
+                                        <p>
+                                            Amount deducted for SGST - Calculating... 
+                                        </p>
+                                   </div>
+                                ) : (
+                                   <div>
+                                         <p>
+                                            Amount deducted for GST - {(totalAmount < 7500 ? totalAmount*0.12 : totalAmount*0.18)}
+                                        </p>
+                                   </div>
+                                )
+                              }
                               <table className="table">
                                   <thead>
                                       <tr>
@@ -598,6 +616,12 @@ const HomeRoom = (props) => {
                                       }
                                   </thead>
                               </table>
+                              <p>
+                                Total Amount to be paid for dish service - {isNaN(calcdishrate) ? "Calculating..." : calcdishrate}
+                              </p>
+                              <p>
+                                Total Amount to be paid for dish service with GST - {isNaN(calcdishrate) ? "Calculating..." : (calcdishrate * 0.05)}
+                              </p>
                               <h5 style = {{fontWeight : "bold"}}>Total amount to be paid - 
                               {
                                 discountApplied === true ? (
@@ -611,6 +635,22 @@ const HomeRoom = (props) => {
                                         " Calculating..."
                                     ) : (
                                         (" " +(Number(calcdishrate) + Number(totalAmount)) + " Rs")
+                                    )
+                                )
+                              }</h5>
+                              <h5 style = {{fontWeight : "bold"}}>Total amount to be paid with GST - 
+                              {
+                                discountApplied === true ? (
+                                    isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
+                                        " Calculating..."
+                                    ) : (
+                                        (" " +(Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount) + Number(totalAmount < 7500 ? totalAmount*0.12 : totalAmount*0.18)) + " Rs")
+                                    )
+                                ) : (
+                                    isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
+                                        " Calculating..."
+                                    ) : (
+                                        (" " +(Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount) + Number(totalAmount < 7500 ? totalAmount*0.12 : totalAmount*0.18)) + " Rs")
                                     )
                                 )
                               }</h5>
