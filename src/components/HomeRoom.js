@@ -365,7 +365,9 @@ const HomeRoom = (props) => {
             roomtype: props.roomtype,
             prebook : props.prebook,
             amount: totalAmount,
-            totalDishAmount: calcdishrate
+            totalDishAmount: calcdishrate,
+            foodGst: calcdishrate * 0.05,
+            stayGst: (totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)
         }
         axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
             .then(res => {

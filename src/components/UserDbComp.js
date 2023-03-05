@@ -90,10 +90,19 @@ const UserDbComp = (props) => {
              )
             }
             <p className="font-big">
-                Amount Paid : {props.bill}
+                Dish Amount : {props.dishBill}
+            </p>
+            <p className='font-big'>
+              Dish GST Amount: {props.foodGst}
             </p>
             <p className="font-big">
-                Dish Amount : {props.dishBill}
+                Stay Amount : {props.bill}
+            </p>
+            <p className = 'font-big'>
+              Stay GST Amount: {props.stayGst}
+            </p>
+            <p className='font-big'>
+              Total Paid Amount: {props.totalAmount}
             </p>
           </Modal.Body>
           <Modal.Footer>
