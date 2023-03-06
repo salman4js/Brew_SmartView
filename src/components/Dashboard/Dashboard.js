@@ -36,10 +36,12 @@ const Dashboard = () => {
         setLoader(true);
         const average = await axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge-duplicate`);
         const upcomingCheckout = await axios.post(`${Variables.hostId}/${splitedIds[0]}/upcomingcheckout`, data);
+        const upcomingPrebook = await axios.post(`${Variables.hostId}/${splitedIds[0]}/prebookupcoming`, data);
         axios.all([average, upcomingCheckout])
             .then(axios.spread((...responses) => {
                 const average1 = responses[0];
                 const upcoming = responses[1];
+                const prebook = responses[2];
                 if (average1.data.success) {
                     setRoom(average1.data.message.length);
                     setFree(average1.data.countAvailability);
@@ -48,12 +50,20 @@ const Dashboard = () => {
                     sessionExpired();
                 }
 
-                // Upcoming call response
+                // Upcoming-Checkout call response
                 if (upcoming.data.success) {
                     setData(upcoming.data.message);
                 } else {
                     sessionExpired();
                 }
+
+                // Upcoming Prebook call response!
+                if(prebook.data.success){
+
+                } else {
+                    
+                }
+
             }))
         setLoader(false);
     }
@@ -69,12 +79,9 @@ const Dashboard = () => {
         console.log("Function triggered")
     }
 
-    const options = [1,2,3]
-
     // Constructor for calling the API!
     useEffect(() => {
-        //setLoader(true); // Setting the loader here to prevent the clitches in the UI
-        //averageCalculator();
+        setLoader(true); // Setting the loader here to prevent the clitches in the UI
         batchesApi();
     }, [])
 
@@ -88,13 +95,7 @@ const Dashboard = () => {
                     <div className = "container">
                         <Average average={Number(booked) / Number(room) * 100} />
                         <div className = "row">
-                            {
-                                options.map((options,key) => {
-                                    return(
-                                        <Cabinets data={data} helperPanel={() => helperPanel()} />
-                                    )
-                                })
-                            }
+                            <Cabinets data={data} helperPanel={() => helperPanel()} cabinetHeader = {"UPCOMING CHECK OUT"} />
                         </div>
                     </div>
                 )

@@ -5,8 +5,8 @@ const Cabinets = (props) => {
     return (
         <div className="col-4">
             <div class="card card-container" style={{ width: '40vh'}}>
-                <div class="card-header text-handler" style = {{fontWeight: "bold", fontSize: '18px'}}>
-                    Upcoming Check-Outs
+                <div class="card-header text-handler text-center" style = {{fontWeight: "bold", fontSize: '18px'}}>
+                    {props.cabinetHeader}
                 </div>
                 <div className="card-body-container">
                     <ul class="list-group list-group-flush">
