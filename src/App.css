@@ -387,3 +387,31 @@ table, th, td{
 .align-left-more{
   margin-left: 5px;
 }
+
+.average-container{
+  margin-top: 80px;
+  font-weight: bold;
+  font-size: 150px;
+}
+
+.text-handler{
+  color: black;
+}
+
+.dropdown{
+  float: right;
+  cursor: pointer;
+}
+
+.cabinets{
+  cursor: pointer;
+}
+
+.card-container{
+  height: 300px;
+  max-height: 300px;
+}
+
+.card-body-container{
+  overflow: auto;
+}

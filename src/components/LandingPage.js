@@ -66,7 +66,6 @@ const LandingPage = () => {
                         setRoom(res.data.message)
                         setFreecounter(res.data.countAvailability);
                         setReservedcounter(res.data.message.length - res.data.countAvailability);
-                        console.log(res.data.message)
                     } else {
                         setLoading(false);
                         localStorage.clear();

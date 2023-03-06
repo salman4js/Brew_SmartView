@@ -21,6 +21,7 @@ import AddData from './components/Configure_Transport/src/AddData';
 import AddMode from './components/Configure_Transport/AddMode';
 import Admin from './components/Config/Admin';
 import Client from './components/Config/Client';
+import Dashboard from './components/Dashboard/Dashboard';
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path = "/:id/addData" exact element = {<AddData />} />
           <Route path = "/:id/addmode" exact element = {<AddMode />} />
           <Route path = "/:id/client-config" exact element = {<Client />} />
+          <Route path = "/:id/dashboard" exact element = {<Dashboard />} />
         </Routes>
       </Router>
     </div>
