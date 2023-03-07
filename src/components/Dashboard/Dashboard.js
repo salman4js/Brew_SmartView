@@ -5,6 +5,8 @@ import Variables from '../Variables';
 import Navbar from '../Navbar';
 import Loading from '../Loading';
 import Cabinets from './Cabinets/Cabinets';
+import ModalValue from './ValueToast/ModalValue';
+import Card from './Cabinets/Cards/Card';
 
 // Importing Link react module
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -24,6 +26,16 @@ const Dashboard = () => {
 
     // Upcoming checkout state handler!
     const [data, setData] = useState([]);
+    const [roomno, setRoomno] = useState();
+
+    // State handler for prebook data
+    const [prebook, setPrebook] = useState([]);
+
+    // Modal state handler!
+    const [modal, setModal] = useState(false);
+    const [modaldata, setModaldata] = useState();
+    const [methodid, setMethodid] = useState("");
+
     // State handler for loader
     const [loader, setLoader] = useState(false);
 
@@ -36,10 +48,12 @@ const Dashboard = () => {
         setLoader(true);
         const average = await axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge-duplicate`);
         const upcomingCheckout = await axios.post(`${Variables.hostId}/${splitedIds[0]}/upcomingcheckout`, data);
-        axios.all([average, upcomingCheckout])
+        const upcomingPrebook = await axios.post(`${Variables.hostId}/${splitedIds[0]}/prebookupcoming`, data);
+        axios.all([average, upcomingCheckout, upcomingPrebook])
             .then(axios.spread((...responses) => {
                 const average1 = responses[0];
                 const upcoming = responses[1];
+                const prebook = responses[2];
                 if (average1.data.success) {
                     setRoom(average1.data.message.length);
                     setFree(average1.data.countAvailability);
@@ -48,12 +62,20 @@ const Dashboard = () => {
                     sessionExpired();
                 }
 
-                // Upcoming call response
+                // Upcoming-Checkout call response
                 if (upcoming.data.success) {
                     setData(upcoming.data.message);
                 } else {
                     sessionExpired();
                 }
+
+                // Upcoming Prebook call response!
+                if (prebook.data.success) {
+                    setPrebook(prebook.data.message);
+                } else {
+                    sessionExpired();
+                }
+
             }))
         setLoader(false);
     }
@@ -65,16 +87,48 @@ const Dashboard = () => {
     }
 
     // Helper Panel for the cabinets
-    function helperPanel() {
-        console.log("Function triggered")
+    function helperPanel(data, id) {
+        handleModal();
+        setMethodid(id)
+        setModaldata(data);
     }
 
-    const options = [1,2,3]
+    // Handle the modal state
+    function handleModal(){
+        // Handle Modal Here!
+        setModal(!modal);
+    }
+
+    // Navigator
+    function navigateDash(){
+        navigate(`/${splitedIds[0]}-${splitedIds[1]}/landingpage`, { replace: true })
+    }
+
+    // Modal Config
+    const modalConfig = {
+        title: {
+            isRequired: true,
+            id: "Details"
+        },
+        content: {
+            id: {
+                id: methodid,
+                isRequired: true,
+                components: true,
+                attributes: modaldata
+            }
+        },
+        btn: {
+            isRequired: true,
+            btn: {
+                id: "OK"
+            }
+        }
+    }
 
     // Constructor for calling the API!
     useEffect(() => {
-        //setLoader(true); // Setting the loader here to prevent the clitches in the UI
-        //averageCalculator();
+        setLoader(true); // Setting the loader here to prevent the clitches in the UI
         batchesApi();
     }, [])
 
@@ -85,18 +139,18 @@ const Dashboard = () => {
                 loader ? (
                     <Loading />
                 ) : (
-                    <div className = "container">
-                        <Average average={Number(booked) / Number(room) * 100} />
-                        <div className = "row">
-                            {
-                                options.map((options,key) => {
-                                    return(
-                                        <Cabinets data={data} helperPanel={() => helperPanel()} />
-                                    )
-                                })
-                            }
+                    modal ? (
+                        <ModalValue config = {modalConfig} show = {modal} handleClose = {() => handleModal()} />
+                    ) : (
+                        <div className="container">
+                            <Average average={Number(booked) / Number(room) * 100} />
+                            <div className="row">
+                                <Card navigate = {() => navigateDash()} />
+                                <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} />
+                                <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} />
+                            </div>
                         </div>
-                    </div>
+                    )
                 )
             }
         </div>

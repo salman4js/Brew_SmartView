@@ -51,7 +51,7 @@ const Navbar = (props) => {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav ml-auto"  >
                         <li className="nav-item active">
-                            <Link className="nav-link" to={`/${props.id}/landingpage`} style={{ color: "white" }} > Home </Link>
+                            <Link className="nav-link" to={`/${props.id}/dashboard`} style={{ color: "white" }} > Home </Link>
                         </li>
                         <li class="nav-item dropdown">
                             <Link class="nav-link dropdown-toggle" to={`/${props.id}/rooms`} id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

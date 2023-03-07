@@ -389,9 +389,9 @@ table, th, td{
 }
 
 .average-container{
-  margin-top: 80px;
+  margin-top: 0px;
   font-weight: bold;
-  font-size: 150px;
+  font-size: 140px;
 }
 
 .text-handler{
@@ -414,4 +414,12 @@ table, th, td{
 
 .card-body-container{
   overflow: auto;
+}
+
+.text-font-handler{
+  font-weight: bold;
+  font-size: 20px;
+  color: white;
+  margin-top: 120px;
+  cursor: pointer;
 }

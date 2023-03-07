@@ -38,7 +38,7 @@ const Login = () => {
             setLoading(!loading);
             setError("");
             localStorage.setItem("token", res.data.token);
-            navigate(`/${res.data.hostId}-${res.data.lodgename}/landingpage`, { replace: true })
+            navigate(`/${res.data.hostId}-${res.data.lodgename}/dashboard`, { replace: true })
           } else {
             setLoading(false);
             setError(res.data)
