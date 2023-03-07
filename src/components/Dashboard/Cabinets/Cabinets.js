@@ -11,11 +11,22 @@ const Cabinets = (props) => {
                 <div className="card-body-container">
                     <ul class="list-group list-group-flush">
                         {
-                            props.data.map((options, key) => {
-                                return (
-                                    <Values username={options.username} helperPanel = {() => props.helperPanel()} />
-                                )
-                            })
+                            props.methodCall === "checkout" && (
+                                    props.data.map((options, key) => { 
+                                        return (
+                                            <Values roomno={options.roomno} data = {options} helperPanel = {(data, id) => props.helperPanel(data, id)} id = {props.methodCall} />
+                                        )
+                                    })
+                            )
+                        }
+                        {
+                            props.methodCall === "prebook" && (
+                                    props.data.map((options, key) => {
+                                        return (
+                                            <Values roomno={options.roomno} data = {options} helperPanel = {(data, id) => props.helperPanel(data, id)} id = {props.methodCall} />
+                                        )
+                                    })
+                            )
                         }
                     </ul>
                 </div>
