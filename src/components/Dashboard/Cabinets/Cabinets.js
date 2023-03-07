@@ -2,6 +2,7 @@ import React from 'react';
 import Values from './CabinetsValue/Values';
 
 const Cabinets = (props) => {
+
     return (
         <div className="col-4">
             <div class="card card-container" style={{ width: '40vh'}}>
@@ -13,9 +14,15 @@ const Cabinets = (props) => {
                         {
                             props.methodCall === "checkout" && (
                                     props.data.map((options, key) => { 
-                                        return (
-                                            <Values roomno={options.roomno} data = {options} helperPanel = {(data, id) => props.helperPanel(data, id)} id = {props.methodCall} />
-                                        )
+                                        if(options.roomno !== undefined){
+                                            return (
+                                                <Values roomno={options.roomno} data = {options} helperPanel = {(data, id) => props.helperPanel(data, id)} id = {props.methodCall} />
+                                            )
+                                        } else {
+                                            return (
+                                                <Values roomno={options.username} data = {options} helperPanel = {(data, id) => props.helperPanel(data, id)} id = {props.methodCall} />
+                                            )
+                                        }
                                     })
                             )
                         }

@@ -146,8 +146,8 @@ const Dashboard = () => {
                             <Average average={Number(booked) / Number(room) * 100} />
                             <div className="row">
                                 <Card navigate = {() => navigateDash()} />
-                                <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} />
-                                <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} />
+                                <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid = {splitedIds[0]} />
+                                <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid = {splitedIds[0]} />
                             </div>
                         </div>
                     )
