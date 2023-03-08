@@ -22,6 +22,8 @@ const Values = (props) => {
                         // Error handling to update the build to the latest!
                     }
                 })
+        } else {
+            props.loaderState(false);
         }
     }
 

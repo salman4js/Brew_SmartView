@@ -48,6 +48,15 @@ const Cabinets = (props) => {
                                     })
                             )
                         }
+                        {
+                            props.methodCall === "favourites" && (
+                                props.data.map((options,key) => {
+                                    return(
+                                        <Values roomno={options.username} data = {options} helperPanel = {(data, id) => props.helperPanel(data, id)} id = {props.methodCall} loaderState = {(data) => changeLoader(data)} loader = {loader} />
+                                    )
+                                })
+                            )
+                        }
                     </ul>
                 </div>
             </div>

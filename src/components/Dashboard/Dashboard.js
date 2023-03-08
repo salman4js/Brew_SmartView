@@ -32,6 +32,9 @@ const Dashboard = () => {
     // State handler for prebook data
     const [prebook, setPrebook] = useState([]);
 
+    // State handler for favourites data!
+    const [favcustomer, setFavcustomer] = useState([]);
+
     // Modal state handler!
     const [modal, setModal] = useState(false);
     const [modaldata, setModaldata] = useState();
@@ -54,11 +57,13 @@ const Dashboard = () => {
         const average = await axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge-duplicate`);
         const upcomingCheckout = await axios.post(`${Variables.hostId}/${splitedIds[0]}/upcomingcheckout`, data);
         const upcomingPrebook = await axios.post(`${Variables.hostId}/${splitedIds[0]}/prebookupcoming`, data);
-        axios.all([average, upcomingCheckout, upcomingPrebook])
+        const favCustomers = await axios.post(`${Variables.hostId}/${splitedIds[0]}/favcustomer`);
+        axios.all([average, upcomingCheckout, upcomingPrebook, favCustomers])
             .then(axios.spread((...responses) => {
                 const average1 = responses[0];
                 const upcoming = responses[1];
                 const prebook = responses[2];
+                const favourites = responses[3];
                 if (average1.data.success) {
                     setRoom(average1.data.message.length);
                     setFree(average1.data.countAvailability);
@@ -77,6 +82,13 @@ const Dashboard = () => {
                 // Upcoming Prebook call response!
                 if (prebook.data.success) {
                     setPrebook(prebook.data.message);
+                } else {
+                    sessionExpired();
+                }
+
+                // Favourites call response!
+                if(favourites.data.success){
+                    setFavcustomer(favourites.data.message);
                 } else {
                     sessionExpired();
                 }
@@ -153,6 +165,7 @@ const Dashboard = () => {
                                 <Card navigate = {() => navigateDash()} />
                                 <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid = {splitedIds[0]} />
                                 <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid = {splitedIds[0]} />
+                                <Cabinets data ={favcustomer} helperPanel={(data,id) => helperPanel(data,id)} cabinetHeader = {"FAV CUSTOMERS"} methodCall = {"favourites"} lodgeid = {splitedIds[0]} />
                             </div>
                         </div>
                     )

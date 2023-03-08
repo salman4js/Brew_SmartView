@@ -34,7 +34,7 @@ const ValueModal = (props) => {
             </p>
         </div>
         )
-    } else {
+    } else if(props.methodid === "prebook") {
        return(
         <div>
             <p>
@@ -66,6 +66,38 @@ const ValueModal = (props) => {
             </p>
         </div>
        )
+    } else if(props.methodid === "favourites"){
+        return(
+            <div>
+            <p>
+                Customer Name: {props.data.username}
+            </p>
+            <p>
+                Phone Number: {props.data.phonenumber}
+            </p>
+            <p>
+                Second Phone Number: {props.data.secondphonenumber}
+            </p>
+            <p>
+                Adults: {props.data.adults}
+            </p>
+            <p>
+                Childrens: {props.data.childrens}
+            </p>
+            <p>
+                Date of check-in: {props.data.dateofcheckin}
+            </p>
+            <p>
+                Date of check-out: {props.data.dateofcheckout}
+            </p>
+            <p>
+                Discount: {props.data.discount}
+            </p>
+            <p>
+            Advance: {props.data.advance}
+            </p>
+        </div>
+        )
     }
 }
 
