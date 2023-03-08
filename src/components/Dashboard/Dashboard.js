@@ -7,6 +7,7 @@ import Loading from '../Loading';
 import Cabinets from './Cabinets/Cabinets';
 import ModalValue from './ValueToast/ModalValue';
 import Card from './Cabinets/Cards/Card';
+import bwt, { getFullDate } from 'brew-date';
 
 // Importing Link react module
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -42,8 +43,12 @@ const Dashboard = () => {
 
     // Batches API call
     async function batchesApi() {
+        // Calculate the dates between using brew-date package, Later initializa the number of days in config for the users!
+        const date = bwt.getFullDate('yyyy/mm/dd');
+        const datesBetween = bwt.getBetween(date, bwt.addDates(date, 3));
         const data = {
-            days: 3
+            days: 3,
+            datesBetween: datesBetween
         }
         setLoader(true);
         const average = await axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge-duplicate`);
