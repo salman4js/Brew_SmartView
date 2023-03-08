@@ -445,3 +445,7 @@ table, th, td{
 .search-icon{
   float: right;
 }
+
+.dashboard-input{
+  margin-bottom: 10px;
+}

@@ -37,7 +37,7 @@ const Values = (props) => {
                 <div>
                     <li class="list-group-item">
                         <span className="text-handler cabinets">
-                            {props.roomno}
+                            {props.roomno} 
                         </span>
                         <span className="text-handler dropdown" onClick={() => props.helperPanel(props.data, props.id)}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">

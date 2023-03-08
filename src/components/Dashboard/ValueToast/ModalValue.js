@@ -16,19 +16,38 @@ const ModalValue = (props) => {
             >
                 <Modal.Header closeButton>
                     {props.config.title && props.config.title.isRequired && (
-                        <Modal.Title className = "contained-modal-title-vcenter">
+                        <Modal.Title className="contained-modal-title-vcenter">
                             {props.config.title.id}
                         </Modal.Title>
                     )}
                 </Modal.Header>
                 <Modal.Body>
                     {props.config.content && props.config.content.id.isRequired && props.config.content.id.components && (
-                        <ValueModal methodid = {props.config.content.id.id} data = {props.config.content.id.attributes}  />
+                        <ValueModal methodid={props.config.content.id.id} data={props.config.content.id.attributes} />
+                    )}
+                    {props.config.content.id.id === "favourites" && (
+                        <div>
+                            <label style={{ color: "black", fontWeight: "bold" }}> Select Room Options </label>
+                            <select class="form-select" aria-label="Default select example" onChange = {(e => props.roomno(e.target.value))}>
+                                <option selected>Choose...</option>
+                                {
+                                    props.config.content.favourites.content.btn.btn1.data.map((options, key) => {
+                                        return (
+                                            <option>{options.roomno} - {options.suiteName}</option>
+                                        )
+                                    })
+                                }
+                            </select>
+                        </div>
                     )}
                 </Modal.Body>
                 {props.config.btn && props.config.btn.isRequired && (
                     <Modal.Footer>
-                        <Button variant = "secondary" onClick={() => props.handleClose()}>{props.config.btn.btn.id}</Button>
+                        {props.config.content.id.id === "favourites" && (
+                            <div>
+                                <Button variant={props.config.content.favourites.content.btn.btn1.variant} onClick={() => props.handleOpenModal(props.config.content.id.attributes)}>{props.config.content.favourites.content.btn.btn1.id}</Button>
+                            </div>
+                        )}
                     </Modal.Footer>
                 )}
             </Modal>
