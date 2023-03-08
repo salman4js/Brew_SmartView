@@ -79,22 +79,7 @@ const ValueModal = (props) => {
                 Second Phone Number: {props.data.secondphonenumber}
             </p>
             <p>
-                Adults: {props.data.adults}
-            </p>
-            <p>
-                Childrens: {props.data.childrens}
-            </p>
-            <p>
-                Date of check-in: {props.data.dateofcheckin}
-            </p>
-            <p>
-                Date of check-out: {props.data.dateofcheckout}
-            </p>
-            <p>
-                Discount: {props.data.discount}
-            </p>
-            <p>
-            Advance: {props.data.advance}
+                Aadhar Card: {props.data.aadharcard}
             </p>
         </div>
         )

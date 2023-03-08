@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Average from './Average/Average';
 import Variables from '../Variables';
@@ -6,8 +8,9 @@ import Navbar from '../Navbar';
 import Loading from '../Loading';
 import Cabinets from './Cabinets/Cabinets';
 import ModalValue from './ValueToast/ModalValue';
+import CheckinModal from '../CheckinModal/checkin.modal';
 import Card from './Cabinets/Cards/Card';
-import bwt, { getFullDate } from 'brew-date';
+import bwt from 'brew-date';
 
 // Importing Link react module
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -40,6 +43,22 @@ const Dashboard = () => {
     const [modaldata, setModaldata] = useState();
     const [methodid, setMethodid] = useState("");
 
+    // Checkin modal state handler
+    const [checkinModal, setCheckinModal] = useState(false);
+    const [adults, setAdults] = useState();
+    const [childrens, setChildrens] = useState();
+    const [roomnumber, setRoomnumber] = useState();
+    const [checkin, setCheckin] = useState();
+    const [checkout, setCheckout] = useState();
+    const [discount, setDiscount] = useState();
+    const [advance, setAdvance] = useState();
+
+    // Available Handler
+    const [roomdata, setRoomdata] = useState([]);
+
+    // Favourite customer check in data handler!
+    const [favData, setFavData] = useState();
+
     // State handler for loader
     const [loader, setLoader] = useState(false);
 
@@ -58,12 +77,15 @@ const Dashboard = () => {
         const upcomingCheckout = await axios.post(`${Variables.hostId}/${splitedIds[0]}/upcomingcheckout`, data);
         const upcomingPrebook = await axios.post(`${Variables.hostId}/${splitedIds[0]}/prebookupcoming`, data);
         const favCustomers = await axios.post(`${Variables.hostId}/${splitedIds[0]}/favcustomer`);
-        axios.all([average, upcomingCheckout, upcomingPrebook, favCustomers])
+        const availability = await axios.post(`${Variables.hostId}/${splitedIds[0]}/availability`);
+        axios.all([average, upcomingCheckout, upcomingPrebook, favCustomers, availability])
             .then(axios.spread((...responses) => {
                 const average1 = responses[0];
                 const upcoming = responses[1];
                 const prebook = responses[2];
                 const favourites = responses[3];
+                const available = responses[4];
+
                 if (average1.data.success) {
                     setRoom(average1.data.message.length);
                     setFree(average1.data.countAvailability);
@@ -87,8 +109,15 @@ const Dashboard = () => {
                 }
 
                 // Favourites call response!
-                if(favourites.data.success){
+                if (favourites.data.success) {
                     setFavcustomer(favourites.data.message);
+                } else {
+                    sessionExpired();
+                }
+
+                // Available checking call response!
+                if(available.data.success){
+                    setRoomdata(available.data.message);
                 } else {
                     sessionExpired();
                 }
@@ -111,13 +140,20 @@ const Dashboard = () => {
     }
 
     // Handle the modal state
-    function handleModal(){
+    function handleModal() {
         // Handle Modal Here!
         setModal(!modal);
     }
 
+    // Handle checkin modal state
+    function handleCheckInModal(data) {
+        setFavData(data);
+        setModal(false);
+        setCheckinModal(!checkinModal);
+    }
+
     // Navigator
-    function navigateDash(){
+    function navigateDash() {
         navigate(`/${splitedIds[0]}-${splitedIds[1]}/landingpage`, { replace: true })
     }
 
@@ -133,6 +169,17 @@ const Dashboard = () => {
                 isRequired: true,
                 components: true,
                 attributes: modaldata
+            },
+            favourites: {
+                content: {
+                    btn: {
+                        btn1: {
+                            variant: "success",
+                            id: "Check-In",
+                            data: roomdata
+                        }
+                    }
+                }
             }
         },
         btn: {
@@ -157,17 +204,35 @@ const Dashboard = () => {
                     <Loading />
                 ) : (
                     modal ? (
-                        <ModalValue config = {modalConfig} show = {modal} handleClose = {() => handleModal()} />
+                        <ModalValue config={modalConfig} show={modal} handleClose={() => handleModal()} handleOpenModal={(data) => handleCheckInModal(data)} roomno = {(data) => setRoomnumber(data)} />
                     ) : (
-                        <div className="container">
-                            <Average average={Number(booked) / Number(room) * 100} />
-                            <div className="row">
-                                <Card navigate = {() => navigateDash()} />
-                                <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid = {splitedIds[0]} />
-                                <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid = {splitedIds[0]} />
-                                <Cabinets data ={favcustomer} helperPanel={(data,id) => helperPanel(data,id)} cabinetHeader = {"FAV CUSTOMERS"} methodCall = {"favourites"} lodgeid = {splitedIds[0]} />
+                        checkinModal === true ? (
+                            <Modal
+                                show={checkinModal}
+                                onHide={handleCheckInModal}
+                                backdrop="static"
+                                keyboard={false}
+                                className = "text-center"
+                                centered
+                            >
+                                <Modal.Header closeButton>
+                                    <div className = "text-center">
+                                        Check-In Favourite Customer
+                                    </div>
+                                </Modal.Header>
+                                <CheckinModal adults = {setAdults} childrens = {setChildrens} discount = {setDiscount} advance = {setAdvance} roomno = {roomnumber} dateofcheckin = {setCheckin} dateofcheckout = {setCheckout} data={favData} show={checkinModal} handleClose = {(data) => handleCheckInModal(data)} />
+                            </Modal>
+                        ) : (
+                            <div className="container">
+                                <Average average={Number(booked) / Number(room) * 100} />
+                                <div className="row">
+                                    <Card navigate={() => navigateDash()} />
+                                    <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid={splitedIds[0]} />
+                                    <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid={splitedIds[0]} />
+                                    <Cabinets data={favcustomer} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"FAV CUSTOMERS"} methodCall={"favourites"} lodgeid={splitedIds[0]} />
+                                </div>
                             </div>
-                        </div>
+                        )
                     )
                 )
             }

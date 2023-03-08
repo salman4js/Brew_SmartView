@@ -75,10 +75,10 @@ const Cabinets = (props) => {
                         {
                             props.methodCall === "favourites" && (
                                props.data.filter((options) => {
-                                    return options.username.toLowerCase().includes(searchValue.toLowerCase());
+                                    return options.phonenumber.toLowerCase().includes(searchValue.toLowerCase()) || options.secondphonenumber.toLowerCase().includes(searchValue.toLowerCase()) || options.username.toLowerCase().includes(searchValue.toLowerCase()) || options.aadharcard.toLowerCase().includes(searchValue.toLowerCase());
                                }).map((item,key) => {
                                     return (
-                                        <Values roomno={item.username} data={item} helperPanel={(data, id) => props.helperPanel(data, id)} id={props.methodCall} loaderState={(data) => changeLoader(data)} loader={loader} />
+                                        <Values roomno={item.username} secphonenumber = {item.secondphonenumber} data={item} helperPanel={(data, id) => props.helperPanel(data, id)} id={props.methodCall} loaderState={(data) => changeLoader(data)} loader={loader} />
                                     )
                                })
                             )
