@@ -558,12 +558,12 @@ td {
 }
 
 .dots-error-text{
-  background-color: rgb(244, 146, 146);
-  border: 0.5px solid red;
+  background-color:rgb(100, 100, 237);
+  border: 0.5px solid blue;
 }
 
 .dots-error-message{
-  color: red;
+  color: black;
   padding-top: 8px;
 }
 
