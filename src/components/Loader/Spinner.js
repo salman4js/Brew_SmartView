@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Spinner = () => {
+const Spinner = (props) => {
     return (
         <div className="text-center">
-            <div className="spinner">
+            <div className="spinner" style = {{width: props.width, height: props.height}}>
 
             </div>
         </div>

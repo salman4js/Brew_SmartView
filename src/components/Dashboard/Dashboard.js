@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Average from './Average/Average';
 import Variables from '../Variables';
@@ -11,10 +10,12 @@ import ModalValue from './ValueToast/ModalValue';
 import CheckinModal from '../CheckinModal/checkin.modal';
 import Card from './Cabinets/Cards/Card';
 import bwt from 'brew-date';
+import formatDate from '../PreBook/Date_Format/DateFormatter';
 
 // Importing Link react module
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import changeScreen from '../Action';
+
 
 const Dashboard = () => {
 
@@ -30,7 +31,6 @@ const Dashboard = () => {
 
     // Upcoming checkout state handler!
     const [data, setData] = useState([]);
-    const [roomno, setRoomno] = useState();
 
     // State handler for prebook data
     const [prebook, setPrebook] = useState([]);
@@ -48,10 +48,13 @@ const Dashboard = () => {
     const [adults, setAdults] = useState();
     const [childrens, setChildrens] = useState();
     const [roomnumber, setRoomnumber] = useState();
-    const [checkin, setCheckin] = useState();
+    const [dateofcheckout, setDateofcheckout] = useState();
     const [checkout, setCheckout] = useState();
     const [discount, setDiscount] = useState();
     const [advance, setAdvance] = useState();
+    const [roomno, setRoomno] = useState();
+    const [roomid, setRoomid] = useState();
+
 
     // Available Handler
     const [roomdata, setRoomdata] = useState([]);
@@ -61,6 +64,10 @@ const Dashboard = () => {
 
     // State handler for loader
     const [loader, setLoader] = useState(false);
+
+    // Toast state handler
+    const [toast, setToast] = useState(false);
+    const [tMessage, setTMessage] = useState("");
 
 
     // Batches API call
@@ -116,7 +123,7 @@ const Dashboard = () => {
                 }
 
                 // Available checking call response!
-                if(available.data.success){
+                if (available.data.success) {
                     setRoomdata(available.data.message);
                 } else {
                     sessionExpired();
@@ -143,18 +150,129 @@ const Dashboard = () => {
     function handleModal() {
         // Handle Modal Here!
         setModal(!modal);
+        resetToast();
     }
 
     // Handle checkin modal state
     function handleCheckInModal(data) {
+        resetDatePicker(); // Assign back to the initial state
         setFavData(data);
         setModal(false);
         setCheckinModal(!checkinModal);
     }
 
+    // Resetting the date picker value!
+    function resetDatePicker() {
+        // Setting the required data back to the initial state!
+        setExcludeDates([]);
+        setError(true);
+    }
+
     // Navigator
     function navigateDash() {
         navigate(`/${splitedIds[0]}-${splitedIds[1]}/landingpage`, { replace: true })
+    }
+
+    // Get the exclude dates
+    const [excludeDates, setExcludeDates] = useState([]);
+    // Dots loader error text handler
+    const [error, setError] = useState(true);
+    const getExcludeDates = async (data) => {
+        setRoomid(data);
+        await axios.get(`${Variables.hostId}/${data}/excludedates`)
+            .then(res => {
+                if (res.data.success) {
+                    setError(false);
+                    res.data.message.map((item) => {
+                        item.forEach(element => {
+                            setExcludeDates(oldValue => [...oldValue, new Date(element)]);
+                        })
+                    })
+                } else {
+                    // TODO: Error handling!
+                }
+            })
+    }
+
+    // Get the roomid by room number
+    const handleDates = async (data) => {
+        resetDatePicker();
+        // Split the roomno as the data comes with the room type too...
+        const roomno = data.split(/[-]/);
+        const room = roomno[0].trim()
+        // Setting the roomid to the state!
+        setRoomno(room);
+        const validation = {
+            roomno: room,
+            lodgeid: splitedIds[0]
+        }
+        axios.post(`${Variables.hostId}/${validation.lodgeid}/getroomid`, validation)
+            .then(res => {
+                if (res.data.success) {
+                    res.data.message.map((item, key) => {
+                        getExcludeDates(item._id);
+                    })
+                } else {
+                    // TODO: Error handling!
+                }
+            })
+    }
+
+    // Handle Modal Back Router
+    function handleRouter(){
+        setCheckinModal(!checkinModal);
+        setModal(!modal);
+    }
+
+    // Handle success checkin!
+    function handleResponse(message) {
+        setModal(!modal);
+        setToast(true);
+        setTMessage(message);
+        setLoader(false);
+        setCheckinModal(false);
+    }
+
+    // Reset Toast response!
+    function resetToast(){
+        setToast(false);
+        setTMessage("");
+    }
+
+    // Helper functions!
+    function updateCheckout(data){
+        setCheckout(data);
+        setDateofcheckout(data);
+    }
+    
+    // Check-In fav customer!
+    function checkIn(data){
+        // Initialize loader
+        setLoader(true);
+        const collection = {
+            customername: data.username,
+            phonenumber: data.phonenumber,
+            secondphonenumber: data.secondphonenumber,
+            adults: adults,
+            chidrens: childrens,
+            aadhar: data.aadharcard,
+            checkin: bwt.getFullDate("yyyy/mm/dd"), 
+            checkout: formatDate(checkout),
+            discount: discount,
+            advance: advance,
+            roomno: roomno,
+            roomid: roomid // Room id retrieving from the getExcludeDates function!
+        }
+        // Add check-in collection to the database!
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/adduserrooms`, collection)
+            .then(option => {
+                if(option.data.success){
+                    handleResponse(option.data.message);
+                } else {
+                    handleResponse(option.data.message);
+                }
+            })
+        
     }
 
     // Modal Config
@@ -204,7 +322,7 @@ const Dashboard = () => {
                     <Loading />
                 ) : (
                     modal ? (
-                        <ModalValue config={modalConfig} show={modal} handleClose={() => handleModal()} handleOpenModal={(data) => handleCheckInModal(data)} roomno = {(data) => setRoomnumber(data)} />
+                        <ModalValue toast = {toast} toastMessage = {tMessage} config={modalConfig} show={modal} handleClose={() => handleModal()} handleOpenModal={(data) => handleCheckInModal(data)} roomno={(data) => setRoomnumber(data)} />
                     ) : (
                         checkinModal === true ? (
                             <Modal
@@ -212,15 +330,21 @@ const Dashboard = () => {
                                 onHide={handleCheckInModal}
                                 backdrop="static"
                                 keyboard={false}
-                                className = "text-center"
+                                className="text-center"
                                 centered
                             >
                                 <Modal.Header closeButton>
-                                    <div className = "text-center">
+                                    <div className = "side-right" onClick = {() => handleRouter()}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                                        </svg>
+                                    </div>
+                                    <div className="text-center">
                                         Check-In Favourite Customer
                                     </div>
                                 </Modal.Header>
-                                <CheckinModal adults = {setAdults} childrens = {setChildrens} discount = {setDiscount} advance = {setAdvance} roomno = {roomnumber} dateofcheckin = {setCheckin} dateofcheckout = {setCheckout} data={favData} show={checkinModal} handleClose = {(data) => handleCheckInModal(data)} />
+                                <CheckinModal handleCheckIn = {(data) => checkIn(data)} error={error} excludeDates={excludeDates} adults={setAdults} childrens={setChildrens} discount={setDiscount} advance={setAdvance} 
+                                roomno={(data) => handleDates(data)} checkout={dateofcheckout} dateofcheckout={(data) => updateCheckout(data)} data={favData} show={checkinModal} roomdata={roomdata} handleClose={(data) => handleCheckInModal(data)}  />
                             </Modal>
                         ) : (
                             <div className="container">
