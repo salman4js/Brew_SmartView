@@ -28,10 +28,18 @@ const CheckinModal = (props) => {
                 </div>
                 {props.error === false && (
                     <div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Date Of Check In </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={Date.now()} excludeDates={props.excludeDates} dateFormat='y-MM-dd' minDate={new Date()} isClearable />
-                        </div>
+                        {props.node === "Check-In" && (
+                            <div className='modal-gap'>
+                                <label style={{ color: "black" }}> Date Of Check In </label>
+                                <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={Date.now()} excludeDates={props.excludeDates} dateFormat='y-MM-dd' minDate={new Date()} isClearable />
+                            </div>
+                        )}
+                        {props.node === "Prebook" && (
+                            <div className='modal-gap'>
+                                <label style={{ color: "black" }}> Date Of Check In </label>
+                                <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={props.checkout} excludeDates={props.excludeDates} dateFormat='y-MM-dd' minDate={new Date()} isClearable />
+                            </div>
+                        )}
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check Out </label>
                             <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...'  excludeDates={props.excludeDates} selected={props.checkout} dateFormat='y-MM-dd' minDate={new Date()} onChange = {(e) => props.dateofcheckout(e)} isClearable />
@@ -55,15 +63,8 @@ const CheckinModal = (props) => {
 
                 <input className="form-control dashboard-input" placeholder="Advance" onChange={(e => props.advance(e.target.value))} />
             </Modal.Body>
-            {/* <Modal.Footer>
-                <Button variant="secondary" onClick={() => props.handleClose(props.data)}>
-                    Cancel
-                </Button>
-                <Button variant="success" onClick = {() => props.handleCheckIn(props.data)}>
-                    Book & Close
-                </Button>
-            </Modal.Footer> */}
-            <PanelFooter failure = {"Close"} success = {"Book and Close"} onFailure = {() => props.handleClose(props.data)} onSuccess = {() => props.handleCheckIn(props.data)} />
+            
+            <PanelFooter failure = {"Close"} success = {"Book and Close"} onFailure = {() => props.handleClose(props.data, props.node)} onSuccess = {() => props.handleCheckIn(props.data)} />
         </div>
     )
 }

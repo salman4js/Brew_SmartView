@@ -69,6 +69,9 @@ const Dashboard = () => {
     const [toast, setToast] = useState(false);
     const [tMessage, setTMessage] = useState("");
 
+    // Model Id Node handler!
+    const [node, setNode] = useState();
+
 
     // Batches API call
     async function batchesApi() {
@@ -154,8 +157,9 @@ const Dashboard = () => {
     }
 
     // Handle checkin modal state
-    function handleCheckInModal(data) {
+    function handleCheckInModal(data, node) {
         resetDatePicker(); // Assign back to the initial state
+        setNode(node);
         setFavData(data);
         setModal(false);
         setCheckinModal(!checkinModal);
@@ -292,8 +296,13 @@ const Dashboard = () => {
                 content: {
                     btn: {
                         btn1: {
-                            variant: "success",
+                            variant: "primary",
                             id: "Check-In",
+                            data: roomdata
+                        },
+                        btn2: {
+                            variant: "success",
+                            id: "Prebook",
                             data: roomdata
                         }
                     }
@@ -322,7 +331,7 @@ const Dashboard = () => {
                     <Loading />
                 ) : (
                     modal ? (
-                        <ModalValue toast = {toast} toastMessage = {tMessage} config={modalConfig} show={modal} handleClose={() => handleModal()} handleOpenModal={(data) => handleCheckInModal(data)} roomno={(data) => setRoomnumber(data)} />
+                        <ModalValue toast = {toast} toastMessage = {tMessage} config={modalConfig} show={modal} handleClose={() => handleModal()} handleOpenModal={(data, modelId) => handleCheckInModal(data, modelId)} roomno={(data) => setRoomnumber(data)} />
                     ) : (
                         checkinModal === true ? (
                             <Modal
@@ -343,8 +352,8 @@ const Dashboard = () => {
                                         Check-In Favourite Customer
                                     </div>
                                 </Modal.Header>
-                                <CheckinModal handleCheckIn = {(data) => checkIn(data)} error={error} excludeDates={excludeDates} adults={setAdults} childrens={setChildrens} discount={setDiscount} advance={setAdvance} 
-                                roomno={(data) => handleDates(data)} checkout={dateofcheckout} dateofcheckout={(data) => updateCheckout(data)} data={favData} show={checkinModal} roomdata={roomdata} handleClose={(data) => handleCheckInModal(data)}  />
+                                <CheckinModal node = {node} handleCheckIn = {(data) => checkIn(data)} error={error} excludeDates={excludeDates} adults={setAdults} childrens={setChildrens} discount={setDiscount} advance={setAdvance} 
+                                roomno={(data) => handleDates(data)} checkout={dateofcheckout} dateofcheckout={(data) => updateCheckout(data)} data={favData} show={checkinModal} roomdata={roomdata} handleClose={(data, node) => handleCheckInModal(data, node)}  />
                             </Modal>
                         ) : (
                             <div className="container">
