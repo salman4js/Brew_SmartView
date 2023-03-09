@@ -1,36 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+import PanelFooter from '../Panel/PanelFooter'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import Dots from '../Loader/Dots';
 
 const CheckinModal = (props) => {
+
     return (
         <div>
             <Modal.Body>
-                <div className = "modal-gap text-center">
+                <div className='modal-gap text-center'>
+                    <label style={{ color: "black", fontWeight: "bold" }}> Select Room Options </label>
+                    <select class="form-select" aria-label="Default select example" onChange={(e => props.roomno(e.target.value))}>
+                        <option selected>Choose...</option>
+                        {
+                            props.roomdata.map((options, key) => {
+                                return (
+                                    <option>{options.roomno} - {options.suiteName}</option>
+                                )
+                            })
+                        }
+                    </select>
+                </div>
+                <div className="modal-gap text-center">
                     {props.roomno}
                 </div>
-                <div className='modal-gap'>
-                    <label style={{ color: "black" }}> Date Of Check In </label>
-                    <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' isClearable />
-                </div>
-                <div className='modal-gap'>
-                    <label style={{ color: "black" }}> Date Of Check Out </label>
-                    <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' isClearable />
-                </div>
-                <label style={{ color: "black" }}> Customer Name </label>
-                <input className="form-control dashboard-input" value={props.data.username} name={props.data.username} />
-                <label style={{ color: "black" }}> Phone Number </label>
+                {props.error === false && (
+                    <div>
+                        <div className='modal-gap'>
+                            <label style={{ color: "black" }}> Date Of Check In </label>
+                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={Date.now()} excludeDates={props.excludeDates} dateFormat='y-MM-dd' minDate={new Date()} isClearable />
+                        </div>
+                        <div className='modal-gap'>
+                            <label style={{ color: "black" }}> Date Of Check Out </label>
+                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...'  excludeDates={props.excludeDates} selected={props.checkout} dateFormat='y-MM-dd' minDate={new Date()} onChange = {(e) => props.dateofcheckout(e)} isClearable />
+                        </div>
+                    </div>
+                )}
 
-                <input className="form-control dashboard-input" value={props.data.phonenumber} name={props.data.phonenumber} />
-                <label style={{ color: "black" }}> Second PhoneNumber </label>
+                {/* Handle date error */}
+                <Dots errortext={"Please choose a valid room number to check available dates!"} error={props.error} />
 
-                <input className="form-control dashboard-input" value={props.data.secondphonenumber} name={props.data.secpndphonenumber} />
-                <label style={{ color: "black" }}> Aadhar Card </label>
-
-                <input className="form-control dashboard-input" value={props.data.aadharcard} name={props.data.aadharcard} />
                 <label style={{ color: "black" }}> Adults </label>
 
                 <input className="form-control dashboard-input" placeholder="Adults" onChange={(e => props.adults(e.target.value))} />
@@ -44,14 +55,15 @@ const CheckinModal = (props) => {
 
                 <input className="form-control dashboard-input" placeholder="Advance" onChange={(e => props.advance(e.target.value))} />
             </Modal.Body>
-            <Modal.Footer>
+            {/* <Modal.Footer>
                 <Button variant="secondary" onClick={() => props.handleClose(props.data)}>
                     Cancel
                 </Button>
-                {/* <Button variant="success">
+                <Button variant="success" onClick = {() => props.handleCheckIn(props.data)}>
                     Book & Close
-                </Button> */}
-            </Modal.Footer>
+                </Button>
+            </Modal.Footer> */}
+            <PanelFooter failure = {"Close"} success = {"Book and Close"} onFailure = {() => props.handleClose(props.data)} onSuccess = {() => props.handleCheckIn(props.data)} />
         </div>
     )
 }

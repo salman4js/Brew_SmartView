@@ -22,7 +22,7 @@ const Cabinets = (props) => {
 
     return (
         <div className="col-4">
-            <div class="card card-container" style={{ width: '40vh' }}>
+            <div class="card card-container" style = {{paddingBottom: '10px'}}>
                 <div class="card-header text-handler text-center" style={{ fontWeight: "bold", fontSize: '18px' }}>
                     {
                         search === true ? (
@@ -46,7 +46,7 @@ const Cabinets = (props) => {
                         {
                             props.methodCall === "checkout" && (
                                 loader ? (
-                                    <Spinner />
+                                    <Spinner width = {'120px'} height = {'120px'} />
                                 ) : (
                                     props.data.map((options, key) => {
                                         if (options.roomno !== undefined) {
