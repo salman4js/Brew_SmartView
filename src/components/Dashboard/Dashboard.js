@@ -143,7 +143,7 @@ const Dashboard = () => {
 
                 // Recently Checkout Data
                 if(checkoutData.data.success){
-                    setCheck(checkoutData.data.message.reverse()); // Reversing the data, last in, first out...
+                    setCheck(checkoutData.data.message.reverse().slice(0,5)); // Reversing the data, last in, first out... & getting only the last five data's
                 } else {
                     sessionExpired();
                 }
