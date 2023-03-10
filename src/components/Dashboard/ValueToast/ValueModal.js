@@ -83,6 +83,23 @@ const ValueModal = (props) => {
             </p>
         </div>
         )
+    } else if(props.methodid === "recent"){
+        return(
+            <div>
+            <p>
+                Customer Name: {props.data.username}
+            </p>
+            <p>
+                Phone Number: {props.data.phonenumber}
+            </p>
+            <p>
+                Second Phone Number: {props.data.secondphonenumber}
+            </p>
+            <p>
+                Aadhar Card: {props.data.aadharcard}
+            </p>
+        </div>
+        )
     }
 }
 

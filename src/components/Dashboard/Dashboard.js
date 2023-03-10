@@ -32,6 +32,9 @@ const Dashboard = () => {
     // Upcoming checkout state handler!
     const [data, setData] = useState([]);
 
+    // Recentlt checkout data handler!
+    const [check, setCheck] = useState([]);
+
     // State handler for prebook data
     const [prebook, setPrebook] = useState([]);
 
@@ -92,13 +95,15 @@ const Dashboard = () => {
         const upcomingPrebook = await axios.post(`${Variables.hostId}/${splitedIds[0]}/prebookupcoming`, data);
         const favCustomers = await axios.post(`${Variables.hostId}/${splitedIds[0]}/favcustomer`);
         const availability = await axios.post(`${Variables.hostId}/${splitedIds[0]}/availability`);
-        axios.all([average, upcomingCheckout, upcomingPrebook, favCustomers, availability])
+        const checkoutData = await axios.post(`${Variables.hostId}/${splitedIds[0]}/userdb1`);
+        axios.all([average, upcomingCheckout, upcomingPrebook, favCustomers, availability, checkoutData])
             .then(axios.spread((...responses) => {
                 const average1 = responses[0];
                 const upcoming = responses[1];
                 const prebook = responses[2];
                 const favourites = responses[3];
                 const available = responses[4];
+                const checkoutData = responses[5];
 
                 if (average1.data.success) {
                     setRoom(average1.data.message.length);
@@ -135,6 +140,14 @@ const Dashboard = () => {
                 } else {
                     sessionExpired();
                 }
+
+                // Recently Checkout Data
+                if(checkoutData.data.success){
+                    setCheck(checkoutData.data.message.reverse()); // Reversing the data, last in, first out...
+                } else {
+                    sessionExpired();
+                }
+
 
             }))
         setLoader(false);
@@ -241,6 +254,8 @@ const Dashboard = () => {
         setTMessage(message);
         setLoader(false);
         setCheckinModal(false);
+        // When the data collection has been sent to the backend, re-call the batches API to update to the latest data!
+        batchesApi();
     }
 
     // Reset Toast response!
@@ -402,6 +417,7 @@ const Dashboard = () => {
                                     <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid={splitedIds[0]} />
                                     <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid={splitedIds[0]} />
                                     <Cabinets data={favcustomer} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"FAV CUSTOMERS"} methodCall={"favourites"} lodgeid={splitedIds[0]} />
+                                    <Cabinets data={check} helperPanel = {(data,id) => helperPanel(data,id)} cabinetHeader={"RECENTLY CHECKEDOUT"} methodCall = {"recent"} lodgeid={splitedIds[0]} />
                                 </div>
                             </div>
                         )

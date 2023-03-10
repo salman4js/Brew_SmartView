@@ -8,10 +8,12 @@ const Values = (props) => {
     // State to handle the old version checkin's
     const [old, setOld] = useState();
 
+    console.log(props.roomno);
+
     function checkOldVersion() {
         props.loaderState(true)
         // Fix for the old version checkin's
-        if (props.data.roomno === undefined) {
+        if (props.roomno === undefined) {
             // Get roomno here by the ID
             axios.post(`${Variables.hostId}/${props.data.room}/getroomno`)
                 .then(options => {
@@ -31,7 +33,7 @@ const Values = (props) => {
         checkOldVersion()
     }, [])
 
-    if (props.data.roomno !== undefined) {
+    if (props.roomno !== undefined) {
         return (
             <div>
                 <div>
