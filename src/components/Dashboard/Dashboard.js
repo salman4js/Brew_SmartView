@@ -101,20 +101,19 @@ const Dashboard = () => {
         }
 
         setLoader(true);
-        const average = await axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge-duplicate`);
+        const average = await axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge`, {
+            headers: {
+                "x-access-token" : localStorage.getItem("token")
+            }
+        }) 
         const upcomingCheckout = await axios.post(`${Variables.hostId}/${splitedIds[0]}/upcomingcheckout`, data);
         const upcomingPrebook = await axios.post(`${Variables.hostId}/${splitedIds[0]}/prebookupcoming`, data);
         const favCustomers = await axios.post(`${Variables.hostId}/${splitedIds[0]}/favcustomer`);
         const availability = await axios.post(`${Variables.hostId}/${splitedIds[0]}/availability`);
         const checkoutData = await axios.post(`${Variables.hostId}/${splitedIds[0]}/userdb1`);
         const revpar = await axios.post(`${Variables.hostId}/${splitedIds[0]}/totalratecalculator`, revpar_model);
-        const roomlodge = await axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge`, {
-            headers: {
-                "x-access-token" : localStorage.getItem("token")
-            }
-        }) 
         
-        axios.all([average, upcomingCheckout, upcomingPrebook, favCustomers, availability, checkoutData, revpar, roomlodge])
+        axios.all([average, upcomingCheckout, upcomingPrebook, favCustomers, availability, checkoutData, revpar])
             .then(axios.spread((...responses) => {
                 const average1 = responses[0];
                 const upcoming = responses[1];
@@ -123,12 +122,12 @@ const Dashboard = () => {
                 const available = responses[4];
                 const checkoutData = responses[5];
                 const revpar = responses[6];
-                const roomlodge = responses[7];
 
                 if (average1.data.success) {
                     setRoom(average1.data.message.length);
                     setFree(average1.data.countAvailability);
                     setBooked(average1.data.message.length - average1.data.countAvailability);
+                    setAdr(Math.round(revpar.data.totalAmount / average1.data.message.length - average1.data.countAvailability)); // Performing ADR calculation here!
                 } else {
                     sessionExpired();
                 }
@@ -170,14 +169,8 @@ const Dashboard = () => {
 
                 // RevPAR calculation
                 if(revpar.data.success){
-                    setRevpar(Math.round(revpar.data.totalAmount / roomdata.length));
-                } else {
-                    sessionExpired();
-                }
-
-                // ADR calculator
-                if(roomlodge.data.success){
-                    setAdr(Math.round(revpar.data.totalAmount / roomlodge.data.message.length - roomlodge.data.countAvailability))
+                    setRevpar(Math.round(revpar.data.totalAmount / average1.data.message.length));
+                    console.log(average1.data.message.length);
                 } else {
                     sessionExpired();
                 }
