@@ -127,7 +127,7 @@ const Dashboard = () => {
                     setRoom(average1.data.message.length);
                     setFree(average1.data.countAvailability);
                     setBooked(average1.data.message.length - average1.data.countAvailability);
-                    setAdr(Math.round(revpar.data.totalAmount / average1.data.message.length - average1.data.countAvailability)); // Performing ADR calculation here!
+                    setAdr(Math.round(revpar.data.totalAmount / (average1.data.message.length - average1.data.countAvailability))); // Performing ADR calculation here!
                 } else {
                     sessionExpired();
                 }
@@ -170,7 +170,6 @@ const Dashboard = () => {
                 // RevPAR calculation
                 if(revpar.data.success){
                     setRevpar(Math.round(revpar.data.totalAmount / average1.data.message.length));
-                    console.log(average1.data.message.length);
                 } else {
                     sessionExpired();
                 }
