@@ -49,12 +49,16 @@ const Dashboard = () => {
     const [childrens, setChildrens] = useState();
     const [roomnumber, setRoomnumber] = useState();
     const [dateofcheckout, setDateofcheckout] = useState();
+    const [dateofcheckin, setDateofcheckin] = useState();
+    const [checkin, setCheckin] = useState();
     const [checkout, setCheckout] = useState();
     const [discount, setDiscount] = useState();
     const [advance, setAdvance] = useState();
     const [roomno, setRoomno] = useState();
     const [roomid, setRoomid] = useState();
 
+    // Extra state handler needed for prebook checkin collection
+    const [prebookprice, setPrebookprice] = useState();
 
     // Available Handler
     const [roomdata, setRoomdata] = useState([]);
@@ -203,7 +207,9 @@ const Dashboard = () => {
         resetDatePicker();
         // Split the roomno as the data comes with the room type too...
         const roomno = data.split(/[-]/);
-        const room = roomno[0].trim()
+        const room = roomno[0].trim();
+        const price = roomno[2].trim();
+        setPrebookprice(price);
         // Setting the roomid to the state!
         setRoomno(room);
         const validation = {
@@ -248,27 +254,59 @@ const Dashboard = () => {
         setCheckout(data);
         setDateofcheckout(data);
     }
+
+    function updateCheckin(data){
+        setCheckin(data);
+        setDateofcheckin(data)
+    }
     
     // Check-In fav customer!
-    function checkIn(data){
+    function checkIn(data, _node){
         // Initialize loader
         setLoader(true);
-        const collection = {
-            customername: data.username,
-            phonenumber: data.phonenumber,
-            secondphonenumber: data.secondphonenumber,
-            adults: adults,
-            chidrens: childrens,
-            aadhar: data.aadharcard,
-            checkin: bwt.getFullDate("yyyy/mm/dd"), 
-            checkout: formatDate(checkout),
-            discount: discount,
-            advance: advance,
-            roomno: roomno,
-            roomid: roomid // Room id retrieving from the getExcludeDates function!
-        }
-        // Add check-in collection to the database!
-        axios.post(`${Variables.hostId}/${splitedIds[0]}/adduserrooms`, collection)
+        if(_node === "Check-In"){
+            const collection = {
+                customername: data.username,
+                phonenumber: data.phonenumber,
+                secondphonenumber: data.secondphonenumber,
+                adults: adults,
+                chidrens: childrens,
+                aadhar: data.aadharcard,
+                checkin: bwt.getFullDate("yyyy/mm/dd"), 
+                checkout: formatDate(checkout),
+                discount: discount,
+                advance: advance,
+                roomno: roomno,
+                roomid: roomid // Room id retrieving from the getExcludeDates function!
+            }
+            // Add check-in collection to the database!
+            axios.post(`${Variables.hostId}/${splitedIds[0]}/adduserrooms`, collection)
+                .then(option => {
+                    if(option.data.success){
+                        handleResponse(option.data.message);
+                    } else {
+                        handleResponse(option.data.message);
+                    }
+                })
+        } else if(_node === "Prebook"){
+            const prebookModel = {
+                prebookusername: data.username,
+                prebookphonenumber: data.phonenumber,
+                prebooksecondnumber: data.secondphonenumber,
+                prebookadults: adults,
+                prebookchildren: childrens,
+                prebookaadhar: data.aadharcard,
+                prebookdateofcheckin: formatDate(checkin),
+                prebookdateofcheckout: formatDate(checkout),
+                prebookdiscount: discount,
+                prebookadvance: advance,
+                prebookprice: prebookprice,
+                roomno: roomno,
+                roomid: roomid // Room id retrieving from the getExcludeDates function!
+            }
+
+            // Add Prebook model to the collection database!
+            axios.post(`${Variables.hostId}/${splitedIds[0]}/addprebookuserrooms`, prebookModel)
             .then(option => {
                 if(option.data.success){
                     handleResponse(option.data.message);
@@ -276,6 +314,7 @@ const Dashboard = () => {
                     handleResponse(option.data.message);
                 }
             })
+        }
         
     }
 
@@ -352,8 +391,8 @@ const Dashboard = () => {
                                         Check-In Favourite Customer
                                     </div>
                                 </Modal.Header>
-                                <CheckinModal node = {node} handleCheckIn = {(data) => checkIn(data)} error={error} excludeDates={excludeDates} adults={setAdults} childrens={setChildrens} discount={setDiscount} advance={setAdvance} 
-                                roomno={(data) => handleDates(data)} checkout={dateofcheckout} dateofcheckout={(data) => updateCheckout(data)} data={favData} show={checkinModal} roomdata={roomdata} handleClose={(data, node) => handleCheckInModal(data, node)}  />
+                                <CheckinModal node = {node} handleCheckIn = {(data, _node) => checkIn(data, _node)} error={error} excludeDates={excludeDates} adults={setAdults} childrens={setChildrens} discount={setDiscount} advance={setAdvance} 
+                                roomno={(data) => handleDates(data)} checkin = {dateofcheckin} dateofcheckin = {(data) => updateCheckin(data)} checkout={dateofcheckout} dateofcheckout={(data) => updateCheckout(data)} data={favData} show={checkinModal} roomdata={roomdata} handleClose={(data, node) => handleCheckInModal(data, node)}  />
                             </Modal>
                         ) : (
                             <div className="container">

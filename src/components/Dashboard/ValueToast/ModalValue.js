@@ -38,7 +38,7 @@ const ModalValue = (props) => {
                             <div>
                                 {props.config.content.id.id === "favourites" && (
                                     <Modal.Footer>
-                                        {/* <Button variant={props.config.content.favourites.content.btn.btn2.variant} onClick={() => props.handleOpenModal(props.config.content.id.attributes, props.config.content.favourites.content.btn.btn2.id)}>{props.config.content.favourites.content.btn.btn2.id}</Button> */}
+                                        <Button variant={props.config.content.favourites.content.btn.btn2.variant} onClick={() => props.handleOpenModal(props.config.content.id.attributes, props.config.content.favourites.content.btn.btn2.id)}>{props.config.content.favourites.content.btn.btn2.id}</Button>
                                         <Button variant={props.config.content.favourites.content.btn.btn1.variant} onClick={() => props.handleOpenModal(props.config.content.id.attributes, props.config.content.favourites.content.btn.btn1.id)}>{props.config.content.favourites.content.btn.btn1.id}</Button>
                                     </Modal.Footer>
                                 )}
