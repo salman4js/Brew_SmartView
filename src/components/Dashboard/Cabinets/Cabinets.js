@@ -83,6 +83,19 @@ const Cabinets = (props) => {
                                })
                             )
                         }
+                        {
+                            props.methodCall === "recent" && (
+                                props.data.map((item,key) => {
+                                    return(
+                                        <Values roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} 
+                                        secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} 
+                                        checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} 
+                                        stayeddays={item.stayedDays} prebooked = {item.prebooked} discount = {item.discount} 
+                                        advance = {item.advance} bill = {item.bill} dishBill = {item.dishbill} foodGst = {item.foodGst} stayGst= {item.stayGst} totalAmount = {item.totalAmount} data={item} helperPanel={(data, id) => props.helperPanel(data, id)} id={props.methodCall} loaderState={(data) => changeLoader(data)} loader={loader} />
+                                    )
+                                })
+                            )
+                        }
                     </ul>
                 </div>
             </div>
