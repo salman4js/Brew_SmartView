@@ -79,6 +79,10 @@ const Dashboard = () => {
     // Model Id Node handler!
     const [node, setNode] = useState();
 
+    // RevPAR and ADR state handler!
+    const [revpar, setRevpar] = useState();
+    const [adr, setAdr] = useState();
+
 
     // Batches API call
     async function batchesApi() {
@@ -89,6 +93,13 @@ const Dashboard = () => {
             days: 3,
             datesBetween: datesBetween
         }
+
+        // RevPAR model
+        const revpar_model = {
+            date1: bwt.getFullDate("yyyy/mm/dd"),
+            date2: bwt.getFullDate("yyyy/mm/dd")
+        }
+
         setLoader(true);
         const average = await axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge-duplicate`);
         const upcomingCheckout = await axios.post(`${Variables.hostId}/${splitedIds[0]}/upcomingcheckout`, data);
@@ -96,7 +107,14 @@ const Dashboard = () => {
         const favCustomers = await axios.post(`${Variables.hostId}/${splitedIds[0]}/favcustomer`);
         const availability = await axios.post(`${Variables.hostId}/${splitedIds[0]}/availability`);
         const checkoutData = await axios.post(`${Variables.hostId}/${splitedIds[0]}/userdb1`);
-        axios.all([average, upcomingCheckout, upcomingPrebook, favCustomers, availability, checkoutData])
+        const revpar = await axios.post(`${Variables.hostId}/${splitedIds[0]}/totalratecalculator`, revpar_model);
+        const roomlodge = await axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge`, {
+            headers: {
+                "x-access-token" : localStorage.getItem("token")
+            }
+        }) 
+        
+        axios.all([average, upcomingCheckout, upcomingPrebook, favCustomers, availability, checkoutData, revpar, roomlodge])
             .then(axios.spread((...responses) => {
                 const average1 = responses[0];
                 const upcoming = responses[1];
@@ -104,6 +122,8 @@ const Dashboard = () => {
                 const favourites = responses[3];
                 const available = responses[4];
                 const checkoutData = responses[5];
+                const revpar = responses[6];
+                const roomlodge = responses[7];
 
                 if (average1.data.success) {
                     setRoom(average1.data.message.length);
@@ -144,6 +164,20 @@ const Dashboard = () => {
                 // Recently Checkout Data
                 if(checkoutData.data.success){
                     setCheck(checkoutData.data.message.reverse().slice(0,5)); // Reversing the data, last in, first out... & getting only the last five data's
+                } else {
+                    sessionExpired();
+                }
+
+                // RevPAR calculation
+                if(revpar.data.success){
+                    setRevpar(Math.round(revpar.data.totalAmount / roomdata.length));
+                } else {
+                    sessionExpired();
+                }
+
+                // ADR calculator
+                if(roomlodge.data.success){
+                    setAdr(Math.round(revpar.data.totalAmount / roomlodge.data.message.length - roomlodge.data.countAvailability))
                 } else {
                     sessionExpired();
                 }
@@ -371,6 +405,42 @@ const Dashboard = () => {
         }
     }
 
+    // Idle helper function!
+    function idleHelper(){
+        return;
+    }
+
+    // Token expiration checking!
+    const parseJwt = (token) => {
+        try {
+          return JSON.parse(atob(token.split(".")[1]));
+        } catch (e) {
+          return null;
+        }
+      };
+
+    const AuthVerify = () => {
+          const user = localStorage.getItem("token");
+      
+          if (user) {
+            const decodedJwt = parseJwt(user);
+      
+            if (decodedJwt.exp * 1000 < Date.now()) {
+              localStorage.clear();
+              changeScreen();
+            }
+          }
+    }
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            AuthVerify();
+        }, 9000)
+        return () => clearInterval(interval)
+    }, [])
+
+
     // Constructor for calling the API!
     useEffect(() => {
         setLoader(true); // Setting the loader here to prevent the clitches in the UI
@@ -413,11 +483,12 @@ const Dashboard = () => {
                             <div className="container">
                                 <Average average={Number(booked) / Number(room) * 100} />
                                 <div className="row">
-                                    <Card navigate={() => navigateDash()} />
+                                    <Card navigate={() => navigateDash()} message = {"Check-In Rooms"} _node = {"doclist"} />
                                     <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid={splitedIds[0]} />
                                     <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid={splitedIds[0]} />
                                     <Cabinets data={favcustomer} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"FAV CUSTOMERS"} methodCall={"favourites"} lodgeid={splitedIds[0]} />
                                     <Cabinets data={check} helperPanel = {(data,id) => helperPanel(data,id)} cabinetHeader={"RECENTLY CHECKEDOUT"} methodCall = {"recent"} lodgeid={splitedIds[0]} />
+                                    <Card navigate = {() => idleHelper()} _node = {"revenue"} revpar = {revpar} adr = {adr} />
                                 </div>
                             </div>
                         )

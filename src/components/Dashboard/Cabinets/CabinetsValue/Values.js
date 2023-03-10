@@ -8,8 +8,6 @@ const Values = (props) => {
     // State to handle the old version checkin's
     const [old, setOld] = useState();
 
-    console.log(props.roomno);
-
     function checkOldVersion() {
         props.loaderState(true)
         // Fix for the old version checkin's
