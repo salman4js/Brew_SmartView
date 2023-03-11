@@ -14,10 +14,30 @@ const Card = (props) => {
           <div className = "card card-container" style = {{backgroundColor: 'rgb(23, 120, 83)', cursor: 'pointer'}} onClick = {() => props.navigate()}>
             <div className = "text-center text-handler text-font-handler">
                 <div>
-                  ADR = {props.adr} rs / room 
+                  {
+                    props.adr !== Infinity ? (
+                      <div>
+                        ADR = {props.adr} rs / room
+                      </div>
+                    ) : (
+                      <div>
+                        ADR = 0 rs / room
+                      </div>
+                    )
+                  } 
                 </div>
                 <div>
-                  RevPAR = {props.revpar} rs / room.
+                  {
+                    props.revpar !== Infinity ? (
+                      <div>
+                        RevPAR = {props.revpar} rs / room.
+                      </div>
+                    ) : (
+                      <div>
+                        RevPAR = 0 rs / room.
+                      </div>
+                    )
+                  }
                 </div>
             </div>
           </div>
