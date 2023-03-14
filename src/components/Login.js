@@ -17,6 +17,9 @@ const Login = () => {
   // Loader
   const [loading, setLoading] = useState(false);
 
+  // Account Lockout Handler!
+  const [isLocked, setIsLocked] = useState(false);
+
   const handleShow = () => {
     setShow(false);
     setError(undefined);
@@ -38,10 +41,19 @@ const Login = () => {
             setLoading(!loading);
             setError("");
             localStorage.setItem("token", res.data.token);
-            navigate(`/${res.data.hostId}-${res.data.lodgename}/dashboard`, { replace: true })
+            // Before Navigating to the landing page, check the accont lockout!
+            if(res.data.isLocked){
+              // Show Account Lockout Dialog!
+              setError(res.data.isLockedMessage);
+              setLoading(false); // Close off the loader!
+              setShow(res.data.isLocked);
+            } else {
+              // If account is not locked, allow the user to the base!
+              navigate(`/${res.data.hostId}-${res.data.lodgename}/dashboard`, { replace: true })
+            }
           } else {
             setLoading(false);
-            setError(res.data)
+            setError(res.data.message)
             setShow(!show);
           }
         })
@@ -96,7 +108,7 @@ const Login = () => {
                             <div>
                             </div>
                           ) : (
-                            <Modals show={show} message={error.message} />
+                            <Modals show={show} message={error} />
                           )
                         }
                       </div>
