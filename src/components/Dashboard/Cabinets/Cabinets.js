@@ -86,9 +86,11 @@ const Cabinets = (props) => {
                         {
                             props.methodCall === "recent" && (
                                 props.data.map((item,key) => {
+                                   if(item.dateofcheckout !== ""){ // Takes only when the user has been checked out!
                                     return(
                                         <Values roomno={item.roomno} data={item} helperPanel={(data, id) => props.helperPanel(data, id)} id={props.methodCall} loaderState={(data) => changeLoader(data)} loader={loader} />
                                     )
+                                   } 
                                 })
                             )
                         }
