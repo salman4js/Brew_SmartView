@@ -571,3 +571,7 @@ td {
   margin-right: 20px;
   cursor: pointer;
 }
+
+.bar-chart{
+  background-color: white;
+}
