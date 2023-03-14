@@ -22,6 +22,7 @@ import AddMode from './components/Configure_Transport/AddMode';
 import Admin from './components/Config/Admin';
 import Client from './components/Config/Client';
 import Dashboard from './components/Dashboard/Dashboard';
+import Charts from './components/Dashboard/Chart/Charts';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
           <Route path = "/:id/addmode" exact element = {<AddMode />} />
           <Route path = "/:id/client-config" exact element = {<Client />} />
           <Route path = "/:id/dashboard" exact element = {<Dashboard />} />
+          <Route path = "/:id/chart-dashboard" exact element = {<Charts />} />
         </Routes>
       </Router>
     </div>
