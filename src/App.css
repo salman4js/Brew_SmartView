@@ -572,6 +572,27 @@ td {
   cursor: pointer;
 }
 
+.chart-container{
+  padding: 30px;
+}
+
 .bar-chart{
   background-color: white;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.chart-view{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+}
+
+.bar-chart:nth-child(3) {
+  grid-column-end: -1;
+}
+
+.bar-chart-input-dropdown{
+  padding-left: calc(100% - 30px);
+  cursor: pointer;
 }
