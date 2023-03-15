@@ -1,4 +1,5 @@
 import React from 'react';
+import BarChart from '../../Chart/BarChart/BarChart';
 
 const Card = (props) => {
   return (
@@ -40,6 +41,11 @@ const Card = (props) => {
                   }
                 </div>
             </div>
+          </div>
+        )}
+        {props._node === "bar-chart" && (
+          <div className = "bar-chart">
+              <BarChart />
           </div>
         )}
     </div>
