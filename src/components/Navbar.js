@@ -58,7 +58,7 @@ const Navbar = (props) => {
                                 Rooms
                             </Link>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <Link className = "nav-link dropdown-item" to={`/${props.id}/landingpage`} style = {{color: "black"}}> Check-In Rooms </Link>
+                                <Link className="nav-link dropdown-item" to={`/${props.id}/landingpage`} style={{ color: "black" }}> Check-In Rooms </Link>
                                 <Link className='nav-link dropdown-item' to={`/${props.id}/rooms`} style={{ color: "black" }}> Available Rooms</Link>
                                 {
                                     options.map((item, key) => {
@@ -136,6 +136,7 @@ const Navbar = (props) => {
                                                 }
                                             })
                                         }
+                                        <Link className="nav-link dropdown-item" to={`/${props.id}/chart-dashboard`} style={{ color: "black" }}>Insights</Link>
                                         <Link className='nav-link dropdown-item' to={`/${props.id}/contentnative`} style={{ color: "black" }}> Generate Reports </Link>
                                     </ul>
                                 </li>
