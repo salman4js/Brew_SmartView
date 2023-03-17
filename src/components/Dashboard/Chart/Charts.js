@@ -9,7 +9,7 @@ import BarChart from './BarChart/BarChart';
 import Drop from './Dropdown/Drop';
 import { Link, useParams } from 'react-router-dom';
 import changeScreen from '../../Action';
-
+import Loading from '../../Loading';
 
 const Charts = () => {
 
@@ -51,8 +51,20 @@ const Charts = () => {
     data: undefined
   })
 
+  // Room Type Revenue State handler!
+  const [_rev, set_rev] = useState({
+    type: undefined,
+    rate: undefined,
+    total: undefined
+  })
+
+  // Loader State handler!
+  const [loader, setLoader] = useState(false);
+
   // Chart-Dashboard API calls!
   async function batchesApi() {
+
+    setLoader(true);
 
     // Week bar chart required data!
     const datesBetween = bwt.getBetween(date1, date2);
@@ -75,11 +87,17 @@ const Charts = () => {
       return await axios.post(`${Variables.hostId}/${splitedIds[0]}/totaldailycalculator`, monthlyData)
     }
 
+    // Room Type Revenue Calculation!
+    async function roomTypeRev(){
+      return await axios.post(`${Variables.hostId}/${splitedIds[0]}/roomtyperev`)
+    }
+
     // API calls
-    axios.all([weeklyEstimate(), monthlyEstimate()])
+    axios.all([weeklyEstimate(), monthlyEstimate(), roomTypeRev()])
       .then(axios.spread((...responses) => {
         const weekly = responses[0];
         const monthly = responses[1];
+        const roomType = responses[2];
 
         // Weekly Bar Chart data from the API
         if (weekly.data.success) {
@@ -103,7 +121,20 @@ const Charts = () => {
           sessionExpired();
         }
 
+        // Room Type Revenue!
+        if(roomType.data.success){
+          set_rev({
+            type: Object.keys(roomType.data.roomTypeRev),
+            rate: Object.values(roomType.data.roomTypeRev),
+            total: roomType.data.total
+          })
+        } else {
+          sessionExpired();
+        }
+
       }))
+
+      setLoader(false)
 
     return {
       weeklyEstimate
@@ -131,6 +162,10 @@ const Charts = () => {
           'rgba(75, 192, 192, 0.8)',
           'rgba(153, 102, 255, 0.8)',
           'rgba(255, 159, 64, 0.8)',
+          'rgba(119, 159, 64, 0.8)',
+          'rgba(118, 159, 64, 0.8)',
+          'rgba(100, 159, 64, 0.8)',
+          'rgba(45, 159, 64, 0.8)',
         ],
         borderColor: [
           'rgba(255, 99, 132, 1)',
@@ -139,6 +174,10 @@ const Charts = () => {
           'rgba(75, 192, 192, 1)',
           'rgba(153, 102, 255, 1)',
           'rgba(255, 159, 64, 1)',
+          'rgba(119, 159, 64, 0.8)',
+          'rgba(118, 159, 64, 0.8)',
+          'rgba(100, 159, 64, 0.8)',
+          'rgba(45, 159, 64, 0.8)',
         ],
         borderWidth: 1,
       }
@@ -158,7 +197,11 @@ const Charts = () => {
           'rgba(255, 206, 86, 0.8)',
           'rgba(75, 192, 192, 0.8)',
           'rgba(153, 102, 255, 0.8)',
-          'rgba(255, 159, 64, 0.8)',
+          'rgba(149, 159, 64, 0.8)',
+          'rgba(129, 159, 64, 0.8)',
+          'rgba(138, 159, 64, 0.8)',
+          'rgba(111, 159, 64, 0.8)',
+          'rgba(120, 159, 64, 0.8)',
         ],
         borderColor: [
           'rgba(255, 99, 132, 1)',
@@ -167,6 +210,46 @@ const Charts = () => {
           'rgba(75, 192, 192, 1)',
           'rgba(153, 102, 255, 1)',
           'rgba(255, 159, 64, 1)',
+          'rgba(119, 159, 64, 0.8)',
+          'rgba(118, 159, 64, 0.8)',
+          'rgba(100, 159, 64, 0.8)',
+          'rgba(45, 159, 64, 0.8)',
+        ],
+        borderWidth: 1,
+      }
+    ]
+  }
+
+  // Room type revenue estimation data!
+  const roomData = {
+    labels: _rev.type,
+    datasets: [
+      {
+        label: 'BY DATES',
+        data: _rev.rate,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.8)',
+          'rgba(54, 162, 235, 0.8)',
+          'rgba(255, 206, 86, 0.8)',
+          'rgba(75, 192, 192, 0.8)',
+          'rgba(153, 102, 255, 0.8)',
+          'rgba(149, 159, 64, 0.8)',
+          'rgba(129, 159, 64, 0.8)',
+          'rgba(138, 159, 64, 0.8)',
+          'rgba(111, 159, 64, 0.8)',
+          'rgba(120, 159, 64, 0.8)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(119, 159, 64, 0.8)',
+          'rgba(118, 159, 64, 0.8)',
+          'rgba(100, 159, 64, 0.8)',
+          'rgba(45, 159, 64, 0.8)',
         ],
         borderWidth: 1,
       }
@@ -240,17 +323,17 @@ const Charts = () => {
   }
 
   // Hide & Show Exceed function!
-  function exceedStatus(){
+  function exceedStatus() {
     setShowExceed(!showExceed);
   }
 
   function _showExceed() {
     return (
       <Modal
-        show = {_showExceed}
-        onHide = {exceedStatus}
+        show={_showExceed}
+        onHide={exceedStatus}
       >
-        <Panel text = "Please choose a valid date in range of 7 days!" className="text-center" config = "showExceed" />
+        <Panel text="Please choose a valid date in range of 7 days!" className="text-center" config="showExceed" />
       </Modal>
     )
 
@@ -272,69 +355,75 @@ const Charts = () => {
   return (
     <div>
       <Navbar id={id} name={splitedIds[1]} />
-      <div className="chart-container">
-        {
-          showExceed ? (
-            _showExceed()
-          ) : (
-            null
-          )
-        }
-        {open && (
-          <div>
-            <Modal
-              show={open}
-              onHide={handleDrop}
-            >
-              <Modal.Header closeButton>
-                Date Picker
-              </Modal.Header>
-              <Panel text="Choose Start & End Dates" textMonthly="Choose Month" isWeek={panel.isWeek} isMonth={panel.isMonth}
-                className="text-center" config="DatePicker"
-                handleDrop={() => handleDrop()} getWeekData={(data) => getWeekData(data)}
-                _year={(data) => set_mdate({ ..._mdate, _year: data })} _month={(data) => set_mdate({ ..._mdate, _month: data })}
-                getMonthData={(data) => getMonthData(data)}
-              />
-            </Modal>
-          </div>
-        )}
-        <div className="chart-view">
+      {
+        loader ? (
+          <Loading />
+        ) : (
+          <div className="chart-container">
+            {
+              showExceed ? (
+                _showExceed()
+              ) : (
+                null
+              )
+            }
+            {open && (
+              <div>
+                <Modal
+                  show={open}
+                  onHide={handleDrop}
+                >
+                  <Modal.Header closeButton>
+                    Date Picker
+                  </Modal.Header>
+                  <Panel text="Choose Start & End Dates" textMonthly="Choose Month" isWeek={panel.isWeek} isMonth={panel.isMonth}
+                    className="text-center" config="DatePicker"
+                    handleDrop={() => handleDrop()} getWeekData={(data) => getWeekData(data)}
+                    _year={(data) => set_mdate({ ..._mdate, _year: data })} _month={(data) => set_mdate({ ..._mdate, _month: data })}
+                    getMonthData={(data) => getMonthData(data)}
+                  />
+                </Modal>
+              </div>
+            )}
+            <div className="chart-view">
 
-          {/* Weekly Bar Chart */}
-          <div className="bar-chart">
-            <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
-              <Drop isOpen={() => handleDrop("week")} />
-            </div>
-            <BarChart data={WeeklyData} title="Weekly" />
-            <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
-              Weekly Bar Chart!
+              {/* Weekly Bar Chart */}
+              <div className="bar-chart">
+                <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
+                  <Drop isOpen={() => handleDrop("week")} />
+                </div>
+                <BarChart data={WeeklyData} title="Weekly" />
+                <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
+                  Weekly Bar Chart!
+                </div>
+              </div>
+
+              {/* Monthly Bar Chart */}
+              <div className="bar-chart">
+                <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
+                  <Drop isOpen={() => handleDrop()} />
+                </div>
+                <BarChart data={roomData} title="RoomRevenue" />
+                <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
+                  Room Type Analysis Chart - Total Rs.{_rev.total}
+                </div>
+              </div>
+
+              <div className="bar-chart">
+                <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
+                  <Drop isOpen={() => handleDrop("month")} />
+                </div>
+                <BarChart data={monthlyData} title="Monthly" />
+                <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
+                  Monthly Bar Chart!
+                </div>
+              </div>
+
             </div>
           </div>
-
-          {/* Monthly Bar Chart */}
-          <div className="bar-chart">
-            <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
-              <Drop isOpen={() => handleDrop()} />
-            </div>
-            <BarChart data={WeeklyData} title="Weekly" />
-            <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
-              Monthly Bar Chart!
-            </div>
-          </div>
-
-          <div className="bar-chart">
-            <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
-              <Drop isOpen={() => handleDrop("month")} />
-            </div>
-            <BarChart data={monthlyData} title="Monthly" />
-            <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
-              Monthly Bar Chart!
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
+        )
+      }
+    </div >
   )
 }
 
