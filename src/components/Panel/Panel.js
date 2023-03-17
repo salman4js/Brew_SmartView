@@ -15,10 +15,12 @@ const Panel = (props) => {
 
   // Handle Value for the date picker!
   function handleValue() {
-    props.date1(date.date1);
-    props.date2(date.date2);
-    // Call the API function to get data!
-    props.getData(date);
+    if (props.isWeek) {
+      // Call the API function to get data!
+      props.getWeekData(date);
+    } else {
+      props.getMonthData()
+    }
   }
 
   if (props.config === "DatePicker") {
@@ -29,7 +31,7 @@ const Panel = (props) => {
             {props.text}
             <div className="row">
               <div className="col">
-                <DatePicker className="form-control" selected={date.date1} placeholder="Choose Starting Date" onChange={(e) => console.log(e)} dateFormat='y-MM-dd' />
+                <DatePicker className="form-control" selected={date.date1} placeholder="Choose Starting Date" onChange={(e) => setDate({ ...date, date1: e })} dateFormat='y-MM-dd' />
               </div>
               <div className="col">
                 <DatePicker className="form-control" selected={date.date2} placeholder="Choose Ending Date" onChange={(e) => setDate({ ...date, date2: e })} dateFormat='y-MM-dd' />
@@ -41,19 +43,22 @@ const Panel = (props) => {
       )
     }
 
-    if(props.isMonth){
-      return(
-        <div className = {props.className}>
-          <Picker />
+    if (props.isMonth) {
+      return (
+        <div className={props.className}>
+          <Picker _year={(data) => props._year(data)} _month={(data) => props._month(data)} />
+          <PanelFooter success="Search" failure="Cancel" onSuccess={() => handleValue()} onFailure={() => props.handleDrop()} />
         </div>
       )
     }
 
   } else {
     return (
-      <Modal.Body className={props.className}>
-        {props.text}
-      </Modal.Body>
+      <div>
+        <Modal.Body className={props.className}>
+          {props.text}
+        </Modal.Body>
+      </div>
     )
   }
 }

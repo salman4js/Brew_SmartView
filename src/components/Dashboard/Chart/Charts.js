@@ -23,9 +23,18 @@ const Charts = () => {
     isMonth: false
   })
 
-  // Dates weekly estimation!
+  // Exceed state handler!
+  const [showExceed, setShowExceed] = useState(false);
+
+  // default dates weekly estimation!
   const [date1, setDate1] = useState(bwt.subDates(bwt.getFullDate("yyyy/mm/dd"), 6));
   const [date2, setDate2] = useState(bwt.getFullDate("yyyy/mm/dd"));
+
+  // default dates monthly estimation!
+  const [_mdate, set_mdate] = useState({
+    _year: new Date().getFullYear(),
+    _month: new Date().getMonth()
+  });
 
   // Date picker handler!
   const [open, setOpen] = useState(false);
@@ -53,16 +62,16 @@ const Charts = () => {
     }
 
     const monthlyData = {
-     datesBetween: bwt.getAllDatesOfMonth(new Date().getFullYear(), new Date().getMonth())
+      datesBetween: bwt.getAllDatesOfMonth(_mdate._year, _mdate._month)
     }
 
     // Weekly Function!
-    async function weeklyEstimate(){
+    async function weeklyEstimate() {
       return await axios.post(`${Variables.hostId}/${splitedIds[0]}/weeklyestimate`, weeklyData)
     }
 
     // Monthly Function!
-    async function monthlyEstimate(){
+    async function monthlyEstimate() {
       return await axios.post(`${Variables.hostId}/${splitedIds[0]}/totaldailycalculator`, monthlyData)
     }
 
@@ -84,7 +93,7 @@ const Charts = () => {
         }
 
         // Monthly Line chart data from the API
-        if(monthly.data.success){
+        if (monthly.data.success) {
           setMonth({
             ...month,
             label: monthly.data.label,
@@ -96,9 +105,9 @@ const Charts = () => {
 
       }))
 
-      return {
-        weeklyEstimate
-      }
+    return {
+      weeklyEstimate
+    }
 
   }
 
@@ -136,8 +145,8 @@ const Charts = () => {
     ]
   }
 
-   // Monthly data Datasets!
-   const monthlyData = {
+  // Monthly data Datasets!
+  const monthlyData = {
     labels: month.label,
     datasets: [
       {
@@ -165,15 +174,15 @@ const Charts = () => {
   }
 
   // Handle Date Picker 
-  function handleDrop(data){
-    if(data === "week"){
+  function handleDrop(data) {
+    if (data === "week") {
       setPanel({
         ...panel,
         isWeek: true,
         isMonth: false
       })
       changeDropState();
-    } else if(data === "month") {
+    } else if (data === "month") {
       setPanel({
         ...panel,
         isWeek: false,
@@ -184,7 +193,7 @@ const Charts = () => {
       changeDropState();
     }
 
-    function changeDropState(){
+    function changeDropState() {
       setOpen(!open)
     }
 
@@ -192,22 +201,59 @@ const Charts = () => {
 
   // Weekly estimated function!
   async function weeklyEstimated() {
-    if(open){
+    if (open) {
       handleDrop(); //Close the modal only when the modal is true!
     }
     const data = await batchesApi();
     data.weeklyEstimate();
   }
-  
+
+  // Monthly estimated function!
+  async function getMonthData() {
+    if (open) {
+      handleDrop();
+    }
+    const data = await batchesApi();
+    data.monthlyEstimate();
+  }
+
 
   // Make API call based on date picker value!
-  function getData(data){
+  function getWeekData(data) {
     const value = {
-      date1: bwt.format(data.date1, "yyyy/mm/dd"),
-      date2: bwt.format(data.date2, "yyyy/mm/dd")
+      _date1: bwt.format(data.date1, "yyyy/mm/dd"),
+      _date2: bwt.format(data.date2, "yyyy/mm/dd")
     }
-    setDate1(value.date1);
-    setDate2(value.date2);
+
+    // Check the difference is lesser than 7 days!
+    let diff = bwt.getBetween(value._date1, value._date2);
+
+    if (diff.length <= 7) {
+      setDate1(value._date1);
+      setDate2(value._date2);
+    } else {
+      if (open) {
+        handleDrop();
+      }
+      exceedStatus(); // Change the state value!
+    }
+  }
+
+  // Hide & Show Exceed function!
+  function exceedStatus(){
+    setShowExceed(!showExceed);
+  }
+
+  function _showExceed() {
+    return (
+      <Modal
+        show = {_showExceed}
+        onHide = {exceedStatus}
+      >
+        <Panel text = "Please choose a valid date in range of 7 days!" className="text-center" config = "showExceed" />
+      </Modal>
+    )
+
   }
 
   // Calling the weeklyEstimated function only after the states has been updated cause of asynchronous behaviour!
@@ -227,16 +273,28 @@ const Charts = () => {
     <div>
       <Navbar id={id} name={splitedIds[1]} />
       <div className="chart-container">
+        {
+          showExceed ? (
+            _showExceed()
+          ) : (
+            null
+          )
+        }
         {open && (
           <div>
             <Modal
-              show = {open}
-              onHide = {handleDrop}
+              show={open}
+              onHide={handleDrop}
             >
               <Modal.Header closeButton>
-                  Date Picker
+                Date Picker
               </Modal.Header>
-              <Panel text = "Choose Start & End Dates" textMonthly = "Choose Month" isWeek = {panel.isWeek} isMonth = {panel.isMonth} className = "text-center" config = "DatePicker" date1 = {(data) => setDate1(data)} date2 = {(data) => setDate2(data)} handleDrop = {() => handleDrop()} getData = {(data) => getData(data)}  />
+              <Panel text="Choose Start & End Dates" textMonthly="Choose Month" isWeek={panel.isWeek} isMonth={panel.isMonth}
+                className="text-center" config="DatePicker"
+                handleDrop={() => handleDrop()} getWeekData={(data) => getWeekData(data)}
+                _year={(data) => set_mdate({ ..._mdate, _year: data })} _month={(data) => set_mdate({ ..._mdate, _month: data })}
+                getMonthData={(data) => getMonthData(data)}
+              />
             </Modal>
           </div>
         )}
@@ -247,7 +305,7 @@ const Charts = () => {
             <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
               <Drop isOpen={() => handleDrop("week")} />
             </div>
-            <BarChart data={WeeklyData} title = "Weekly" />
+            <BarChart data={WeeklyData} title="Weekly" />
             <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
               Weekly Bar Chart!
             </div>
@@ -258,7 +316,7 @@ const Charts = () => {
             <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
               <Drop isOpen={() => handleDrop()} />
             </div>
-            <BarChart data={WeeklyData} title = "Weekly" />
+            <BarChart data={WeeklyData} title="Weekly" />
             <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
               Monthly Bar Chart!
             </div>
@@ -268,7 +326,7 @@ const Charts = () => {
             <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
               <Drop isOpen={() => handleDrop("month")} />
             </div>
-            <BarChart data={monthlyData} title = "Monthly" />
+            <BarChart data={monthlyData} title="Monthly" />
             <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
               Monthly Bar Chart!
             </div>

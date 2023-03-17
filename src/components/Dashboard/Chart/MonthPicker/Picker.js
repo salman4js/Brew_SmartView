@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Picker = () => {
+const Picker = (props) => {
 
     // Months attributes
     const months = [
@@ -30,17 +30,17 @@ const Picker = () => {
         <div style = {{padding: '20px'}}>
             <div className="row">
                 <div className="col">
-                    <select name="month" className="form-control" >
+                    <select name="month" className="form-control" onChange = {(e) => props._month(months.indexOf(e.target.value))}>
                         <option value="">Select a month</option>
-                        {months.map((month) => (
-                            <option key={month} value={month}>
+                        {months.map((month, key) => (
+                            <option key={key} value={month}>
                                 {month}
                             </option>
                         ))}
                     </select>
                 </div>
                 <div className='col'>
-                    <select name="year" className="form-control">
+                    <select name="year" className="form-control" onChange = {(e) => props._year(e.target.value)}>
                         <option value="">Select a year</option>
                         {years.map((year) => (
                             <option key={year} value={year}>
