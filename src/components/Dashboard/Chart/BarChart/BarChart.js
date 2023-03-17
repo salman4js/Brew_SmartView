@@ -11,7 +11,7 @@ import {
 import Chart from 'chart.js/auto';
 
 
-import { Bar, Line } from 'react-chartjs-2';
+import { Bar, Doughnut, Line } from 'react-chartjs-2';
 
 ChartJS.register(
     BarElement,
@@ -53,6 +53,34 @@ const BarChart = (props) => {
     return(
       <div>
         <Line
+            data={props.data}
+            height={400}
+            width={600}
+            options={{
+              maintainAspectRatio: false,
+              scales: {
+                yAxes: [
+                  {
+                    ticks: {
+                      beginAtZero: true,
+                    },
+                  },
+                ],
+              },
+              legend: {
+                labels: {
+                  fontSize: 25,
+                },
+              },
+            }}
+          />
+          
+      </div>
+    )
+  } else if(props.title === "RoomRevenue"){
+    return(
+      <div>
+        <Doughnut
             data={props.data}
             height={400}
             width={600}
