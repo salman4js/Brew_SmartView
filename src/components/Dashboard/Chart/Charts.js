@@ -9,7 +9,6 @@ import BarChart from './BarChart/BarChart';
 import Drop from './Dropdown/Drop';
 import { Link, useParams } from 'react-router-dom';
 import changeScreen from '../../Action';
-import Loading from '../../Loading';
 
 const Charts = () => {
 
@@ -20,7 +19,8 @@ const Charts = () => {
   // isWeek or isMonth state handler!
   const [panel, setPanel] = useState({
     isWeek: false,
-    isMonth: false
+    isMonth: false,
+    isRoom: false
   })
 
   // Exceed state handler!
@@ -58,13 +58,9 @@ const Charts = () => {
     total: undefined
   })
 
-  // Loader State handler!
-  const [loader, setLoader] = useState(false);
 
   // Chart-Dashboard API calls!
-  async function batchesApi() {
-
-    setLoader(true);
+  async function batchesApi(currentDate) {
 
     // Week bar chart required data!
     const datesBetween = bwt.getBetween(date1, date2);
@@ -88,8 +84,8 @@ const Charts = () => {
     }
 
     // Room Type Revenue Calculation!
-    async function roomTypeRev(){
-      return await axios.post(`${Variables.hostId}/${splitedIds[0]}/roomtyperev`)
+    async function roomTypeRev() {
+      return await axios.post(`${Variables.hostId}/${splitedIds[0]}/roomtyperev`, currentDate)
     }
 
     // API calls
@@ -122,7 +118,7 @@ const Charts = () => {
         }
 
         // Room Type Revenue!
-        if(roomType.data.success){
+        if (roomType.data.success) {
           set_rev({
             type: Object.keys(roomType.data.roomTypeRev),
             rate: Object.values(roomType.data.roomTypeRev),
@@ -134,10 +130,10 @@ const Charts = () => {
 
       }))
 
-      setLoader(false)
-
     return {
-      weeklyEstimate
+      weeklyEstimate,
+      monthlyEstimate,
+      roomTypeRev
     }
 
   }
@@ -262,14 +258,24 @@ const Charts = () => {
       setPanel({
         ...panel,
         isWeek: true,
-        isMonth: false
+        isMonth: false,
+        isRoom: false
       })
       changeDropState();
     } else if (data === "month") {
       setPanel({
         ...panel,
         isWeek: false,
-        isMonth: true
+        isMonth: true,
+        isRoom: false
+      })
+      changeDropState();
+    } else if (data === "roomtype") {
+      setPanel({
+        ...panel,
+        isWeek: false,
+        isMonth: false,
+        isRoom: true
       })
       changeDropState();
     } else {
@@ -278,6 +284,10 @@ const Charts = () => {
 
     function changeDropState() {
       setOpen(!open)
+    }
+
+    return {
+      changeDropState
     }
 
   }
@@ -298,6 +308,23 @@ const Charts = () => {
     }
     const data = await batchesApi();
     data.monthlyEstimate();
+  }
+
+  // Room Type Revenue!
+  async function getRoomType(value) {
+    if (open) {
+      handleDrop();
+    }
+
+    const resultDate = bwt.format(value, "yyyy/mm/dd");
+
+    // Converting it into an object
+    const requiredData = {
+      date: resultDate
+    }
+
+    const data = await batchesApi(requiredData);
+    data.roomTypeRev();
   }
 
 
@@ -349,80 +376,79 @@ const Charts = () => {
 
   // Constructor!
   useEffect(() => {
-    batchesApi();
+    var currentDate = bwt.getFullDate("yyyy/mm/dd"); // Mandatory value for the room type revenue function!
+    const data = {
+      date: currentDate
+    }
+    batchesApi(data);
   }, [])
 
   return (
     <div>
       <Navbar id={id} name={splitedIds[1]} />
-      {
-        loader ? (
-          <Loading />
-        ) : (
-          <div className="chart-container">
-            {
-              showExceed ? (
-                _showExceed()
-              ) : (
-                null
-              )
-            }
-            {open && (
-              <div>
-                <Modal
-                  show={open}
-                  onHide={handleDrop}
-                >
-                  <Modal.Header closeButton>
-                    Date Picker
-                  </Modal.Header>
-                  <Panel text="Choose Start & End Dates" textMonthly="Choose Month" isWeek={panel.isWeek} isMonth={panel.isMonth}
-                    className="text-center" config="DatePicker"
-                    handleDrop={() => handleDrop()} getWeekData={(data) => getWeekData(data)}
-                    _year={(data) => set_mdate({ ..._mdate, _year: data })} _month={(data) => set_mdate({ ..._mdate, _month: data })}
-                    getMonthData={(data) => getMonthData(data)}
-                  />
-                </Modal>
-              </div>
-            )}
-            <div className="chart-view">
+      <div className="chart-container">
+        {
+          showExceed ? (
+            _showExceed()
+          ) : (
+            null
+          )
+        }
+        {open && (
+          <div>
+            <Modal
+              show={open}
+              onHide={handleDrop}
+            >
+              <Modal.Header closeButton>
+                Date Picker
+              </Modal.Header>
+              <Panel text="Choose Start & End Dates" textMonthly="Choose Month" isWeek={panel.isWeek} isMonth={panel.isMonth} isRoom={panel.isRoom}
+                className="text-center" config="DatePicker"
+                handleDrop={() => handleDrop()} getWeekData={(data) => getWeekData(data)}
+                _year={(data) => set_mdate({ ..._mdate, _year: data })} _month={(data) => set_mdate({ ..._mdate, _month: data })}
+                getMonthData={(data) => getMonthData(data)} getRoomType={(data) => getRoomType(data)}
+              />
+            </Modal>
+          </div>
+        )}
+        <div className="chart-view">
 
-              {/* Weekly Bar Chart */}
-              <div className="bar-chart">
-                <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
-                  <Drop isOpen={() => handleDrop("week")} />
-                </div>
-                <BarChart data={WeeklyData} title="Weekly" />
-                <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
-                  Weekly Bar Chart!
-                </div>
-              </div>
-
-              {/* Monthly Bar Chart */}
-              <div className="bar-chart">
-                <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
-                  <Drop isOpen={() => handleDrop()} />
-                </div>
-                <BarChart data={roomData} title="RoomRevenue" />
-                <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
-                  Room Type Analysis Chart - Total Rs.{_rev.total}
-                </div>
-              </div>
-
-              <div className="bar-chart">
-                <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
-                  <Drop isOpen={() => handleDrop("month")} />
-                </div>
-                <BarChart data={monthlyData} title="Monthly" />
-                <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
-                  Monthly Bar Chart!
-                </div>
-              </div>
-
+          {/* Weekly Bar Chart */}
+          <div className="bar-chart">
+            <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
+              <Drop isOpen={() => handleDrop("week")} />
+            </div>
+            <BarChart data={WeeklyData} title="Weekly" />
+            <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
+              Weekly Bar Chart!
             </div>
           </div>
-        )
-      }
+
+          {/* Monthly Bar Chart */}
+          <div className="bar-chart">
+            <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
+              <Drop isOpen={() => handleDrop("roomtype")} />
+            </div>
+            <BarChart data={roomData} title="RoomRevenue" />
+            <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
+              Room Type Analysis Chart - Total Rs.{_rev.total}
+            </div>
+          </div>
+
+          <div className="bar-chart">
+            <div className="bar-chart-input-dropdown" style={{ color: "black" }}>
+              <Drop isOpen={() => handleDrop("month")} />
+            </div>
+            <BarChart data={monthlyData} title="Monthly" />
+            <div className="text-center" style={{ color: "black", fontWeight: "bold" }}>
+              Monthly Bar Chart!
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div >
   )
 }

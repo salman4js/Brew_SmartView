@@ -10,7 +10,8 @@ const Panel = (props) => {
   // State handler for the date picker!
   const [date, setDate] = useState({
     date1: undefined,
-    date2: undefined
+    date2: undefined,
+    date3: undefined
   })
 
   // Handle Value for the date picker!
@@ -18,9 +19,19 @@ const Panel = (props) => {
     if (props.isWeek) {
       // Call the API function to get data!
       props.getWeekData(date);
-    } else {
+    } else if(props.isMonth) {
       props.getMonthData()
+    } else {
+      props.getRoomType(date.date3);
     }
+  }
+
+  // Handle Room Type Function!
+  function handleRoomType(data){
+    setDate({
+      ...date,
+      date3: data
+    })    
   }
 
   if (props.config === "DatePicker") {
@@ -47,6 +58,17 @@ const Panel = (props) => {
       return (
         <div className={props.className}>
           <Picker _year={(data) => props._year(data)} _month={(data) => props._month(data)} />
+          <PanelFooter success="Search" failure="Cancel" onSuccess={() => handleValue()} onFailure={() => props.handleDrop()} />
+        </div>
+      )
+    }
+
+    if(props.isRoom){
+      return(
+        <div>
+          <div className = {props.className} style = {{padding: '20px'}}>
+            <DatePicker className="form-control" selected = {date.date3} placeholder="Choose Date"  dateFormat='y-MM-dd' onChange = {(data) => handleRoomType(data) } />
+          </div>
           <PanelFooter success="Search" failure="Cancel" onSuccess={() => handleValue()} onFailure={() => props.handleDrop()} />
         </div>
       )
