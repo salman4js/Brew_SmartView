@@ -28,7 +28,7 @@ const Charts = () => {
   const [showExceed, setShowExceed] = useState(false);
 
   // Loader State handler!
-  const [loader, setLoader] = useState(false);
+  const [loader, setLoader] = useState(true);
 
   // default dates weekly estimation!
   const [date1, setDate1] = useState(bwt.subDates(bwt.getFullDate("yyyy/mm/dd"), 6));
@@ -65,9 +65,6 @@ const Charts = () => {
 
   // Chart-Dashboard API calls!
   async function batchesApi(currentDate) {
-
-    // Make the loader to spin!
-    setLoader(true);
 
     // Week bar chart required data!
     const datesBetween = bwt.getBetween(date1, date2);
@@ -397,7 +394,7 @@ const Charts = () => {
     <div>
       <Navbar id={id} name={splitedIds[1]} />
       {
-        loader ? (
+        loader === true ? (
           <Spinner width = "120px" height = "120px" />
         ) : (
           <div className="chart-container">
