@@ -9,6 +9,7 @@ import BarChart from './BarChart/BarChart';
 import Drop from './Dropdown/Drop';
 import { Link, useParams } from 'react-router-dom';
 import changeScreen from '../../Action';
+import Spinner from '../../Loader-T/Spinner';
 
 const Charts = () => {
 
@@ -25,6 +26,9 @@ const Charts = () => {
 
   // Exceed state handler!
   const [showExceed, setShowExceed] = useState(false);
+
+  // Loader State handler!
+  const [loader, setLoader] = useState(false);
 
   // default dates weekly estimation!
   const [date1, setDate1] = useState(bwt.subDates(bwt.getFullDate("yyyy/mm/dd"), 6));
@@ -61,6 +65,9 @@ const Charts = () => {
 
   // Chart-Dashboard API calls!
   async function batchesApi(currentDate) {
+
+    // Make the loader to spin!
+    setLoader(true);
 
     // Week bar chart required data!
     const datesBetween = bwt.getBetween(date1, date2);
@@ -129,6 +136,9 @@ const Charts = () => {
         }
 
       }))
+
+      // When the data is fetched, make the loader to stop!
+      setLoader(false);
 
     return {
       weeklyEstimate,
@@ -386,7 +396,11 @@ const Charts = () => {
   return (
     <div>
       <Navbar id={id} name={splitedIds[1]} />
-      <div className="chart-container">
+      {
+        loader ? (
+          <Spinner width = "120px" height = "120px" />
+        ) : (
+          <div className="chart-container">
         {
           showExceed ? (
             _showExceed()
@@ -448,6 +462,8 @@ const Charts = () => {
 
         </div>
       </div>
+        )
+      }
 
     </div >
   )
