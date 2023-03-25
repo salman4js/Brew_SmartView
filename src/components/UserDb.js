@@ -160,7 +160,7 @@ const UserDb = () => {
                                                     secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} 
                                                     checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} 
                                                     stayeddays={item.stayedDays} prebooked = {item.prebooked} discount = {item.discount} 
-                                                    advance = {item.advance} bill = {item.bill} dishBill = {item.dishbill} foodGst = {item.foodGst} stayGst= {item.stayGst} totalAmount = {item.totalAmount} />
+                                                    advance = {item.advance} bill = {item.bill} dishBill = {item.dishbill} foodGst = {item.foodGst} stayGst= {item.stayGst} totalAmount = {item.totalAmount} isGst = {item.isGst} />
                                                 )
                                             })
                                         }
