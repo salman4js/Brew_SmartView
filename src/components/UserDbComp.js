@@ -98,12 +98,22 @@ const UserDbComp = (props) => {
             <p className="font-big">
                 Stay Amount : {props.bill}
             </p>
-            <p className = 'font-big'>
-              Stay GST Amount: {props.stayGst}
-            </p>
-            <p className='font-big'>
-              Total Paid Amount: {props.totalAmount}
-            </p>
+            {
+              props.isGst ? (
+                <div>
+                  <p className = 'font-big'>
+                    Stay GST Amount: {props.stayGst}
+                  </p>
+                  <p className='font-big'>
+                    Total Paid Amount: {props.totalAmount}
+                  </p>
+                </div>
+              ) : (
+                <div>
+
+                </div>
+              )
+            }
           </Modal.Body>
           <Modal.Footer>
             <Button className='btn btn-info' onClick={handleClose}>Close</Button>
