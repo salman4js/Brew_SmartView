@@ -24,6 +24,9 @@ const LandingPage = () => {
     //Loader
     const [loading, setLoading] = useState(false);
 
+    // IS GST Enabled!
+    const [isGstEnabled, setIsGstEnabled] = useState(false);
+
     // Counter for the dashboard!
     const [totalcounter, setTotalcounter] = useState();
     const [reservedcounter, setReservedcounter] = useState();
@@ -43,6 +46,7 @@ const LandingPage = () => {
                           setConfigOptions(true);
                       }
                       //setConfigOptions(res.data.message);
+                      setIsGstEnabled(res.data.isGstEnabled);
                   } else {
                       console.error(res.data.message);
                   }
@@ -186,7 +190,7 @@ const LandingPage = () => {
                                               return (
                                                   <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} 
                                                   roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} price = {item.price} 
-                                                  prebook = {item.preBooked} prevalid = {item.preValid} prebookconfig = {configOptions} discount = {item.discount} />
+                                                  prebook = {item.preBooked} prevalid = {item.preValid} prebookconfig = {configOptions} discount = {item.discount} isGstEnabled = {isGstEnabled} />
                                               )
                                           })
                                       }
