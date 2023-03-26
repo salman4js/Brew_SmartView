@@ -688,12 +688,19 @@ const HomeRoom = (props) => {
 
                     </Modal.Body>
                     <Modal.Footer>
-                        <div class="form-check gst-toggle">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onChange = {() => gstHandler()} />
-                            <label class="form-check-label" for="flexCheckChecked">
-                                GST
-                            </label>
-                        </div>
+                       {
+                        props.isGstEnabled ? (
+                            <div class="form-check gst-toggle">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onChange = {() => gstHandler()} />
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    GST
+                                </label>
+                            </div>
+                        ) : (
+                            <div>
+                            </div>
+                        )
+                       }
                         <Button variant="secondary" onClick={handleCloseGeneratedBill}>
                             Not Paid
                         </Button>

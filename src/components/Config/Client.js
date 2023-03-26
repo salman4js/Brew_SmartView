@@ -4,6 +4,7 @@ import Success from '../ToastHandler/Success';
 import Error from '../ToastHandler/Error';
 import Feed from '../Configure_Transport/Feed_tMode/Feed';
 import axios from 'axios';
+import Loading from '../Loading';
 import { Link, useParams } from "react-router-dom";
 
 
@@ -16,12 +17,16 @@ const Client = () => {
 
     // Loader option handler!
     const [loader, setLoader] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     //Success and error handler!
     const [success, setSuccess] = useState(false);
     const [successText, setSuccessText] = useState();
     const [error, setError] = useState(false);
     const [errorText, setErrorText] = useState();
+
+    // State handler for GST!
+    const [isGst, setIsGst] = useState(false);
 
     const successHandler = () => {
         setSuccess(!success);
@@ -54,6 +59,7 @@ const Client = () => {
             .then(res => {
                 if (res.data.success) {
                     setValue(res.data.message);
+                    setIsGst(res.data.isGstEnabled)
                 } else {
                     //TODO : Erro handling!
                 }
@@ -115,6 +121,40 @@ const Client = () => {
             })
     }
 
+    // GST handler!
+    function handleGST(){
+        setIsGst(!isGst);
+    }
+
+    // Change Matrix config data!
+    function changeMatrix(){
+        setLoading(true);
+        const data = {
+            isGst: isGst
+        }
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/config-gstenabler`, data)
+        .then(resp => {
+            if(resp.data.success){
+                setLoading(false);
+                setSuccess(!success)
+                setSuccessText(resp.data.message);
+            } else {
+                setLoading(false);
+                setSuccess(!success)
+                setSuccessText(resp.data.message);
+            }
+        })
+        .catch(err => {
+            setLoading(false)
+            setError(!error)
+            setErrorText("Some internal error occured")
+        })
+        .finally(() => {
+            checkConfig();
+        })
+        
+    }
+
     // Getting the data before the DOM renders!
     useLayoutEffect(() => {
         showConfig();
@@ -123,7 +163,7 @@ const Client = () => {
     // Check the config collection when the DOM renders!
     useEffect(() => {
         checkConfig();
-    },[])
+    }, [])
 
     // Reseting the error message back to the initial state
     useEffect(() => {
@@ -133,11 +173,15 @@ const Client = () => {
 
     return (
         <div className="container align-down" style={{ display: "flex", justifyContent: "center" }}>
-            <div className='row text-center'>
+            {
+                loading ? (
+                    <Loading />
+                ) : (
+                    <div className='row text-center'>
                 <div className='col'>
                     {
                         error ? (
-                            <Error error = {error} errorText = {errorText} />
+                            <Error error={error} errorText={errorText} />
                         ) : (
                             <div>
                             </div>
@@ -197,7 +241,46 @@ const Client = () => {
                         )
                     }
                 </div>
+                <div className='col'>
+                    {
+                        error ? (
+                            <Error error={error} errorText={errorText} />
+                        ) : (
+                            <div>
+                            </div>
+                        )
+                    }
+                    <div class="card text-center" style={{ width: "50vh" }}>
+                        <div class="card-header" style={{ color: "black" }}>
+                            Config -  Matrix
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked={isGst} onChange = {() => handleGST()}/>
+                                    <label class="form-check-label" for="flexCheckDefault" style = {{color: "black"}}>
+                                        Enable / Disable GST
+                                    </label>
+
+                            </div>
+                            <br />
+                            <button className = "btn btn-primary" onClick={() => changeMatrix()}>Update Changes</button>
+                        </div>
+                    </div>
+                    {/* Success Handler */}
+                    {
+                        success ? (
+                            <Success show={success} text={successText} handleClose={successHandler} />
+                        ) : (
+                            <div>
+
+                            </div>
+                        )
+                    }
+                </div>
             </div>
+                )
+            }
+            
         </div>
     )
 }
