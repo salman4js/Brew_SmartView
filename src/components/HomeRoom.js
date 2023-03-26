@@ -60,7 +60,7 @@ const HomeRoom = (props) => {
     const [amount, setAmount] = useState();
 
     // Disable GST State Handler!
-    const [isGst, setIsGst] = useState(false);
+    const [isGst, setIsGst] = useState(true);
 
     // Total dish rate calculation
     const [calcdishrate, setCalcdishrate] = useState();
