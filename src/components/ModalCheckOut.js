@@ -17,6 +17,8 @@ const ModalCheckOut = (props) => {
             const checkinDateTime = props.checkin +  " " +props.checkInTime;
             const checkoutDateTime = date + " " + props.currentTime;
             const difference = brewDate.diffHours(checkinDateTime, checkoutDateTime);
+            props.checkoutdate(date);
+            props.userid(props.user)
             setStay(difference);
             props.stayeddays(difference);
         } else {

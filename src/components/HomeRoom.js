@@ -382,6 +382,7 @@ const HomeRoom = (props) => {
             foodGst: calcdishrate * 0.05,
             stayGst: (totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)
         }
+
         axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
             .then(res => {
                 if (res.data.success) {
