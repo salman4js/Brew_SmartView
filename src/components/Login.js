@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Variables from './Variables';
 import Loading from "./Loading";
 import axios from 'axios';
-import Modals from "./Modals"
+import Modals from "./Modals";
+import { defaultStorage } from '../Controller/Storage/Storage';
 
 const Login = () => {
 
@@ -16,6 +17,7 @@ const Login = () => {
 
   // Loader
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   // Account Lockout Handler!
   const [isLocked, setIsLocked] = useState(false);
@@ -25,9 +27,38 @@ const Login = () => {
     setError(undefined);
   }
 
+  async function checkConfig(id, lodgeName){
+    // Check for is gst enabled and hourly basis enabled!
+    await axios.get(`${Variables.hostId}/${id}/check-matrix`)
+      .then(res => {
+        if(res.data.success){
+          // Set isGst and isHourly basis in localstorage!
+          const data = {
+            "isGst" : res.data.isGstEnabled,
+            "isHourly" : res.data.isHourly
+          }
+
+          // Populate the modal into localstorage!
+          defaultStorage(data);
+          setMessage("Navigating to dashboard...");
+          // If account is not locked, allow the user to the base!
+          navigate(`/${id}-${lodgeName}/dashboard`, { replace: true })
+
+        } else {
+          setLoading(false);
+          setError(res.data.message)
+          setShow(!show);
+        }
+      })
+  }
+
   const processData = async (e) => {
     e.preventDefault();
+    
+    // Enable loading and message!
     setLoading(!loading);
+    setMessage("Authenticating...");
+
     if (username.length <= 0 & password.length <= 0) {
       alert("Please input a valid username");
     } else {
@@ -36,20 +67,22 @@ const Login = () => {
         password: password
       }
       axios.post(`${Variables.hostId}/loginlodge`, credentials)
-        .then(res => {
+        .then(async res => {
+          setMessage("Validating your credentials...")
           if (res.data.success) {
             setLoading(!loading);
             setError("");
             localStorage.setItem("token", res.data.token);
             // Before Navigating to the landing page, check the accont lockout!
+            setMessage("Checking for a account lockout...")
             if(res.data.isLocked){
               // Show Account Lockout Dialog!
               setError(res.data.isLockedMessage);
               setLoading(false); // Close off the loader!
               setShow(res.data.isLocked);
             } else {
-              // If account is not locked, allow the user to the base!
-              navigate(`/${res.data.hostId}-${res.data.lodgename}/dashboard`, { replace: true })
+              setMessage("Validating your config file...")
+              await checkConfig(res.data.hostId, res.data.lodgename);
             }
           } else {
             setLoading(false);
@@ -69,7 +102,7 @@ const Login = () => {
     <div>
       {
         loading ? (
-          <Loading />
+          <Loading message = {message} />
         ) : (
           <div>
             <div>

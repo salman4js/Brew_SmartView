@@ -614,3 +614,12 @@ td {
 .gst-toggle{
   margin-right: 250px !important; 
 }
+
+.config-matrix{
+  padding-right: 20px;
+}
+
+.loading-message{
+  font-size: 19px;
+  font-weight: bold;
+}

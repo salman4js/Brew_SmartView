@@ -13,13 +13,16 @@ import Table from './Table';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ModalCheckOut from './ModalCheckOut';
+import { getStorage } from '../Controller/Storage/Storage';
 
 
 
 const HomeRoom = (props) => {
 
+    // Getting the current date and time for customer checkin on hourly and daily basis!
     const current = new Date();
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
+    const getTime = current.getHours() + ":" + current.getMinutes();
 
     // Exclude dates for prebook modals
     const [excludeDates, setExcludeDates] = useState([])
@@ -208,6 +211,7 @@ const HomeRoom = (props) => {
                 childrens: childrens,
                 aadhar: aadhar,
                 checkin: brewDate.getFullDate("yyyy/mm/dd"),
+                checkinTime: getTime,
                 checkout: formatDate(checkedoutdate),
                 roomid: props.roomid,
                 roomno: props.roomno,
@@ -270,7 +274,8 @@ const HomeRoom = (props) => {
             roomtype: props.roomtype,
             stayeddays: stayeddays,
             roomid: props.roomid,
-            lodgeid: props.lodgeid
+            lodgeid: props.lodgeid,
+            isHourly: getStorage("isHourly")
         }
 
         const generateDishRate = {
@@ -546,7 +551,7 @@ const HomeRoom = (props) => {
                     {
                         userdata.map((item, key) => {
                             return (
-                                <ModalCheckOut discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
+                                <ModalCheckOut isHourly = {props.isHourly} currentTime = {getTime} checkInTime = {item.checkinTime} discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
                             )
                         })
                     }

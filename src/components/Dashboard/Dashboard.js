@@ -71,6 +71,7 @@ const Dashboard = () => {
 
     // State handler for loader
     const [loader, setLoader] = useState(false);
+    const [message, setMessage] = useState("");
 
     // Toast state handler
     const [toast, setToast] = useState(false);
@@ -436,6 +437,7 @@ const Dashboard = () => {
     // Constructor for calling the API!
     useEffect(() => {
         setLoader(true); // Setting the loader here to prevent the clitches in the UI
+        setMessage("Preparing your dashboard...")
         batchesApi();
     }, [])
 
@@ -444,7 +446,7 @@ const Dashboard = () => {
             <Navbar id={id} name={splitedIds[1]} className="sticky" />
             {
                 loader ? (
-                    <Loading />
+                    <Loading message = {message} />
                 ) : (
                     modal ? (
                         <ModalValue toast = {toast} toastMessage = {tMessage} config={modalConfig} show={modal} handleClose={() => handleModal()} handleOpenModal={(data, modelId) => handleCheckInModal(data, modelId)} roomno={(data) => setRoomnumber(data)} />

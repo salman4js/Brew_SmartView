@@ -8,6 +8,9 @@ import Loading from './Loading';
 import axios from "axios";
 import HomeRoom from './HomeRoom';
 
+// Local Storage function!
+import { getStorage } from '../Controller/Storage/Storage';
+
 
 const LandingPage = () => {
 
@@ -23,12 +26,15 @@ const LandingPage = () => {
     
     //Loader
     const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");
 
-    // IS GST Enabled!
+    // Gst handler!
     const [isGstEnabled, setIsGstEnabled] = useState(false);
 
+    // Hourly basis handler / checker!
+    const [isHourly, setIsHourly] = useState(false);
+
     // Counter for the dashboard!
-    const [totalcounter, setTotalcounter] = useState();
     const [reservedcounter, setReservedcounter] = useState();
     const [freecounter, setFreecounter] = useState();
 
@@ -36,17 +42,29 @@ const LandingPage = () => {
     const [search, setSearch] = useState("");
     const [sort, setSort] = useState("Show All");
 
+
+    // Check Local Storage!
+    function checkStorage(){
+
+        setMessage("Validating config file...")
+        // check for all the default set into the local storage!
+        const isGstEnabled = getStorage("isGst");
+        const isHourly = getStorage("isHourly");
+
+        setIsGstEnabled(JSON.parse(isGstEnabled));
+        setIsHourly(JSON.parse(isHourly));
+    }
+
       // Config checking
       const [configOptions, setConfigOptions] = useState(false);
       const checkConfig = () => {
+        setMessage("Checking application permissions...")
           axios.get(`${Variables.hostId}/${splitedIds[0]}/config-checking`)
               .then(res => {
                   if(res.data.success){
                       if(res.data.message.some(option => option.config === 'PreBook')){
                           setConfigOptions(true);
                       }
-                      //setConfigOptions(res.data.message);
-                      setIsGstEnabled(res.data.isGstEnabled);
                   } else {
                       console.error(res.data.message);
                   }
@@ -55,6 +73,7 @@ const LandingPage = () => {
 
     const getData = () => {
         setLoading(true);
+        setMessage("Gathering customers details...")
         const token = localStorage.getItem("token");
         if (!token) {
             setRoom(false)
@@ -123,6 +142,7 @@ const LandingPage = () => {
     // Check config before the DOM renders!
     useLayoutEffect(() => {
         checkConfig();
+        checkStorage();
     }, [])
 
     return (
@@ -130,7 +150,7 @@ const LandingPage = () => {
             {
                 room ? (
                     loading ? (
-                        <Loading />
+                        <Loading message = {message} />
                     ) : (
                         <div>
                           <Navbar id={id} name={splitedIds[1]} className = "sticky" />
@@ -190,7 +210,7 @@ const LandingPage = () => {
                                               return (
                                                   <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} 
                                                   roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} price = {item.price} 
-                                                  prebook = {item.preBooked} prevalid = {item.preValid} prebookconfig = {configOptions} discount = {item.discount} isGstEnabled = {isGstEnabled} />
+                                                  prebook = {item.preBooked} prevalid = {item.preValid} prebookconfig = {configOptions} discount = {item.discount} isGstEnabled = {isGstEnabled} isHourly = {isHourly} />
                                               )
                                           })
                                       }
