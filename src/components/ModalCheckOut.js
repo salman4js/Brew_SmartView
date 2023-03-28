@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Modal from "react-bootstrap/Modal";
 import brewDate from 'brew-date';
-import retrieveDate from './PreBook_Date_Spike/DateCorrector';
+import { getStorage } from '../Controller/Storage/Storage';
 
 const ModalCheckOut = (props) => {
 
@@ -9,39 +9,34 @@ const ModalCheckOut = (props) => {
     const date = brewDate.getFullDate("yyyy/mm/dd");
 
     useEffect(() => {
-        console.log("Modal getting called!");
-        // Assigning today's date as checkout date back to the component!
-        props.checkoutdate(date);
-        console.log(props.user);
-        props.userid(props.user)
-        const date1 = new Date(props.checkin);
-        console.log(date1);
-        const date2 = new Date(date);
-        console.log(date2);
-        
-        const diffTime = Math.abs(date2 - date1);
-        console.log(diffTime);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-        console.log(diffTime + " milliseconds");
-        if(diffDays == 0) {
-            props.stayeddays(diffDays+1 + " Days");
-            setStay(diffDays+1 + " Days");
+
+        const isHourly = getStorage("isHourly");
+
+        if(isHourly){
+             // Hourly calculation!
+            const checkinDateTime = props.checkin +  " " +props.checkInTime;
+            const checkoutDateTime = date + " " + props.currentTime;
+            const difference = brewDate.diffHours(checkinDateTime, checkoutDateTime);
+            setStay(difference);
+            props.stayeddays(difference);
         } else {
-                props.stayeddays(diffDays + " days");
-                props.checkoutdate(date);
-                setStay(diffDays + " Days");
+            // Assigning today's date as checkout date back to the component!
+            props.checkoutdate(date);
+            props.userid(props.user)
+            const date1 = new Date(props.checkin);
+            const date2 = new Date(date);
+            
+            const diffTime = Math.abs(date2 - date1);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            if(diffDays == 0) {
+                props.stayeddays(diffDays+1 + " Days");
+                setStay(diffDays+1 + " Days");
+            } else {
+                    props.stayeddays(diffDays + " days");
+                    props.checkoutdate(date);
+                    setStay(diffDays + " Days");
+            }
         }
-      
-
-
-        // let difference = date2.getTime() - date1.getTime();
-        // console.log(difference);
-        // let minutesInDay = 1000 * 3600 * 24;
-        // console.log(minutesInDay);
-        // console.log(difference/minutesInDay);
-        // props.stayeddays(difference/minutesInDay);
-        // setStay(difference/minutesInDay);
-
     }, [])
     return (
         <div>
@@ -62,8 +57,14 @@ const ModalCheckOut = (props) => {
                 <p className="font-big">
                     Check-In Date : {props.checkin}
                 </p>
+                <p className = "font-big">
+                    Check-In Time : {props.checkInTime}
+                </p>
                 <p className='font-big'>
                     Check-Out Date : {date}
+                </p>
+                <p className = "font-big">
+                    Check-Out Time : {props.currentTime}
                 </p>
                 <p className='font-big'>
                     Head Count of Adults : {props.adults}

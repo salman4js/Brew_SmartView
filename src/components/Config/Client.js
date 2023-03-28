@@ -7,6 +7,9 @@ import axios from 'axios';
 import Loading from '../Loading';
 import { Link, useParams } from "react-router-dom";
 
+// Importing Config Matrix!
+import ConfigMatrix from './config.matrix/config.matrix.view';
+
 
 const Client = () => {
 
@@ -27,6 +30,9 @@ const Client = () => {
 
     // State handler for GST!
     const [isGst, setIsGst] = useState(false);
+
+    // Hourly basis state handler!
+    const [isHourly, setIsHourly] = useState(false);
 
     const successHandler = () => {
         setSuccess(!success);
@@ -59,11 +65,22 @@ const Client = () => {
             .then(res => {
                 if (res.data.success) {
                     setValue(res.data.message);
-                    setIsGst(res.data.isGstEnabled)
                 } else {
                     //TODO : Erro handling!
                 }
             })
+    }
+
+    // Check Matrix Data!
+    const checkMatrix = () => {
+        axios.get(`${Variables.hostId}/${splitedIds[0]}/check-matrix`)
+            .then(res => {
+                if(res.data.success){
+                    setIsGst(res.data.isGstEnabled);
+                    setIsHourly(res.data.isHourly);
+                }
+            })
+        
     }
 
     // Disbale the enabled config!
@@ -122,37 +139,44 @@ const Client = () => {
     }
 
     // GST handler!
-    function handleGST(){
+    function handleGST() {
         setIsGst(!isGst);
     }
 
+    // Handle Hourly!
+    function handleHourly(){
+        setIsHourly(!isHourly);
+    }
+
     // Change Matrix config data!
-    function changeMatrix(){
+    function changeMatrix() {
+        console.log("Hourly", isHourly);
         setLoading(true);
         const data = {
-            isGst: isGst
+            isGst: isGst,
+            isHourly: isHourly
         }
-        axios.post(`${Variables.hostId}/${splitedIds[0]}/config-gstenabler`, data)
-        .then(resp => {
-            if(resp.data.success){
-                setLoading(false);
-                setSuccess(!success)
-                setSuccessText(resp.data.message);
-            } else {
-                setLoading(false);
-                setSuccess(!success)
-                setSuccessText(resp.data.message);
-            }
-        })
-        .catch(err => {
-            setLoading(false)
-            setError(!error)
-            setErrorText("Some internal error occured")
-        })
-        .finally(() => {
-            checkConfig();
-        })
-        
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
+            .then(resp => {
+                if (resp.data.success) {
+                    setLoading(false);
+                    setSuccess(!success)
+                    setSuccessText(resp.data.message);
+                } else {
+                    setLoading(false);
+                    setSuccess(!success)
+                    setSuccessText(resp.data.message);
+                }
+            })
+            .catch(err => {
+                setLoading(false)
+                setError(!error)
+                setErrorText("Some internal error occured")
+            })
+            .finally(() => {
+                checkMatrix();
+            })
+
     }
 
     // Getting the data before the DOM renders!
@@ -163,6 +187,7 @@ const Client = () => {
     // Check the config collection when the DOM renders!
     useEffect(() => {
         checkConfig();
+        checkMatrix();
     }, [])
 
     // Reseting the error message back to the initial state
@@ -177,110 +202,104 @@ const Client = () => {
                 loading ? (
                     <Loading />
                 ) : (
-                    <div className='row text-center'>
-                <div className='col'>
-                    {
-                        error ? (
-                            <Error error={error} errorText={errorText} />
-                        ) : (
-                            <div>
-                            </div>
-                        )
-                    }
-                    <div class="card text-center" style={{ width: "50vh" }}>
-                        <div class="card-header" style={{ color: "black" }}>
-                            Config -  Featured
-                        </div>
-                        <div class="card-body">
-                            <div className='modal-gap'>
-                                <label style={{ color: "black" }}> Change Config </label>
-                                <select class="form-select" aria-label="Default select example" onChange={(e) => setDropdown(e.target.value)}>
-                                    <option selected>Choose...</option>
-                                    {
-                                        options.map((item, key) => {
-                                            return (
-                                                <option>{item}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <br />
-                            <button className='btn btn-info' onClick={() => processData()}> Add Data </button>
-                        </div>
-                        <div style={{ color: "black", fontSize: "18px" }}>
-                            <div>
-                                {
-                                    loader ? (
-                                        <div className="modal-gap">
-                                            Loading, please wait...
-                                        </div>
-                                    ) : (
-                                        <div className="overscroll">
+                    <div className='row'>
+                        <div className='col'>
+                            {
+                                error ? (
+                                    <Error error={error} errorText={errorText} />
+                                ) : (
+                                    <div>
+                                    </div>
+                                )
+                            }
+                            <div class="card text-center" style={{ width: "50vh" }}>
+                                <div class="card-header" style={{ color: "black" }}>
+                                    Config -  Featured
+                                </div>
+                                <div class="card-body">
+                                    <div className='modal-gap'>
+                                        <label style={{ color: "black" }}> Change Config </label>
+                                        <select class="form-select" aria-label="Default select example" onChange={(e) => setDropdown(e.target.value)}>
+                                            <option selected>Choose...</option>
                                             {
-                                                value.map((item, key) => {
+                                                options.map((item, key) => {
                                                     return (
-                                                        <Feed name={item.config} id={item._id} onDelete={(id) => onDelete(id)} />
+                                                        <option>{item}</option>
                                                     )
                                                 })
                                             }
-                                        </div>
-                                    )
-                                }
+                                        </select>
+                                    </div>
+                                    <br />
+                                    <button className='btn btn-info' onClick={() => processData()}> Add Data </button>
+                                </div>
+                                <div style={{ color: "black", fontSize: "18px" }}>
+                                    <div>
+                                        {
+                                            loader ? (
+                                                <div className="modal-gap">
+                                                    Loading, please wait...
+                                                </div>
+                                            ) : (
+                                                <div className="overscroll">
+                                                    {
+                                                        value.map((item, key) => {
+                                                            return (
+                                                                <Feed name={item.config} id={item._id} onDelete={(id) => onDelete(id)} />
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                </div>
                             </div>
+                            {/* Success Handler */}
+                            {
+                                success ? (
+                                    <Success show={success} text={successText} handleClose={successHandler} />
+                                ) : (
+                                    <div>
+
+                                    </div>
+                                )
+                            }
+                        </div>
+                        <div className='col'>
+                            {
+                                error ? (
+                                    <Error error={error} errorText={errorText} />
+                                ) : (
+                                    <div>
+                                    </div>
+                                )
+                            }
+                            <div class="card text-center" style={{ width: "50vh" }}>
+                                <div class="card-header" style={{ color: "black" }}>
+                                    Config -  Matrix
+                                </div>
+                                <div class="card-body">
+                                    <ConfigMatrix isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} />
+                                    <br />
+                                    <button className="btn btn-primary" onClick={() => changeMatrix()}>Update Changes</button>
+                                </div>
+                            </div>
+                            {/* Success Handler */}
+                            {
+                                success ? (
+                                    <Success show={success} text={successText} handleClose={successHandler} />
+                                ) : (
+                                    <div>
+
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
-                    {/* Success Handler */}
-                    {
-                        success ? (
-                            <Success show={success} text={successText} handleClose={successHandler} />
-                        ) : (
-                            <div>
-
-                            </div>
-                        )
-                    }
-                </div>
-                <div className='col'>
-                    {
-                        error ? (
-                            <Error error={error} errorText={errorText} />
-                        ) : (
-                            <div>
-                            </div>
-                        )
-                    }
-                    <div class="card text-center" style={{ width: "50vh" }}>
-                        <div class="card-header" style={{ color: "black" }}>
-                            Config -  Matrix
-                        </div>
-                        <div class="card-body">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked={isGst} onChange = {() => handleGST()}/>
-                                    <label class="form-check-label" for="flexCheckDefault" style = {{color: "black"}}>
-                                        Enable / Disable GST
-                                    </label>
-
-                            </div>
-                            <br />
-                            <button className = "btn btn-primary" onClick={() => changeMatrix()}>Update Changes</button>
-                        </div>
-                    </div>
-                    {/* Success Handler */}
-                    {
-                        success ? (
-                            <Success show={success} text={successText} handleClose={successHandler} />
-                        ) : (
-                            <div>
-
-                            </div>
-                        )
-                    }
-                </div>
-            </div>
                 )
             }
-            
+
         </div>
     )
 }
