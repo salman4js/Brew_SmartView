@@ -10,7 +10,7 @@ const ModalCheckOut = (props) => {
 
     useEffect(() => {
 
-        const isHourly = getStorage("isHourly");
+        const isHourly = JSON.parse(getStorage("isHourly"));
 
         if(isHourly){
              // Hourly calculation!
