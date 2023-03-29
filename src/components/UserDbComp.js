@@ -98,6 +98,9 @@ const UserDbComp = (props) => {
             <p className="font-big">
                 Stay Amount : {props.bill}
             </p>
+            <p className = "font-big">
+              Channel : {props.channel}
+            </p>
             {
               props.isGst ? (
                 <div>

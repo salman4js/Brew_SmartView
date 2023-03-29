@@ -62,6 +62,10 @@ const HomeRoom = (props) => {
     const [showGeneratedBill, setShowGeneratedBill] = useState(false);
     const [amount, setAmount] = useState();
 
+    // Is Channel State Handler!
+    const [isChannel, setIsChannel] = useState(false);
+    const [updatePrice, setUpdatePrice] = useState();
+
     // Disable GST State Handler!
     const [isGst, setIsGst] = useState(true);
 
@@ -91,6 +95,7 @@ const HomeRoom = (props) => {
     const [discount, setDiscount] = useState();
     // Advance amount for the customer!
     const [advanceCheckin, setAdvanceCheckin] = useState();
+    const [dropdown, setDropdown] = useState();
 
 
     // Pre Book Customer Data
@@ -216,7 +221,10 @@ const HomeRoom = (props) => {
                 roomid: props.roomid,
                 roomno: props.roomno,
                 discount: discount,
-                advance: advanceCheckin
+                advance: advanceCheckin,
+                channel: dropdown,
+                isChannel: isChannel,
+                updatePrice: updatePrice
             }
             axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
                 .then(res => {
@@ -237,7 +245,6 @@ const HomeRoom = (props) => {
 
     // Retrieve User Room data from the API
     const getUserData = () => {
-        console.log(props.roomid);
         const credentials = {
             roomid: props.roomid
         }
@@ -275,7 +282,7 @@ const HomeRoom = (props) => {
             stayeddays: stayeddays,
             roomid: props.roomid,
             lodgeid: props.lodgeid,
-            isHourly: getStorage("isHourly")
+            isHourly: JSON.parse(getStorage("isHourly"))
         }
 
         const generateDishRate = {
@@ -299,7 +306,6 @@ const HomeRoom = (props) => {
                 if (res.data.success) {
                     handleCloseGeneratedBill();
                     setAmount(res.data.message);
-                    console.log(res.data.isAdvanced, res.data.discount)
                     // if(res.data.isAdvanced || res.data.discount){
                     //     if(!res.data.prebook){
                     //         console.log("Its coming here!")
@@ -362,8 +368,19 @@ const HomeRoom = (props) => {
     }
 
     // Handle GST Handler!
-    function gstHandler(){
+    function gstHandler() {
         setIsGst(!isGst);
+    }
+
+    // Handle Channel Manager!
+    function handleChannel(value){
+
+        // Check if the rate has to be updated or not!
+        if(value !== "Walk-In"){
+            setIsChannel(true);
+        }
+
+        setDropdown(value);
     }
 
 
@@ -425,7 +442,29 @@ const HomeRoom = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <h4 className='strong'>{props.roomno}</h4>
-
+                        <div className="modal-gap">
+                            <label style={{ color: "black" }}> Channel Manager </label>
+                            <select class="form-select" aria-label="Default select example" onChange={(e) => handleChannel(e.target.value)}>
+                                <option selected>Choose...</option>
+                                {
+                                    props.options.map((item, key) => {
+                                        return (
+                                            <option>{item}</option>
+                                        )
+                                    })
+                                }
+                            </select>                        
+                        </div>
+                        {
+                            isChannel ? (
+                                <div className="modal-gap">
+                                    <label style={{ color: "black" }}> Update Room Price(Channel Manager) </label>
+                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Update Room Price" name={updatePrice} value={updatePrice} onChange={(e) => setUpdatePrice(e.target.value)} />
+                                </div>
+                            ) : (
+                                null
+                            )
+                        }
                         <div className="modal-gap">
                             <label style={{ color: "black" }}> Customer Name </label>
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Customer Name" name={customername} value={customername} onChange={(e) => setCustomername(e.target.value)} />
@@ -552,7 +591,7 @@ const HomeRoom = (props) => {
                     {
                         userdata.map((item, key) => {
                             return (
-                                <ModalCheckOut isHourly = {props.isHourly} currentTime = {getTime} checkInTime = {item.checkinTime} discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
+                                <ModalCheckOut isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
                             )
                         })
                     }
@@ -605,10 +644,10 @@ const HomeRoom = (props) => {
                             ) : (
                                 isGst === true ? (
                                     <div>
-                                    <p>
-                                        Amount deducted for GST - {(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)}
-                                    </p>
-                                </div>
+                                        <p>
+                                            Amount deducted for GST - {(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)}
+                                        </p>
+                                    </div>
                                 ) : (
                                     <div>
 
@@ -670,21 +709,21 @@ const HomeRoom = (props) => {
                         {
                             isGst ? (
                                 <h5 style={{ fontWeight: "bold" }}>Total amount to be paid with GST -
-                            {
-                                discountApplied === true ? (
-                                    isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
-                                        " Calculating..."
-                                    ) : (
-                                        (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount) + Number(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)) + " Rs")
-                                    )
-                                ) : (
-                                    isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
-                                        " Calculating..."
-                                    ) : (
-                                        (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount) + Number(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)) + " Rs")
-                                    )
-                                )
-                            }</h5>
+                                    {
+                                        discountApplied === true ? (
+                                            isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
+                                                " Calculating..."
+                                            ) : (
+                                                (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount) + Number(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)) + " Rs")
+                                            )
+                                        ) : (
+                                            isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
+                                                " Calculating..."
+                                            ) : (
+                                                (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount) + Number(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)) + " Rs")
+                                            )
+                                        )
+                                    }</h5>
                             ) : (
                                 <div>
 
@@ -694,19 +733,19 @@ const HomeRoom = (props) => {
 
                     </Modal.Body>
                     <Modal.Footer>
-                       {
-                        props.isGstEnabled ? (
-                            <div class="form-check gst-toggle">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onChange = {() => gstHandler()} />
-                                <label class="form-check-label" for="flexCheckChecked">
-                                    GST
-                                </label>
-                            </div>
-                        ) : (
-                            <div>
-                            </div>
-                        )
-                       }
+                        {
+                            props.isGstEnabled ? (
+                                <div class="form-check gst-toggle">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onChange={() => gstHandler()} />
+                                    <label class="form-check-label" for="flexCheckChecked">
+                                        GST
+                                    </label>
+                                </div>
+                            ) : (
+                                <div>
+                                </div>
+                            )
+                        }
                         <Button variant="secondary" onClick={handleCloseGeneratedBill}>
                             Not Paid
                         </Button>
