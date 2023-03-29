@@ -10,6 +10,7 @@ import formatDate from './PreBook/Date_Format/DateFormatter';
 import retrieveDate from './PreBook_Date_Spike/DateCorrector';
 import Loading from './Loading';
 import Table from './Table';
+import InlineToast from './InlineToast/Inline.toast.view';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ModalCheckOut from './ModalCheckOut';
@@ -97,6 +98,20 @@ const HomeRoom = (props) => {
     const [advanceCheckin, setAdvanceCheckin] = useState();
     const [dropdown, setDropdown] = useState();
 
+    // Inline Error Handler!
+    const [inline, setInline] = useState({
+        inlineErrorDiscount: false,
+        inlineErrorAdvance: false,
+        inlineText: undefined
+    })
+
+    // Model value for the state handler
+    var _inlineModel = {
+        inlineErrorDiscount: inline.inlineErrorDiscount,
+        inlineErrorAdvance: inline.inlineErrorAdvance,
+        inlineText: inline.inlineText
+    }
+
 
     // Pre Book Customer Data
     const [prebookusername, setPrebookusername] = useState();
@@ -116,6 +131,10 @@ const HomeRoom = (props) => {
         setShow(!show);
         getExcludeDates(props.roomid);
         getExcludeDatesCheckin(props.roomid);
+    }
+
+    function isOpen(){
+        return show;
     }
 
     const handleModal = () => {
@@ -379,11 +398,81 @@ const HomeRoom = (props) => {
         if(value !== "Walk-In"){
             setIsChannel(true);
         }
-
         setDropdown(value);
     }
 
+    // Check limit for advance and discount!
+    function checkLimit(limit){
+        var limit;
+        if(isChannel){
+            limit = updatePrice * limit;
+        } else {
+            limit = props.price * limit;
+        }
+        return limit;
+    }
 
+    // Function restrict discount!
+    function restrictDiscount(val){
+        
+        const limitValue = 3 / 4
+
+        const Limit = checkLimit(limitValue);
+
+        var inlineText = `Discount amount cannot be greater than Rs.${Limit}`
+
+        if(val > Limit){
+            _inlineModel['inlineErrorDiscount'] = true;
+            _inlineModel['inlineText'] = inlineText
+           handleInlineToast(_inlineModel)
+        } else {
+            _inlineModel['inlineErrorDiscount'] = false;
+            _inlineModel['inlineText'] = undefined
+            handleInlineToast(_inlineModel)
+            setDiscount(val); // and then set the value!
+        }
+
+    }
+
+    // Open Inline Toast!
+    function handleInlineToast(_inlineModel){
+        // populate the model
+        populateInlineModel(_inlineModel);
+    }
+
+    // Restrict advance amount
+    function restrictAdvance(val){
+
+        const limitValue = 1 / 2;
+
+        const limit = checkLimit(limitValue);
+
+        var inlineText = `Advance amount cannot be greater than Rs.${limit}`
+
+        if(val > limit){
+            _inlineModel['inlineErrorAdvance'] = true;
+            _inlineModel['inlineText'] = inlineText
+           handleInlineToast(_inlineModel)
+        } else {
+            _inlineModel['inlineErrorAdvance'] = false;
+            _inlineModel['inlineText'] = undefined
+            handleInlineToast(_inlineModel)
+            setAdvanceCheckin(val); // and then set the value!
+        }
+
+    }
+
+    function populateInlineModel(_model){
+        setInline({
+            ...inline,
+            inlineErrorDiscount: _model.inlineErrorDiscount,
+            inlineErrorAdvance: _model.inlineErrorAdvance,
+            inlineText: _model.inlineText
+        })
+    }
+
+
+    // Handle Checkout Customer!
     const checkedOut = () => {
         handleCloseGeneratedBill();
         const credentials = {
@@ -491,11 +580,25 @@ const HomeRoom = (props) => {
                         </div>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Advance Amount(Optional) </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={advanceCheckin} value={advanceCheckin} onChange={(e) => setAdvanceCheckin(e.target.value)} />
+                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={advanceCheckin} value={advanceCheckin} onChange={(e) => restrictAdvance(e.target.value)} />
+                            {
+                                inline.inlineErrorAdvance ? (
+                                    <InlineToast message = {inline.inlineText} />
+                                ) : (
+                                    null
+                                )
+                            }
                         </div>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Discount Amount(Optional) </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={discount} value={discount} onChange={(e) => setDiscount(e.target.value)} />
+                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={discount} value={discount} onChange={(e) => restrictDiscount(e.target.value)} />
+                            {
+                                inline.inlineErrorDiscount ? (
+                                    <InlineToast message = {inline.inlineText} />
+                                ) : (
+                                    null
+                                )
+                            }
                         </div>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check In - (Default Date is Today's Date!) </label>
@@ -510,7 +613,7 @@ const HomeRoom = (props) => {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button className="btn btn-secondary" onClick={handleClose}>Close</Button>
-                        <Button className='btn btn-outline' onClick={processData}> Save and Close </Button>
+                        <Button className='btn btn-outline' disabled = {inline.inlineErrorAdvance || inline.inlineErrorDiscount} onClick={processData}> Save and Close </Button>
                     </Modal.Footer>
                 </Modal>
 

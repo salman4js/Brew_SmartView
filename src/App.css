@@ -623,3 +623,7 @@ td {
   font-size: 19px;
   font-weight: bold;
 }
+
+.inline-toast-view{
+  color: red;
+}
