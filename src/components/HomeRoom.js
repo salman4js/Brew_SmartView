@@ -482,6 +482,7 @@ const HomeRoom = (props) => {
             roomid: props.roomid,
             stayeddays: stayeddays,
             checkoutdate: checkoutdate,
+            checkoutTime: getTime,
             roomtype: props.roomtype,
             prebook: props.prebook,
             amount: totalAmount,
@@ -841,25 +842,31 @@ const HomeRoom = (props) => {
                                 </div>
                             )
                         }
-
-                    </Modal.Body>
-                    <Modal.Footer>
+                        
                         {
                             props.isGstEnabled ? (
-                                <div class="form-check gst-toggle">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onChange={() => gstHandler()} />
-                                    <label class="form-check-label" for="flexCheckChecked">
-                                        GST
-                                    </label>
+                                <div>
+                                    <div className = "table-view-bill-line"></div>
+                                    <div class="form-check gst-toggle">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onChange={() => gstHandler()} />
+                                        <label class="form-check-label" for="flexCheckChecked">
+                                            GST
+                                        </label>
+                                    </div>
                                 </div>
                             ) : (
                                 <div>
                                 </div>
                             )
                         }
+
+                    </Modal.Body>
+                    <Modal.Footer>
+                        
                         <Button variant="secondary" onClick={handleCloseGeneratedBill}>
                             Not Paid
                         </Button>
+                        <Button variant = "dark">Print</Button>
                         <Button variant="primary" onClick={checkedOut}>Paid</Button>
                     </Modal.Footer>
                 </Modal>
