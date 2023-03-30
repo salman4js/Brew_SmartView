@@ -627,3 +627,8 @@ td {
 .inline-toast-view{
   color: red;
 }
+
+.table-view-bill-line{
+  border:0.5px solid rgba(225, 223, 223, 0.816);
+  margin-bottom: 5px;
+}

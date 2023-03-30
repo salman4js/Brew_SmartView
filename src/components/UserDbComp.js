@@ -10,6 +10,26 @@ const UserDbComp = (props) => {
     setShow(!show);
   }
 
+  // Handle checkin time format!
+  function handleTimeFormat(time){
+    try{
+      const [hour, minutes] = time.split(":");
+      var min = minutes.length > 1 ? minutes : "0" + minutes;
+      if(hour > 12){
+        const time = hour - 12 + ":" + min + " PM";
+        return time;
+      } else if(hour == 0) {
+        const time = 12 + ":" + min + " AM";
+        return time
+      } else {
+        const time = hour + ":" + min + " AM";
+        return time;
+      }
+    } catch(err){
+      console.error("Time format has been introduced in recent builds")
+    }
+  }
+
   return (
     <div class="col-4" style={{ paddingBottom: "10vh" }}>
       <div class="card">
@@ -60,10 +80,10 @@ const UserDbComp = (props) => {
               Checked In Days -- {props.stayeddays}
             </p>
             <p className="font-big">
-              Checked In  -- {props.checkin}
+              Checked In  -- {props.checkin} / {handleTimeFormat(props.checkinTime)}
             </p>
             <p className="font-big">
-              Checked Out -- {props.checkout}
+              Checked Out -- {props.checkout} / {handleTimeFormat(props.checkoutTime)}
             </p>
             {
               props.discount ===  undefined || props.discount === null ? (

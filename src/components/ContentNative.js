@@ -340,6 +340,12 @@ const ContentNative = () => {
                                                     Date Of Check Out
                                                 </th>
                                                 <th>
+                                                    Time of Check In
+                                                </th>
+                                                <th>
+                                                    Time of Check Out
+                                                </th>
+                                                <th>
                                                     Amount Paid
                                                 </th>
                                                 <th>
@@ -407,7 +413,7 @@ const ContentNative = () => {
                                                             secphone={item.secondphonenumber} adults={item.adults}
                                                             childrens={item.childrens} checkin={item.dateofcheckin}
                                                             aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays}
-                                                            discount = {item.discount} advance = {item.advance} />
+                                                            discount = {item.discount} advance = {item.advance} checkInTime = {item.checkinTime} checkOutTime = {item.checkoutTime} />
 
                                                     )
                                                 })
