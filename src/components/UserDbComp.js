@@ -6,8 +6,6 @@ const UserDbComp = (props) => {
 
   const [show, setShow] = useState(false);
 
-  console.log(props.roomno, props.advance, props.discount)
-
   const handleClose = () => {
     setShow(!show);
   }
@@ -73,9 +71,14 @@ const UserDbComp = (props) => {
                   Discount Applied - False
                 </p>
               ) : (
-                <p className="font-big">
-                  Discount Applied - True
-                </p>
+                <div>
+                  <p className="font-big">
+                    Discount Applied - True
+                  </p>
+                  <p className="font-big">
+                    Discount Amount - {props.discount === "" ? 0 : props.discount}
+                  </p>
+                </div>
               )
             }
             {
@@ -84,9 +87,14 @@ const UserDbComp = (props) => {
                 Advance Applied - False
               </p>
              ) : (
-              <p className="font-big">
-                Advance Applied - True
-              </p>
+              <div>
+                <p className="font-big">
+                  Advance Applied - True
+                </p>
+                <p className="font-big">
+                  Advance Amount - {props.advance === "" ? 0 : props.advance}
+                </p>
+              </div>
              )
             }
             <p className="font-big">

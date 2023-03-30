@@ -312,7 +312,7 @@ const ContentNative = () => {
                                                 phonenumber={item.phonenumber}
                                                 secphone={item.secondphonenumber} adults={item.adults}
                                                 childrens={item.childrens} checkin={item.dateofcheckin}
-                                                aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
+                                                aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} discount = {item.discount} advance = {item.advance} />
                                         )
                                     })
                                 }
@@ -344,6 +344,12 @@ const ContentNative = () => {
                                                 </th>
                                                 <th>
                                                     Customer Name
+                                                </th>
+                                                <th>
+                                                    Discount
+                                                </th>
+                                                <th>
+                                                    Advance
                                                 </th>
                                                 <th>
                                                     Room No
@@ -400,7 +406,8 @@ const ContentNative = () => {
                                                             phonenumber={item.phonenumber}
                                                             secphone={item.secondphonenumber} adults={item.adults}
                                                             childrens={item.childrens} checkin={item.dateofcheckin}
-                                                            aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays} />
+                                                            aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays}
+                                                            discount = {item.discount} advance = {item.advance} />
 
                                                     )
                                                 })

@@ -1,6 +1,7 @@
 import React from 'react'
 
 const GeneratorCN = (props) => {
+
   return (
       <div className="col-4" style={{ paddingBottom: '10vh' }}>
         <div class="card">
@@ -21,6 +22,32 @@ const GeneratorCN = (props) => {
             <p style={{ color: "black" }}>
               Customer Name : {props.username}
             </p>
+            {
+              props.discount === undefined || props.discount === null ? (
+                <p style={{ color: "black" }}>
+                  Discount Amount : False
+                </p>
+              ) : (
+                <div>
+                  <p style={{ color: "black" }}>
+                    Discount Amount : {props.discount === "" ? 0 : props.discount}
+                  </p>
+                </div>
+              )
+            }
+            {
+              props.advance === undefined || props.advance === null ? (
+                <p style={{ color: "black" }}>
+                  Advance Amount : False
+                </p>
+              ) : (
+                <div>
+                  <p style={{ color: "black" }}>
+                    Advance Amount : {props.advance === "" ? 0 : props.advance}
+                  </p>
+                </div>
+              )
+            }
             <p style={{ color: "black" }}>
               Phone Number : {props.phonenumber}
             </p>

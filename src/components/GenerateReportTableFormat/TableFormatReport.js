@@ -2,7 +2,7 @@ import React from 'react'
 
 const TableFormatReport = (props) => {
   return (
-      <tr>
+      <tr className = "table-view">
         <td>
           {props.checkin}
         </td>
@@ -14,6 +14,12 @@ const TableFormatReport = (props) => {
         </td>
         <td>
           {props.username}
+        </td>
+        <td>
+          {(props.discount === undefined || props.discount === null || props.discount === "") ? 0 : props.discount}
+        </td>
+        <td>
+          {props.advance === undefined || props.advance === null || props.advance === "" ? 0 : props.advance}
         </td>
         <td>
           {props.roomno}
