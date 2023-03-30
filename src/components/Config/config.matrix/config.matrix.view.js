@@ -16,6 +16,12 @@ const ConfigMatrix = (props) => {
                     Hourly Basis
                 </label>
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.isChannel} onChange = {() => props.handleChannel()} />
+                <label class="form-check-label" for="flexCheckDefault" style={{ color: "black" }}>
+                    Enable Channel
+                </label>
+            </div>
         </div>
     )
 }
