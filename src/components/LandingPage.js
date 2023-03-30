@@ -31,6 +31,9 @@ const LandingPage = () => {
     // Gst handler!
     const [isGstEnabled, setIsGstEnabled] = useState(false);
 
+    // Channel Manager Handler!
+    const [channel, setChannel] = useState(JSON.parse(getStorage("isChannel")));
+
     // Hourly basis handler / checker!
     const [isHourly, setIsHourly] = useState(false);
 
@@ -214,7 +217,7 @@ const LandingPage = () => {
                                               return (
                                                   <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} 
                                                   roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} price = {item.price} 
-                                                  prebook = {item.preBooked} prevalid = {item.preValid} prebookconfig = {configOptions} discount = {item.discount} isGstEnabled = {isGstEnabled} isHourly = {isHourly} options = {options}/>
+                                                  prebook = {item.preBooked} prevalid = {item.preValid} prebookconfig = {configOptions} discount = {item.discount} isGstEnabled = {isGstEnabled} isHourly = {isHourly} channel = {channel} options = {options}/>
                                               )
                                           })
                                       }

@@ -35,7 +35,8 @@ const Login = () => {
           // Set isGst and isHourly basis in localstorage!
           const data = {
             "isGst" : res.data.isGstEnabled,
-            "isHourly" : res.data.isHourly
+            "isHourly" : res.data.isHourly,
+            "isChannel": res.data.isChannel
           }
 
           // Populate the modal into localstorage!

@@ -397,6 +397,8 @@ const HomeRoom = (props) => {
         // Check if the rate has to be updated or not!
         if(value !== "Walk-In"){
             setIsChannel(true);
+        } else {
+            setIsChannel(false);
         }
         setDropdown(value);
     }
@@ -531,19 +533,25 @@ const HomeRoom = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <h4 className='strong'>{props.roomno}</h4>
-                        <div className="modal-gap">
-                            <label style={{ color: "black" }}> Channel Manager </label>
-                            <select class="form-select" aria-label="Default select example" onChange={(e) => handleChannel(e.target.value)}>
-                                <option selected>Choose...</option>
-                                {
-                                    props.options.map((item, key) => {
-                                        return (
-                                            <option>{item}</option>
-                                        )
-                                    })
-                                }
-                            </select>                        
-                        </div>
+                        {
+                            props.channel ? (
+                                <div className="modal-gap">
+                                    <label style={{ color: "black" }}> Channel Manager </label>
+                                    <select class="form-select" aria-label="Default select example" onChange={(e) => handleChannel(e.target.value)}>
+                                        <option selected>Choose...</option>
+                                        {
+                                            props.options.map((item, key) => {
+                                                return (
+                                                    <option>{item}</option>
+                                                )
+                                            })
+                                        }
+                                    </select>                        
+                                </div>
+                            ) : (
+                                null
+                            )
+                        }
                         {
                             isChannel ? (
                                 <div className="modal-gap">

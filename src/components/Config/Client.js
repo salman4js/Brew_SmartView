@@ -34,6 +34,9 @@ const Client = () => {
     // Hourly basis state handler!
     const [isHourly, setIsHourly] = useState(false);
 
+    // Channel Enable state handler!
+    const [isChannel, setIsChannel] = useState(false);
+
     const successHandler = () => {
         setSuccess(!success);
     }
@@ -78,6 +81,7 @@ const Client = () => {
                 if(res.data.success){
                     setIsGst(res.data.isGstEnabled);
                     setIsHourly(res.data.isHourly);
+                    setIsChannel(res.data.isChannel);
                 }
             })
         
@@ -148,13 +152,18 @@ const Client = () => {
         setIsHourly(!isHourly);
     }
 
+    // Handle Channel Manager!
+    function handleChannel(){
+        setIsChannel(!isChannel);
+    }
+
     // Change Matrix config data!
     function changeMatrix() {
-        console.log("Hourly", isHourly);
         setLoading(true);
         const data = {
             isGst: isGst,
-            isHourly: isHourly
+            isHourly: isHourly,
+            isChannel: isChannel
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -280,7 +289,7 @@ const Client = () => {
                                     Config -  Matrix
                                 </div>
                                 <div class="card-body">
-                                    <ConfigMatrix isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} />
+                                    <ConfigMatrix isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} handleChannel = {() => handleChannel()} isChannel = {isChannel} />
                                     <br />
                                     <button className="btn btn-primary" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>
