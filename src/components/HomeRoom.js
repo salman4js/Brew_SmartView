@@ -14,6 +14,7 @@ import InlineToast from './InlineToast/Inline.toast.view';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ModalCheckOut from './ModalCheckOut';
+import Wizard from './Wizard/model.wizard.view';
 import { getStorage } from '../Controller/Storage/Storage';
 
 
@@ -75,6 +76,9 @@ const HomeRoom = (props) => {
 
     //Loader--Modal
     const [loading, setLoading] = useState(false);
+
+    // Wizard state handler!
+    const [isWizard, setIsWizard] = useState(false);
 
     // Customer Data
     const [customername, setCustomername] = useState();
@@ -375,7 +379,6 @@ const HomeRoom = (props) => {
         await axios.post(`${Variables.hostId}/${props.lodgeid}/calcdishuserrate`, generateDishRate)
             .then(res => {
                 if (res.data.success) {
-                    console.log(res.data.message);
                     setCalcdishrate(res.data.message);
                 } else {
                     setShowerror(true);
@@ -473,6 +476,35 @@ const HomeRoom = (props) => {
         })
     }
 
+    // Update wizard configuration helper function!
+    function inputChangeWizard(data){
+        setUpdatePrice(data);
+    }
+
+    function updateRoomPrice(){
+
+        // Form data!
+        const data = {
+            updatePrice: updatePrice,
+            roomid: props.roomid
+        }
+
+        axios.post(`${Variables.hostId}/${props.lodgeid}/update-room-price`, data)
+            .then(res => {
+                if(res.data.success){
+                    openUpdateWizard(); // Close the update wizard panel
+                    props.setLoad(res.data.success);
+                } else {
+                    setShowerror(true);
+                    setSuccess(res.data.message)
+                }
+            })
+    }
+
+    function openUpdateWizard(){
+        setIsWizard(!isWizard);
+    }
+
 
     // Handle Checkout Customer!
     const checkedOut = () => {
@@ -554,7 +586,7 @@ const HomeRoom = (props) => {
                             )
                         }
                         {
-                            isChannel ? (
+                            isChannel || props.updatePriceWizard ? (
                                 <div className="modal-gap">
                                     <label style={{ color: "black" }}> Update Room Price(Channel Manager) </label>
                                     <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Update Room Price" name={updatePrice} value={updatePrice} onChange={(e) => setUpdatePrice(e.target.value)} />
@@ -724,7 +756,34 @@ const HomeRoom = (props) => {
                         <Modal.Title>Generated Bill - Feautured</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <h5>Amount to be paid for the suite - {amount}</h5>
+                        {
+                            isWizard ? (
+                                <Wizard close = {true} class = "text-center" label = "Update Room Price" placeholder = "Update Room Price" wizardInputChange = {(data) => inputChangeWizard(data)} onClose = {() => openUpdateWizard()} />
+                            ) : (
+                                null
+                            )
+                        }
+                        <h5>Amount to be paid for the suite - {amount}. 
+                        {
+                            props.updatePriceWizard ? (
+                                <span>
+                                    {
+                                        isWizard ? (
+                                            <span className = "update-price-configured" onClick={() => updateRoomPrice()}>
+                                                Udpate
+                                            </span>
+                                        ) : (
+                                            <span className = "update-price-configured" onClick={() => openUpdateWizard()}>
+                                                Edit
+                                            </span>
+                                        )
+                                    }
+                                </span> 
+                            ) : (
+                                null
+                            )
+                        }
+                        </h5>
                         {
                             advance === true ? (
                                 <p>

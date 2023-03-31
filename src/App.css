@@ -632,3 +632,15 @@ td {
   border:0.5px solid rgba(225, 223, 223, 0.816);
   margin-bottom: 5px;
 }
+
+.update-price-configured{
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  color: blue;
+  float: right;
+}
+
+.wizardmodal{
+  margin-bottom: 20px;
+}

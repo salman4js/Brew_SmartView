@@ -37,6 +37,9 @@ const Client = () => {
     // Channel Enable state handler!
     const [isChannel, setIsChannel] = useState(false);
 
+    // Update Room Price configuration!
+    const [updatePrice, setUpdatePrice] = useState(false);
+
     const successHandler = () => {
         setSuccess(!success);
     }
@@ -82,6 +85,7 @@ const Client = () => {
                     setIsGst(res.data.isGstEnabled);
                     setIsHourly(res.data.isHourly);
                     setIsChannel(res.data.isChannel);
+                    setUpdatePrice(res.data.updatePrice)
                 }
             })
         
@@ -157,13 +161,19 @@ const Client = () => {
         setIsChannel(!isChannel);
     }
 
+    // Handle Update Price State!
+    function handlePrice(){
+        setUpdatePrice(!updatePrice);
+    }
+
     // Change Matrix config data!
     function changeMatrix() {
         setLoading(true);
         const data = {
             isGst: isGst,
             isHourly: isHourly,
-            isChannel: isChannel
+            isChannel: isChannel,
+            updatePrice: updatePrice
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -289,7 +299,8 @@ const Client = () => {
                                     Config -  Matrix
                                 </div>
                                 <div class="card-body">
-                                    <ConfigMatrix isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} handleChannel = {() => handleChannel()} isChannel = {isChannel} />
+                                    <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
+                                    handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} />
                                     <br />
                                     <button className="btn btn-primary" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>

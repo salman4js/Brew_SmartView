@@ -22,6 +22,12 @@ const ConfigMatrix = (props) => {
                     Enable Channel
                 </label>
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.updatePrice} onChange = {() => props.handlePrice()} />
+                <label class="form-check-label" for="flexCheckDefault" style={{ color: "black" }}>
+                    Update room price in checkin and checkout wizard
+                </label>
+            </div>
         </div>
     )
 }
