@@ -588,7 +588,7 @@ const HomeRoom = (props) => {
                         {
                             isChannel || props.updatePriceWizard ? (
                                 <div className="modal-gap">
-                                    <label style={{ color: "black" }}> Update Room Price(Channel Manager) </label>
+                                    <label style={{ color: "black" }}> Update Room Price </label>
                                     <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Update Room Price" name={updatePrice} value={updatePrice} onChange={(e) => setUpdatePrice(e.target.value)} />
                                 </div>
                             ) : (

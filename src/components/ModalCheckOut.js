@@ -75,7 +75,7 @@ const ModalCheckOut = (props) => {
                     Head Count of childrens : {props.childrens}
                 </p>
                 <p className='font-big'>
-                    No.Of.Days Stay : {stay}
+                    No.Of. {stay !== undefined && stay.split(" ")[1] } stay : {stay}
                 </p>
                 {
                     props.discount ? (
