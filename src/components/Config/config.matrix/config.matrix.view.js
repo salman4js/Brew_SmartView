@@ -28,6 +28,12 @@ const ConfigMatrix = (props) => {
                     Update room price in checkin and checkout wizard
                 </label>
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.isExtra} onChange = {() => props.handleExtra()} />
+                <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                    Extra Bed
+                </label>
+            </div>
         </div>
     )
 }

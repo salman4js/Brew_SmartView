@@ -25,6 +25,7 @@ const AddRooms = () => {
     const [suitetype, setSuitetype] = useState("");
     const [option, setOption] = useState([]);
     const [price, setPrice] = useState("");
+    const [extra, setExtra] = useState("");
 
     // Error Messages
     const [error, setError] = useState();
@@ -51,6 +52,7 @@ const AddRooms = () => {
                 //console.log(res.data);
                 res.data.map((item,key) => {
                     setPrice(item.price);
+                    setExtra(item.extraBedPrice);
                 })
             })
     }
@@ -63,7 +65,8 @@ const AddRooms = () => {
             roomno: roomno,
             bedcount: bedcount,
             suitename: suitetype,
-            price : price
+            price : price,
+            extraBedPrice: extra
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/createroom`, credentials)
             .then(res => {

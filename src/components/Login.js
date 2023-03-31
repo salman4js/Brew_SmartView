@@ -19,9 +19,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Account Lockout Handler!
-  const [isLocked, setIsLocked] = useState(false);
-
   const handleShow = () => {
     setShow(false);
     setError(undefined);
@@ -37,7 +34,8 @@ const Login = () => {
             "isGst" : res.data.isGstEnabled,
             "isHourly" : res.data.isHourly,
             "isChannel": res.data.isChannel,
-            "updatePrice" : res.data.updatePrice
+            "updatePrice" : res.data.updatePrice,
+            "isExtra": res.data.isExtra,
           }
 
           // Populate the modal into localstorage!

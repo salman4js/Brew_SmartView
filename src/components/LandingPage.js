@@ -218,7 +218,7 @@ const LandingPage = () => {
                                             }
                                         }).map((item, key) => {
                                               return (
-                                                  <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} 
+                                                  <HomeRoom extraBedPrice = {item.extraBedPrice} extraBeds = {item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} 
                                                   roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} price = {item.price} 
                                                   prebook = {item.preBooked} prevalid = {item.preValid} prebookconfig = {configOptions} discount = {item.discount} isGstEnabled = {isGstEnabled} 
                                                   isHourly = {isHourly} channel = {channel} options = {options} updatePriceWizard = {updatePriceWizard}/>
