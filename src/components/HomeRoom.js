@@ -498,6 +498,11 @@ const HomeRoom = (props) => {
         setIsWizard(!isWizard);
     }
 
+    // Invoice Generator!
+    function windowPrint() {
+        props.invoice(true);
+    }
+
 
     // Handle Checkout Customer!
     const checkedOut = () => {
@@ -759,182 +764,183 @@ const HomeRoom = (props) => {
                         <Modal.Title>Generated Bill - Feautured</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {
-                            isWizard ? (
-                                <Wizard close = {true} class = "text-center" label = "Update Bill Price" placeholder = "Update Bill Price" wizardInputChange = {(data) => inputChangeWizard(data)} onClose = {() => openUpdateWizard()} />
-                            ) : (
-                                null
-                            )
-                        }
-                        <h5>Amount to be paid for the suite - {amount}. 
-                        {
-                            props.updatePriceWizard ? (
-                                <span>
-                                    {
-                                        isWizard ? (
-                                            <span className = "update-price-configured" onClick={() => updateBillPrice()}>
-                                                Udpate
-                                            </span>
-                                        ) : (
-                                            <span className = "update-price-configured" onClick={() => openUpdateWizard()}>
-                                                Edit
-                                            </span>
-                                        )
-                                    }
-                                </span> 
-                            ) : (
-                                null
-                            )
-                        }
-                        </h5>
-                        {
-                            advance === true ? (
-                                <p>
-                                    Advance amount has been reduced in the total amount - {amount_advance} Rs!
-                                </p>
-                            ) : (
-                                null
-                            )
-                        }
-                        {
-                            discountApplied === true ? (
-                                <p>
-                                    Discount amount has been reduced in the total amount - {discountPrice} Rs!
-                                </p>
-                            ) : (
-                                null
-                            )
-                        }
-                        {
-                            isNaN(Number(totalAmount)) ? (
-                                <div>
+                        <div id = "invoice-generator">
+                            {
+                                isWizard ? (
+                                    <Wizard close = {true} class = "text-center" label = "Update Bill Price" placeholder = "Update Bill Price" wizardInputChange = {(data) => inputChangeWizard(data)} onClose = {() => openUpdateWizard()} />
+                                ) : (
+                                    null
+                                )
+                            }
+                            <h5>Amount to be paid for the suite - {amount}. 
+                            {
+                                props.updatePriceWizard ? (
+                                    <span>
+                                        {
+                                            isWizard ? (
+                                                <span className = "update-price-configured" onClick={() => updateBillPrice()}>
+                                                    Udpate
+                                                </span>
+                                            ) : (
+                                                <span className = "update-price-configured" onClick={() => openUpdateWizard()}>
+                                                    Edit
+                                                </span>
+                                            )
+                                        }
+                                    </span> 
+                                ) : (
+                                    null
+                                )
+                            }
+                            </h5>
+                            {
+                                advance === true ? (
                                     <p>
-                                        Amount deducted for CGST - Calculating...
+                                        Advance amount has been reduced in the total amount - {amount_advance} Rs!
                                     </p>
+                                ) : (
+                                    null
+                                )
+                            }
+                            {
+                                discountApplied === true ? (
                                     <p>
-                                        Amount deducted for SGST - Calculating...
+                                        Discount amount has been reduced in the total amount - {discountPrice} Rs!
                                     </p>
-                                </div>
-                            ) : (
-                                isGst === true ? (
+                                ) : (
+                                    null
+                                )
+                            }
+                            {
+                                isNaN(Number(totalAmount)) ? (
                                     <div>
                                         <p>
-                                            Amount deducted for GST - {(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)}
+                                            Amount deducted for CGST - Calculating...
+                                        </p>
+                                        <p>
+                                            Amount deducted for SGST - Calculating...
                                         </p>
                                     </div>
                                 ) : (
+                                    isGst === true ? (
+                                        <div>
+                                            <p>
+                                                Amount deducted for GST - {(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)}
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div>
+
+                                        </div>
+                                    )
+                                )
+                            }
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Dish Name
+                                        </th>
+                                        <th>
+                                            Quantity
+                                        </th>
+                                        <th>
+                                            Dish Rate
+                                        </th>
+                                    </tr>
+                                    {
+                                        dishrate.map((item, key) => {
+                                            return (
+                                                <Table dishName={item.dishName} quantity={item.quantity} dishRate={item.dishRate} setTotaldishrate={setTotaldishrate} roomid={props.roomid} />
+                                            )
+                                        })
+                                    }
+                                </thead>
+                            </table>
+                            <p>
+                                Total Amount to be paid for dish service - {isNaN(calcdishrate) ? "Calculating..." : calcdishrate}
+                            </p>
+                            {
+                                isGst ? (
+                                    <p>
+                                        Total Amount to be paid for dish service with GST - {isNaN(calcdishrate) ? "Calculating..." : (calcdishrate * 0.05)}
+                                    </p>
+                                ) : (
+                                    <div>
+                                    </div>
+                                )
+                            }
+                            {isExtra && (
+                                <h5 style={{ fontWeight: "bold" }}>
+                                    Amount for extra beds: {props.extraBeds * props.extraBedPrice} Rs
+                                </h5>
+                            )}
+                            <h5 style={{ fontWeight: "bold" }}>Total amount to be paid:
+                                {
+                                    discountApplied === true ? (
+                                        isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
+                                            " Calculating..."
+                                        ) : (
+                                            (" " + (Number(calcdishrate) + Number(totalAmount + extraCollection)) + " Rs")
+                                        )
+                                    ) : (
+                                        isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
+                                            " Calculating..."
+                                        ) : (
+                                            (" " + (Number(calcdishrate) + Number(totalAmount + extraCollection)) + " Rs")
+                                        )
+                                    )
+                                }</h5>
+                            {
+                                isGst ? (
+                                    <h5 style={{ fontWeight: "bold" }}>Total amount to be paid with GST:
+                                        {
+                                            discountApplied === true ? (
+                                                isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
+                                                    " Calculating..."
+                                                ) : (
+                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + Number((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)) + " Rs")
+                                                )
+                                            ) : (
+                                                isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
+                                                    " Calculating..."
+                                                ) : (
+                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + Number((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)) + " Rs")
+                                                )
+                                            )
+                                        }
+                                    </h5>
+                                ) : (
                                     <div>
 
                                     </div>
                                 )
-                            )
-                        }
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Dish Name
-                                    </th>
-                                    <th>
-                                        Quantity
-                                    </th>
-                                    <th>
-                                        Dish Rate
-                                    </th>
-                                </tr>
-                                {
-                                    dishrate.map((item, key) => {
-                                        return (
-                                            <Table dishName={item.dishName} quantity={item.quantity} dishRate={item.dishRate} setTotaldishrate={setTotaldishrate} roomid={props.roomid} />
-                                        )
-                                    })
-                                }
-                            </thead>
-                        </table>
-                        <p>
-                            Total Amount to be paid for dish service - {isNaN(calcdishrate) ? "Calculating..." : calcdishrate}
-                        </p>
-                        {
-                            isGst ? (
-                                <p>
-                                    Total Amount to be paid for dish service with GST - {isNaN(calcdishrate) ? "Calculating..." : (calcdishrate * 0.05)}
-                                </p>
-                            ) : (
-                                <div>
-                                </div>
-                            )
-                        }
-                        {isExtra && (
-                            <h5 style={{ fontWeight: "bold" }}>
-                                Amount for extra beds: {props.extraBeds * props.extraBedPrice} Rs
-                            </h5>
-                        )}
-                        <h5 style={{ fontWeight: "bold" }}>Total amount to be paid:
+                            }
+                            
                             {
-                                discountApplied === true ? (
-                                    isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
-                                        " Calculating..."
-                                    ) : (
-                                        (" " + (Number(calcdishrate) + Number(totalAmount + extraCollection)) + " Rs")
-                                    )
-                                ) : (
-                                    isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
-                                        " Calculating..."
-                                    ) : (
-                                        (" " + (Number(calcdishrate) + Number(totalAmount + extraCollection)) + " Rs")
-                                    )
-                                )
-                            }</h5>
-                        {
-                            isGst ? (
-                                <h5 style={{ fontWeight: "bold" }}>Total amount to be paid with GST:
-                                    {
-                                        discountApplied === true ? (
-                                            isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
-                                                " Calculating..."
-                                            ) : (
-                                                (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + Number((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)) + " Rs")
-                                            )
-                                        ) : (
-                                            isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
-                                                " Calculating..."
-                                            ) : (
-                                                (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + Number((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)) + " Rs")
-                                            )
-                                        )
-                                    }
-                                </h5>
-                            ) : (
-                                <div>
-
-                                </div>
-                            )
-                        }
-                        
-                        {
-                            props.isGstEnabled ? (
-                                <div>
-                                    <div className = "table-view-bill-line"></div>
-                                    <div class="form-check gst-toggle">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onChange={() => gstHandler()} />
-                                        <label class="form-check-label" for="flexCheckChecked">
-                                            GST
-                                        </label>
+                                props.isGstEnabled ? (
+                                    <div>
+                                        <div className = "table-view-bill-line"></div>
+                                        <div class="form-check gst-toggle">
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onChange={() => gstHandler()} />
+                                            <label class="form-check-label" for="flexCheckChecked">
+                                                GST
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
-                            ) : (
-                                <div>
-                                </div>
-                            )
-                        }
-
+                                ) : (
+                                    <div>
+                                    </div>
+                                )
+                            }
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         
                         <Button variant="secondary" onClick={handleCloseGeneratedBill}>
                             Not Paid
                         </Button>
-                        <Button variant = "dark">Print</Button>
+                        <Button variant = "dark" onClick = {() => windowPrint()}>Print</Button>
                         <Button variant="primary" onClick={checkedOut}>Paid</Button>
                     </Modal.Footer>
                 </Modal>
