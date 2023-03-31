@@ -14,6 +14,7 @@ const ConfigureBill = () => {
 
     const [suitetype, setSuitetype] = useState();
     const [price, setPrice] = useState();
+    const [extraPrice, setExtraPrice] = useState();
     const token = localStorage.getItem("token");
 
     // Loader
@@ -40,7 +41,8 @@ const ConfigureBill = () => {
         setLoading(true);
         const data = {
             suitetype: suitetype,
-            price: price
+            price: price,
+            extraPrice: extraPrice
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/addroomtype`, data)
             .then(res => {
@@ -133,6 +135,10 @@ const ConfigureBill = () => {
                                                 <div className='modal-gap'>
                                                     <label style={{ color: "black" }}> Price </label>
                                                     <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Price Per Day!' name={price} value={price} onChange={(e) => setPrice(e.target.value)} />
+                                                </div>
+                                                <div className='modal-gap'>
+                                                    <label style={{ color: "black" }}> Extra Bed Price for this room type! </label>
+                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Extra Bed Price Per Day!' name={extraPrice} value={extraPrice} onChange={(e) => setExtraPrice(e.target.value)} />
                                                 </div>
                                                 <br />
                                                 <button className='btn btn-info' onClick={processData}> Add Data </button>

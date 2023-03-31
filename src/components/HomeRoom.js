@@ -80,6 +80,10 @@ const HomeRoom = (props) => {
     // Wizard state handler!
     const [isWizard, setIsWizard] = useState(false);
 
+    // Extra bed state handler!
+    const [isExtra, setIsExtra] = useState(JSON.parse(getStorage("isExtra")));
+    const [extraCount, setExtraCount] = useState();
+
     // Customer Data
     const [customername, setCustomername] = useState();
     const [customerphonenumber, setCustomerphonenumber] = useState();
@@ -179,7 +183,7 @@ const HomeRoom = (props) => {
             prebookdiscount: prebookdiscount,
             prebookprice: props.price,
             suitetype: props.roomtype,
-            roomid: props.roomid,
+            roomid: props.roomid
         }
         axios.post(`${Variables.hostId}/${props.lodgeid}/addprebookuserrooms`, credentials)
             .then(res => {
@@ -247,7 +251,9 @@ const HomeRoom = (props) => {
                 advance: advanceCheckin,
                 channel: dropdown,
                 isChannel: isChannel,
-                updatePrice: updatePrice
+                updatePrice: updatePrice,
+                extraBeds: extraCount,
+                extraBedPrice: props.extraBedPrice
             }
             axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
                 .then(res => {
@@ -289,7 +295,8 @@ const HomeRoom = (props) => {
     const [amount_advance, setAmount_advance] = useState(0);
     const [discountApplied, setDiscountApplied] = useState();
     const [discountPrice, setDiscountPrice] = useState();
-    const [totalAmount, setTotalAmount] = useState()
+    const [totalAmount, setTotalAmount] = useState();
+    const [extraCollection, setExtraCollection] = useState();
     // Check Out Customer Data
     const clearData = async () => {
         const credentials = {
@@ -366,8 +373,10 @@ const HomeRoom = (props) => {
                             setDiscountPrice(res.data.discountPrice);
                             setAmount_advance(res.data.advanceCheckin);
                             setTotalAmount(res.data.message - res.data.advanceCheckin - res.data.discountPrice)
+                            setExtraCollection(res.data.extraBedCollection);
                         } else {
                             setTotalAmount(res.data.message);
+                            setExtraCollection(res.data.extraBedCollection);
                         }
                     }
                 } else {
@@ -481,24 +490,8 @@ const HomeRoom = (props) => {
         setUpdatePrice(data);
     }
 
-    function updateRoomPrice(){
-
-        // Form data!
-        const data = {
-            updatePrice: updatePrice,
-            roomid: props.roomid
-        }
-
-        axios.post(`${Variables.hostId}/${props.lodgeid}/update-room-price`, data)
-            .then(res => {
-                if(res.data.success){
-                    openUpdateWizard(); // Close the update wizard panel
-                    props.setLoad(res.data.success);
-                } else {
-                    setShowerror(true);
-                    setSuccess(res.data.message)
-                }
-            })
+    function updateBillPrice(){
+        setTotalAmount(Number(updatePrice))
     }
 
     function openUpdateWizard(){
@@ -517,11 +510,11 @@ const HomeRoom = (props) => {
             checkoutTime: getTime,
             roomtype: props.roomtype,
             prebook: props.prebook,
-            amount: totalAmount,
+            amount: totalAmount + extraCollection,
             totalDishAmount: calcdishrate,
             isGst: isGst,
             foodGst: calcdishrate * 0.05,
-            stayGst: (totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)
+            stayGst: ((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)
         }
 
         axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
@@ -546,7 +539,7 @@ const HomeRoom = (props) => {
                 </div>
                 <div class="card-body">
                     <p style={{ color: "black" }}>Engaged : {props.engaged}</p>
-                    <p style={{ color: "black" }}>Bed Count : {props.bedcount}</p>
+                    <p style={{ color: "black" }}>Bed Count : {props.bedcount} + {props.extraBeds}</p>
                     <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
                     <p style={{ color: "black" }}> Price Per Day : {props.price}</p>
                 </div>
@@ -586,7 +579,7 @@ const HomeRoom = (props) => {
                             )
                         }
                         {
-                            isChannel || props.updatePriceWizard ? (
+                            isChannel ? (
                                 <div className="modal-gap">
                                     <label style={{ color: "black" }}> Update Room Price </label>
                                     <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Update Room Price" name={updatePrice} value={updatePrice} onChange={(e) => setUpdatePrice(e.target.value)} />
@@ -615,6 +608,16 @@ const HomeRoom = (props) => {
                             <label style={{ color: "black" }}> Childrens If Any! </label>
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={childrens} value={childrens} onChange={(e) => setChildrens(e.target.value)} />
                         </div>
+                        {
+                            isExtra ? (
+                                <div className='modal-gap'>
+                                    <label style={{ color: "black" }}> Extra Beds </label>
+                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Extra Beds' name = {extraCount} value = {extraCount} onChange = {(e) => setExtraCount(e.target.value)} />
+                                </div>
+                            ) : (
+                                null
+                            )
+                        }
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Aadhar Number of anyone adult </label>
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Aadhar Card Number' name={aadhar} value={aadhar} onChange={(e) => setAadhar(e.target.value)} />
@@ -735,7 +738,7 @@ const HomeRoom = (props) => {
                     {
                         userdata.map((item, key) => {
                             return (
-                                <ModalCheckOut isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
+                                <ModalCheckOut extraBeds = {props.extraBeds} extraBedPrice = {props.extraBedPrice} isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
                             )
                         })
                     }
@@ -758,7 +761,7 @@ const HomeRoom = (props) => {
                     <Modal.Body>
                         {
                             isWizard ? (
-                                <Wizard close = {true} class = "text-center" label = "Update Room Price" placeholder = "Update Room Price" wizardInputChange = {(data) => inputChangeWizard(data)} onClose = {() => openUpdateWizard()} />
+                                <Wizard close = {true} class = "text-center" label = "Update Bill Price" placeholder = "Update Bill Price" wizardInputChange = {(data) => inputChangeWizard(data)} onClose = {() => openUpdateWizard()} />
                             ) : (
                                 null
                             )
@@ -769,7 +772,7 @@ const HomeRoom = (props) => {
                                 <span>
                                     {
                                         isWizard ? (
-                                            <span className = "update-price-configured" onClick={() => updateRoomPrice()}>
+                                            <span className = "update-price-configured" onClick={() => updateBillPrice()}>
                                                 Udpate
                                             </span>
                                         ) : (
@@ -861,40 +864,46 @@ const HomeRoom = (props) => {
                                 </div>
                             )
                         }
-                        <h5 style={{ fontWeight: "bold" }}>Total amount to be paid -
+                        {isExtra && (
+                            <h5 style={{ fontWeight: "bold" }}>
+                                Amount for extra beds: {props.extraBeds * props.extraBedPrice} Rs
+                            </h5>
+                        )}
+                        <h5 style={{ fontWeight: "bold" }}>Total amount to be paid:
                             {
                                 discountApplied === true ? (
-                                    isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
+                                    isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
                                         " Calculating..."
                                     ) : (
-                                        (" " + (Number(calcdishrate) + Number(totalAmount)) + " Rs")
+                                        (" " + (Number(calcdishrate) + Number(totalAmount + extraCollection)) + " Rs")
                                     )
                                 ) : (
-                                    isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
+                                    isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
                                         " Calculating..."
                                     ) : (
-                                        (" " + (Number(calcdishrate) + Number(totalAmount)) + " Rs")
+                                        (" " + (Number(calcdishrate) + Number(totalAmount + extraCollection)) + " Rs")
                                     )
                                 )
                             }</h5>
                         {
                             isGst ? (
-                                <h5 style={{ fontWeight: "bold" }}>Total amount to be paid with GST -
+                                <h5 style={{ fontWeight: "bold" }}>Total amount to be paid with GST:
                                     {
                                         discountApplied === true ? (
-                                            isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
+                                            isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
                                                 " Calculating..."
                                             ) : (
-                                                (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount) + Number(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)) + " Rs")
+                                                (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + Number((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)) + " Rs")
                                             )
                                         ) : (
                                             isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
                                                 " Calculating..."
                                             ) : (
-                                                (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount) + Number(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)) + " Rs")
+                                                (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + Number((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)) + " Rs")
                                             )
                                         )
-                                    }</h5>
+                                    }
+                                </h5>
                             ) : (
                                 <div>
 

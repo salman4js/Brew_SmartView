@@ -40,6 +40,24 @@ const Client = () => {
     // Update Room Price configuration!
     const [updatePrice, setUpdatePrice] = useState(false);
 
+    // Extra bed state handler!
+    const [isExtra, setIsExtra] = useState(false);
+    const [extraPrice, setExtraPrice] = useState();
+
+    const extraModel = {
+        placeholder: "Extra bed amount per day!",
+        label:  "Extra Bed Price Amount",
+        className: {
+            labelClassName: "text-center text-handler",
+            inputClassName: "form-control",
+            divClassName: "dashboard-input"
+        },
+        extraPrice: extraPrice,
+        onChange: function(data){
+            setExtraPrice(data);
+        }
+    }
+
     const successHandler = () => {
         setSuccess(!success);
     }
@@ -85,7 +103,8 @@ const Client = () => {
                     setIsGst(res.data.isGstEnabled);
                     setIsHourly(res.data.isHourly);
                     setIsChannel(res.data.isChannel);
-                    setUpdatePrice(res.data.updatePrice)
+                    setUpdatePrice(res.data.updatePrice);
+                    setIsExtra(res.data.isExtra);
                 }
             })
         
@@ -166,6 +185,11 @@ const Client = () => {
         setUpdatePrice(!updatePrice);
     }
 
+    // Handle Extra bed state 
+    function handleExtra(){
+        setIsExtra(!isExtra);
+    }
+
     // Change Matrix config data!
     function changeMatrix() {
         setLoading(true);
@@ -173,7 +197,8 @@ const Client = () => {
             isGst: isGst,
             isHourly: isHourly,
             isChannel: isChannel,
-            updatePrice: updatePrice
+            updatePrice: updatePrice,
+            isExtra: isExtra,
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -300,7 +325,9 @@ const Client = () => {
                                 </div>
                                 <div class="card-body">
                                     <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
-                                    handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} />
+                                    handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
+                                    extraModel = {extraModel} 
+                                    />
                                     <br />
                                     <button className="btn btn-primary" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>

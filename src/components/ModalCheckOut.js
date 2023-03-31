@@ -8,6 +8,9 @@ const ModalCheckOut = (props) => {
     const [stay, setStay] = useState();
     const date = brewDate.getFullDate("yyyy/mm/dd");
 
+    var isExtra = JSON.parse(getStorage("isExtra"));
+
+
     useEffect(() => {
 
         const isHourly = JSON.parse(getStorage("isHourly"));
@@ -74,6 +77,16 @@ const ModalCheckOut = (props) => {
                 <p className="font-big">
                     Head Count of childrens : {props.childrens}
                 </p>
+                {isExtra && (
+                    <div>
+                        <p className="font-big">
+                            Extra Bed: {props.extraBeds}
+                        </p>
+                        <p className="font-big">
+                            Extra Bed Price Per Bed: {props.extraBedPrice}
+                        </p>
+                    </div>
+                )}
                 <p className='font-big'>
                     No.Of. {stay !== undefined && stay.split(" ")[1] } stay : {stay}
                 </p>
