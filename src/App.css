@@ -299,14 +299,14 @@
 }
 
 .tableFormatReport {
-  padding: 20px 10px 10px 20px;
-  ;
+  padding: 5px 5px 5px 5px;
 }
 
 table,
 th,
 td {
   border: 1px solid black;
+  word-break: break-all;
 }
 
 .sidebar {

@@ -370,10 +370,10 @@ const ContentNative = () => {
                                                     Childrens
                                                 </th>
                                                 <th>
-                                                    Aadhar Number
+                                                    Aadhar
                                                 </th>
                                                 <th>
-                                                    Stayed Days
+                                                    Stay Days
                                                 </th>
                                             </tr>
                                             {
