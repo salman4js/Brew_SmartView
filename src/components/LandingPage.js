@@ -5,6 +5,7 @@ import changeScreen from './Action';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Variables from './Variables';
 import Loading from './Loading';
+import Invoice from './Invoice/invoice.view';
 import axios from "axios";
 import HomeRoom from './HomeRoom';
 
@@ -23,10 +24,18 @@ const LandingPage = () => {
     const [room, setRoom] = useState([]);
 
     const [load, setLoad] = useState(false);
-    
+
     //Loader
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+
+    // Invoice Generator!
+    const [invoice, setInvoice] = useState(false);
+
+    const model = {
+        customerName: "Stark"
+    }
+
 
     // Gst handler!
     const [isGstEnabled, setIsGstEnabled] = useState(false);
@@ -53,7 +62,7 @@ const LandingPage = () => {
 
 
     // Check Local Storage!
-    function checkStorage(){
+    function checkStorage() {
 
         setMessage("Validating config file...")
         // check for all the default set into the local storage!
@@ -64,21 +73,21 @@ const LandingPage = () => {
         setIsHourly(JSON.parse(isHourly));
     }
 
-      // Config checking
-      const [configOptions, setConfigOptions] = useState(false);
-      const checkConfig = () => {
+    // Config checking
+    const [configOptions, setConfigOptions] = useState(false);
+    const checkConfig = () => {
         setMessage("Checking application permissions...")
-          axios.get(`${Variables.hostId}/${splitedIds[0]}/config-checking`)
-              .then(res => {
-                  if(res.data.success){
-                      if(res.data.message.some(option => option.config === 'PreBook')){
-                          setConfigOptions(true);
-                      }
-                  } else {
-                      console.error(res.data.message);
-                  }
-              })
-      }
+        axios.get(`${Variables.hostId}/${splitedIds[0]}/config-checking`)
+            .then(res => {
+                if (res.data.success) {
+                    if (res.data.message.some(option => option.config === 'PreBook')) {
+                        setConfigOptions(true);
+                    }
+                } else {
+                    console.error(res.data.message);
+                }
+            })
+    }
 
     const getData = () => {
         setLoading(true);
@@ -93,7 +102,7 @@ const LandingPage = () => {
                 }
             })
                 .then(res => {
-                    if(res.data.success){
+                    if (res.data.success) {
                         setLoading(false);
                         setRoom(res.data.message)
                         setFreecounter(res.data.countAvailability);
@@ -122,23 +131,23 @@ const LandingPage = () => {
     // Token expiration checking!
     const parseJwt = (token) => {
         try {
-          return JSON.parse(atob(token.split(".")[1]));
+            return JSON.parse(atob(token.split(".")[1]));
         } catch (e) {
-          return null;
+            return null;
         }
-      };
+    };
 
     const AuthVerify = () => {
-          const user = localStorage.getItem("token");
-      
-          if (user) {
+        const user = localStorage.getItem("token");
+
+        if (user) {
             const decodedJwt = parseJwt(user);
-      
+
             if (decodedJwt.exp * 1000 < Date.now()) {
-              localStorage.clear();
-              changeScreen();
+                localStorage.clear();
+                changeScreen();
             }
-          }
+        }
     }
 
 
@@ -160,39 +169,42 @@ const LandingPage = () => {
             {
                 room ? (
                     loading ? (
-                        <Loading message = {message} />
+                        <Loading message={message} />
                     ) : (
-                        <div>
-                          <Navbar id={id} name={splitedIds[1]} className = "sticky" />
-                          <div className="text-center">
-                              <div>
-                                  <h3 className='heading-top topic-off'>
-                                      {splitedIds[1]} - Dashboard 
-                                  </h3>
-                                  <div className = "btn btn-primary">
-                                    <span className = "align-left">
-                                        Booked Rooms: 
-                                        <span class="align-left-more badge text-bg-secondary">{reservedcounter}</span>
-                                    </span>
-                                    <span className = "align-left">
-                                        Free Rooms: 
-                                        <span class="align-left-more badge text-bg-secondary">{freecounter}</span>
-                                    </span>
-                                    <span className = "align-left">
-                                        Total Rooms:
-                                        <span class="align-left-more badge text-bg-secondary">{room.length}</span>
-                                    </span>
-                                  </div>
-                              </div>
-                          </div>
-                          <div className='grid-system-search'>
-                              <div class="container">
-                                        <div className = "row">
-                                            <div className = "col-8">
+                        invoice ? (
+                            <Invoice node = {model} />
+                        ) : (
+                            <div>
+                                <Navbar id={id} name={splitedIds[1]} className="sticky" />
+                                <div className="text-center">
+                                    <div>
+                                        <h3 className='heading-top topic-off'>
+                                            {splitedIds[1]} - Dashboard
+                                        </h3>
+                                        <div className="btn btn-primary">
+                                            <span className="align-left">
+                                                Booked Rooms:
+                                                <span class="align-left-more badge text-bg-secondary">{reservedcounter}</span>
+                                            </span>
+                                            <span className="align-left">
+                                                Free Rooms:
+                                                <span class="align-left-more badge text-bg-secondary">{freecounter}</span>
+                                            </span>
+                                            <span className="align-left">
+                                                Total Rooms:
+                                                <span class="align-left-more badge text-bg-secondary">{room.length}</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='grid-system-search'>
+                                    <div class="container">
+                                        <div className="row">
+                                            <div className="col-8">
                                                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name={search} value={search} onChange={(e) => setSearch(e.target.value)} />
                                             </div>
-                                            <div className = "col">
-                                                <select class = "form-select" arai-label = "Sort by" placeholder = "Sort By" onChange = {(e) => changeSearchConfig(e.target.value)}>
+                                            <div className="col">
+                                                <select class="form-select" arai-label="Sort by" placeholder="Sort By" onChange={(e) => changeSearchConfig(e.target.value)}>
                                                     <option>
                                                         Show All
                                                     </option>
@@ -205,30 +217,31 @@ const LandingPage = () => {
                                                 </select>
                                             </div>
                                         </div>
-                                  <div class="row top-gun">
-                                      {
-                                        room.filter((value) => {
-                                            console.log(sort)
-                                            if(sort == "Room No"){
-                                                return value.roomno.toLowerCase().includes(search.toLowerCase());
-                                            } else if(sort == "Room Type"){
-                                                return value.suiteName.toLowerCase().includes(search.toLowerCase());
-                                            } else if (sort == "Show All"){
-                                                return value.roomno.toLowerCase().includes(search.toLowerCase()) || value.suiteName.toLowerCase().includes(search.toLowerCase());
+                                        <div class="row top-gun">
+                                            {
+                                                room.filter((value) => {
+                                                    console.log(sort)
+                                                    if (sort == "Room No") {
+                                                        return value.roomno.toLowerCase().includes(search.toLowerCase());
+                                                    } else if (sort == "Room Type") {
+                                                        return value.suiteName.toLowerCase().includes(search.toLowerCase());
+                                                    } else if (sort == "Show All") {
+                                                        return value.roomno.toLowerCase().includes(search.toLowerCase()) || value.suiteName.toLowerCase().includes(search.toLowerCase());
+                                                    }
+                                                }).map((item, key) => {
+                                                    return (
+                                                        <HomeRoom invoice = {(data) => setInvoice(data)} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
+                                                            roomid={item._id} id={id} setLoad={setLoad} lodgeid={splitedIds[0]} price={item.price}
+                                                            prebook={item.preBooked} prevalid={item.preValid} prebookconfig={configOptions} discount={item.discount} isGstEnabled={isGstEnabled}
+                                                            isHourly={isHourly} channel={channel} options={options} updatePriceWizard={updatePriceWizard} />
+                                                    )
+                                                })
                                             }
-                                        }).map((item, key) => {
-                                              return (
-                                                  <HomeRoom extraBedPrice = {item.extraBedPrice} extraBeds = {item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} 
-                                                  roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} price = {item.price} 
-                                                  prebook = {item.preBooked} prevalid = {item.preValid} prebookconfig = {configOptions} discount = {item.discount} isGstEnabled = {isGstEnabled} 
-                                                  isHourly = {isHourly} channel = {channel} options = {options} updatePriceWizard = {updatePriceWizard}/>
-                                              )
-                                          })
-                                      }
-                                  </div>
-                              </div>
-                          </div>
-                      </div >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div >
+                        )
                     )
                 ) : (
                     <div>
