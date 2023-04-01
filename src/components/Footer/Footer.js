@@ -1,13 +1,10 @@
 import React from 'react';
-import upArrow from '../../Assets/upArrow.png'
 
-const Footer = () => {
+const Footer = (props) => {
   return (
     <div className = "container">
         <div className = "sticky">
-            <button className = "btn btn-success">
-                <img src={upArrow} width="30" height="30" className="d-inline-block align-top" alt="" />
-            </button>
+            {props.elementView}
         </div>
     </div>
   )
