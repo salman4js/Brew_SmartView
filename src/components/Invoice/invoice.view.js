@@ -1,15 +1,14 @@
 import React, { useEffect } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
+import { getStorage } from "../../Controller/Storage/Storage";
 
 const Invoice = (props) => {
 
-    // Initiating navigate instance!
-    let navigate = useNavigate();
-
-    const { id } = useParams();
-
     // state to prevent useEffect from calling twice!
     var isPrint = false;
+
+    // Retrieve area and email from local storage!
+    const area = getStorage("area");
+    const emailId = getStorage("emailId");
 
     // navigate back to home page!
     function navigateBack() {
@@ -41,13 +40,19 @@ const Invoice = (props) => {
             </div>
             <div id="invoice-view">
                 <div className="text-center invoice-header" id="invoice" style={{ color: "black", cursor: "pointer" }} onClick={() => navigateBack()}>
-                    Livixius - HMS
+                    Hotel {props.node.lodgeName}
+                    <p>
+                        {emailId}
+                    </p>
+                    <p>
+                        {area}
+                    </p>
                 </div>
                 <div className="invoice-header" style={{ color: "black" }}>
                     Hey there, {props.node.customerName}
                 </div>
                 <p style={{ color: "black" }}>
-                    This is the receipt for the payment of {props.node.amount} you made to {props.node.lodgeName}!
+                    This is the receipt for the payment of {props.node.amount()} you made to {props.node.lodgeName}!
                 </p>
                 <hr />
                 <table style={{ width: "100%", color: "black" }} >
@@ -102,7 +107,7 @@ const Invoice = (props) => {
                     GST: {props.node.gst}
                 </div>
                 <div className="invoice-total-amount">
-                    Total Amount: {props.node.amount}
+                    Total Amount: {props.node.amount()}
                 </div>
             </div>
         </div>

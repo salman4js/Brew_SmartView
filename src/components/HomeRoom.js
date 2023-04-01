@@ -520,7 +520,13 @@ const HomeRoom = (props) => {
                 checkoutTime: getTime,
                 discount: options.discount,
                 advance: options.advance,
-                amount: (totalAmount + gstCalculation) - (options.discount + options.advance),
+                amount: function(){
+                    const discount = (options.discount === undefined ? 0 : options.discount);
+                    const advance = (options.advance === undefined ? 0 : options.advance);
+                    const gstCalc = (gstCalculation === undefined ? 0 : gstCalculation);
+                    const tAmount = (totalAmount === undefined ? 0 : totalAmount);
+                    return ((tAmount + gstCalc) - (discount + advance));
+                },
                 roomno: options.roomno,
                 lodgeName: props.lodgeName
             })
