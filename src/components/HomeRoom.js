@@ -499,9 +499,33 @@ const HomeRoom = (props) => {
 
     // Invoice Generator!
     function windowPrint() {
-        props.invoice(true);
-    }
+        getUserData(); // Call this method to retrieve user data
 
+        var gstCalculation = ((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)
+  
+        // Populate the model with userdata!
+        userdata.map((options,key) => {
+            props.node({
+                invoice: true,
+                customerName: options.username,
+                phoneNumber: options.phoneNumber,
+                extraBeds: options.extraBeds,
+                dateofCheckIn: options.dateofcheckin,
+                gst: gstCalculation,
+                stayedDays: stayeddays,
+                roomRent: totalAmount,
+                extraBedAmount: extraCollection,
+                dateofCheckout: checkoutdate,
+                checkinTime: options.checkinTime,
+                checkoutTime: getTime,
+                discount: options.discount,
+                advance: options.advance,
+                amount: (totalAmount + gstCalculation) - (options.discount + options.advance),
+                roomno: options.roomno,
+                lodgeName: props.lodgeName
+            })
+        })
+    }
 
     // Handle Checkout Customer!
     const checkedOut = () => {
@@ -543,7 +567,7 @@ const HomeRoom = (props) => {
                 </div>
                 <div class="card-body">
                     <p style={{ color: "black" }}>Engaged : {props.engaged}</p>
-                    <p style={{ color: "black" }}>Bed Count : {props.bedcount} + {props.extraBeds}</p>
+                    <p style={{ color: "black" }}>Bed Count : {(props.extraBeds !== "0" ? props.bedcount + "+" +  props.extraBeds : props.bedcount )}</p>
                     <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
                     <p style={{ color: "black" }}> Price Per Day : {props.price}</p>
                 </div>

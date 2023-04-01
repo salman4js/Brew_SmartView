@@ -666,3 +666,7 @@ td {
   color: green;
   font-weight: bold;
 }
+
+.invoice-view-back-generator{
+  display: block;
+}

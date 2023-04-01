@@ -1,27 +1,46 @@
-import React, {useState, useEffect} from "react";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Invoice = (props) => {
+
+    // Initiating navigate instance!
+    let navigate = useNavigate();
+
+    const { id } = useParams();
 
     // state to prevent useEffect from calling twice!
     var isPrint = false;
 
+    // navigate back to home page!
+    function navigateBack() {
+        props.onHide()
+    }
+
     // trigger print handler!
-    function triggerPrint(){
+    function triggerPrint() {
         isPrint = true;
         window.print();
+        navigateBack()
     }
 
     // Trigger a print everytime this components finished rendering!
     useEffect(() => {
-        if(!isPrint){
+        if (!isPrint) {
             triggerPrint();
         }
     }, [])
 
     return (
         <div className="container invoice" style={{ height: window.innerHeight }}>
-            <div id = "invoice-view">
-                <div className="text-center invoice-header" id = "invoice" style={{ color: "black" }}>
+            <div className="invoice-view-back-generator" onClick={() => navigateBack()}>
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                    </svg>
+                </div>
+            </div>
+            <div id="invoice-view">
+                <div className="text-center invoice-header" id="invoice" style={{ color: "black", cursor: "pointer" }} onClick={() => navigateBack()}>
                     Livixius - HMS
                 </div>
                 <div className="invoice-header" style={{ color: "black" }}>
@@ -35,10 +54,7 @@ const Invoice = (props) => {
                     <thead>
                         <tr>
                             <th>
-                                Suite Type
-                            </th>
-                            <th>
-                                Price Per Day
+                                Room Rent
                             </th>
                             <th>
                                 Days Stayed
@@ -51,42 +67,42 @@ const Invoice = (props) => {
                             </th>
                         </tr>
                         <td>
-                            Premium
+                            {props.node.roomRent}
                         </td>
                         <td>
-                            200
+                            {props.node.stayedDays}
                         </td>
                         <td>
-                            4
+                            {props.node.gst}
                         </td>
                         <td>
-                            40
-                        </td>
-                        <td>
-                            101
+                            {props.node.roomno}
                         </td>
                     </thead>
                 </table>
                 <div className="invoice-total">
-                    Date of check-in:
+                    Date of check-in: {props.node.dateofCheckIn}
                 </div>
                 <div className="invoice-total">
-                    Date of check-out:
+                    Date of check-out: {props.node.dateofCheckout}
                 </div>
                 <div className="invoice-total">
-                    Payment Date:
+                    Payment Date: {props.node.dateofCheckout}
                 </div>
                 <div className="invoice-total">
-                    Sub Total: 4000
+                    Sub Total: {props.node.roomRent}
                 </div>
                 <div className="invoice-total">
-                    Discount: 300
+                    Discount: {props.node.discount}
                 </div>
                 <div className="invoice-total">
-                    Advance: 300
+                    Advance: {props.node.advance}
+                </div>
+                <div className = "invoice-total">
+                    GST: {props.node.gst}
                 </div>
                 <div className="invoice-total-amount">
-                    Total Amount: 900
+                    Total Amount: {props.node.amount}
                 </div>
             </div>
         </div>
