@@ -47,6 +47,7 @@ const LandingPage = () => {
         invoice: false,
         amount: undefined,
         roomno: undefined,
+        receiptId: undefined,
         lodgeName: splitedIds[1]
     })
 

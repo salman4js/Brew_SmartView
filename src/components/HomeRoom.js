@@ -530,6 +530,7 @@ const HomeRoom = (props) => {
                 checkoutTime: getTime,
                 discount: options.discount,
                 advance: options.advance,
+                receiptId: options.receiptId,
                 amount: function () {
                     const discount = (options.discount === undefined ? 0 : options.discount);
                     const advance = (options.advance === undefined ? 0 : options.advance);
