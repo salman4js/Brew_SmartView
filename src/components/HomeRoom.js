@@ -140,7 +140,7 @@ const HomeRoom = (props) => {
         getExcludeDatesCheckin(props.roomid);
     }
 
-    function isOpen(){
+    function isOpen() {
         return show;
     }
 
@@ -205,6 +205,15 @@ const HomeRoom = (props) => {
         props.setLoad(true);
     }
 
+    // Handle Checkout Time
+    function handleCheckoutTime(time){
+        if(checkedoutdate === undefined){
+            return undefined;
+        } else {
+            return time;
+        }
+    }
+
 
     // Add Data to the model
     const processData = () => {
@@ -244,6 +253,7 @@ const HomeRoom = (props) => {
                 checkin: brewDate.getFullDate("yyyy/mm/dd"),
                 checkinTime: getTime,
                 checkout: formatDate(checkedoutdate),
+                checkoutTime: handleCheckoutTime(getTime),
                 roomid: props.roomid,
                 roomno: props.roomno,
                 discount: discount,
@@ -403,10 +413,10 @@ const HomeRoom = (props) => {
     }
 
     // Handle Channel Manager!
-    function handleChannel(value){
+    function handleChannel(value) {
 
         // Check if the rate has to be updated or not!
-        if(value !== "Walk-In"){
+        if (value !== "Walk-In") {
             setIsChannel(true);
         } else {
             setIsChannel(false);
@@ -415,9 +425,9 @@ const HomeRoom = (props) => {
     }
 
     // Check limit for advance and discount!
-    function checkLimit(limit){
+    function checkLimit(limit) {
         var limit;
-        if(isChannel){
+        if (isChannel) {
             limit = updatePrice * limit;
         } else {
             limit = props.price * limit;
@@ -426,18 +436,18 @@ const HomeRoom = (props) => {
     }
 
     // Function restrict discount!
-    function restrictDiscount(val){
-        
+    function restrictDiscount(val) {
+
         const limitValue = 3 / 4
 
         const Limit = checkLimit(limitValue);
 
         var inlineText = `Discount amount cannot be greater than Rs.${Limit}`
 
-        if(val > Limit){
+        if (val > Limit) {
             _inlineModel['inlineErrorDiscount'] = true;
             _inlineModel['inlineText'] = inlineText
-           handleInlineToast(_inlineModel)
+            handleInlineToast(_inlineModel)
         } else {
             _inlineModel['inlineErrorDiscount'] = false;
             _inlineModel['inlineText'] = undefined
@@ -448,13 +458,13 @@ const HomeRoom = (props) => {
     }
 
     // Open Inline Toast!
-    function handleInlineToast(_inlineModel){
+    function handleInlineToast(_inlineModel) {
         // populate the model
         populateInlineModel(_inlineModel);
     }
 
     // Restrict advance amount
-    function restrictAdvance(val){
+    function restrictAdvance(val) {
 
         const limitValue = 1 / 2;
 
@@ -462,10 +472,10 @@ const HomeRoom = (props) => {
 
         var inlineText = `Advance amount cannot be greater than Rs.${limit}`
 
-        if(val > limit){
+        if (val > limit) {
             _inlineModel['inlineErrorAdvance'] = true;
             _inlineModel['inlineText'] = inlineText
-           handleInlineToast(_inlineModel)
+            handleInlineToast(_inlineModel)
         } else {
             _inlineModel['inlineErrorAdvance'] = false;
             _inlineModel['inlineText'] = undefined
@@ -475,7 +485,7 @@ const HomeRoom = (props) => {
 
     }
 
-    function populateInlineModel(_model){
+    function populateInlineModel(_model) {
         setInline({
             ...inline,
             inlineErrorDiscount: _model.inlineErrorDiscount,
@@ -485,15 +495,15 @@ const HomeRoom = (props) => {
     }
 
     // Update wizard configuration helper function!
-    function inputChangeWizard(data){
+    function inputChangeWizard(data) {
         setUpdatePrice(data);
     }
 
-    function updateBillPrice(){
+    function updateBillPrice() {
         setTotalAmount(Number(updatePrice))
     }
 
-    function openUpdateWizard(){
+    function openUpdateWizard() {
         setIsWizard(!isWizard);
     }
 
@@ -502,9 +512,9 @@ const HomeRoom = (props) => {
         getUserData(); // Call this method to retrieve user data
 
         var gstCalculation = ((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)
-  
+
         // Populate the model with userdata!
-        userdata.map((options,key) => {
+        userdata.map((options, key) => {
             props.node({
                 invoice: true,
                 customerName: options.username,
@@ -520,7 +530,7 @@ const HomeRoom = (props) => {
                 checkoutTime: getTime,
                 discount: options.discount,
                 advance: options.advance,
-                amount: function(){
+                amount: function () {
                     const discount = (options.discount === undefined ? 0 : options.discount);
                     const advance = (options.advance === undefined ? 0 : options.advance);
                     const gstCalc = (gstCalculation === undefined ? 0 : gstCalculation);
@@ -573,7 +583,7 @@ const HomeRoom = (props) => {
                 </div>
                 <div class="card-body">
                     <p style={{ color: "black" }}>Engaged : {props.engaged}</p>
-                    <p style={{ color: "black" }}>Bed Count : {(props.extraBeds !== "0" ? props.bedcount + "+" +  props.extraBeds : props.bedcount )}</p>
+                    <p style={{ color: "black" }}>Bed Count : {(props.extraBeds !== "0" ? props.bedcount + "+" + props.extraBeds : props.bedcount)}</p>
                     <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
                     <p style={{ color: "black" }}> Price Per Day : {props.price}</p>
                 </div>
@@ -606,7 +616,7 @@ const HomeRoom = (props) => {
                                                 )
                                             })
                                         }
-                                    </select>                        
+                                    </select>
                                 </div>
                             ) : (
                                 null
@@ -646,7 +656,7 @@ const HomeRoom = (props) => {
                             isExtra ? (
                                 <div className='modal-gap'>
                                     <label style={{ color: "black" }}> Extra Beds </label>
-                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Extra Beds' name = {extraCount} value = {extraCount} onChange = {(e) => setExtraCount(e.target.value)} />
+                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Extra Beds' name={extraCount} value={extraCount} onChange={(e) => setExtraCount(e.target.value)} />
                                 </div>
                             ) : (
                                 null
@@ -661,7 +671,7 @@ const HomeRoom = (props) => {
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={advanceCheckin} value={advanceCheckin} onChange={(e) => restrictAdvance(e.target.value)} />
                             {
                                 inline.inlineErrorAdvance ? (
-                                    <InlineToast message = {inline.inlineText} />
+                                    <InlineToast message={inline.inlineText} />
                                 ) : (
                                     null
                                 )
@@ -672,7 +682,7 @@ const HomeRoom = (props) => {
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={discount} value={discount} onChange={(e) => restrictDiscount(e.target.value)} />
                             {
                                 inline.inlineErrorDiscount ? (
-                                    <InlineToast message = {inline.inlineText} />
+                                    <InlineToast message={inline.inlineText} />
                                 ) : (
                                     null
                                 )
@@ -691,7 +701,7 @@ const HomeRoom = (props) => {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button className="btn btn-secondary" onClick={handleClose}>Close</Button>
-                        <Button className='btn btn-outline' disabled = {inline.inlineErrorAdvance || inline.inlineErrorDiscount} onClick={processData}> Save and Close </Button>
+                        <Button className='btn btn-outline' disabled={inline.inlineErrorAdvance || inline.inlineErrorDiscount} onClick={processData}> Save and Close </Button>
                     </Modal.Footer>
                 </Modal>
 
@@ -772,7 +782,7 @@ const HomeRoom = (props) => {
                     {
                         userdata.map((item, key) => {
                             return (
-                                <ModalCheckOut extraBeds = {props.extraBeds} extraBedPrice = {props.extraBedPrice} isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
+                                <ModalCheckOut extraBeds={props.extraBeds} extraBedPrice={props.extraBedPrice} isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
                             )
                         })
                     }
@@ -793,34 +803,34 @@ const HomeRoom = (props) => {
                         <Modal.Title>Generated Bill - Feautured</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <div id = "invoice-generator">
+                        <div id="invoice-generator">
                             {
                                 isWizard ? (
-                                    <Wizard close = {true} class = "text-center" label = "Update Bill Price" placeholder = "Update Bill Price" wizardInputChange = {(data) => inputChangeWizard(data)} onClose = {() => openUpdateWizard()} />
+                                    <Wizard close={true} class="text-center" label="Update Bill Price" placeholder="Update Bill Price" wizardInputChange={(data) => inputChangeWizard(data)} onClose={() => openUpdateWizard()} />
                                 ) : (
                                     null
                                 )
                             }
-                            <h5>Amount to be paid for the suite - {amount}. 
-                            {
-                                props.updatePriceWizard ? (
-                                    <span>
-                                        {
-                                            isWizard ? (
-                                                <span className = "update-price-configured" onClick={() => updateBillPrice()}>
-                                                    Udpate
-                                                </span>
-                                            ) : (
-                                                <span className = "update-price-configured" onClick={() => openUpdateWizard()}>
-                                                    Edit
-                                                </span>
-                                            )
-                                        }
-                                    </span> 
-                                ) : (
-                                    null
-                                )
-                            }
+                            <h5>Amount to be paid for the suite - {amount}.
+                                {
+                                    props.updatePriceWizard ? (
+                                        <span>
+                                            {
+                                                isWizard ? (
+                                                    <span className="update-price-configured" onClick={() => updateBillPrice()}>
+                                                        Udpate
+                                                    </span>
+                                                ) : (
+                                                    <span className="update-price-configured" onClick={() => openUpdateWizard()}>
+                                                        Edit
+                                                    </span>
+                                                )
+                                            }
+                                        </span>
+                                    ) : (
+                                        null
+                                    )
+                                }
                             </h5>
                             {
                                 advance === true ? (
@@ -945,11 +955,11 @@ const HomeRoom = (props) => {
                                     </div>
                                 )
                             }
-                            
+
                             {
                                 props.isGstEnabled ? (
                                     <div>
-                                        <div className = "table-view-bill-line"></div>
+                                        <div className="table-view-bill-line"></div>
                                         <div class="form-check gst-toggle">
                                             <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" onChange={() => gstHandler()} />
                                             <label class="form-check-label" for="flexCheckChecked">
@@ -965,11 +975,11 @@ const HomeRoom = (props) => {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        
+
                         <Button variant="secondary" onClick={handleCloseGeneratedBill}>
                             Not Paid
                         </Button>
-                        <Button variant = "dark" onClick = {() => windowPrint()}>Print</Button>
+                        <Button variant="dark" onClick={() => windowPrint()}>Print</Button>
                         <Button variant="primary" onClick={checkedOut}>Paid</Button>
                     </Modal.Footer>
                 </Modal>
