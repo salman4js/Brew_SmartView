@@ -29,11 +29,33 @@ const LandingPage = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
-    // Invoice Generator!
-    const [invoice, setInvoice] = useState(false);
+    const [nodeModel, setNodeModel] = useState({
+        customerName: undefined,
+        phoneNumber: undefined,
+        stayedDays: undefined,
+        roomRent: undefined,
+        discount: undefined,
+        advance: undefined,
+        hotelName: undefined,
+        extraBeds: undefined,
+        extraBedAmount: undefined,
+        gst: undefined,
+        dateofCheckIn: undefined,
+        checkinTime: undefined,
+        checkoutTime: undefined,
+        dateofCheckout: undefined,
+        invoice: false,
+        amount: undefined,
+        roomno: undefined,
+        lodgeName: splitedIds[1]
+    })
 
-    const model = {
-        customerName: "Stark"
+    // Close invoice
+    function onHideInvoice(){
+        setNodeModel({
+            ...nodeModel,
+            invoice: false
+        })
     }
 
 
@@ -171,8 +193,8 @@ const LandingPage = () => {
                     loading ? (
                         <Loading message={message} />
                     ) : (
-                        invoice ? (
-                            <Invoice node = {model} />
+                        nodeModel.invoice ? (
+                            <Invoice node = {nodeModel} onHide = {() => onHideInvoice()} />
                         ) : (
                             <div>
                                 <Navbar id={id} name={splitedIds[1]} className="sticky" />
@@ -230,7 +252,7 @@ const LandingPage = () => {
                                                     }
                                                 }).map((item, key) => {
                                                     return (
-                                                        <HomeRoom invoice = {(data) => setInvoice(data)} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
+                                                        <HomeRoom lodgeName = {splitedIds[1]} node = {setNodeModel} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
                                                             roomid={item._id} id={id} setLoad={setLoad} lodgeid={splitedIds[0]} price={item.price}
                                                             prebook={item.preBooked} prevalid={item.preValid} prebookconfig={configOptions} discount={item.discount} isGstEnabled={isGstEnabled}
                                                             isHourly={isHourly} channel={channel} options={options} updatePriceWizard={updatePriceWizard} />

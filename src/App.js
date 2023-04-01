@@ -31,6 +31,7 @@ function App() {
         <Routes>
           <Route path = "/login" exact element = {<Login />} />
           <Route path = "/admin-config" exact element = {<Admin />} />
+          <Route path = "/:id/dashboard" exact element = {<Dashboard />} />
           <Route path = "/:id/landingpage" exact element = {<LandingPage />} />
           <Route path = "/:id/rooms" exact element = {<Rooms />} />
           <Route path = "/:id/prebookrooms" exact element = {<Prebook_rooms />} />
@@ -50,7 +51,6 @@ function App() {
           <Route path = "/:id/addData" exact element = {<AddData />} />
           <Route path = "/:id/addmode" exact element = {<AddMode />} />
           <Route path = "/:id/client-config" exact element = {<Client />} />
-          <Route path = "/:id/dashboard" exact element = {<Dashboard />} />
           <Route path = "/:id/chart-dashboard" exact element = {<Charts />} />
         </Routes>
       </Router>
