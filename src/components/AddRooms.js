@@ -45,15 +45,24 @@ const AddRooms = () => {
     const setValues = (value) => {
         setSuitetype(value);
         const values = {
-            suitename : value
+            suitename: value
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/getprice`, values)
             .then(res => {
-                //console.log(res.data);
-                res.data.map((item,key) => {
-                    setPrice(item.price);
-                    setExtra(item.extraBedPrice);
-                })
+                if (res.data.success) {
+                    res.data.message.map((options,key) => {
+                        setPrice(options.price);
+                        setExtra(options.extraBedPrice);
+                    })
+                } else {
+                    setLoading(false);
+                    setError(res.data.message)
+                    setInvaliddata(true);
+                    setRoomno("");
+                    setBedcount("");
+                    setSuitetype("");
+                    setPrice("");
+                }
             })
     }
 
@@ -65,7 +74,7 @@ const AddRooms = () => {
             roomno: roomno,
             bedcount: bedcount,
             suitename: suitetype,
-            price : price,
+            price: price,
             extraBedPrice: extra
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/createroom`, credentials)
@@ -194,9 +203,9 @@ const AddRooms = () => {
                                                         <label style={{ color: "black" }}> Bed Count </label>
                                                         <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Bed Count' name={bedcount} value={bedcount} onChange={(e) => setBedcount(e.target.value)} />
                                                     </div>
-                                                    <div className = 'moal-gap'>
-                                                        <label style = {{color : "black"}}> Price Per Day </label>
-                                                        <input type = "text" className = "form-control" id = "priceperday" aria-describedby="priceperday" placeholder='Price Per Day' name = {price} value = {price}/>
+                                                    <div className='moal-gap'>
+                                                        <label style={{ color: "black" }}> Price Per Day </label>
+                                                        <input type="text" className="form-control" id="priceperday" aria-describedby="priceperday" placeholder='Price Per Day' name={price} value={price} />
                                                     </div>
                                                     <br />
                                                     <button className='btn btn-info' onClick={processData}> Add Data </button>

@@ -53,6 +53,7 @@ const ConfigureBill = () => {
                         setShow(true);
                         setSuitetype("");
                         setPrice("");
+                        setExtraPrice("");
                     } else {
                         setLoading(false);
                         setError(res.data.message);
