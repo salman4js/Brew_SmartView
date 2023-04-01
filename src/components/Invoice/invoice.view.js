@@ -1,9 +1,26 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 
 const Invoice = (props) => {
+
+    // state to prevent useEffect from calling twice!
+    var isPrint = false;
+
+    // trigger print handler!
+    function triggerPrint(){
+        isPrint = true;
+        window.print();
+    }
+
+    // Trigger a print everytime this components finished rendering!
+    useEffect(() => {
+        if(!isPrint){
+            triggerPrint();
+        }
+    }, [])
+
     return (
         <div className="container invoice" style={{ height: window.innerHeight }}>
-            <div>
+            <div id = "invoice-view">
                 <div className="text-center invoice-header" id = "invoice" style={{ color: "black" }}>
                     Livixius - HMS
                 </div>
@@ -72,7 +89,6 @@ const Invoice = (props) => {
                     Total Amount: 900
                 </div>
             </div>
-            {/* <button className = "btn btn-primary">Print</button> */}
         </div>
     )
 }

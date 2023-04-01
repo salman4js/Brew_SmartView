@@ -1,5 +1,4 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import Footer from './Footer/Footer';
 import { excludeDatesCheckin } from './ExcludeDates/excludesdates';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
