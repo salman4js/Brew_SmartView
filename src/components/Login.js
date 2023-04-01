@@ -36,6 +36,8 @@ const Login = () => {
             "isChannel": res.data.isChannel,
             "updatePrice" : res.data.updatePrice,
             "isExtra": res.data.isExtra,
+            "area" : res.data.address,
+            "emailId": res.data.emailId
           }
 
           // Populate the modal into localstorage!
