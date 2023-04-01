@@ -54,6 +54,9 @@ const Invoice = (props) => {
                 <p style={{ color: "black" }}>
                     This is the receipt for the payment of {props.node.amount()} you made to {props.node.lodgeName}!
                 </p>
+                <div className = "invoice-header" style={{ color: "black" }}>
+                    Payment Id: {props.node.receiptId}
+                </div>
                 <hr />
                 <table style={{ width: "100%", color: "black" }} >
                     <thead>

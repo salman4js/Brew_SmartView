@@ -47,56 +47,59 @@ const UserDbComp = (props) => {
           </Modal.Header>
           <Modal.Body className='text-center'>
             <h4>{props.roomno}</h4>
-            <p className="font-big">
-              Customer Name -- {props.username}
+            <p className = "font-big">
+              Receipt Id: {props.receiptId}
             </p>
             <p className="font-big">
-              Contact Details -- {props.phonenumber}
+              Customer Name: {props.username}
             </p>
             <p className="font-big">
-              Alternative Contact Details -- {props.secphone}
+              Contact Details: {props.phonenumber}
+            </p>
+            <p className="font-big">
+              Alternative Contact Details: {props.secphone}
             </p>
               {
                 props.prebooked ==  true ? (
                   <p className="font-big">
-                    PreBooked -- Yes
+                    PreBooked: Yes
                   </p>
                 ) : (
                   <p className="font-big">
-                    PreBooked -- No
+                    PreBooked: No
                   </p>
                 )
               }
             <p className="font-big">
-              Adults -- {props.adults}
+              Adults: {props.adults}
             </p>
             <p className="font-big">
-              Childrens -- {props.childrens}
+              Childrens: {props.childrens}
             </p>
             <p className="font-big">
-              Aadhar Number -- {props.aadharcard}
+              Aadhar Number: {props.aadharcard}
             </p>
             <p className="font-big">
-              Checked In Days -- {props.stayeddays}
+              Checked In Days: {props.stayeddays}
             </p>
             <p className="font-big">
-              Checked In  -- {props.checkin} / {handleTimeFormat(props.checkinTime)}
+              Checked In : {props.checkin} / {handleTimeFormat(props.checkinTime)}
             </p>
             <p className="font-big">
-              Checked Out -- {props.checkout} / {handleTimeFormat(props.checkoutTime)}
+              Checked Out: {props.checkout} / {handleTimeFormat(props.checkoutTime)}
             </p>
             {
               props.discount ===  undefined || props.discount === null ? (
                 <p className="font-big">
-                  Discount Applied - False
+                  Discount Applied: False
                 </p>
               ) : (
                 <div>
                   <p className="font-big">
-                    Discount Applied - True
+                    Discount Applied: True
                   </p>
                   <p className="font-big">
-                    Discount Amount - {props.discount === "" ? 0 : props.discount}
+                    Discount Amount: {props.discount === "" ? 0 : props.discount}
                   </p>
                 </div>
               )
@@ -104,15 +107,15 @@ const UserDbComp = (props) => {
             {
              props.advance === undefined || props.advance === null ? (
               <p className="font-big">
-                Advance Applied - False
+                Advance Applied: False
               </p>
              ) : (
               <div>
                 <p className="font-big">
-                  Advance Applied - True
+                  Advance Applied: True
                 </p>
                 <p className="font-big">
-                  Advance Amount - {props.advance === "" ? 0 : props.advance}
+                  Advance Amount: {props.advance === "" ? 0 : props.advance}
                 </p>
               </div>
              )
