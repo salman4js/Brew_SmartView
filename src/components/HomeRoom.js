@@ -865,7 +865,7 @@ const HomeRoom = (props) => {
                                     isGst === true ? (
                                         <div>
                                             <p>
-                                                Amount deducted for GST - {(totalAmount < 7500 ? totalAmount * 0.12 : totalAmount * 0.18)}
+                                                Amount deducted for GST - {((Number(totalAmount) + Number(extraCollection)) < 7500 ? (Number(totalAmount) + Number(extraCollection)) * 0.12 : (Number(totalAmount) + Number(extraCollection) * 0.18))}
                                             </p>
                                         </div>
                                     ) : (
