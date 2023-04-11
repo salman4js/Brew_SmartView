@@ -79,9 +79,21 @@ const Invoice = (props) => {
                     <p>
                         Total Taxable Value: {props.node.roomRent}
                     </p>
-                    <p>
-                        IGST @12%: {props.node.gst} 
-                    </p>
+                    {props.node.igst && (
+                        <p>
+                            IGST @12%: {props.node.gst} 
+                        </p>
+                    )}
+                    {props.node.cgst && (
+                        <div>
+                            <p>
+                                CGST @6% : {+props.node.gst / 2}
+                            </p>
+                            <p>
+                                SGST @6% : {+props.node.gst / 2}
+                            </p>
+                        </div>
+                    )}
                     <div className="table-view-bill-line"></div>                
                     <p>
                         Grand Total: {props.node.amount()}

@@ -39,6 +39,8 @@ const LandingPage = () => {
         discount: undefined,
         advance: undefined,
         hotelName: undefined,
+        igst: undefined,
+        cgst: true,
         extraBeds: undefined,
         extraBedAmount: undefined,
         gst: undefined,

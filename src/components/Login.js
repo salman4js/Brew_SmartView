@@ -19,9 +19,22 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  // Error handler!
+  const [errorHandler, setErrorHandler] = useState({
+    show: false,
+    message: false,
+    header: false,
+    headerText: undefined,
+  })
+
   const handleShow = () => {
-    setShow(false);
-    setError(undefined);
+    setErrorHandler({
+      ...errorHandler,
+      show: false,
+      message: undefined,
+      header: false,
+      headerText: undefined
+    })
   }
 
   async function checkConfig(id, lodgeName){
@@ -98,13 +111,31 @@ const Login = () => {
             }
           } else {
             setLoading(false);
-            setError(res.data.message)
-            setShow(!show);
+            const data = {
+              show: true,
+              message: res.data.message,
+              header: true,
+              headerText: "Warning!",
+            }
+
+            populateModal(data);
+
           }
         })
     }
     setTimeout(handleShow(), 3000)
   }
+
+  function populateModal(data){
+    setErrorHandler({
+      ...errorHandler,
+      show: data.show,
+      header: data.header,
+      headerText: data.headerText,
+      message: data.message
+    })
+  }
+
 
   useEffect(() => {
     localStorage.clear();
@@ -149,11 +180,11 @@ const Login = () => {
                         <br />
                         <br />
                         {
-                          error == undefined ? (
+                          errorHandler.show === false ? (
                             <div>
                             </div>
                           ) : (
-                            <Modals show={show} message={error} setShow = {(data) => setShow(data)} />
+                            <Modals options = {errorHandler} setShow = {(data) => handleShow(data)} />
                           )
                         }
                       </div>
