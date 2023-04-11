@@ -15,7 +15,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ModalCheckOut from './ModalCheckOut';
 import Wizard from './Wizard/model.wizard.view';
 import { getStorage } from '../Controller/Storage/Storage';
-
+import Modals from './Modals'
 
 
 const HomeRoom = (props) => {
@@ -507,18 +507,20 @@ const HomeRoom = (props) => {
         setIsWizard(!isWizard);
     }
 
-    // Invoice Generator!
-    function windowPrint() {
-        getUserData(); // Call this method to retrieve user data
+    // Populate invoice modal!
+    function populateInvoice(value){
 
         var gstCalculation = ((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)
 
         // Populate the model with userdata!
         userdata.map((options, key) => {
             props.node({
-                invoice: true,
+                invoice: value.invoice, // Prompting the window to open for bill generation
+                tInvoice: value.tInvoice, // Will not open the TAX invoice generator if false!
+                address: inputFieldInvoice.address,
+                gstin: inputFieldInvoice.gstin,
                 customerName: options.username,
-                phoneNumber: options.phoneNumber,
+                phoneNumber: options.phonenumber,
                 extraBeds: options.extraBeds,
                 dateofCheckIn: options.dateofcheckin,
                 gst: gstCalculation,
@@ -541,6 +543,112 @@ const HomeRoom = (props) => {
                 roomno: options.roomno,
                 lodgeName: props.lodgeName
             })
+        })
+    }
+
+    // Invoice Generator!
+    function windowPrint() {
+        const value = {
+            invoice: true,
+            tInvoice: false
+        }
+
+        getUserData(); // Call this method to retrieve user data
+
+        populateInvoice(value) // Populate the invoice state with userdata...
+    }
+
+    function generateInvoice(){
+        if(inputFieldInvoice.address === undefined || inputFieldInvoice.gstin === undefined ){
+            setInputFieldInvoice({
+                ...inputFieldInvoice,
+                error: true,
+                errorText: "Please provide a valid data!"
+            })
+        } else {
+            const value = {
+                invoice: false,
+                tInvoice: true
+            }
+    
+            getUserData(); // Call this method to retrieve user data
+    
+            populateInvoice(value); // Populate the invoice state with userdata...
+        }
+    }
+
+    const [inputFieldInvoice, setInputFieldInvoice] = useState({
+        address: undefined,
+        gstin: undefined,
+        show: false,
+        footer: false,
+        header: false,
+        headerText: "Invoice Customer Details",
+        error: false,
+        errorText: undefined,
+        errorView: renderInlineToast(),
+        footerAttr: {
+            btn: {
+                btn1: "OK",
+                btn2: "SKIP"
+            }
+        }, 
+        btnField: {
+            btn1: function(){
+               closeInputFieldInvoice();
+            }
+        },
+        inputField: inputField()
+    });
+
+
+    function closeInputFieldInvoice(){
+        const model = {
+            show: false
+        }
+
+        populateInputFieldInvoice(model);
+    }
+
+    function renderInlineToast(){
+        return(
+            <div>
+                <InlineToast message = "Please provide a valid data!" />
+            </div>
+        )
+    }
+
+
+    function inputField(){
+        return(
+            <div>
+                <input placeholder="Enter your customer address details" className="form-control" onChange={(e) => setInputFieldInvoice(prevState => ({...prevState, address: e.target.value}))} />
+                <br />
+                <input placeholder="Enter your customer GST IN" className="form-control" onChange={(e) => setInputFieldInvoice(prevState => ({...prevState, gstin: e.target.value}))} />
+            </div>
+        )
+    }
+
+    // TAX invoice generator!
+    function windowInvoice(){
+
+        const model = {
+            show: true,
+            footer: true,
+            header: true
+        }
+        populateInputFieldInvoice(model);
+    }
+
+    function populateInputFieldInvoice(model){
+        setInputFieldInvoice({
+            ...inputFieldInvoice,
+            show: model.show,
+            footer: model.footer,
+            header: model.header,
+            data: model.data,
+            error: model.error,
+            errorText: model.errorText,
         })
     }
 
@@ -957,6 +1065,10 @@ const HomeRoom = (props) => {
                                 )
                             }
 
+                            {inputFieldInvoice.show && (
+                                <Modals message = {inputFieldInvoice.inputField} show = {inputFieldInvoice.show} setShow = {(data) => setInputFieldInvoice({...inputFieldInvoice, show: data})} options = {inputFieldInvoice} generateInvoice = {() => generateInvoice()}  />
+                            )}
+
                             {
                                 props.isGstEnabled ? (
                                     <div>
@@ -980,6 +1092,7 @@ const HomeRoom = (props) => {
                         <Button variant="secondary" onClick={handleCloseGeneratedBill}>
                             Not Paid
                         </Button>
+                        <Button variant = "btn btn-info" onClick={() => windowInvoice()}>Invoice</Button>
                         <Button variant="dark" onClick={() => windowPrint()}>Print</Button>
                         <Button variant="primary" onClick={checkedOut}>Paid</Button>
                     </Modal.Footer>

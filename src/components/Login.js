@@ -76,14 +76,24 @@ const Login = () => {
             setError("");
             localStorage.setItem("token", res.data.token);
             // Before Navigating to the landing page, check the accont lockout!
-            setMessage("Checking for a account lockout...")
+            setMessage("Checking for a account lockout...");
             if(res.data.isLocked){
               // Show Account Lockout Dialog!
               setError(res.data.isLockedMessage);
               setLoading(false); // Close off the loader!
               setShow(res.data.isLocked);
             } else {
-              setMessage("Validating your config file...")
+              setMessage("Validating your config file...");
+              
+              const defaultData = {
+                "gstin" : res.data.gstin,
+                "pan" : res.data.pan,
+                "owner-name" : res.data.name,
+                "owner-number" : res.data.number
+              }
+              
+              defaultStorage(defaultData);
+              
               await checkConfig(res.data.hostId, res.data.lodgename);
             }
           } else {
@@ -143,7 +153,7 @@ const Login = () => {
                             <div>
                             </div>
                           ) : (
-                            <Modals show={show} message={error} />
+                            <Modals show={show} message={error} setShow = {(data) => setShow(data)} />
                           )
                         }
                       </div>

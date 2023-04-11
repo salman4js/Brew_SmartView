@@ -393,6 +393,10 @@ td {
   margin-left: 5px;
 }
 
+.left-align{
+  float: left;
+}
+
 .average-container {
   margin-top: 0px;
   font-weight: bold;
@@ -661,6 +665,10 @@ td {
   font-weight: bold;
 }
 
+.main-invoice-header{
+  font-size: 24px;
+}
+
 .invoice-total-amount{
   margin-top: 20px;
   color: green;
@@ -669,4 +677,16 @@ td {
 
 .invoice-view-back-generator{
   display: block;
+}
+
+.surround-border{
+  border: 2px solid black;
+}
+
+.invoice-header-name{
+  font-size: 20px;
+}
+
+.authorized-sign{
+  float: right;
 }
