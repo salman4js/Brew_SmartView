@@ -521,6 +521,8 @@ const HomeRoom = (props) => {
                 gstin: inputFieldInvoice.gstin,
                 customerName: options.username,
                 phoneNumber: options.phonenumber,
+                igst: value.igst,
+                cgst: value.cgst,
                 extraBeds: options.extraBeds,
                 dateofCheckIn: options.dateofcheckin,
                 gst: gstCalculation,
@@ -558,7 +560,7 @@ const HomeRoom = (props) => {
         populateInvoice(value) // Populate the invoice state with userdata...
     }
 
-    function generateInvoice(){
+    function generateInvoice(choices){
         if(inputFieldInvoice.address === undefined || inputFieldInvoice.gstin === undefined ){
             setInputFieldInvoice({
                 ...inputFieldInvoice,
@@ -568,7 +570,9 @@ const HomeRoom = (props) => {
         } else {
             const value = {
                 invoice: false,
-                tInvoice: true
+                tInvoice: true,
+                igst: choices.igst,
+                cgst: choices.cgst
             }
     
             getUserData(); // Call this method to retrieve user data
@@ -582,6 +586,8 @@ const HomeRoom = (props) => {
         gstin: undefined,
         show: false,
         footer: false,
+        choiceAttr: true,
+        className: "modal-invoice",
         header: false,
         headerText: "Invoice Customer Details",
         error: false,
@@ -593,12 +599,16 @@ const HomeRoom = (props) => {
                 btn2: "SKIP"
             }
         }, 
+        choiceBtn: {
+            btn1: "IGST",
+            btn2: "CGST"
+        },
         btnField: {
             btn1: function(){
                closeInputFieldInvoice();
             }
         },
-        inputField: inputField()
+        message: inputField()
     });
 
 
@@ -1066,7 +1076,7 @@ const HomeRoom = (props) => {
                             }
 
                             {inputFieldInvoice.show && (
-                                <Modals message = {inputFieldInvoice.inputField} show = {inputFieldInvoice.show} setShow = {(data) => setInputFieldInvoice({...inputFieldInvoice, show: data})} options = {inputFieldInvoice} generateInvoice = {() => generateInvoice()}  />
+                                <Modals message = {inputFieldInvoice.inputField} show = {inputFieldInvoice.show} setShow = {(data) => setInputFieldInvoice({...inputFieldInvoice, show: data})} options = {inputFieldInvoice} generateInvoice = {(choices) => generateInvoice(choices)}  />
                             )}
 
                             {

@@ -690,3 +690,11 @@ td {
 .authorized-sign{
   float: right;
 }
+
+.choiceBtns{
+  margin-top: 20px;
+}
+
+.choiceBtnModel{
+  margin-right: 10px;
+}
