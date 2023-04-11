@@ -12,6 +12,10 @@ const Admin = () => {
   const [email, setEmail] = useState();
   const [branch, setBranch] = useState();
   const [area, setArea] = useState();
+  const [gstin, setGstin] = useState();
+  const [pan, setPan] = useState();
+  const [name, setName] = useState();
+  const [number, setNumber] = useState();
 
   // Toast message handler!
   const [success, setSuccess] = useState(false)
@@ -29,6 +33,10 @@ const Admin = () => {
       emailId: email,
       area: area,
       branch: branch,
+      gstin: gstin,
+      pan: pan,
+      name: name,
+      number: number
     }
     axios.post(`${Variables.hostId}/addlodge`, data)
       .then(res => {
@@ -70,6 +78,22 @@ const Admin = () => {
               <div className="modal-gap">
                 <label style={{ color: "black" }}> Area </label>
                 <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Area" onChange={(e) => setArea(e.target.value)} />
+              </div>
+              <div className="modal-gap">
+                <label style={{ color: "black" }}> GST IN </label>
+                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="GST IN" onChange={(e) => setGstin(e.target.value)} />
+              </div>
+              <div className="modal-gap">
+                <label style={{ color: "black" }}> PAN </label>
+                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="PAN number" onChange={(e) => setPan(e.target.value)} />
+              </div>
+              <div className="modal-gap">
+                <label style={{ color: "black" }}> Owner Name </label>
+                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Hotel Owner Name" onChange={(e) => setName(e.target.value)} />
+              </div>
+              <div className="modal-gap">
+                <label style={{ color: "black" }}> Contact Number </label>
+                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Hotel Contact Number" onChange={(e) => setNumber(e.target.value)} />
               </div>
               <button className="btn btn-success" onClick={() => processData()}> Save </button>
             </div>

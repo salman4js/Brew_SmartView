@@ -30,6 +30,8 @@ const LandingPage = () => {
     const [message, setMessage] = useState("");
 
     const [nodeModel, setNodeModel] = useState({
+        address: undefined,
+        gstin: undefined,
         customerName: undefined,
         phoneNumber: undefined,
         stayedDays: undefined,
@@ -45,6 +47,7 @@ const LandingPage = () => {
         checkoutTime: undefined,
         dateofCheckout: undefined,
         invoice: false,
+        tInvoice: false,
         amount: undefined,
         roomno: undefined,
         receiptId: undefined,
@@ -55,7 +58,8 @@ const LandingPage = () => {
     function onHideInvoice(){
         setNodeModel({
             ...nodeModel,
-            invoice: false
+            invoice: false,
+            tInvoice: false
         })
     }
 
@@ -194,7 +198,7 @@ const LandingPage = () => {
                     loading ? (
                         <Loading message={message} />
                     ) : (
-                        nodeModel.invoice ? (
+                        nodeModel.invoice || nodeModel.tInvoice ? (
                             <Invoice node = {nodeModel} onHide = {() => onHideInvoice()} />
                         ) : (
                             <div>
