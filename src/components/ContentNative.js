@@ -414,7 +414,7 @@ const ContentNative = () => {
                                                 }).map((item, key) => {
                                                     return (
 
-                                                        <TableFormatReport gst = {item.stayGst} totalAmount = {item.totalAmount} bill = {item.bill} roomno={item.roomno} username={item.username}
+                                                        <TableFormatReport isGst = {item.isGst} gst = {item.stayGst} totalAmount = {item.totalAmount} bill = {item.bill} roomno={item.roomno} username={item.username}
                                                             phonenumber={item.phonenumber}
                                                             secphone={item.secondphonenumber} adults={item.adults}
                                                             childrens={item.childrens} checkin={item.dateofcheckin}

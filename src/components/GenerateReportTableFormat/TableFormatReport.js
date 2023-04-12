@@ -68,10 +68,10 @@ const TableFormatReport = (props) => {
           {props.bill}
         </td>
         <td>
-          {props.gst}
+          {props.isGst ? props.gst : "Not Provided"}
         </td>
         <td>
-          {props.totalAmount}
+          {props.isGst ? props.totalAmount : props.bill}
         </td>
       </tr>
   )
