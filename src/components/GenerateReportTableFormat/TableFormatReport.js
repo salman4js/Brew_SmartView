@@ -38,9 +38,6 @@ const TableFormatReport = (props) => {
           {(props.checkOutTime === undefined || props.checkOutTime === null || props.checkOutTime === "") ? "Not Provided" : handleFormat(props.checkOutTime)}
         </td>
         <td>
-          {props.bill}
-        </td>
-        <td>
           {props.username}
         </td>
         <td>
@@ -66,6 +63,15 @@ const TableFormatReport = (props) => {
         </td>
         <td>
           {props.stayeddays}
+        </td>
+        <td>
+          {props.bill}
+        </td>
+        <td>
+          {props.gst}
+        </td>
+        <td>
+          {props.totalAmount}
         </td>
       </tr>
   )

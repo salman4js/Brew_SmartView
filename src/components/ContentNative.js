@@ -7,6 +7,8 @@ import Button from "react-bootstrap/Button";
 import Navbar from './Navbar';
 import Variables from './Variables';
 import Loading from './Loading';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import changeScreen from './Action';
 import CustomError from './CustomError';
 import GeneratorCN from './GeneratorCN';
@@ -138,16 +140,15 @@ const ContentNative = () => {
 
     // Generation of inbetween dates
     const getDates = (sDate, eDate) => {
+
         const startDate = new Date(sDate);
         const endDate = new Date(eDate);
-        console.log("Dates function getting called...")
         var dates = []
         //to avoid modifying the original date
         const theDate = new Date(startDate);
 
         const date = `${theDate.getFullYear()}/${theDate.getMonth() + 1}/${theDate.getDate()}`;
         
-        console.log(theDate.getDate());
         while (theDate < endDate) {
             var currentDate = theDate.getDate().toString().length > 1;
             var currentMonth = theDate.getMonth().toString().length > 1;
@@ -160,7 +161,6 @@ const ContentNative = () => {
             //theDate.getDate() + 1;
             //new Date(date).getDate() + 1
         }
-        console.log(dates);
         setDatesbetween(dates);
         setLoading(false);
     }
@@ -222,10 +222,10 @@ const ContentNative = () => {
                             <div className="grid-system-search">
                                 <div className="row">
                                     <div className="col-4">
-                                        <input class="form-control mr-sm-2" type="search" placeholder="Start Date" aria-label="Start Date" name={sdate} value={sdate} onChange={(e) => setSdate(e.target.value)} />
+                                        <DatePicker style={{ color: "black" }} className="form-control" selected={sdate === "" ? Date.now() : sdate} dateFormat='y-MM-dd' onChange={(e) => setSdate(e)} isClearable />                                    
                                     </div>
                                     <div className="col-4">
-                                        <input class="form-control mr-sm-2" type="search" placeholder="End Date" aria-label="End Date" name={edate} value={edate} onChange={(e) => setEdate(e.target.value)} />
+                                        <DatePicker style={{ color: "black" }} className="form-control" selected={edate === "" ? Date.now() : edate} dateFormat='y-MM-dd' onChange = {(e) => setEdate(e)} isClearable />                                    
                                     </div>
                                     <div className="col btn btn-success" onClick={() => SearchConfig()}>
                                         Search
@@ -346,9 +346,6 @@ const ContentNative = () => {
                                                     Time of Check Out
                                                 </th>
                                                 <th>
-                                                    Amount Paid
-                                                </th>
-                                                <th>
                                                     Customer Name
                                                 </th>
                                                 <th>
@@ -374,6 +371,15 @@ const ContentNative = () => {
                                                 </th>
                                                 <th>
                                                     Stay Days
+                                                </th>
+                                                <th>
+                                                    Room Rent
+                                                </th>
+                                                <th>
+                                                    GST 
+                                                </th>
+                                                <th>
+                                                    Total Amount
                                                 </th>
                                             </tr>
                                             {
@@ -408,7 +414,7 @@ const ContentNative = () => {
                                                 }).map((item, key) => {
                                                     return (
 
-                                                        <TableFormatReport bill = {item.bill} roomno={item.roomno} username={item.username}
+                                                        <TableFormatReport gst = {item.stayGst} totalAmount = {item.totalAmount} bill = {item.bill} roomno={item.roomno} username={item.username}
                                                             phonenumber={item.phonenumber}
                                                             secphone={item.secondphonenumber} adults={item.adults}
                                                             childrens={item.childrens} checkin={item.dateofcheckin}
