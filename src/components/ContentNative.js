@@ -14,6 +14,8 @@ import CustomError from './CustomError';
 import GeneratorCN from './GeneratorCN';
 import TableFormatReport from './GenerateReportTableFormat/TableFormatReport';
 import { Link, useParams } from "react-router-dom";
+import Chicklets from './Chicklets/chicket.view';
+import { chickletValues } from './Chicklets/chickletValues/chicklet.model';
 
 const ContentNative = () => {
 
@@ -48,6 +50,61 @@ const ContentNative = () => {
 
     // Token from the local storage
     const token = localStorage.getItem("token");
+
+    // Common chicklet model!
+    var commonNodeModel = {
+        GST: true,
+        customerName: true,
+        phoneNumber: true,
+        checkoutDate: true,
+        checkinDate: true,
+        checkoutTime: true,
+        checkinTime: true,
+        aadhar: true,
+        days: true,
+        discount: true,
+        advance: true,
+        roomRent: true,
+        totalAmount: false
+    }
+
+    // Chicklet choice state handler!
+    const [chickletChoice, setChickletChoice] = useState({
+        GST: true,
+        customerName: true,
+        phoneNumber: true,
+        checkoutDate: true,
+        checkinDate: true,
+        checkoutTime: true,
+        checkinTime: true,
+        aadhar: true,
+        days: true,
+        discount: true,
+        advance: true,
+        roomRent: true,
+        totalAmount: false
+    })
+
+    // Populate the chicklet model state!
+    function populateChickletModel(nodeModel){
+
+       setChickletChoice({
+        GST: nodeModel.GST,
+        customerName: nodeModel.customerName,
+        phoneNumber: nodeModel.phoneNumber,
+        checkoutDate: nodeModel.checkoutDate,
+        checkinDate: nodeModel.checkinDate,
+        checkoutTime: nodeModel.checkoutTime,
+        checkinTime: nodeModel.checkinTime,
+        aadhar: nodeModel.aadhar,
+        days: nodeModel.days,
+        discount: nodeModel.discount,
+        advance: nodeModel.advance,
+        roomRent: nodeModel.roomRent,
+        totalAmount: nodeModel.totalAmount
+       })
+
+    }
 
     // Getting data from the Server
     const getData = () => {
@@ -190,6 +247,23 @@ const ContentNative = () => {
                 changeScreen();
             }
         }
+    }
+
+    // Chicklet selection handler!
+    function chickletSelect(nodeValue){
+        switch (nodeValue){
+            case "GST":
+                commonNodeModel.GST = false;
+                break;
+            case "Customer Name":
+                commonNodeModel.customerName = false;
+                break;
+            case "Phone Number":
+                commonNodeModel.phoneNumber = false;
+                break;
+        }
+
+        populateChickletModel(commonNodeModel);
     }
 
 
@@ -414,7 +488,7 @@ const ContentNative = () => {
                                                 }).map((item, key) => {
                                                     return (
 
-                                                        <TableFormatReport isGst = {item.isGst} gst = {item.stayGst} totalAmount = {item.totalAmount} bill = {item.bill} roomno={item.roomno} username={item.username}
+                                                        <TableFormatReport customModel = {chickletChoice} isGst = {item.isGst} gst = {item.stayGst} totalAmount = {item.totalAmount} bill = {item.bill} roomno={item.roomno} username={item.username}
                                                             phonenumber={item.phonenumber}
                                                             secphone={item.secondphonenumber} adults={item.adults}
                                                             childrens={item.childrens} checkin={item.dateofcheckin}
@@ -453,7 +527,15 @@ const ContentNative = () => {
                                                 <option value="2">Layout View Format</option>
                                             </select>
                                         </div>
-
+                                        <div className="row">
+                                            {/* {
+                                                chickletValues.map((item, key) => {
+                                                    return (
+                                                        <Chicklets node={item} chickletSelect = {(node) => chickletSelect(node)} />
+                                                    )
+                                                })
+                                            } */}
+                                        </div>
                                     </Modal.Body>
                                     <Modal.Footer>
                                         <Button className="btn btn-secondary" onClick={toastModal}>Close</Button>
