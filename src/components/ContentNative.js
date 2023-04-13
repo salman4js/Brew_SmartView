@@ -14,6 +14,9 @@ import CustomError from './CustomError';
 import GeneratorCN from './GeneratorCN';
 import TableFormatReport from './GenerateReportTableFormat/TableFormatReport';
 import { Link, useParams } from "react-router-dom";
+import Chicklets from './Chicklets/chicket.view';
+import { chickletValues } from './Chicklets/chickletValues/chicklet.model';
+import TableHead from './table.view/table.head.view';
 
 const ContentNative = () => {
 
@@ -48,6 +51,69 @@ const ContentNative = () => {
 
     // Token from the local storage
     const token = localStorage.getItem("token");
+
+    // Common custom model data object!
+    var customChoice = {
+        GST: false,
+        customerName: false,
+        phoneNumber: false,
+        checkoutDate: false,
+        checkinDate: false,
+        checkoutTime: false,
+        checkinTime: false,
+        aadhar: false,
+        days: false,
+        discount: false,
+        advance: false,
+        roomRent: false,
+        totalAmount: false,
+        adults: false,
+        childrens: false,
+        roomno: false
+    };
+
+    // Chicklet choice state handler!
+    const [chickletChoice, setChickletChoice] = useState({
+        GST: true,
+        customerName: true,
+        phoneNumber: true,
+        checkoutDate: true,
+        checkinDate: true,
+        checkoutTime: true,
+        checkinTime: true,
+        aadhar: true,
+        days: true,
+        discount: true,
+        advance: true,
+        roomRent: true,
+        totalAmount: true,
+        adults: true,
+        childrens: true,
+        roomno: true
+    })
+
+    // Populate the chicklet model state!
+    function populateChickletModel(nodeModel) {
+        setChickletChoice(prevState => ({
+            ...prevState,
+            GST: nodeModel.GST,
+            customerName: nodeModel.customerName,
+            phoneNumber: nodeModel.phoneNumber,
+            checkoutDate: nodeModel.checkoutDate,
+            checkinDate: nodeModel.checkinDate,
+            checkoutTime: nodeModel.checkoutTime,
+            checkinTime: nodeModel.checkinTime,
+            aadhar: nodeModel.aadhar,
+            days: nodeModel.days,
+            discount: nodeModel.discount,
+            advance: nodeModel.advance,
+            roomRent: nodeModel.roomRent,
+            totalAmount: nodeModel.totalAmount,
+            adults: nodeModel.adults,
+            childrens: nodeModel.childrens,
+            roomno: nodeModel.roomno
+        }));
+    }
 
     // Getting data from the Server
     const getData = () => {
@@ -138,6 +204,13 @@ const ContentNative = () => {
         getDates(sdate, edate)
     }
 
+    // Helper function for table head render!
+    function tableHead(value){
+        const result = chickletChoice && chickletChoice[value];
+        console.log(value, result);
+        return result;
+    }
+
     // Generation of inbetween dates
     const getDates = (sDate, eDate) => {
 
@@ -192,6 +265,114 @@ const ContentNative = () => {
         }
     }
 
+
+    // Update chicklet value and on "apply event populate the model"
+    function chickletSelect(nodeValue) {
+
+        console.log(nodeValue);
+
+        switch (nodeValue) {
+            case "GST":
+                customChoice = {
+                    ...customChoice,
+                    GST: true,
+                };
+                break;
+            case "Customer Name":
+                customChoice = {
+                    ...customChoice,
+                    customerName: true,
+                };
+                break;
+            case "Phone Number":
+                customChoice = {
+                    ...customChoice,
+                    phoneNumber: true
+                }
+                break;
+            case "Date of Checkout":
+                customChoice = {
+                    ...customChoice,
+                    checkoutDate: true
+                }
+                break;
+            case "Date of Checkin":
+                customChoice = {
+                    ...customChoice,
+                    checkinDate : true
+                }
+                break;
+            case "Time of Checkin":
+                customChoice = {
+                    ...customChoice,
+                    checkinTime: true
+                }
+                break;
+            case "Time of Checkout":
+                customChoice = {
+                    ...customChoice,
+                    checkoutTime: true
+                }
+                break;
+            case "Discount":
+                customChoice = {
+                    ...customChoice,
+                    discount: true
+                }
+                break;
+            case "Advance":
+                customChoice = {
+                    ...customChoice,
+                    advance: true
+                }
+                break;
+            case "Room Rent":
+                customChoice = {
+                    ...customChoice,
+                    roomRent: true
+                }
+                break;
+            case "Stayed Days":
+                customChoice = {
+                    ...customChoice,
+                    days: true
+                }
+                break;
+            case "Total Amount":
+                customChoice = {
+                    ...customChoice,
+                    totalAmount: true
+                }
+                break;
+            case "Aadhar Card":
+                customChoice = {
+                    ...customChoice,
+                    aadhar: true
+                }
+                break;
+            case "Adults":
+                customChoice = {
+                    ...customChoice,
+                    adults: true
+                }
+            case "Childrens": 
+                customChoice = {
+                    ...customChoice,
+                    childrens: true
+                }
+            case "Room No":
+                customChoice = {
+                    ...customChoice,
+                    roomno: true
+                }
+            default:
+                break;
+        }
+    }
+
+    function updateChickletState(){
+        populateChickletModel(customChoice);
+    }
 
     // Invoke function for checking the token value constantly
     useEffect(() => {
@@ -333,54 +514,22 @@ const ContentNative = () => {
                                     <table className="table" style={{ width: "100%" }}>
                                         <thead>
                                             <tr>
-                                                <th>
-                                                    Date Of Check In
-                                                </th>
-                                                <th>
-                                                    Date Of Check Out
-                                                </th>
-                                                <th>
-                                                    Time of Check In
-                                                </th>
-                                                <th>
-                                                    Time of Check Out
-                                                </th>
-                                                <th>
-                                                    Customer Name
-                                                </th>
-                                                <th>
-                                                    Discount
-                                                </th>
-                                                <th>
-                                                    Advance
-                                                </th>
-                                                <th>
-                                                    Room No
-                                                </th>
-                                                <th>
-                                                    Phone Number
-                                                </th>
-                                                <th>
-                                                    Adults
-                                                </th>
-                                                <th>
-                                                    Childrens
-                                                </th>
-                                                <th>
-                                                    Aadhar
-                                                </th>
-                                                <th>
-                                                    Stay Days
-                                                </th>
-                                                <th>
-                                                    Room Rent
-                                                </th>
-                                                <th>
-                                                    GST 
-                                                </th>
-                                                <th>
-                                                    Total Amount
-                                                </th>
+                                                {tableHead("checkinDate") && <TableHead text = "Check-In" />}
+                                                {tableHead("checkoutDate") && <TableHead text = "Check-Out" />}
+                                                {tableHead("checkinTime") && <TableHead text = "Check-In Time" />}
+                                                {tableHead("checkoutTime") && <TableHead text = "Check-Out Time" />}
+                                                {tableHead("customerName") && <TableHead text = "C.Name" />}
+                                                {tableHead("discount") && <TableHead text = "Discount" />}
+                                                {tableHead("advance") && <TableHead text = "Advance" />}
+                                                {tableHead("roomno") && <TableHead text = "RoomNo" />}
+                                                {tableHead("phoneNumber") && <TableHead text = "Phone Number" />}
+                                                {tableHead("adults") && <TableHead text = "Adults" />}
+                                                {tableHead("childrens") && <TableHead text = "Childrens" />}
+                                                {tableHead("aadhar") && <TableHead text = "Aadhar" />}
+                                                {tableHead("days") && <TableHead text = "Stay Days" />}
+                                                {tableHead("roomRent") && <TableHead text = "Room Rent" />}
+                                                {tableHead("GST") && <TableHead text = "GST" />}
+                                                {tableHead("totalAmount") && <TableHead text = "T.Amount" />}
                                             </tr>
                                             {
                                                 data.filter((value) => {
@@ -414,7 +563,7 @@ const ContentNative = () => {
                                                 }).map((item, key) => {
                                                     return (
 
-                                                        <TableFormatReport isGst = {item.isGst} gst = {item.stayGst} totalAmount = {item.totalAmount} bill = {item.bill} roomno={item.roomno} username={item.username}
+                                                        <TableFormatReport customModel = {chickletChoice} isGst = {item.isGst} gst = {item.stayGst} totalAmount = {item.totalAmount} bill = {item.bill} roomno={item.roomno} username={item.username}
                                                             phonenumber={item.phonenumber}
                                                             secphone={item.secondphonenumber} adults={item.adults}
                                                             childrens={item.childrens} checkin={item.dateofcheckin}
@@ -453,11 +602,20 @@ const ContentNative = () => {
                                                 <option value="2">Layout View Format</option>
                                             </select>
                                         </div>
-
+                                        <div className="row">
+                                            {
+                                                chickletValues.map((item, key) => {
+                                                    return (
+                                                        <Chicklets node={item} chickletSelect = {(node) => chickletSelect(node)} />
+                                                    )
+                                                })
+                                            }
+                                        </div>
                                     </Modal.Body>
                                     <Modal.Footer>
-                                        <Button className="btn btn-secondary" onClick={toastModal}>Close</Button>
-                                        <Button onClick={handleGeneratePdf}> Generate </Button>
+                                        <Button className="btn btn-secondary" onClick={() => toastModal()}>Close</Button>
+                                        <Button className = "btn btn-info" onClick = {() => updateChickletState()}> Apply </Button>
+                                        <Button onClick={() => handleGeneratePdf()}> Generate </Button>
                                     </Modal.Footer>
                                 </Modal>
                             </div>
