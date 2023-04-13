@@ -1,2 +1,2 @@
 // Chicklets values!
-export const chickletValues = ['GST', 'Customer Name', 'Phone Number', 'Room Rent', 'Total Amount', 'Date of Checkout', 'Date of Checkin', 'Discount', 'Advance', 'Time of Checkin', 'Time of Checkout', 'Aadhar Card', 'Stayed Days']
+export const chickletValues = ['GST', 'Room No', 'Customer Name', 'Phone Number', 'Room Rent', 'Total Amount', 'Date of Checkout', 'Date of Checkin', 'Discount', 'Advance', 'Time of Checkin', 'Time of Checkout', 'Aadhar Card', 'Stayed Days', 'Adults', "Childrens"]

@@ -25,9 +25,11 @@ const TableFormatReport = (props) => {
 
   return (
       <tr className = "table-view">
-        <td>
-          {props.checkin}
-        </td>
+        {props.customModel && props.customModel.checkinDate && <>
+          <td>
+            {props.checkin}
+          </td>
+        </>}
         <td>
           {props.checkout}
         </td>
