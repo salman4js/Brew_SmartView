@@ -46,7 +46,7 @@ const TableFormatReport = (props) => {
         {customizeReport("adults") && <TableCell text = {props.adults} />}
         {customizeReport("childrens") && <TableCell text = {props.childrens} />}
         {customizeReport("aadhar") && <TableCell text = {props.aadharcard} />}
-        {customizeReport("days" && <TableCell text = {props.stayeddays} />)}
+        {customizeReport("days") && <TableCell text = {props.stayeddays} />}
         {customizeReport("roomRent") && <TableCell text = {props.bill} />}
         {customizeReport("GST") && <TableCell text = {props.isGst ? props.gst : "Not Provided"} />}
         {customizeReport("totalAmount") && <TableCell text = {props.isGst ? props.totalAmount : props.bill} />}

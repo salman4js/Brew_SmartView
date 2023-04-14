@@ -15,6 +15,7 @@ const Chicklets = (props) => {
             
         } else {
             setIsSelected(!isSelected);
+            props.chickletSelect(node);
         }
     }
 
