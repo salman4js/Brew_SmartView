@@ -5,8 +5,17 @@ const Chicklets = (props) => {
     // Handle Selection of chicklets!
     const [isSelected, setIsSelected] = useState(false);
     function handleSelect(node){
-        setIsSelected(!isSelected);
-        props.chickletSelect(node);
+        if(!isSelected){
+            // setIsSelected(!isSelected);
+            const select = props.chickletSelect(node);
+
+            if(select){
+                setIsSelected(!isSelected);
+            }
+            
+        } else {
+            setIsSelected(!isSelected);
+        }
     }
 
     return(

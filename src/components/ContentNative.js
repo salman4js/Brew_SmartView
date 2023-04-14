@@ -149,6 +149,7 @@ const ContentNative = () => {
 
     // Handle Generate PDF
     const [templateAlert, setTemplateAlert] = useState(false);
+    const [templateMessage, setTemplateMessage] = useState("");
 
     const handleTemplateAlert = () => {
         setTemplateAlert(!templateAlert)
@@ -156,6 +157,7 @@ const ContentNative = () => {
     const handleGeneratePdf = () => {
         if (model == "0") {
             setTemplateAlert(true);
+            setTemplateMessage("Please choose a valid template!")
         } else {
             const doc = new jsPDF("landscape", "pt", "A3");
             // Adding the fonts.
@@ -190,11 +192,11 @@ const ContentNative = () => {
     };
 
     // Toast Message for selection of report model
-    const [model, setModel] = useState("2");
+    const [model, setModel] = useState("0");
     const [alert, setAlert] = useState(false);
     const toastModal = () => {
         setAlert(!alert);
-        setModel("2");
+        setModel("0");
     }
 
 
@@ -205,9 +207,8 @@ const ContentNative = () => {
     }
 
     // Helper function for table head render!
-    function tableHead(value){
+    function customTable(value){
         const result = chickletChoice && chickletChoice[value];
-        console.log(value, result);
         return result;
     }
 
@@ -268,105 +269,109 @@ const ContentNative = () => {
 
     // Update chicklet value and on "apply event populate the model"
     function chickletSelect(nodeValue) {
-
-        console.log(nodeValue);
-
-        switch (nodeValue) {
-            case "GST":
-                customChoice = {
-                    ...customChoice,
-                    GST: true,
-                };
-                break;
-            case "Customer Name":
-                customChoice = {
-                    ...customChoice,
-                    customerName: true,
-                };
-                break;
-            case "Phone Number":
-                customChoice = {
-                    ...customChoice,
-                    phoneNumber: true
-                }
-                break;
-            case "Date of Checkout":
-                customChoice = {
-                    ...customChoice,
-                    checkoutDate: true
-                }
-                break;
-            case "Date of Checkin":
-                customChoice = {
-                    ...customChoice,
-                    checkinDate : true
-                }
-                break;
-            case "Time of Checkin":
-                customChoice = {
-                    ...customChoice,
-                    checkinTime: true
-                }
-                break;
-            case "Time of Checkout":
-                customChoice = {
-                    ...customChoice,
-                    checkoutTime: true
-                }
-                break;
-            case "Discount":
-                customChoice = {
-                    ...customChoice,
-                    discount: true
-                }
-                break;
-            case "Advance":
-                customChoice = {
-                    ...customChoice,
-                    advance: true
-                }
-                break;
-            case "Room Rent":
-                customChoice = {
-                    ...customChoice,
-                    roomRent: true
-                }
-                break;
-            case "Stayed Days":
-                customChoice = {
-                    ...customChoice,
-                    days: true
-                }
-                break;
-            case "Total Amount":
-                customChoice = {
-                    ...customChoice,
-                    totalAmount: true
-                }
-                break;
-            case "Aadhar Card":
-                customChoice = {
-                    ...customChoice,
-                    aadhar: true
-                }
-                break;
-            case "Adults":
-                customChoice = {
-                    ...customChoice,
-                    adults: true
-                }
-            case "Childrens": 
-                customChoice = {
-                    ...customChoice,
-                    childrens: true
-                }
-            case "Room No":
-                customChoice = {
-                    ...customChoice,
-                    roomno: true
-                }
-            default:
-                break;
+        if(model !== "0"){
+            switch (nodeValue) {
+                case "GST":
+                    customChoice = {
+                        ...customChoice,
+                        GST: customChoice.GST ? false : true
+                    };
+                    break;
+                case "Customer Name":
+                    customChoice = {
+                        ...customChoice,
+                        customerName: customChoice.customerName ? false : true
+                    };
+                    break;
+                case "Phone Number":
+                    customChoice = {
+                        ...customChoice,
+                        phoneNumber: customChoice.phoneNumber ? false : true
+                    }
+                    break;
+                case "Date of Checkout":
+                    customChoice = {
+                        ...customChoice,
+                        checkoutDate: customChoice.checkoutDate ? false : true
+                    }
+                    break;
+                case "Date of Checkin":
+                    customChoice = {
+                        ...customChoice,
+                        checkinDate : customChoice.checkinDate ? false : true
+                    }
+                    break;
+                case "Time of Checkin":
+                    customChoice = {
+                        ...customChoice,
+                        checkinTime: customChoice.checkinTime ? false : true
+                    }
+                    break;
+                case "Time of Checkout":
+                    customChoice = {
+                        ...customChoice,
+                        checkoutTime: customChoice.checkoutTime ? false : true
+                    }
+                    break;
+                case "Discount":
+                    customChoice = {
+                        ...customChoice,
+                        discount: customChoice.discount ? false : true
+                    }
+                    break;
+                case "Advance":
+                    customChoice = {
+                        ...customChoice,
+                        advance: customChoice.advance ? false : true
+                    }
+                    break;
+                case "Room Rent":
+                    customChoice = {
+                        ...customChoice,
+                        roomRent: customChoice.roomRent ? false : true
+                    }
+                    break;
+                case "Stayed Days":
+                    customChoice = {
+                        ...customChoice,
+                        days: customChoice.days ? false : true
+                    }
+                    break;
+                case "Total Amount":
+                    customChoice = {
+                        ...customChoice,
+                        totalAmount: customChoice.totalAmount ? false : true
+                    }
+                    break;
+                case "Aadhar Card":
+                    customChoice = {
+                        ...customChoice,
+                        aadhar: customChoice.aadhar ? false : true
+                    }
+                    break;
+                case "Adults":
+                    customChoice = {
+                        ...customChoice,
+                        adults: customChoice.adults ? false : true
+                    }
+                case "Childrens": 
+                    customChoice = {
+                        ...customChoice,
+                        childrens: customChoice.childrens ? false : true
+                    }
+                case "Room No":
+                    customChoice = {
+                        ...customChoice,
+                        roomno: customChoice.roomno ? false : true
+                    }
+                default:
+                    break;
+            }
+            return true;
+        } else {
+            setTemplateAlert(true);
+            setTemplateMessage("Customize report only supports on table view!");
+            return false;
         }
     }
 
@@ -440,7 +445,7 @@ const ContentNative = () => {
                             >
                                 <Modal.Header closeButton>
                                     <Modal.Body className="text-center">
-                                        Please choose a valid template!
+                                        {templateMessage}
                                     </Modal.Body>
                                 </Modal.Header>
                             </Modal>
@@ -514,22 +519,22 @@ const ContentNative = () => {
                                     <table className="table" style={{ width: "100%" }}>
                                         <thead>
                                             <tr>
-                                                {tableHead("checkinDate") && <TableHead text = "Check-In" />}
-                                                {tableHead("checkoutDate") && <TableHead text = "Check-Out" />}
-                                                {tableHead("checkinTime") && <TableHead text = "Check-In Time" />}
-                                                {tableHead("checkoutTime") && <TableHead text = "Check-Out Time" />}
-                                                {tableHead("customerName") && <TableHead text = "C.Name" />}
-                                                {tableHead("discount") && <TableHead text = "Discount" />}
-                                                {tableHead("advance") && <TableHead text = "Advance" />}
-                                                {tableHead("roomno") && <TableHead text = "RoomNo" />}
-                                                {tableHead("phoneNumber") && <TableHead text = "Phone Number" />}
-                                                {tableHead("adults") && <TableHead text = "Adults" />}
-                                                {tableHead("childrens") && <TableHead text = "Childrens" />}
-                                                {tableHead("aadhar") && <TableHead text = "Aadhar" />}
-                                                {tableHead("days") && <TableHead text = "Stay Days" />}
-                                                {tableHead("roomRent") && <TableHead text = "Room Rent" />}
-                                                {tableHead("GST") && <TableHead text = "GST" />}
-                                                {tableHead("totalAmount") && <TableHead text = "T.Amount" />}
+                                                {customTable("checkinDate") && <TableHead text = "Check-In" />}
+                                                {customTable("checkoutDate") && <TableHead text = "Check-Out" />}
+                                                {customTable("checkinTime") && <TableHead text = "Check-In Time" />}
+                                                {customTable("checkoutTime") && <TableHead text = "Check-Out Time" />}
+                                                {customTable("customerName") && <TableHead text = "C.Name" />}
+                                                {customTable("discount") && <TableHead text = "Discount" />}
+                                                {customTable("advance") && <TableHead text = "Advance" />}
+                                                {customTable("roomno") && <TableHead text = "RoomNo" />}
+                                                {customTable("phoneNumber") && <TableHead text = "Phone Number" />}
+                                                {customTable("adults") && <TableHead text = "Adults" />}
+                                                {customTable("childrens") && <TableHead text = "Childrens" />}
+                                                {customTable("aadhar") && <TableHead text = "Aadhar" />}
+                                                {customTable("days") && <TableHead text = "Stay Days" />}
+                                                {customTable("roomRent") && <TableHead text = "Room Rent" />}
+                                                {customTable("GST") && <TableHead text = "GST" />}
+                                                {customTable("totalAmount") && <TableHead text = "T.Amount" />}
                                             </tr>
                                             {
                                                 data.filter((value) => {
@@ -563,7 +568,7 @@ const ContentNative = () => {
                                                 }).map((item, key) => {
                                                     return (
 
-                                                        <TableFormatReport customModel = {chickletChoice} isGst = {item.isGst} gst = {item.stayGst} totalAmount = {item.totalAmount} bill = {item.bill} roomno={item.roomno} username={item.username}
+                                                        <TableFormatReport customTable = {(value) => customTable(value)} customModel = {chickletChoice} isGst = {item.isGst} gst = {item.stayGst} totalAmount = {item.totalAmount} bill = {item.bill} roomno={item.roomno} username={item.username}
                                                             phonenumber={item.phonenumber}
                                                             secphone={item.secondphonenumber} adults={item.adults}
                                                             childrens={item.childrens} checkin={item.dateofcheckin}
@@ -597,7 +602,7 @@ const ContentNative = () => {
                                                 <label class="input-group-text" for="inputGroupSelect01">Options</label>
                                             </div>
                                             <select class="custom-select" id="inputGroupSelect01" value={model} onChange={((e) => reportTemp(e.target.value))}>
-                                                <option selected value="0">Choose...</option>
+                                                <option value="0">Choose...</option>
                                                 <option value="1">Table View Format</option>
                                                 <option value="2">Layout View Format</option>
                                             </select>
