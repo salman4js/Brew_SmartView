@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import TableCell from '../table.view/table.cell.view';
 
 const TableFormatReport = (props) => {
 
@@ -22,59 +23,33 @@ const TableFormatReport = (props) => {
     }
   }
 
+  // Customize report generation handler!
+  function customizeReport(value){
+    const result = props.customTable(value);
+    return result;
+  }
+
 
   return (
       <tr className = "table-view">
-        {props.customModel && props.customModel.checkinDate && <>
-          <td>
-            {props.checkin}
-          </td>
+        {customizeReport("checkinDate") && <>
+          <TableCell text = {props.checkin} />
         </>}
-        <td>
-          {props.checkout}
-        </td>
-        <td>
-          {(props.checkInTime === undefined || props.checkInTime === null || props.checkInTime === "") ? "Not Provided" : handleFormat(props.checkInTime)}
-        </td>
-        <td>
-          {(props.checkOutTime === undefined || props.checkOutTime === null || props.checkOutTime === "") ? "Not Provided" : handleFormat(props.checkOutTime)}
-        </td>
-        <td>
-          {props.username}
-        </td>
-        <td>
-          {(props.discount === undefined || props.discount === null || props.discount === "") ? 0 : props.discount}
-        </td>
-        <td>
-          {props.advance === undefined || props.advance === null || props.advance === "" ? 0 : props.advance}
-        </td>
-        <td>
-          {props.roomno}
-        </td>
-        <td>
-          {props.phonenumber}
-        </td>
-        <td>
-          {props.adults}
-        </td>
-        <td>
-          {props.childrens}
-        </td>
-        <td>
-          {props.aadharcard}
-        </td>
-        <td>
-          {props.stayeddays}
-        </td>
-        <td>
-          {props.bill}
-        </td>
-        <td>
-          {props.isGst ? props.gst : "Not Provided"}
-        </td>
-        <td>
-          {props.isGst ? props.totalAmount : props.bill}
-        </td>
+        {customizeReport("checkoutDate") && <TableCell text = {props.checkout} />}
+        {customizeReport("checkinTime") && <TableCell text = {(props.checkInTime === undefined || props.checkInTime === null || props.checkInTime === "") ? "Not Provided" : handleFormat(props.checkInTime)} /> }
+        {customizeReport("checkoutTime") && <TableCell text = {(props.checkOutTime === undefined || props.checkOutTime === null || props.checkOutTime === "") ? "Not Provided" : handleFormat(props.checkOutTime)} />}
+        {customizeReport("customerName") && <TableCell text = {props.username} />}
+        {customizeReport("discount") && <TableCell text = {(props.discount === undefined || props.discount === null || props.discount === "") ? 0 : props.discount} />}
+        {customizeReport("advance") && <TableCell text = {props.advance === undefined || props.advance === null || props.advance === "" ? 0 : props.advance} />}
+        {customizeReport("roomno") && <TableCell text = {props.roomno} />}
+        {customizeReport("phoneNumber") && <TableCell text = {props.phonenumber} />}
+        {customizeReport("adults") && <TableCell text = {props.adults} />}
+        {customizeReport("childrens") && <TableCell text = {props.childrens} />}
+        {customizeReport("aadhar") && <TableCell text = {props.aadharcard} />}
+        {customizeReport("days" && <TableCell text = {props.stayeddays} />)}
+        {customizeReport("roomRent") && <TableCell text = {props.bill} />}
+        {customizeReport("GST") && <TableCell text = {props.isGst ? props.gst : "Not Provided"} />}
+        {customizeReport("totalAmount") && <TableCell text = {props.isGst ? props.totalAmount : props.bill} />}
       </tr>
   )
 }
