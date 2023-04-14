@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import TableHead from "../table.view/table.head.view";
+import TableCell from "../table.view/table.cell.view";
 import { getStorage } from "../../Controller/Storage/Storage";
 
 const Invoice = (props) => {
@@ -143,9 +145,7 @@ const Invoice = (props) => {
                                 <th>
                                     Days Stayed
                                 </th>
-                                <th>
-                                    GST
-                                </th>
+                                {props.node && props.node.isGst && <TableHead text = "GST" />}
                                 <th>
                                     Room No
                                 </th>
@@ -156,9 +156,7 @@ const Invoice = (props) => {
                             <td>
                                 {props.node.stayedDays}
                             </td>
-                            <td>
-                                {props.node.gst}
-                            </td>
+                            {props.node && props.node.isGst && <TableCell text = {props.node.gst} />}
                             <td>
                                 {props.node.roomno}
                             </td>
@@ -182,9 +180,11 @@ const Invoice = (props) => {
                     <div className="invoice-total">
                         Advance: {props.node.advance}
                     </div>
-                    <div className="invoice-total">
-                        GST: {props.node.gst}
-                    </div>
+                    {props.node && props.node.isGst && (
+                        <div className="invoice-total">
+                            GST: {props.node.gst}
+                        </div>
+                    )}
                     <div className="invoice-total-amount">
                         Total Amount: {props.node.amount()}
                     </div>

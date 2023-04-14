@@ -140,10 +140,6 @@ const HomeRoom = (props) => {
         getExcludeDatesCheckin(props.roomid);
     }
 
-    function isOpen() {
-        return show;
-    }
-
     const handleModal = () => {
         setShowmodal(!showmodal)
     }
@@ -509,8 +505,7 @@ const HomeRoom = (props) => {
 
     // Populate invoice modal!
     function populateInvoice(value){
-
-        var gstCalculation = ((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)
+        var gstCalculation = calculateGST();
 
         // Populate the model with userdata!
         userdata.map((options, key) => {
@@ -525,9 +520,11 @@ const HomeRoom = (props) => {
                 cgst: value.cgst,
                 extraBeds: options.extraBeds,
                 dateofCheckIn: options.dateofcheckin,
+                isGst: isGst,
                 gst: gstCalculation,
                 stayedDays: stayeddays,
                 roomRent: totalAmount,
+                extraBeds: options.extraBeds,
                 extraBedAmount: extraCollection,
                 dateofCheckout: checkoutdate,
                 checkinTime: options.checkinTime,
@@ -536,11 +533,12 @@ const HomeRoom = (props) => {
                 advance: options.advance,
                 receiptId: options.receiptId,
                 amount: function () {
-                    const discount = (options.discount === undefined ? 0 : options.discount);
-                    const advance = (options.advance === undefined ? 0 : options.advance);
                     const gstCalc = (gstCalculation === undefined ? 0 : gstCalculation);
                     const tAmount = (totalAmount === undefined ? 0 : totalAmount);
-                    return ((tAmount + gstCalc) - (discount + advance));
+                    const extraPrice = extraCollection;
+                    const withGST = ((tAmount + gstCalc) + extraPrice);
+                    const withoutGST = tAmount + extraPrice;
+                    return isGst ? withGST : withoutGST;
                 },
                 roomno: options.roomno,
                 lodgeName: props.lodgeName
@@ -692,6 +690,13 @@ const HomeRoom = (props) => {
                     setSuccess(res.data.message)
                 }
             })
+    }
+
+    // GST calculation handler!
+    function calculateGST(){
+        let gstPercent = props.price < 7500 ? 0.12 : 0.18;
+        let withGST = gstPercent * Number(totalAmount);
+        return Math.round(withGST);
     }
 
     return (
@@ -983,7 +988,7 @@ const HomeRoom = (props) => {
                                     isGst === true ? (
                                         <div>
                                             <p>
-                                                Amount deducted for GST - {((Number(totalAmount) + Number(extraCollection)) < 7500 ? (Number(totalAmount) + Number(extraCollection)) * 0.12 : (Number(totalAmount) + Number(extraCollection) * 0.18))}
+                                                Amount deducted for GST - {calculateGST()}
                                             </p>
                                         </div>
                                     ) : (
@@ -1057,13 +1062,13 @@ const HomeRoom = (props) => {
                                                 isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
                                                     " Calculating..."
                                                 ) : (
-                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + Number((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)) + " Rs")
+                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + calculateGST()) + " Rs")
                                                 )
                                             ) : (
-                                                isNaN(Number(calcdishrate) + Number(totalAmount)) ? (
+                                                isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
                                                     " Calculating..."
                                                 ) : (
-                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + Number((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)) + " Rs")
+                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + calculateGST()) + " Rs")
                                                 )
                                             )
                                         }

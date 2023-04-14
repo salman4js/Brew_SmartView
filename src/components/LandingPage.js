@@ -43,6 +43,7 @@ const LandingPage = () => {
         cgst: true,
         extraBeds: undefined,
         extraBedAmount: undefined,
+        isGst: false,
         gst: undefined,
         dateofCheckIn: undefined,
         checkinTime: undefined,
