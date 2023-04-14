@@ -15,7 +15,7 @@ import GeneratorCN from './GeneratorCN';
 import TableFormatReport from './GenerateReportTableFormat/TableFormatReport';
 import { Link, useParams } from "react-router-dom";
 import Chicklets from './Chicklets/chicket.view';
-import { chickletValues } from './Chicklets/chickletValues/chicklet.model';
+import { chickletValues, customValue } from './Chicklets/chickletValues/chicklet.model';
 import TableHead from './table.view/table.head.view';
 
 const ContentNative = () => {
@@ -52,25 +52,7 @@ const ContentNative = () => {
     // Token from the local storage
     const token = localStorage.getItem("token");
 
-    // Common custom model data object!
-    var customChoice = {
-        GST: false,
-        customerName: false,
-        phoneNumber: false,
-        checkoutDate: false,
-        checkinDate: false,
-        checkoutTime: false,
-        checkinTime: false,
-        aadhar: false,
-        days: false,
-        discount: false,
-        advance: false,
-        roomRent: false,
-        totalAmount: false,
-        adults: false,
-        childrens: false,
-        roomno: false
-    };
+    var customChoice = customValue; // Defining the custom value from the chicklet model...
 
     // Chicklet choice state handler!
     const [chickletChoice, setChickletChoice] = useState({
@@ -170,8 +152,9 @@ const ContentNative = () => {
                         } else if (sdate == "" && edate == "") {
                             await doc.save('document');
                         } else {
-                            await doc.save(`${sdate} to ${edate} -- ${sort}`);
+                            await doc.save(`${brewDate.format(sdate, 'dd/mm/yyyy')} to ${brewDate.format(edate, 'dd/mm/yyyy')} -- ${sort}`);
                         }
+                        toastModal();
                     },
                 });
             } else {
@@ -182,13 +165,13 @@ const ContentNative = () => {
                         } else if (sdate == "" && edate == "") {
                             await doc.save('document');
                         } else {
-                            await doc.save(`${sdate} to ${edate} -- ${sort}`);
+                            await doc.save(`${brewDate.format(sdate, 'dd/mm/yyyy')} to ${brewDate.format(edate, 'dd/mm/yyyy')} -- ${sort}`);
                         }
+                        toastModal(); // Close the model and set the template back to its initial state!
                     },
                 });
             }
         }
-
     };
 
     // Toast Message for selection of report model
@@ -354,16 +337,19 @@ const ContentNative = () => {
                         ...customChoice,
                         adults: customChoice.adults ? false : true
                     }
+                    break;
                 case "Childrens": 
                     customChoice = {
                         ...customChoice,
                         childrens: customChoice.childrens ? false : true
                     }
+                    break;
                 case "Room No":
                     customChoice = {
                         ...customChoice,
                         roomno: customChoice.roomno ? false : true
                     }
+                    break;
                 default:
                     break;
             }
@@ -374,7 +360,8 @@ const ContentNative = () => {
             return false;
         }
     }
-
+    
+    // Update chicklet model on button click!
     function updateChickletState(){
         populateChickletModel(customChoice);
     }
@@ -504,7 +491,8 @@ const ContentNative = () => {
                                 }
 
                             </div>
-                            <div className={`${model == "2" ? 'hide_tableFormat' : 'hide'}`} ref={reportTableTemp}>
+                           
+                            <div className={`${(model === "2" || model === "0") ? 'hide_tableFormat' : 'hide'}`} ref={reportTableTemp}>
                                 <div className="tableFormatReport">
                                     {
                                         sort === "Show All" ? (
