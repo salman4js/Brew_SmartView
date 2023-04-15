@@ -498,13 +498,16 @@ const HomeRoom = (props) => {
     }
 
     function updateBillPrice() {
-        // setTotalAmount(Number(updatePrice))
         if(updatePrice > totalAmount){
             _inlineModel['inlineErrorUpdate'] = true;
             _inlineModel['inlineText'] = "Cannot update rate more than the actual rate!"
+        } else if(updatePrice === undefined) {
+            _inlineModel['inlineErrorUpdate'] = true;
+            _inlineModel['inlineText'] = "Please provide a valid price!"
         } else {
             setTotalAmount(Number(updatePrice));
             _inlineModel['inlineErrorUpdate'] = false;
+            openUpdateWizard(); // close the wizard after updating!
         }
 
         handleInlineToast(_inlineModel);
