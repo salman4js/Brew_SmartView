@@ -17,6 +17,7 @@ import { Link, useParams } from "react-router-dom";
 import Chicklets from './Chicklets/chicket.view';
 import { chickletValues, customValue } from './Chicklets/chickletValues/chicklet.model';
 import TableHead from './table.view/table.head.view';
+import { getStorage } from '../Controller/Storage/Storage';
 
 const ContentNative = () => {
 
@@ -366,6 +367,12 @@ const ContentNative = () => {
         populateChickletModel(customChoice);
     }
 
+    // Check if update bill price enabled for this user!
+    function isUpdateEnabled(){
+        let result = JSON.parse(getStorage("updatePrice"));
+        return result;
+    }
+
     // Invoke function for checking the token value constantly
     useEffect(() => {
         const interval = setInterval(() => {
@@ -520,7 +527,7 @@ const ContentNative = () => {
                                                 {customTable("childrens") && <TableHead text = "Childrens" />}
                                                 {customTable("aadhar") && <TableHead text = "Aadhar" />}
                                                 {customTable("days") && <TableHead text = "Stay Days" />}
-                                                {customTable("roomRent") && <TableHead text = "Room Rent" />}
+                                                {customTable("roomRent") && <TableHead text = {isUpdateEnabled() ? "Room + Extra" : "Room Rent"} />}
                                                 {customTable("GST") && <TableHead text = "GST" />}
                                                 {customTable("totalAmount") && <TableHead text = "T.Amount" />}
                                             </tr>
