@@ -107,7 +107,7 @@ const AddRooms = () => {
         axios.post(`${Variables.hostId}/${splitedIds[0]}/allroomtype`)
             .then(data => {
                 console.log(data.data.suiteType);
-                setOption(data.data);
+                setOption(data.data.message);
                 setLoading(false);
             })
     }

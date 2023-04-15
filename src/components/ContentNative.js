@@ -15,7 +15,7 @@ import GeneratorCN from './GeneratorCN';
 import TableFormatReport from './GenerateReportTableFormat/TableFormatReport';
 import { Link, useParams } from "react-router-dom";
 import Chicklets from './Chicklets/chicket.view';
-import { chickletValues, customValue } from './Chicklets/chickletValues/chicklet.model';
+import { chickletValues, customValue, specificLang } from './Chicklets/chickletValues/chicklet.model';
 import TableHead from './table.view/table.head.view';
 import { getStorage } from '../Controller/Storage/Storage';
 
@@ -33,6 +33,13 @@ const ContentNative = () => {
     const reportTemp = (value) => {
         setModel(value);
     }
+
+    // Specific report enable / disable handler!
+    const [specific, setSpecific] = useState({
+        isSpecific: false,
+        isSpecificCheckbox: true,
+        specificSelected : []
+    })
 
     // Date value
     const [sdate, setSdate] = useState("");
@@ -75,6 +82,16 @@ const ContentNative = () => {
         roomno: true
     })
 
+    // trigger specific report generation!
+    function triggerSpecific(){
+        setSpecific(prevState => ({...prevState, isSpecific: !specific.isSpecific}))
+    }
+
+    // Trigger checkbox!
+    function triggerSpecificCheckbox(){
+        setSpecific(prevState => ({...prevState, isSpecificCheckbox: !specific.isSpecificCheckbox}))
+    }
+
     // Populate the chicklet model state!
     function populateChickletModel(nodeModel) {
         setChickletChoice(prevState => ({
@@ -96,6 +113,10 @@ const ContentNative = () => {
             childrens: nodeModel.childrens,
             roomno: nodeModel.roomno
         }));
+
+        console.log(nodeModel);
+
+        updateSelected(nodeModel);
     }
 
     // Getting data from the Server
@@ -365,6 +386,18 @@ const ContentNative = () => {
     // Update chicklet model on button click!
     function updateChickletState(){
         populateChickletModel(customChoice);
+        triggerSpecific(); /// Close the chicklet panel
+        triggerSpecificCheckbox(); // Hide the checkbox!
+    }
+
+    function updateSelected(customChoice){
+        for (const choice in customChoice){
+            if(customChoice.hasOwnProperty(choice)){
+                if(customChoice[choice] === true){
+                    setSpecific(prevState => ({...prevState, specificSelected: [...prevState.specificSelected, choice]}))
+                }
+            }
+        }
     }
 
     // Check if update bill price enabled for this user!
@@ -602,20 +635,49 @@ const ContentNative = () => {
                                                 <option value="2">Layout View Format</option>
                                             </select>
                                         </div>
-                                        <div className="row">
-                                            {
-                                                chickletValues.map((item, key) => {
-                                                    return (
-                                                        <Chicklets node={item} chickletSelect = {(node) => chickletSelect(node)} />
-                                                    )
-                                                })
-                                            }
-                                        </div>
+                                        {specific.isSpecificCheckbox && (
+                                            <div className = "specific-reports-checkbox">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked = {specific.isSpecific} onChange = {() => triggerSpecific()} />
+                                                    <label class="form-check-label" for="flexCheckChecked">
+                                                        Expand Specific Reports Action
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {!specific.isSpecificCheckbox && (
+                                                <div>
+                                                    <div className = "text-center" style = {{fontWeight: "bold"}}>
+                                                        Selected Choices!
+                                                    </div>
+                                                    <div className="row chicklet-specific-reports">
+
+                                                        {
+                                                            specific.specificSelected.map((item, key) => {
+                                                                return (
+                                                                    <Chicklets node={specificLang[item]} />
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
+                                        )}
+                                        {specific.isSpecific && (
+                                            <div className="row chicklet-specific-reports">
+                                                {
+                                                    chickletValues.map((item, key) => {
+                                                        return (
+                                                            <Chicklets node={item} chickletSelect = {(node) => chickletSelect(node)} />
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+                                        )}
                                     </Modal.Body>
                                     <Modal.Footer>
                                         <Button className="btn btn-secondary" onClick={() => toastModal()}>Close</Button>
-                                        <Button className = "btn btn-info" onClick = {() => updateChickletState()}> Apply </Button>
-                                        <Button onClick={() => handleGeneratePdf()}> Generate </Button>
+                                        {specific.isSpecific && <Button className = "btn btn-info" onClick = {() => updateChickletState()}> Apply </Button>}
+                                        {!specific.isSpecific && <Button onClick={() => handleGeneratePdf()}> Generate </Button>}
                                     </Modal.Footer>
                                 </Modal>
                             </div>

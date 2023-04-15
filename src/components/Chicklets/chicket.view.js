@@ -21,9 +21,9 @@ const Chicklets = (props) => {
 
     return(
         <div className = "" style = {{width: "160px"}} onClick = {() => handleSelect(props.node)}>
-            <div className = "card chicklet-view text-center" style = {{backgroundColor: isSelected ? "#2f92f5" : "#B2FF66"}}>
-                {props.node}
-            </div>
+            <span className = "card chicklet-view text-center" style = {{backgroundColor: isSelected ? "#2f92f5" : "#B2FF66"}}>
+                {props.node} 
+            </span>
         </div>
     )
 }

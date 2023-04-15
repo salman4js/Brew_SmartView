@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from './Navbar';
 import changeScreen from './Action';
+import { getStorage } from '../Controller/Storage/Storage';
 import Variables from './Variables';
 import Loading from './Loading';
 import Modal from "react-bootstrap/Modal";
@@ -8,6 +9,7 @@ import Alert from "react-bootstrap/Alert";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import CustomError from './CustomError';
+import RoomType from './room.type.view/room.type.view';
 
 const ConfigureBill = () => {
 
@@ -35,6 +37,12 @@ const ConfigureBill = () => {
 
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
+
+    // Check for extra column in config!
+    function checkExtraColumn(){
+        let isExtra = JSON.parse(getStorage("isExtra"));
+        return isExtra;
+    }
 
     const processData = (e) => {
         e.preventDefault();
@@ -137,16 +145,22 @@ const ConfigureBill = () => {
                                                     <label style={{ color: "black" }}> Price </label>
                                                     <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Price Per Day!' name={price} value={price} onChange={(e) => setPrice(e.target.value)} />
                                                 </div>
-                                                <div className='modal-gap'>
-                                                    <label style={{ color: "black" }}> Extra Bed Price for this room type! </label>
-                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Extra Bed Price Per Day!' name={extraPrice} value={extraPrice} onChange={(e) => setExtraPrice(e.target.value)} />
-                                                </div>
+                                                {checkExtraColumn() && (
+                                                    <div className='modal-gap'>
+                                                        <label style={{ color: "black" }}> Extra Bed Price for this room type! </label>
+                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Extra Bed Price Per Day!' name={extraPrice} value={extraPrice} onChange={(e) => setExtraPrice(e.target.value)} />
+                                                    </div>
+                                                )}
                                                 <br />
                                                 <button className='btn btn-info' onClick={processData}> Add Data </button>
                                             </div>
                                         </div>
                                     </div>
+                                    <div className = "col side-left">
+                                        <RoomType isExtra = {() => checkExtraColumn()} lodgeId = {splitedIds[0]} />
+                                    </div>
                                 </div>
+                                
                             </div>
                         </div>
                         {
