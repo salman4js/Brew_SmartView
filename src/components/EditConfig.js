@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import Loading from './Loading';
+import RoomType from "./room.type.view/room.type.view";
 import changeScreen from "./Action";
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import CustomError from "./CustomError";
 import axios from "axios";
+import { getStorage } from "../Controller/Storage/Storage";
 import { Link, useParams } from "react-router-dom";
 import Variables from "./Variables";
 
@@ -40,8 +42,7 @@ const EditConfig = () => {
   const G_Options = () => {
     axios.post(`${Variables.hostId}/${splitedIds[0]}/allroomtype`)
       .then(data => {
-        console.log(data.data.suiteType);
-        setOption(data.data);
+        setOption(data.data.message);
       })
   }
 
@@ -72,7 +73,12 @@ const EditConfig = () => {
         }
       })
     console.log(price);
+  }
 
+  // Check for extra column in config!
+  function checkExtraColumn(){
+    let isExtra = JSON.parse(getStorage("isExtra"));
+    return isExtra;
   }
 
   //Loading Data!
@@ -154,7 +160,6 @@ const EditConfig = () => {
                             <label style={{ color: "black" }}> Suite Type </label>
                             <select class="form-select" aria-label="Default select example" onChange={(e) => setSelected(e.target.value)}>
                               <option selected>Choose...</option>
-
                               {
                                 option.map((item, key) => {
                                   return (
@@ -176,6 +181,9 @@ const EditConfig = () => {
                           <button className='btn btn-info' onClick={processData}> Edit Data </button>
                         </div>
                       </div>
+                    </div>
+                    <div className="col side-left">
+                      <RoomType isExtra = {() => checkExtraColumn()} lodgeId={splitedIds[0]} />
                     </div>
                   </div>
                 </div>

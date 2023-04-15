@@ -710,3 +710,15 @@ td {
   color: white !important;
   cursor: pointer;
 }
+
+.side-left{
+  margin-left: 20px;
+}
+
+.specific-reports-checkbox{
+  margin-left: 6px;
+}
+
+.chicklet-specific-reports{
+  margin-top: 20px;
+}

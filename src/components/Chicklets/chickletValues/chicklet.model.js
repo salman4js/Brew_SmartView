@@ -1,10 +1,6 @@
 // Chicklets values!
 export const chickletValues = ['GST', 'Room No', 'Customer Name', 'Phone Number', 'Room Rent', 'Total Amount', 'Date of Checkout', 'Date of Checkin', 'Discount', 'Advance', 'Time of Checkin', 'Time of Checkout', 'Aadhar Card', 'Stayed Days', 'Adults', "Childrens"]
 
-export const tests = {
-    hey : "Hey"
-}
-
 // Common custom model data object!
 export const customValue = {
     GST: false,
@@ -23,4 +19,24 @@ export const customValue = {
     adults: false,
     childrens: false,
     roomno: false
+}
+
+// Specific Lang!
+export const specificLang = {
+    GST: "GST",
+    customerName: "Customer Name",
+    phoneNumber: "Phone Number",
+    checkoutDate: "Checkout Date",
+    checkinDate: "Checkin Date",
+    checkoutTime: "Checkin Time",
+    checkinTime: "Checkout Time",
+    aadhar: "Aadhar Card",
+    days: "Stayed Days",
+    discount: "Discount",
+    advance: "Advance",
+    roomRent: "Room Rent",
+    totalAmount: "Total Amount",
+    adults: "Adults",
+    childrens: "Childrens",
+    roomno: "Room No"
 }
