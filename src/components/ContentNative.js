@@ -114,8 +114,6 @@ const ContentNative = () => {
             roomno: nodeModel.roomno
         }));
 
-        console.log(nodeModel);
-
         updateSelected(nodeModel);
     }
 
@@ -655,7 +653,7 @@ const ContentNative = () => {
                                                         {
                                                             specific.specificSelected.map((item, key) => {
                                                                 return (
-                                                                    <Chicklets node={specificLang[item]} />
+                                                                    <Chicklets node={specificLang[item]} chickletSelect = {() => null} />
                                                                 )
                                                             })
                                                         }
