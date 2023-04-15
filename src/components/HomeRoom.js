@@ -109,6 +109,7 @@ const HomeRoom = (props) => {
     const [inline, setInline] = useState({
         inlineErrorDiscount: false,
         inlineErrorAdvance: false,
+        inlineErrorUpdate: false,
         inlineText: undefined
     })
 
@@ -116,6 +117,7 @@ const HomeRoom = (props) => {
     var _inlineModel = {
         inlineErrorDiscount: inline.inlineErrorDiscount,
         inlineErrorAdvance: inline.inlineErrorAdvance,
+        inlineErrorUpdate: inline.inlineErrorUpdate,
         inlineText: inline.inlineText
     }
 
@@ -485,6 +487,7 @@ const HomeRoom = (props) => {
             ...inline,
             inlineErrorDiscount: _model.inlineErrorDiscount,
             inlineErrorAdvance: _model.inlineErrorAdvance,
+            inlineErrorUpdate: _model.inlineErrorUpdate,
             inlineText: _model.inlineText
         })
     }
@@ -495,7 +498,17 @@ const HomeRoom = (props) => {
     }
 
     function updateBillPrice() {
-        setTotalAmount(Number(updatePrice))
+        // setTotalAmount(Number(updatePrice))
+        if(updatePrice > totalAmount){
+            _inlineModel['inlineErrorUpdate'] = true;
+            _inlineModel['inlineText'] = "Cannot update rate more than the actual rate!"
+        } else {
+            setTotalAmount(Number(updatePrice));
+            _inlineModel['inlineErrorUpdate'] = false;
+        }
+
+        handleInlineToast(_inlineModel);
+
     }
 
     function openUpdateWizard() {
@@ -694,7 +707,7 @@ const HomeRoom = (props) => {
     // GST calculation handler!
     function calculateGST(){
         let gstPercent = Number(props.price) < 7500 ? 0.12 : 0.18;
-        let withGST = gstPercent * (Number(totalAmount) + Number(extraCollection))
+        let withGST = gstPercent * ((Number(totalAmount) - Number(amount_advance)) + Number(extraCollection));
         return Math.round(withGST);
     }
 
@@ -929,19 +942,19 @@ const HomeRoom = (props) => {
                         <div id="invoice-generator">
                             {
                                 isWizard ? (
-                                    <Wizard close={true} class="text-center" label="Update Bill Price" placeholder="Update Bill Price" wizardInputChange={(data) => inputChangeWizard(data)} onClose={() => openUpdateWizard()} />
+                                    <Wizard isError = {inline} close={true} class="text-center" label="Update Bill Price" placeholder="Update Bill Price" wizardInputChange={(data) => inputChangeWizard(data)} onClose={() => openUpdateWizard()} />
                                 ) : (
                                     null
                                 )
                             }
-                            <h5>Amount to be paid for the suite - {amount}.
+                            <h5>Amount to be paid for Room Rent - {amount}
                                 {
                                     props.updatePriceWizard ? (
                                         <span>
                                             {
                                                 isWizard ? (
                                                     <span className="update-price-configured" onClick={() => updateBillPrice()}>
-                                                        Udpate
+                                                        Update
                                                     </span>
                                                 ) : (
                                                     <span className="update-price-configured" onClick={() => openUpdateWizard()}>
@@ -973,6 +986,9 @@ const HomeRoom = (props) => {
                                     null
                                 )
                             }
+                            <p>
+                                Amount to be paid for the suite: {totalAmount}
+                            </p>
                             {
                                 isNaN(Number(totalAmount)) ? (
                                     <div>
@@ -1052,7 +1068,8 @@ const HomeRoom = (props) => {
                                             (" " + (Number(calcdishrate) + Number(totalAmount + extraCollection)) + " Rs")
                                         )
                                     )
-                                }</h5>
+                                }
+                            </h5>
                             {
                                 isGst ? (
                                     <h5 style={{ fontWeight: "bold" }}>Total amount to be paid with GST:
