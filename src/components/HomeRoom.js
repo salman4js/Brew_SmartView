@@ -326,7 +326,6 @@ const HomeRoom = (props) => {
 
         await axios.post(`${Variables.hostId}/${props.lodgeid}/dishuserrate`, generateDishRate)
             .then(res => {
-                console.log("Accessing Dish Rate Generator!")
                 if (res.data.success) {
                     setDishrate(res.data.message)
                     console.log(res.data.message);
@@ -675,7 +674,7 @@ const HomeRoom = (props) => {
             totalDishAmount: calcdishrate,
             isGst: isGst,
             foodGst: calcdishrate * 0.05,
-            stayGst: ((totalAmount + extraCollection) < 7500 ? (totalAmount + extraCollection) * 0.12 : (totalAmount + extraCollection) * 0.18)
+            stayGst: calculateGST()
         }
 
         axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
@@ -694,8 +693,8 @@ const HomeRoom = (props) => {
 
     // GST calculation handler!
     function calculateGST(){
-        let gstPercent = props.price < 7500 ? 0.12 : 0.18;
-        let withGST = gstPercent * Number(totalAmount);
+        let gstPercent = Number(props.price) < 7500 ? 0.12 : 0.18;
+        let withGST = gstPercent * (Number(totalAmount) + Number(extraCollection))
         return Math.round(withGST);
     }
 
@@ -706,8 +705,8 @@ const HomeRoom = (props) => {
                     <strong>Room No : {props.roomno}</strong>
                 </div>
                 <div class="card-body">
-                    <p style={{ color: "black" }}>Engaged : {props.engaged}</p>
-                    <p style={{ color: "black" }}>Bed Count : {(props.extraBeds !== "0" ? props.bedcount + "+" + props.extraBeds : props.bedcount)}</p>
+                    <p style={{ color: "black" }}> Engaged : {props.engaged}</p>
+                    <p style={{ color: "black" }}> Bed Count : {(props.extraBeds !== "0" ? props.bedcount + "+" + props.extraBeds : props.bedcount)}</p>
                     <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
                     <p style={{ color: "black" }}> Price Per Day : {props.price}</p>
                 </div>
