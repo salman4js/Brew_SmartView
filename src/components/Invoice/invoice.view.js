@@ -195,7 +195,7 @@ const Invoice = (props) => {
         return (
             <div className="container invoice">
                 <div className="text-center invoice-header" id="invoice" style={{ color: "black", cursor: "pointer" }} onClick={() => navigateBack()}>
-                    Hotel {props.node.lodgeName}
+                    {props.node.lodgeName}
                     <br />
                     <p>
                         Mobile Number: {getStorage("owner-number")}, Email: {emailId}
@@ -256,7 +256,9 @@ const Invoice = (props) => {
                         </div>
                     </div>
                 </div>
-                
+                <div className = "invoice-total text-center">
+                    COMPUTER GENERATED INVOICE
+                </div>
             </div>
         )
     }
