@@ -149,6 +149,11 @@ const ContentNative = () => {
         //setSort("Show All");
     }
 
+    // Initial chicklet populate
+    function initialSelectedChicklet(){
+        setSpecific(prevState => ({...prevState, specificSelected: []}))
+    }
+
     // Handle Generate PDF
     const [templateAlert, setTemplateAlert] = useState(false);
     const [templateMessage, setTemplateMessage] = useState("");
@@ -174,6 +179,7 @@ const ContentNative = () => {
                         } else {
                             await doc.save(`${brewDate.format(sdate, 'dd/mm/yyyy')} to ${brewDate.format(edate, 'dd/mm/yyyy')} -- ${sort}`);
                         }
+                        triggerSpecificCheckbox();
                         toastModal();
                     },
                 });
@@ -187,12 +193,13 @@ const ContentNative = () => {
                         } else {
                             await doc.save(`${brewDate.format(sdate, 'dd/mm/yyyy')} to ${brewDate.format(edate, 'dd/mm/yyyy')} -- ${sort}`);
                         }
+                        triggerSpecificCheckbox();
                         toastModal(); // Close the model and set the template back to its initial state!
                     },
                 });
             }
         }
-        triggerSpecificCheckbox();
+        initialSelectedChicklet();
     };
 
     // Toast Message for selection of report model
