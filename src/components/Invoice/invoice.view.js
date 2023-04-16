@@ -83,16 +83,16 @@ const Invoice = (props) => {
                     </p>
                     {props.node.igst && (
                         <p>
-                            IGST @12%: {props.node.gst} 
+                            IGST {props.node.gstPercent * 100 + "%"} : {props.node.gst} 
                         </p>
                     )}
                     {props.node.cgst && (
                         <div>
                             <p>
-                                CGST @6% : {+props.node.gst / 2}
+                                CGST {(props.node.gstPercent * 100 / 2) + "%"} : {+props.node.gst / 2}
                             </p>
                             <p>
-                                SGST @6% : {+props.node.gst / 2}
+                                SGST {(props.node.gstPercent * 100 / 2) + "%"} : {+props.node.gst / 2}
                             </p>
                         </div>
                     )}

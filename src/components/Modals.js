@@ -26,11 +26,11 @@ const Modals = (props) => {
     }
 
     function updateIGST(){
-        setChoice(prevState => ({...prevState, igst: !choice.igst }))
+        setChoice(prevState => ({...prevState, igst: !choice.igst, cgst: false }))
     }
 
     function updateCGST(){
-        setChoice(prevState => ({...prevState, cgst: !choice.cgst}))
+        setChoice(prevState => ({...prevState, cgst: !choice.cgst, igst: false }))
     }
 
     // Declare className
