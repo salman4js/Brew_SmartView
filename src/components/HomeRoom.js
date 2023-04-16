@@ -90,8 +90,8 @@ const HomeRoom = (props) => {
     const [customername, setCustomername] = useState();
     const [customerphonenumber, setCustomerphonenumber] = useState();
     const [secondphonenumber, setSecondphonenumber] = useState();
-    const [adults, setAdults] = useState();
-    const [childrens, setChildrens] = useState();
+    const [adults, setAdults] = useState(0);
+    const [childrens, setChildrens] = useState(0);
     const [day, setDay] = useState(null);
     const [stayeddays, setStayeddays] = useState();
     const [checkoutdate, setCheckoutdate] = useState();
@@ -223,10 +223,6 @@ const HomeRoom = (props) => {
         // Keeping the checkout date optional as per the design!
         const isnum = /^\d+$/;
         if (!isnum.test(customerphonenumber)) {
-            setLoading(false);
-            setShowerror(true);
-            setSuccess("Phone Number is not valid...")
-        } else if (!isnum.test(secondphonenumber)) {
             setLoading(false);
             setShowerror(true);
             setSuccess("Phone Number is not valid...")
