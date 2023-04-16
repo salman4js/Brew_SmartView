@@ -354,7 +354,7 @@ const ContentNative = () => {
                         totalAmount: customChoice.totalAmount ? false : true
                     }
                     break;
-                case "Aadhar Card":
+                case "ID Number":
                     customChoice = {
                         ...customChoice,
                         aadhar: customChoice.aadhar ? false : true
@@ -564,7 +564,7 @@ const ContentNative = () => {
                                                 {customTable("phoneNumber") && <TableHead text = "Phone Number" />}
                                                 {customTable("adults") && <TableHead text = "Adults" />}
                                                 {customTable("childrens") && <TableHead text = "Childrens" />}
-                                                {customTable("aadhar") && <TableHead text = "Aadhar" />}
+                                                {customTable("aadhar") && <TableHead text = "ID Number" />}
                                                 {customTable("days") && <TableHead text = "Stay Days" />}
                                                 {customTable("roomRent") && <TableHead text = {isUpdateEnabled() ? "Room + Extra" : "Room Rent"} />}
                                                 {customTable("GST") && <TableHead text = "GST" />}
