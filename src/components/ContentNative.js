@@ -192,6 +192,7 @@ const ContentNative = () => {
                 });
             }
         }
+        triggerSpecificCheckbox();
     };
 
     // Toast Message for selection of report model
