@@ -77,7 +77,7 @@ const UserDbComp = (props) => {
               Childrens: {props.childrens}
             </p>
             <p className="font-big">
-              Aadhar Number: {props.aadharcard}
+              ID Number: {props.aadharcard}
             </p>
             <p className="font-big">
               Checked In Days: {props.stayeddays}

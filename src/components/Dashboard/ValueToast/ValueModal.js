@@ -105,7 +105,7 @@ const ValueModal = (props) => {
           Second Phone Number: {props.data.secondphonenumber}
         </p>
         <p>
-          Aadhar Card: {props.data.aadharcard}
+          ID Number: {props.data.aadharcard}
         </p>
       </div>
     )
@@ -122,7 +122,7 @@ const ValueModal = (props) => {
           Second Phone Number: {props.data.secondphonenumber}
         </p>
         <p>
-          Aadhar Card: {props.data.aadharcard}
+          ID Number: {props.data.aadharcard}
         </p>
         {
           props.data.prebooked == true ? (
@@ -142,7 +142,7 @@ const ValueModal = (props) => {
           Childrens -- {props.data.childrens}
         </p>
         <p className="font-big">
-          Aadhar Number -- {props.data.aadharcard}
+          ID Number -- {props.data.aadharcard}
         </p>
         <p className="font-big">
           Checked In Days -- {props.data.stayedDays}

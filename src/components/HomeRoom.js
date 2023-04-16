@@ -237,7 +237,7 @@ const HomeRoom = (props) => {
         } else if (!isnum.test(aadhar)) {
             setLoading(false);
             setShowerror(true);
-            setSuccess("Aadhar Number should be in Number format...")
+            setSuccess("ID Number should be in Number format...")
         } else {
             //console.log(typeof(formatDate(checkedoutdate)));
             const credentials = {
@@ -828,8 +828,8 @@ const HomeRoom = (props) => {
                             )
                         }
                         <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Aadhar Number of anyone adult </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Aadhar Card Number' name={aadhar} value={aadhar} onChange={(e) => setAadhar(e.target.value)} />
+                            <label style={{ color: "black" }}> ID Number of anyone adult </label>
+                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='ID Number' name={aadhar} value={aadhar} onChange={(e) => setAadhar(e.target.value)} />
                         </div>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Advance Amount(Optional) </label>
@@ -914,8 +914,8 @@ const HomeRoom = (props) => {
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={prebookchildren} value={prebookchildren} onChange={(e) => setPrebookchildren(e.target.value)} />
                         </div>
                         <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Aadhar Number of anyone adult </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Aadhar Card Number' name={prebookaadhar} value={prebookaadhar} onChange={(e) => setPrebookaadhar(e.target.value)} />
+                            <label style={{ color: "black" }}> ID Number of anyone adult </label>
+                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='ID Number' name={prebookaadhar} value={prebookaadhar} onChange={(e) => setPrebookaadhar(e.target.value)} />
                         </div>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Advance Amount </label>

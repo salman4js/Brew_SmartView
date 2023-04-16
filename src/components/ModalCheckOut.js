@@ -57,7 +57,7 @@ const ModalCheckOut = (props) => {
                     Second Number : {props.secondphonenumber}
                 </p>
                 <p className = "font-big">
-                    Aadhar Number : {props.aadharcard}
+                    ID Number : {props.aadharcard}
                 </p>
                 <p className="font-big">
                     Check-In Date : {props.checkin}

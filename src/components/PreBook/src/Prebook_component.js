@@ -123,7 +123,7 @@ const Prebook_component = (props) => {
           <p style={{ color: "black" }}>Customer Name: {props.customername}</p>
           <p style={{ color: "black" }}>Phone Number: {props.phonenumber}  </p>
           <p style={{ color: "black" }}>Date of checkin: {props.dateofcheckin}</p>
-          <p style={{ color: "black" }}>Aadhar Number: {props.aadhar}</p>
+          <p style={{ color: "black" }}>ID Number: {props.aadhar}</p>
         </div>
         <div className="btn btn-success" onClick={handleClose}>
           More Details
@@ -219,7 +219,7 @@ const Prebook_component = (props) => {
               Childrens Count: {props.childrens}
             </p>
             <p className="heading-title">
-              Aadhar Number: {props.aadhar}
+              ID Number: {props.aadhar}
             </p>
           </div>
         </Modal.Body>

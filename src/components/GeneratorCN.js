@@ -58,7 +58,7 @@ const GeneratorCN = (props) => {
               Childrens : {props.childrens}
             </p>
             <p style={{ color: "black" }}>
-              Aadhar Card : {props.aadharcard}
+              ID Number : {props.aadharcard}
             </p>
           </div>
         </div>

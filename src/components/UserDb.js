@@ -118,7 +118,7 @@ const UserDb = () => {
                                                     Contact Number
                                                 </option>
                                                 <option>
-                                                    Aadhar Number
+                                                    ID Number
                                                 </option>
                                                 <option>
                                                     Checked In Days
@@ -135,17 +135,20 @@ const UserDb = () => {
                                     <div className='row top-gun'>
                                         {
                                             data.filter((value) => {
-                                                console.log(sort);
                                                 if(sort == "Room No"){
                                                     return value.roomno.toLowerCase().includes(search.toLowerCase());
                                                 } else if(sort == "Customer Name"){
                                                     return value.username.toLowerCase().includes(search.toLowerCase());
                                                 } else if(sort == "Contact Number"){
                                                     return value.phonenumber.toLowerCase().includes(search.toLowerCase());
-                                                } else if(sort == "Aadhar Number"){
+                                                } else if(sort == "ID Number"){
                                                     return value.aadharcard.toLowerCase().includes(search.toLowerCase());
                                                 } else if(sort == "Checked In Days"){
-                                                    return value.stayedDays.toLowerCase().includes(search.toLowerCase());
+                                                    try{
+                                                        return value.stayedDays.toLowerCase().includes(search.toLowerCase());
+                                                    } catch(err){
+                                                        console.log("Some customer haven't checkout yet --> undefined")
+                                                    }
                                                 } else if(sort == "Checked In Date"){
                                                     return value.dateofcheckin.toLowerCase().includes(search.toLowerCase());
                                                 } else if(sort == "Checked Out Date"){
@@ -154,7 +157,6 @@ const UserDb = () => {
                                                     return value.roomno.toLowerCase().includes(search.toLowerCase()) || value.username.toLowerCase().includes(search.toLowerCase());
                                                 }
                                             }).map((item,key) => {
-                                                console.log("Pre Booked User db", item.prebooked)
                                                 return(
                                                     <UserDbComp roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} 
                                                     secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} 
