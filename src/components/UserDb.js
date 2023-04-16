@@ -161,7 +161,7 @@ const UserDb = () => {
                                                     checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} 
                                                     stayeddays={item.stayedDays} prebooked = {item.prebooked} discount = {item.discount} 
                                                     advance = {item.advance} bill = {item.bill} dishBill = {item.dishbill} foodGst = {item.foodGst} stayGst= {item.stayGst} 
-                                                    totalAmount = {item.totalAmount} isGst = {item.isGst}
+                                                    totalAmount = {Number(item.totalAmount) + Number(item.advance)} isGst = {item.isGst}
                                                     channel = {item.channel} checkinTime = {item.checkinTime} checkoutTime = {item.checkoutTime}
                                                     receiptId = {item.receiptId} />
                                                 )

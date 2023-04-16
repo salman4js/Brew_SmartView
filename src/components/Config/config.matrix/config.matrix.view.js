@@ -34,6 +34,12 @@ const ConfigMatrix = (props) => {
                     Extra Bed
                 </label>
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.gstMode.isExclusive} onChange = {() => props.gstMode.onChange(!props.gstMode.isExclusive)} />
+                <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                    {props.gstMode.label}
+                </label>
+            </div>
         </div>
     )
 }
