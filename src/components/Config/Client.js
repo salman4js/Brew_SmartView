@@ -58,6 +58,17 @@ const Client = () => {
         }
     }
 
+    // GST Mode Handler!
+    const [gstMode, setGstMode] = useState({
+        isExclusive: false,
+        label: "GST Exclusive Calculation (Default: Inclusive)",
+        onChange: handleGSTMode
+    })
+
+    function handleGSTMode(value){
+        setGstMode(prevState => ({...prevState, isExclusive: value}))
+    }
+
     const successHandler = () => {
         setSuccess(!success);
     }
@@ -105,6 +116,7 @@ const Client = () => {
                     setIsChannel(res.data.isChannel);
                     setUpdatePrice(res.data.updatePrice);
                     setIsExtra(res.data.isExtra);
+                    setGstMode(prevState => ({...prevState, isExclusive: res.data.isExclusive}))
                 }
             })
         
@@ -199,6 +211,7 @@ const Client = () => {
             isChannel: isChannel,
             updatePrice: updatePrice,
             isExtra: isExtra,
+            isExclusive: gstMode.isExclusive
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -326,7 +339,7 @@ const Client = () => {
                                 <div class="card-body">
                                     <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
-                                    extraModel = {extraModel} 
+                                    extraModel = {extraModel} gstMode = {gstMode}
                                     />
                                     <br />
                                     <button className="btn btn-primary" onClick={() => changeMatrix()}>Update Changes</button>

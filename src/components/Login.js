@@ -49,6 +49,7 @@ const Login = () => {
             "isChannel": res.data.isChannel,
             "updatePrice" : res.data.updatePrice,
             "isExtra": res.data.isExtra,
+            "isExclusive": res.data.isExclusive,
             "area" : res.data.address,
             "emailId": res.data.emailId
           }
