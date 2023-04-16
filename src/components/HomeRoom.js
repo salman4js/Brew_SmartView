@@ -538,6 +538,7 @@ const HomeRoom = (props) => {
                 cgst: value.cgst,
                 extraBeds: options.extraBeds,
                 dateofCheckIn: options.dateofcheckin,
+                gstPercent: determinGstPercent(),
                 isGst: isGst,
                 gst: gstCalculation,
                 stayedDays: stayeddays,
@@ -720,7 +721,7 @@ const HomeRoom = (props) => {
     // Exclusice GST calculation!
     function calculateExclusive(){
         let tAmount = (Number(totalAmount) + Number(amount_advance)) + Number(extraCollection);
-        let gstPercent = totalAmount < 7500 ? 0.12 : 0.18;
+        let gstPercent = tAmount < 7500 ? 0.12 : 0.18;
         let withGST = gstPercent * tAmount;
         return Math.round(withGST);
     }
@@ -728,6 +729,19 @@ const HomeRoom = (props) => {
     // Determine exclusive or inclusive!
     function determineGst(){
         return isExclusive ? calculateExclusive() : calculateInclusive();
+    }
+
+    // Determine GST Percent!
+    function determinGstPercent(){
+        let exclusive = isExclusive;
+        if(exclusive){
+            let tAmount = (Number(totalAmount) + Number(amount_advance)) + Number(extraCollection);
+            let gstPercent = tAmount < 7500 ? 0.12 : 0.18;
+            return gstPercent;
+        } else {
+            let gstPercent = Number(props.price) < 7500 ? 0.12 : 0.18;
+            return gstPercent;
+        }
     }
 
     return (
