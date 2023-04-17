@@ -1180,7 +1180,8 @@ const HomeRoom = (props) => {
                         )
                     }
                 </div>
-                {
+                {!props.edit && (
+
                     props.prebookconfig ? (
                         props.prevalid ? (
                             <div className="btn btn-success" onClick={preBookModal}>
@@ -1194,8 +1195,10 @@ const HomeRoom = (props) => {
                     ) : (
                         null
                     )
-                }
-                {
+
+                )}
+                {!props.edit && (
+
                     (props.engaged == "true" ? (
                         <div className="btn btn-dark" onClick={getUserData}>
                             Check-Out
@@ -1206,7 +1209,8 @@ const HomeRoom = (props) => {
                         </div>
                     )
                     )
-                }
+
+                )}
                 {
                     <div>
                         {
