@@ -24,7 +24,6 @@ const Navbar = (props) => {
                     console.error(res.data.message);
                 }
             })
-        console.log(options);
     }
 
     // Getting the config data before the DOM renders!
@@ -140,6 +139,7 @@ const Navbar = (props) => {
                                         <Link className='nav-link dropdown-item' to={`/${props.id}/contentnative`} style={{ color: "black" }}> Generate Reports </Link>
                                     </ul>
                                 </li>
+                                <Link className='nav-link dropdown-item' to={`/${props.id}/editroom`} style={{ color: "black" }}> Edit Customer Details </Link>
                                 <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}>   Booking History </Link>
                                 <Link className='nav-link dropdown-item' to={`/login`} style={{ color: "black" }}>   LogOut </Link>
                             </div>

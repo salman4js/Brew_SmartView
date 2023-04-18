@@ -44,13 +44,13 @@ const ValueModal = (props) => {
           Date of check-in: {props.data.dateofcheckin}
         </p>
         <p>
-          Date of check-in time: {handleTimeFormat(props.data.checkinTime)}
+          Check-in time: {handleTimeFormat(props.data.checkinTime)}
         </p>
         <p>
           Date of check-out: {props.data.dateofcheckout}
         </p>
         <p>
-          Date of check-out time: {handleTimeFormat(props.data.checkoutTime)}
+          Check-out time: {handleTimeFormat(props.data.checkoutTime)}
         </p>
         <p>
           Discount: {props.data.discount}
