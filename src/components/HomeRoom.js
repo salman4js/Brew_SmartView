@@ -687,7 +687,8 @@ const HomeRoom = (props) => {
             dateofcheckout: formatDate(editDetails.dateofcheckout),
             adults: editDetails.adults,
             childrens: editDetails.childrens,
-            userId: editDetails.userId
+            userId: editDetails.userId,
+            checkOutTime: editDetails.timeofcheckin
         }
 
         axios.post(`${Variables.hostId}/${props.lodgeid}/updateoccupieddata`, options)

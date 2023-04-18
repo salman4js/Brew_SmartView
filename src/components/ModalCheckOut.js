@@ -22,7 +22,8 @@ const ModalCheckOut = (props) => {
         adults: props.adults,
         childrens: props.childrens,
         dateofcheckout: props.tempData === undefined ? null : new Date(props.tempData),
-        userId: props.user
+        userId: props.user,
+        timeofcheckin: props.checkInTime
     });
 
     // Update the state to be updated in the parent component!
