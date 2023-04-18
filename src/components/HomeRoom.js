@@ -329,7 +329,6 @@ const HomeRoom = (props) => {
             .then(res => {
                 if (res.data.success) {
                     setDishrate(res.data.message)
-                    console.log(res.data.message);
                 } else {
                     setShowerror(true);
                     setSuccess(res.data.message);
@@ -675,6 +674,35 @@ const HomeRoom = (props) => {
         })
     }
 
+    // Edit state options from the child component!
+    const [editDetails, setEditDetails] = useState({});
+
+    // Update Customer Details!
+    function updateOptions(){
+        const options = {
+            username: editDetails.username,
+            phonenumber: editDetails.phonenumber,
+            secondphonenumber: editDetails.secondphonenumber,
+            aadharcard: editDetails.aadharcard,
+            dateofcheckout: formatDate(editDetails.dateofcheckout),
+            adults: editDetails.adults,
+            childrens: editDetails.childrens,
+            userId: editDetails.userId
+        }
+
+        axios.post(`${Variables.hostId}/${props.lodgeid}/updateoccupieddata`, options)
+            .then(res => {
+                if (res.data.success) {
+                    handleModal();
+                    setShowerror(true);
+                    setSuccess(res.data.message)
+                } else {
+                    setShowerror(true);
+                    setSuccess(res.data.message)
+                }
+            })
+    }
+
     // Handle Checkout Customer!
     const checkedOut = () => {
         handleCloseGeneratedBill();
@@ -941,19 +969,28 @@ const HomeRoom = (props) => {
                 >
                     <Modal.Header>
                         <Modal.Title id="contained-modal-title-vcenter">
-                            Check Out - Feautured
+                            {props.edit ? "Edit Customer Details" : "Check Out - Feautured"}
                         </Modal.Title>
                     </Modal.Header>
                     {
                         userdata.map((item, key) => {
                             return (
-                                <ModalCheckOut extraBeds={props.extraBeds} extraBedPrice={props.extraBedPrice} isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
+                                <ModalCheckOut updateDetails = {setEditDetails} isEdit = {props.edit} extraBeds={props.extraBeds} extraBedPrice={props.extraBedPrice} 
+                                isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} 
+                                discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} 
+                                secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} 
+                                childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} 
+                                stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
                             )
                         })
                     }
                     <Modal.Footer>
                         <Button className="btn btn-secondary" onClick={handleModal}>Close</Button>
-                        <Button className="btn btn-info" onClick={clearData}> Check-Out & Generate Bill </Button>
+                        {props.edit ? (
+                            <Button className="btn btn-info" onClick={() => updateOptions()}> Edit Details </Button>
+                        ) : (
+                            <Button className="btn btn-info" onClick={clearData}> Check-Out & Generate Bill </Button>
+                        )}
                     </Modal.Footer>
                 </Modal>
 
@@ -1197,20 +1234,24 @@ const HomeRoom = (props) => {
                     )
 
                 )}
-                {!props.edit && (
-
-                    (props.engaged == "true" ? (
-                        <div className="btn btn-dark" onClick={getUserData}>
-                            Check-Out
-                        </div>
+                {
+                    !props.edit ? (
+                        (props.engaged == "true" ? (
+                            <div className="btn btn-dark" onClick={getUserData}>
+                                Check-Out
+                            </div>
+                        ) : (
+                            <div className="btn btn-info" onClick={handleClose}>
+                                Check-In
+                            </div>
+                        )
+                        )
                     ) : (
-                        <div className="btn btn-info" onClick={handleClose}>
-                            Check-In
+                        <div className = "btn btn-success" onClick={getUserData}>
+                            Edit Details
                         </div>
                     )
-                    )
-
-                )}
+                }
                 {
                     <div>
                         {
