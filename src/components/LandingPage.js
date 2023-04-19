@@ -107,17 +107,11 @@ const LandingPage = () => {
     // Config checking
     const [configOptions, setConfigOptions] = useState(false);
     const checkConfig = () => {
-        setMessage("Checking application permissions...")
-        axios.get(`${Variables.hostId}/${splitedIds[0]}/config-checking`)
-            .then(res => {
-                if (res.data.success) {
-                    if (res.data.message.some(option => option.config === 'PreBook')) {
-                        setConfigOptions(true);
-                    }
-                } else {
-                    console.error(res.data.message);
-                }
-            })
+        setMessage("Checking application permissions...");
+        const options = JSON.parse(getStorage("config-value")); // Check if prebook has enabled or not...
+        if(options.some(option => option.config === "PreBook")){
+            setConfigOptions(true);
+        }
     }
 
     const getData = () => {

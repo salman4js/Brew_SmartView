@@ -4,7 +4,7 @@ import Variables from './Variables';
 import Loading from "./Loading";
 import axios from 'axios';
 import Modals from "./Modals";
-import { defaultStorage } from '../Controller/Storage/Storage';
+import { defaultStorage, setStorage } from '../Controller/Storage/Storage';
 
 const Login = () => {
 
@@ -51,21 +51,43 @@ const Login = () => {
             "isExtra": res.data.isExtra,
             "isExclusive": res.data.isExclusive,
             "area" : res.data.address,
-            "emailId": res.data.emailId
+            "emailId": res.data.emailId,
+            "isInsights": res.data.isInsights
           }
 
           // Populate the modal into localstorage!
           defaultStorage(data);
-          setMessage("Navigating to dashboard...");
-          // If account is not locked, allow the user to the base!
-          navigate(`/${id}-${lodgeName}/dashboard`, { replace: true })
-
+          setMessage("Validating User Preference");
         } else {
           setLoading(false);
           setError(res.data.message)
           setShow(!show);
         }
       })
+  }
+
+  // Check the config for the enabled chicklets!
+  const checkOptions = async (lodgeId, lodgeName) => {
+    setLoading(true);
+    setMessage("Validating...")
+    await axios.get(`${Variables.hostId}/${lodgeId}/config-checking`)
+      .then(res => {
+        if (res.data.success) {
+          setStorage("config-value", JSON.stringify(res.data.message));
+          setLoading(false)
+        } else {
+          console.error(res.data.message);
+          setLoading(false);
+          setError(res.data.message)
+          setShow(!show);
+        }
+      })
+  }
+
+  // Navigate user to the dashboard!
+  function navigateUser(id, lodgeName){
+    // If account is not locked, allow the user to the base!
+    navigate(`/${id}-${lodgeName}/dashboard`, { replace: true })
   }
 
   const processData = async (e) => {
@@ -108,7 +130,9 @@ const Login = () => {
               
               defaultStorage(defaultData);
               
-              await checkConfig(res.data.hostId, res.data.lodgename);
+              await checkConfig(res.data.hostId, res.data.lodgename); // Check for config matrix
+              await checkOptions(res.data.hostId, res.data.lodgename); // Check for the config cabinets!
+              navigateUser(res.data.hostId, res.data.lodgename); // Navigate to the dashboard
             }
           } else {
             setLoading(false);

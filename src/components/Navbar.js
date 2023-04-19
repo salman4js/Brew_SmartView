@@ -1,8 +1,9 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Variables from './Variables';
 import axios from 'axios';
 import LogoTop from '../Assets/logo512.png';
 import { Link, useParams } from "react-router-dom";
+import { getStorage } from '../Controller/Storage/Storage';
 
 const Navbar = (props) => {
 
@@ -13,23 +14,10 @@ const Navbar = (props) => {
     // config options handler!
     const [options, setOptions] = useState([]);
 
-
-    // Check the config for the enabled chicklets!
-    const checkConfig = () => {
-        axios.get(`${Variables.hostId}/${splitedIds[0]}/config-checking`)
-            .then(res => {
-                if (res.data.success) {
-                    setOptions(res.data.message);
-                } else {
-                    console.error(res.data.message);
-                }
-            })
-    }
-
-    // Getting the config data before the DOM renders!
-    useLayoutEffect(() => {
-        checkConfig();
+    useEffect(() => {
+        setOptions(JSON.parse(getStorage("config-value")));
     }, [])
+
 
     return (
         <nav className="navbar sticky-top navbar-expand-lg navbar-dark navbar-bg">
