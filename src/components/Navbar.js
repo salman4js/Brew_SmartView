@@ -14,6 +14,9 @@ const Navbar = (props) => {
     // config options handler!
     const [options, setOptions] = useState([]);
 
+    // Config Insights check
+    var isInsights = JSON.parse(getStorage("isInsights"));
+
     useEffect(() => {
         setOptions(JSON.parse(getStorage("config-value")));
     }, [])
@@ -123,7 +126,7 @@ const Navbar = (props) => {
                                                 }
                                             })
                                         }
-                                        <Link className="nav-link dropdown-item" to={`/${props.id}/chart-dashboard`} style={{ color: "black" }}>Insights</Link>
+                                        {isInsights && <Link className="nav-link dropdown-item" to={`/${props.id}/chart-dashboard`} style={{ color: "black" }}>Insights</Link>}
                                         <Link className='nav-link dropdown-item' to={`/${props.id}/contentnative`} style={{ color: "black" }}> Generate Reports </Link>
                                     </ul>
                                 </li>
