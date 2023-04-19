@@ -65,7 +65,7 @@ const RoomsUpdate = (props) => {
     const G_Options = () => {
         axios.post(`${Variables.hostId}/${splitedIds[0]}/allroomtype`)
             .then(data => {
-                setOption(data.message.data);
+                setOption(data.data.message);
             })
     }
 
