@@ -40,6 +40,12 @@ const ConfigMatrix = (props) => {
                     {props.gstMode.label}
                 </label>
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.insights.isEnable} onChange = {() => props.insights.onChange(!props.insights.isEnable)} />
+                <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                    {props.insights.label}
+                </label>
+            </div>
         </div>
     )
 }
