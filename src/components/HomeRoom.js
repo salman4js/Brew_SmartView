@@ -25,8 +25,9 @@ const HomeRoom = (props) => {
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
     const getTime = current.getHours() + ":" + current.getMinutes();
 
-    // Determine exclusive or inclusive GST calculation!
+    // Determine exclusive or inclusive GST calculation and isHourly from configuration
     var isExclusive = JSON.parse(getStorage("isExclusive"));
+    var isHourly = JSON.parse(getStorage("isHourly"));
 
     // Exclude dates for prebook modals
     const [excludeDates, setExcludeDates] = useState([])
@@ -47,15 +48,19 @@ const HomeRoom = (props) => {
 
     // Exclude dates for checkin users!
     const getExcludeDatesCheckin = async (roomid) => {
-        const response = await excludeDatesCheckin(roomid);
-        if (response.success) {
-            response.message.map((item) => {
-                item.forEach(element => {
-                    setExcludeDates(oldValue => [...oldValue, new Date(element)]);
+        try{
+            const response = await excludeDatesCheckin(roomid);
+            if (response.success) {
+                response.message.map((item) => {
+                    item.forEach(element => {
+                        setExcludeDates(oldValue => [...oldValue, new Date(element)]);
+                    })
                 })
-            })
-        } else {
-            // TODO: error handling!
+            } else {
+                // TODO: error handling!
+            }
+        } catch(err){
+            console.warn("getBetween function needs start date and end date...");
         }
     }
 
@@ -234,11 +239,13 @@ const HomeRoom = (props) => {
             setLoading(false);
             setShowerror(true);
             setSuccess("Childrens count should be in Numbers format...")
-        } else if (!isnum.test(aadhar)) {
-            setLoading(false);
-            setShowerror(true);
-            setSuccess("ID Number should be in Number format...")
-        } else {
+        } 
+        // else if (!isnum.test(aadhar)) {
+        //     setLoading(false);
+        //     setShowerror(true);
+        //     setSuccess("ID Number should be in Number format...") 
+        // } // Removed this check as we take id number which can be anything instead of aadhar number!
+        else {
             //console.log(typeof(formatDate(checkedoutdate)));
             const credentials = {
                 customername: customername,
@@ -318,7 +325,7 @@ const HomeRoom = (props) => {
             stayeddays: stayeddays,
             roomid: props.roomid,
             lodgeid: props.lodgeid,
-            isHourly: JSON.parse(getStorage("isHourly"))
+            isHourly: isHourly
         }
 
         const generateDishRate = {
@@ -461,7 +468,7 @@ const HomeRoom = (props) => {
     // Restrict advance amount
     function restrictAdvance(val) {
 
-        const limitValue = 1 / 2;
+        const limitValue = 3 / 4; // Changed as part of the suggestion oppose to 1 / 2 
 
         const limit = checkLimit(limitValue); // Removed as part of keeping the advance limit as same as the price!
 
@@ -738,7 +745,7 @@ const HomeRoom = (props) => {
 
     // GST calculation handler!
     function calculateInclusive(){
-        let gstPercent = Number(props.price) < 7500 ? 0.12 : 0.18;
+        let gstPercent = determinGstPercent()
         let withGST = gstPercent * ((Number(totalAmount) + Number(amount_advance)) + Number(extraCollection));
         return Math.round(withGST);
     }
@@ -746,7 +753,7 @@ const HomeRoom = (props) => {
     // Exclusice GST calculation!
     function calculateExclusive(){
         let tAmount = (Number(totalAmount) + Number(amount_advance)) + Number(extraCollection);
-        let gstPercent = tAmount < 7500 ? 0.12 : 0.18;
+        let gstPercent = determinGstPercent();
         let withGST = gstPercent * tAmount;
         return Math.round(withGST);
     }

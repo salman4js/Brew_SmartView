@@ -245,7 +245,6 @@ const LandingPage = () => {
                                         <div class="row top-gun">
                                             {
                                                 room.filter((value) => {
-                                                    console.log(sort)
                                                     if (sort == "Room No") {
                                                         return value.roomno.toLowerCase().includes(search.toLowerCase());
                                                     } else if (sort == "Room Type") {

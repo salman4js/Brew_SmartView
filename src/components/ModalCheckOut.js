@@ -60,6 +60,7 @@ const ModalCheckOut = (props) => {
                     setStay(diffDays + " Days");
             }
         }
+
     }, [])
     return (
         <div>
