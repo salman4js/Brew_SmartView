@@ -463,7 +463,7 @@ const HomeRoom = (props) => {
 
         const limitValue = 1 / 2;
 
-        const limit = checkLimit(limitValue);
+        const limit = checkLimit(limitValue); // Removed as part of keeping the advance limit as same as the price!
 
         var inlineText = `Advance amount cannot be greater than Rs.${limit}`
 
