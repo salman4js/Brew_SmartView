@@ -89,7 +89,7 @@ const Charts = () => {
 
     // Room Type Revenue Calculation!
     async function roomTypeRev() {
-      return await axios.post(`${Variables.hostId}/${splitedIds[0]}/roomtyperev`, currentDate)
+      return await axios.post(`${Variables.hostId}/${splitedIds[0]}/roomtypeanalysis`, currentDate)
     }
 
     // API calls
@@ -124,8 +124,8 @@ const Charts = () => {
         // Room Type Revenue!
         if (roomType.data.success) {
           set_rev({
-            type: Object.keys(roomType.data.roomTypeRev),
-            rate: Object.values(roomType.data.roomTypeRev),
+            type: Object.keys(roomType.data.result),
+            rate: Object.values(roomType.data.result),
             total: roomType.data.total
           })
         } else {
