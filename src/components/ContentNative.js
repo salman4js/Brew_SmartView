@@ -25,6 +25,9 @@ const ContentNative = () => {
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
 
+    // Is Specific report enabled!
+    const isSpecific = JSON.parse(getStorage("isSpecific"));
+
     // Reference for Generator
     const reportTableTemp = useRef(null);
     const reportLayoutTemp = useRef(null);
@@ -641,7 +644,7 @@ const ContentNative = () => {
                                                 <option value="2">Layout View Format</option>
                                             </select>
                                         </div>
-                                        {specific.isSpecificCheckbox && (
+                                        {isSpecific && specific.isSpecificCheckbox && (
                                             <div className = "specific-reports-checkbox">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked = {specific.isSpecific} onChange = {() => triggerSpecific()} />

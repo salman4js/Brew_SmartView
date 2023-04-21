@@ -46,6 +46,12 @@ const ConfigMatrix = (props) => {
                     {props.insights.label}
                 </label>
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.specific.isEnable} onChange = {() => props.specific.onChange(!props.specific.isEnable)} />
+                <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                    {props.specific.label}
+                </label>
+            </div>
         </div>
     )
 }
