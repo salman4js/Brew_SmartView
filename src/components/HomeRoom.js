@@ -904,7 +904,7 @@ const HomeRoom = (props) => {
                             <label style={{ color: "black" }}> Childrens If Any! </label>
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={childrens} value={childrens} onChange={(e) => setChildrens(e.target.value)} />
                         </div>
-                        {
+                        {!isChannel && (
                             isExtra ? (
                                 <div className='modal-gap'>
                                     <label style={{ color: "black" }}> Extra Beds </label>
@@ -913,7 +913,7 @@ const HomeRoom = (props) => {
                             ) : (
                                 null
                             )
-                        }
+                        )}
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> ID Number of anyone adult </label>
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='ID Number' name={aadhar} value={aadhar} onChange={(e) => setAadhar(e.target.value)} />
