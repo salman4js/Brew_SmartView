@@ -918,28 +918,32 @@ const HomeRoom = (props) => {
                             <label style={{ color: "black" }}> ID Number of anyone adult </label>
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='ID Number' name={aadhar} value={aadhar} onChange={(e) => setAadhar(e.target.value)} />
                         </div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Advance Amount(Optional) </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={advanceCheckin} value={advanceCheckin} onChange={(e) => restrictAdvance(e.target.value)} />
-                            {
-                                inline.inlineErrorAdvance ? (
-                                    <InlineToast message={inline.inlineText} />
-                                ) : (
-                                    null
-                                )
-                            }
-                        </div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Discount Amount(Optional) </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={discount} value={discount} onChange={(e) => restrictDiscount(e.target.value)} />
-                            {
-                                inline.inlineErrorDiscount ? (
-                                    <InlineToast message={inline.inlineText} />
-                                ) : (
-                                    null
-                                )
-                            }
-                        </div>
+                        {!isChannel && (
+                            <div>
+                                <div className='modal-gap'>
+                                    <label style={{ color: "black" }}> Advance Amount(Optional) </label>
+                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={advanceCheckin} value={advanceCheckin} onChange={(e) => restrictAdvance(e.target.value)} />
+                                    {
+                                        inline.inlineErrorAdvance ? (
+                                            <InlineToast message={inline.inlineText} />
+                                        ) : (
+                                            null
+                                        )
+                                    }
+                                </div>
+                                <div className='modal-gap'>
+                                    <label style={{ color: "black" }}> Discount Amount(Optional) </label>
+                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={discount} value={discount} onChange={(e) => restrictDiscount(e.target.value)} />
+                                    {
+                                        inline.inlineErrorDiscount ? (
+                                            <InlineToast message={inline.inlineText} />
+                                        ) : (
+                                            null
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        )}
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check In - (Default Date is Today's Date!) </label>
                             <DatePicker style={{ color: "black" }} className="form-control" selected={Date.now()} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} isClearable />
