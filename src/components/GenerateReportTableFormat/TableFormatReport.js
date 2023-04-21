@@ -3,6 +3,7 @@ import TableCell from '../table.view/table.cell.view';
 
 const TableFormatReport = (props) => {
 
+
   // Handle Time Format!
   function handleFormat(time){
     try{
@@ -29,6 +30,15 @@ const TableFormatReport = (props) => {
     return result;
   }
 
+  // Get total amount!
+  function getTotalAmount(){
+    if(props.isGst){
+      return props.advance !== undefined ? Number(props.totalAmount) + Number(props.advance) : Number(props.totalAmount)
+    } else {
+      return props.advance !== undefined ? Number(props.bill) + Number(props.advance) : Number(props.bill)
+    }
+  }
+
 
   return (
       <tr className = "table-view">
@@ -49,7 +59,7 @@ const TableFormatReport = (props) => {
         {customizeReport("days") && <TableCell text = {props.stayeddays} />}
         {customizeReport("roomRent") && <TableCell text = {props.bill} />}
         {customizeReport("GST") && <TableCell text = {props.isGst ? props.gst : "Not Provided"} />}
-        {customizeReport("totalAmount") && <TableCell text = {props.isGst ? props.totalAmount : props.bill} />}
+        {customizeReport("totalAmount") && <TableCell text = {getTotalAmount()} />}
       </tr>
   )
 }

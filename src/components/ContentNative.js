@@ -602,12 +602,12 @@ const ContentNative = () => {
                                                 }).map((item, key) => {
                                                     return (
 
-                                                        <TableFormatReport customTable = {(value) => customTable(value)} customModel = {chickletChoice} isGst = {item.isGst} gst = {item.stayGst} totalAmount = {Number(item.totalAmount) + Number(item.advance)} bill = {item.bill} roomno={item.roomno} username={item.username}
+                                                        <TableFormatReport customTable = {(value) => customTable(value)} customModel = {chickletChoice} isGst = {item.isGst} gst = {item.stayGst} totalAmount = {Number(item.totalAmount)} bill = {item.bill} roomno={item.roomno} username={item.username}
                                                             phonenumber={item.phonenumber}
                                                             secphone={item.secondphonenumber} adults={item.adults}
                                                             childrens={item.childrens} checkin={item.dateofcheckin}
                                                             aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays}
-                                                            discount = {item.discount} advance = {item.advance} checkInTime = {item.checkinTime} checkOutTime = {item.checkoutTime} />
+                                                            discount = {item.discount} advance = {item.advance} checkInTime = {item.checkinTime} checkOutTime = {item.checkoutTime} isChannel = {item.channel !== "Walk-In" ? true : false} />
 
                                                     )
                                                 })

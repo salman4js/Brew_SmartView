@@ -21,6 +21,8 @@ import Modals from './Modals'
 const HomeRoom = (props) => {
 
     // Getting the current date and time for customer checkin on hourly and daily basis!
+
+
     const current = new Date();
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
     const getTime = current.getHours() + ":" + current.getMinutes();
@@ -81,6 +83,12 @@ const HomeRoom = (props) => {
     // Total dish rate calculation
     const [calcdishrate, setCalcdishrate] = useState();
 
+    // isChannel enabled for the particular user!
+    const [channel, setChannel] = useState({
+        isChannel: false,
+        channelName: undefined
+    });
+
     //Loader--Modal
     const [loading, setLoading] = useState(false);
 
@@ -111,7 +119,7 @@ const HomeRoom = (props) => {
     const [discount, setDiscount] = useState();
     // Advance amount for the customer!
     const [advanceCheckin, setAdvanceCheckin] = useState();
-    const [dropdown, setDropdown] = useState();
+    const [dropdown, setDropdown] = useState("Walk-In");
 
     // Inline Error Handler!
     const [inline, setInline] = useState({
@@ -383,10 +391,22 @@ const HomeRoom = (props) => {
                             setDiscountApplied(res.data.discount);
                             setDiscountPrice(res.data.discountPrice);
                             setAmount_advance(res.data.advanceCheckin);
-                            setTotalAmount(res.data.message - res.data.advanceCheckin - res.data.discountPrice) 
+
+                            // If not channel manager, default behaviour
+                            if(res.data.isChannel){
+                                setTotalAmount(res.data.totalAmount);
+                            } else {
+                                setTotalAmount(res.data.message - res.data.advanceCheckin - res.data.discountPrice) 
+                            }
                             setExtraCollection(res.data.extraBedCollection);
                         } else {
-                            setTotalAmount(res.data.message);
+
+                            // If not channel manager, default behaviour
+                            if(res.data.isChannel){
+                                setTotalAmount(res.data.totalAmount);
+                            } else {
+                                setTotalAmount(res.data.message - res.data.advanceCheckin - res.data.discountPrice) 
+                            }
                             setExtraCollection(res.data.extraBedCollection);
                         }
                     }
@@ -544,7 +564,7 @@ const HomeRoom = (props) => {
                 isGst: isGst,
                 gst: gstCalculation,
                 stayedDays: stayeddays,
-                roomRent: totalAmount,
+                roomRent: channel.isChannel ? getTotalAmount() : totalAmount,
                 extraBeds: options.extraBeds,
                 extraBedAmount: extraCollection,
                 dateofCheckout: checkoutdate,
@@ -554,12 +574,16 @@ const HomeRoom = (props) => {
                 advance: options.advance,
                 receiptId: options.receiptId,
                 amount: function () {
-                    const gstCalc = (gstCalculation === undefined ? 0 : gstCalculation);
-                    const tAmount = (totalAmount === undefined ? 0 : totalAmount);
-                    const extraPrice = extraCollection;
-                    const withGST = ((tAmount + gstCalc) + extraPrice);
-                    const withoutGST = tAmount + extraPrice;
-                    return isGst ? withGST : withoutGST;
+                    if(channel.isChannel){
+                        return getTotalAmount() + gstCalculation;
+                    } else {
+                        const gstCalc = (gstCalculation === undefined ? 0 : gstCalculation);
+                        const tAmount = (totalAmount === undefined ? 0 : totalAmount);
+                        const extraPrice = extraCollection;
+                        const withGST = ((tAmount + gstCalc) + extraPrice);
+                        const withoutGST = tAmount + extraPrice;
+                        return isGst ? withGST : withoutGST;
+                    }
                 },
                 roomno: options.roomno,
                 lodgeName: props.lodgeName
@@ -722,7 +746,7 @@ const HomeRoom = (props) => {
             checkoutTime: getTime,
             roomtype: props.roomtype,
             prebook: props.prebook,
-            amount: totalAmount + extraCollection,
+            amount: channel.isChannel ? getTotalAmount() : totalAmount + extraCollection,
             totalDishAmount: calcdishrate,
             isGst: isGst,
             foodGst: calcdishrate * 0.05,
@@ -760,7 +784,23 @@ const HomeRoom = (props) => {
 
     // Determine exclusive or inclusive!
     function determineGst(){
-        return isExclusive ? calculateExclusive() : calculateInclusive();
+        if(!channel.isChannel){
+            return isExclusive ? calculateExclusive() : calculateInclusive();
+        } else {
+           return Math.round(getTotalAmount() * getGSTPercent(getTotalAmount()));
+        }
+    }
+
+    // Get total amount with all the neccessary entities!
+    function getTotalAmount(){
+        if(channel.isChannel){
+            let totalPaidAmount = totalAmount;
+            let percent = getGSTPercent(totalPaidAmount);
+            let value = totalPaidAmount / (1 + percent);
+            return Math.round(value);
+        } else {
+            return Number(totalAmount) + Number(extraCollection)
+        }
     }
 
     // Determine GST Percent!
@@ -776,6 +816,17 @@ const HomeRoom = (props) => {
         }
     }
 
+    // Get GST percent!
+    function getGSTPercent(rate){
+        return rate < 7500 ? 0.12 : 0.18
+    }
+
+    // If channel manager enabled, Update the given price as the total amount (Updating on server side) or just update the room price!
+    function updatePriceWizard(value){
+        setUpdatePrice(value);
+    }
+
+
     return (
         <div class="col-4" style={{ paddingBottom: "10vh" }}>
             <div class="card text-center">
@@ -784,7 +835,7 @@ const HomeRoom = (props) => {
                 </div>
                 <div class="card-body">
                     <p style={{ color: "black" }}> Engaged : {props.engaged}</p>
-                    <p style={{ color: "black" }}> Bed Count : {(props.extraBeds !== "0" ? props.bedcount + "+" + props.extraBeds : props.bedcount)}</p>
+                    <p style={{ color: "black" }}> Bed Count : {(props.extraBeds !== "0" && props.extraBeds !== "" ? props.bedcount + "+" + props.extraBeds : props.bedcount)}</p>
                     <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
                     <p style={{ color: "black" }}> Price Per Day : {props.price}</p>
                 </div>
@@ -824,10 +875,10 @@ const HomeRoom = (props) => {
                             )
                         }
                         {
-                            isChannel || props.updatePriceWizard ? (
+                            props.channel || props.updatePriceWizard ? (
                                 <div className="modal-gap">
-                                    <label style={{ color: "black" }}> Update Room Price </label>
-                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Update Room Price" name={updatePrice} value={updatePrice} onChange={(e) => setUpdatePrice(e.target.value)} />
+                                    <label style={{ color: "black" }}> {isChannel ? "Update Price" : "Update Room Price"} </label>
+                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder={isChannel ? "Update Price" : "Update Room Price"} name={updatePrice} value={updatePrice} onChange={(e) => updatePriceWizard(e.target.value)} />
                                 </div>
                             ) : (
                                 null
@@ -988,7 +1039,7 @@ const HomeRoom = (props) => {
                                 discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} 
                                 secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} 
                                 childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} 
-                                stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} />
+                                stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} isChannel = {item.channel} setChannel = {(value, channelName) => setChannel(prevState => ({...prevState, isChannel: value, channelName: channelName}))} />
                             )
                         })
                     }
@@ -1021,7 +1072,7 @@ const HomeRoom = (props) => {
                                     null
                                 )
                             }
-                            <h5>Amount to be paid for Room Rent - {amount}
+                            <h5>Amount to be paid for Room Rent - {channel.isChannel ? totalAmount : amount}
                                 {
                                     props.updatePriceWizard ? (
                                         <span>
@@ -1130,16 +1181,16 @@ const HomeRoom = (props) => {
                             <h5 style={{ fontWeight: "bold" }}>Total amount to be paid:
                                 {
                                     discountApplied === true ? (
-                                        isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
+                                        isNaN(Number(calcdishrate) + getTotalAmount()) ? (
                                             " Calculating..."
                                         ) : (
-                                            (" " + (Number(calcdishrate) + Number(totalAmount + extraCollection)) + " Rs")
+                                            (" " + (Number(calcdishrate) + getTotalAmount()) + " Rs")
                                         )
                                     ) : (
-                                        isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
+                                        isNaN(Number(calcdishrate) + getTotalAmount()) ? (
                                             " Calculating..."
                                         ) : (
-                                            (" " + (Number(calcdishrate) + Number(totalAmount + extraCollection)) + " Rs")
+                                            (" " + (Number(calcdishrate) + getTotalAmount()) + " Rs")
                                         )
                                     )
                                 }
@@ -1149,16 +1200,16 @@ const HomeRoom = (props) => {
                                     <h5 style={{ fontWeight: "bold" }}>Total amount to be paid with GST:
                                         {
                                             discountApplied === true ? (
-                                                isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
+                                                isNaN(Number(calcdishrate) + getTotalAmount() + determineGst()) ? (
                                                     " Calculating..."
                                                 ) : (
-                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + determineGst()) + " Rs")
+                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + getTotalAmount() + determineGst()) + " Rs")
                                                 )
                                             ) : (
                                                 isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
                                                     " Calculating..."
                                                 ) : (
-                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + Number(totalAmount + extraCollection) + determineGst()) + " Rs")
+                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + getTotalAmount() + determineGst()) + " Rs")
                                                 )
                                             )
                                         }
@@ -1170,12 +1221,19 @@ const HomeRoom = (props) => {
                                 )
                             }
 
+                            {/* Check for channel enabled! */}
+                            {channel.isChannel && (
+                                 <div className = "acknowledgement success-text">
+                                    Already paid customer through {channel.channelName}
+                                </div>
+                            )}
+
                             {inputFieldInvoice.show && (
                                 <Modals message = {inputFieldInvoice.inputField} show = {inputFieldInvoice.show} setShow = {(data) => setInputFieldInvoice({...inputFieldInvoice, show: data})} options = {inputFieldInvoice} generateInvoice = {(choices) => generateInvoice(choices)}  />
                             )}
 
                             {
-                                props.isGstEnabled ? (
+                                !channel.isChannel && props.isGstEnabled ? ( // Only when channel manager is not enabled and GST matrix is checkec!
                                     <div>
                                         <div className="table-view-bill-line"></div>
                                         <div class="form-check gst-toggle">
@@ -1194,12 +1252,14 @@ const HomeRoom = (props) => {
                     </Modal.Body>
                     <Modal.Footer>
 
-                        <Button variant="secondary" onClick={handleCloseGeneratedBill}>
-                            Not Paid
-                        </Button>
+                        {!channel.isChannel && (
+                            <Button variant="secondary" onClick={handleCloseGeneratedBill}>
+                                Not Paid
+                            </Button>
+                        )}
                         <Button variant = "btn btn-info" onClick={() => windowInvoice()}>Invoice</Button>
                         <Button variant="dark" onClick={() => windowPrint()}>Print</Button>
-                        <Button variant="primary" onClick={checkedOut}>Paid</Button>
+                        <Button variant="primary" onClick={checkedOut}>{channel.isChannel ? "Done" : "Paid"}</Button>
                     </Modal.Footer>
                 </Modal>
 

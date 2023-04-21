@@ -12,6 +12,11 @@ const ModalCheckOut = (props) => {
 
     var isExtra = JSON.parse(getStorage("isExtra"));
 
+    // Ensure Channel enabled or not!
+    function ensureChannel(){
+        return props.isChannel === "Walk-In" ? false : true
+    }
+
     // Edit details state handler!
     const [editDetails, setEditDetails] = useState({
         isEdit: props.edit,
@@ -32,6 +37,9 @@ const ModalCheckOut = (props) => {
     useEffect(() => {
 
         const isHourly = JSON.parse(getStorage("isHourly"));
+
+        // Send out back the channel configuration!
+        props.setChannel(ensureChannel(), props.isChannel);
 
         if(isHourly){
              // Hourly calculation!
