@@ -88,6 +88,18 @@ const Client = () => {
         setError(false);
     }
 
+    // Specific reports generation handler!
+    const [specific, setSpecific] = useState({
+        isEnable: false,
+        label: "Enable Specific Reports",
+        onChange: handleReports
+    })
+
+    // Function to handle specific reports!
+    function handleReports(value){
+        setSpecific(prevState => ({...prevState, isEnable: value}))
+    }
+
     // Set Options
     const [options, setOptions] = useState([]);
     const [dropdown, setDropdown] = useState();
@@ -129,6 +141,7 @@ const Client = () => {
                     setIsExtra(res.data.isExtra);
                     setGstMode(prevState => ({...prevState, isExclusive: res.data.isExclusive}))
                     setInsights(prevState => ({...prevState, isEnable: res.data.isInsights}))
+                    setSpecific(prevState => ({...prevState, isEnable: res.data.isSpecific}))
                 }
             })
         
@@ -224,7 +237,8 @@ const Client = () => {
             updatePrice: updatePrice,
             isExtra: isExtra,
             isExclusive: gstMode.isExclusive,
-            isInsights: insights.isEnable
+            isInsights: insights.isEnable,
+            isSpecific: specific.isEnable
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -352,7 +366,7 @@ const Client = () => {
                                 <div class="card-body">
                                     <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
-                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights}
+                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific}
                                     />
                                     <br />
                                     <button className="btn btn-primary" onClick={() => changeMatrix()}>Update Changes</button>
