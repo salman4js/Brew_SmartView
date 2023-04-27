@@ -27,7 +27,6 @@ const HomeRoom = (props) => {
     const current = new Date();
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
     const getTime = current.getHours() + ":" + current.getMinutes();
-    console.log(handleTimeFormat(getTime));
 
     // Determine exclusive or inclusive GST calculation and isHourly from configuration
     var isExclusive = JSON.parse(getStorage("isExclusive"));
@@ -184,8 +183,8 @@ const HomeRoom = (props) => {
     // Add data to the prebook modal
     const processDataPreBook = () => {
         const changedDate = formatDate(prebookdateofcheckin);
-        const checkinTime = handleTimeFormat(prebookdateofcheckin.toLocaleTimeString());
-        const checkoutTime = handleTimeFormat(prebookdateofcheckout.toLocaleTimeString());
+        const checkinTime = handleTimeFormat(prebookdateofcheckin.toLocaleTimeString()); // For prebook - time of checkin!
+        const checkoutTime = handleTimeFormat(prebookdateofcheckout.toLocaleTimeString()); // For prebook - time of checkout!
         setLoading(true);
         const credentials = {
             prebookusername: prebookusername,
@@ -204,6 +203,7 @@ const HomeRoom = (props) => {
             checkinTime: checkinTime,
             checkoutTime: checkoutTime
         }
+
         axios.post(`${Variables.hostId}/${props.lodgeid}/addprebookuserrooms`, credentials)
             .then(res => {
                 if (res.data.success) {
@@ -984,7 +984,7 @@ const HomeRoom = (props) => {
                         <h4 className='strong'>{props.roomno}</h4>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check In </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
+                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect minTime = {new Date(2023, 4, 27, 9)} maxTime = {new Date(2022, 4, 29, 23, 30)} onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
                         </div>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check Out </label>

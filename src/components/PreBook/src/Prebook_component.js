@@ -204,7 +204,13 @@ const Prebook_component = (props) => {
               Date of Check-In: {props.dateofcheckin}
             </p>
             <p className="heading-title">
+              Time of Check-In: {props.checkinTime}
+            </p>
+            <p className="heading-title">
               Date of check-out: {props.dateofcheckout}
+            </p>
+            <p className="heading-title">
+              Time of check-out: {props.checkoutTime}
             </p>
             <p className="heading-title">
               Advance Paid: {props.advance}
