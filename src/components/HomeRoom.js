@@ -15,7 +15,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ModalCheckOut from './ModalCheckOut';
 import Wizard from './Wizard/model.wizard.view';
 import { getStorage } from '../Controller/Storage/Storage';
-import Modals from './Modals'
+import Modals from './Modals';
+import { handleTimeFormat } from './common.functions/common.functions';
 
 
 const HomeRoom = (props) => {
@@ -26,6 +27,7 @@ const HomeRoom = (props) => {
     const current = new Date();
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
     const getTime = current.getHours() + ":" + current.getMinutes();
+    console.log(handleTimeFormat(getTime));
 
     // Determine exclusive or inclusive GST calculation and isHourly from configuration
     var isExclusive = JSON.parse(getStorage("isExclusive"));
@@ -182,6 +184,8 @@ const HomeRoom = (props) => {
     // Add data to the prebook modal
     const processDataPreBook = () => {
         const changedDate = formatDate(prebookdateofcheckin);
+        const checkinTime = handleTimeFormat(prebookdateofcheckin.toLocaleTimeString());
+        const checkoutTime = handleTimeFormat(prebookdateofcheckout.toLocaleTimeString());
         setLoading(true);
         const credentials = {
             prebookusername: prebookusername,
@@ -196,7 +200,9 @@ const HomeRoom = (props) => {
             prebookdiscount: prebookdiscount,
             prebookprice: props.price,
             suitetype: props.roomtype,
-            roomid: props.roomid
+            roomid: props.roomid,
+            checkinTime: checkinTime,
+            checkoutTime: checkoutTime
         }
         axios.post(`${Variables.hostId}/${props.lodgeid}/addprebookuserrooms`, credentials)
             .then(res => {
@@ -978,11 +984,11 @@ const HomeRoom = (props) => {
                         <h4 className='strong'>{props.roomno}</h4>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check In </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
+                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
                         </div>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check Out </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={prebookdateofcheckout} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} onChange={((e) => setPrebookdateofcheckout(e))} isClearable />
+                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={prebookdateofcheckout} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect onChange={((e) => setPrebookdateofcheckout(e))} isClearable />
                         </div>
                         <div className="modal-gap">
                             <label style={{ color: "black" }}> Customer Name </label>
