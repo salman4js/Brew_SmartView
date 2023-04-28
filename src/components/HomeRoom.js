@@ -21,9 +21,6 @@ import { handleTimeFormat } from './common.functions/common.functions';
 
 const HomeRoom = (props) => {
 
-    // Getting the current date and time for customer checkin on hourly and daily basis!
-
-
     const current = new Date();
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
     const getTime = current.getHours() + ":" + current.getMinutes();
@@ -984,7 +981,7 @@ const HomeRoom = (props) => {
                         <h4 className='strong'>{props.roomno}</h4>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check In </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect minTime = {new Date(2023, 4, 27, 9)} maxTime = {new Date(2022, 4, 29, 23, 30)} onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
+                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
                         </div>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check Out </label>
