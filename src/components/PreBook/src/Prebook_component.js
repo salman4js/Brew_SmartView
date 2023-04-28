@@ -5,13 +5,14 @@ import brewDate from 'brew-date';
 import Modal from "react-bootstrap/Modal";
 import Variables from '../../Variables';
 import Button from "react-bootstrap/Button";
-
+import { handleTimeFormat, compareTime, convert12to24 } from '../../common.functions/common.functions.js';
 
 
 const Prebook_component = (props) => {
 
   // Current Date
   const date = brewDate.getFullDate("yyyy/mm/dd");
+  var time = brewDate.getTime(); // Time in 24 hour format for easy comparison!
 
   // More Details
   const [show, setShow] = useState(false);
@@ -44,19 +45,49 @@ const Prebook_component = (props) => {
   const handleCheckinModal = () => {
     setCheckinModal(!checkinModal);
   }
-
-
+  
+  // Get the time in comparable format
+  function loadTime(){
+    try{
+      const checkinTime = convert12to24(props.checkinTime);
+      const currentTime = time.split(":")
+      const checkin = checkinTime.split(":");
+      const checkinResult = formDate(checkin);
+      const currentResult = formDate(currentTime);
+      return {checkinTime: checkinResult.getTime(), currentTime: currentResult.getTime()};
+    } catch(err){
+        console.log("Earlier release we dont have checkin time!")
+    }
+  }
+  
+  // Do time check!
+  function timeCheck(){
+    const loadedTime = loadTime();
+    return loadedTime.currentTime >= loadedTime.checkinTime;
+  }
+  
+  // Form the date!
+  function formDate(date){
+    const newDate = new Date();
+    newDate.setHours(date[0]);
+    newDate.setMinutes(date[1]);
+    return newDate;
+  }
+  
   // Check-In to the model
   const processData = () => {
     setLoading(true);
-    console.log(props.dateofcheckin);
-    console.log(date);
     // Validating current date before booking
     if((date == props.dateofcheckin) === false){
       setLoading(false);
       setShowerror(true);
       handleCheckinModal();
       setSuccess("You can't checkin with mismatching booking dates!");
+    } else if(!timeCheck()) {
+      setLoading(false);
+      setShowerror(true);
+      handleCheckinModal();
+      setSuccess("You can't checkin with mismatching booking time!");
     } else {
       const credentials = {
         customername: props.customername,
@@ -66,6 +97,8 @@ const Prebook_component = (props) => {
         childrens: props.childrens,
         aadhar: props.aadhar,
         checkin: props.dateofcheckin,
+        checkinTime: props.checkinTime,
+        checkoutTime: props.checkoutTime,
         checkout : props.dateofcheckout,
         roomid: props.roomid,
         roomno: props.roomno,
@@ -108,7 +141,7 @@ const Prebook_component = (props) => {
           deletePrebookModal();
           props.setLoad(true);
         } else {
-          console.log("Some internal error occured!")
+          console.log("Some internal error occured!");
         }
       })
   }
