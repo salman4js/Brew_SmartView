@@ -49,3 +49,8 @@ export function compareTime(time1, time2){
     return undefined;
   }
 }
+
+// get today's date in date object!
+export function loadDate(){
+  return new Date();
+}
