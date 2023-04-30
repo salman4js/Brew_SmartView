@@ -16,7 +16,7 @@ import ModalCheckOut from './ModalCheckOut';
 import Wizard from './Wizard/model.wizard.view';
 import { getStorage } from '../Controller/Storage/Storage';
 import Modals from './Modals';
-import { handleTimeFormat } from './common.functions/common.functions';
+import { handleTimeFormat, loadDate } from './common.functions/common.functions';
 
 
 const HomeRoom = (props) => {
@@ -981,11 +981,11 @@ const HomeRoom = (props) => {
                         <h4 className='strong'>{props.roomno}</h4>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check In </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
+                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
                         </div>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check Out </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={prebookdateofcheckout} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect onChange={((e) => setPrebookdateofcheckout(e))} isClearable />
+                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={prebookdateofcheckout} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} onChange={((e) => setPrebookdateofcheckout(e))} isClearable />
                         </div>
                         <div className="modal-gap">
                             <label style={{ color: "black" }}> Customer Name </label>
