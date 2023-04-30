@@ -1295,19 +1295,22 @@ const HomeRoom = (props) => {
                 {!props.edit && (
 
                     props.prebookconfig ? (
-                        props.prevalid ? (
-                            <div className="btn btn-success" onClick={preBookModal}>
-                                Pre Book
-                            </div>
+                        props.isPrebook ? (
+                            props.preValid ? (
+                                <div className="btn btn-success" onClick={preBookModal}>
+                                    Pre Book
+                                </div>
+                              ) : (
+                                <div className="btn btn-success disabled">
+                                    Pre Book
+                                </div>
+                              )
                         ) : (
-                            <div className="btn btn-success disabled">
-                                Pre Book
-                            </div>
-                        )
-                    ) : (
                         null
                     )
-
+                  ) : (
+                    null
+                  )
                 )}
                 {
                     !props.edit ? (
