@@ -356,6 +356,7 @@ const HomeRoom = (props) => {
         await axios.post(`${Variables.hostId}/${props.lodgeid}/generatebill`, generation)
             .then(res => {
                 if (res.data.success) {
+                    setExtraCollection(res.data.extraBedCollection)
                     handleCloseGeneratedBill();
                     setAmount(res.data.message);
                     // if(res.data.isAdvanced || res.data.discount){
@@ -401,7 +402,6 @@ const HomeRoom = (props) => {
                             } else {
                                 setTotalAmount(res.data.message - res.data.advanceCheckin - res.data.discountPrice) 
                             }
-                            setExtraCollection(res.data.extraBedCollection);
                         } else {
 
                             // If not channel manager, default behaviour
@@ -410,7 +410,6 @@ const HomeRoom = (props) => {
                             } else {
                                 setTotalAmount(res.data.message - res.data.advanceCheckin - res.data.discountPrice) 
                             }
-                            setExtraCollection(res.data.extraBedCollection);
                         }
                     }
                 } else {
