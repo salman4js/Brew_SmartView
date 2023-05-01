@@ -402,7 +402,6 @@ const HomeRoom = (props) => {
                             } else {
                                 setTotalAmount(res.data.message - res.data.advanceCheckin - res.data.discountPrice) 
                             }
-                            setExtraCollection(res.data.extraBedCollection);
                         } else {
 
                             // If not channel manager, default behaviour
@@ -411,7 +410,6 @@ const HomeRoom = (props) => {
                             } else {
                                 setTotalAmount(res.data.message - res.data.advanceCheckin - res.data.discountPrice) 
                             }
-                            setExtraCollection(res.data.extraBedCollection);
                         }
                     }
                 } else {
