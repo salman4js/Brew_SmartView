@@ -16,11 +16,11 @@ import ModalCheckOut from './ModalCheckOut';
 import Wizard from './Wizard/model.wizard.view';
 import { getStorage } from '../Controller/Storage/Storage';
 import Modals from './Modals';
-import { handleTimeFormat, loadDate } from './common.functions/common.functions';
+import { handleTimeFormat, loadDate, getStayedDays } from './common.functions/common.functions';
 
 
 const HomeRoom = (props) => {
-
+  
     const current = new Date();
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
     const getTime = current.getHours() + ":" + current.getMinutes();
@@ -322,7 +322,7 @@ const HomeRoom = (props) => {
     const [totalAmount, setTotalAmount] = useState();
     const [extraCollection, setExtraCollection] = useState();
     // Check Out Customer Data
-    const clearData = async () => {
+    const clearData = async () => {   
         const credentials = {
             userid: userid,
             roomid: props.roomid,
@@ -523,9 +523,28 @@ const HomeRoom = (props) => {
     function inputChangeWizard(data) {
         setUpdatePrice(data);
     }
+    
+    // Get checkin date for the specific customer!
+    function getCheckinDate(){
+      var checkinDate
+      userdata.map((options, key) => {
+        checkinDate = options.dateofcheckin;
+      })
+      return checkinDate;
+    }
+    
+    // Get total amount based on currently stayed days!
+    function getAmountOfStay(){
+      const checkindate = getCheckinDate();
+      const stayedDays = getStayedDays(checkindate, checkoutdate); // Checkout date was populated from modal checkout component!
+      return props.price * (stayedDays + 1); // Incrementing here by 1 because 26 hours also comes as 1 day stay!
+    }
 
     function updateBillPrice() {
-        if(updatePrice > totalAmount){
+      
+        const limit = getAmountOfStay(); // Limit the update bill price upto the extend of room price * currently stayed days!
+      
+        if(updatePrice > limit){
             _inlineModel['inlineErrorUpdate'] = true;
             _inlineModel['inlineText'] = "Cannot update rate more than the actual rate!"
         } else if(updatePrice === undefined) {
@@ -771,7 +790,7 @@ const HomeRoom = (props) => {
 
     // GST calculation handler!
     function calculateInclusive(){
-        let gstPercent = determinGstPercent()
+        let gstPercent = determinGstPercent();
         let withGST = gstPercent * ((Number(totalAmount) + Number(amount_advance)) + Number(extraCollection));
         return Math.round(withGST);
     }

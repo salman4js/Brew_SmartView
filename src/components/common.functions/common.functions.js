@@ -54,3 +54,18 @@ export function compareTime(time1, time2){
 export function loadDate(){
   return new Date();
 }
+
+
+// Get number of days stayed based on the current data!
+export function getStayedDays(checkinDate, checkoutDate){
+  const date1 = new Date(checkinDate);
+  const date2 = new Date(checkoutDate);
+  
+  const diffTime = Math.abs(date2 - date1);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  if(diffDays == 0) {
+    return diffDays;  
+  } else {
+    return diffDays;
+  }
+}
