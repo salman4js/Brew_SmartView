@@ -167,7 +167,8 @@ const ContentNative = () => {
     const handleGeneratePdf = () => {
         if (model == "0") {
             setTemplateAlert(true);
-            setTemplateMessage("Please choose a valid template!")
+            setTemplateMessage("Please choose a valid template!");
+            triggerSpecificCheckbox();
         } else {
             const doc = new jsPDF("landscape", "pt", "A3");
             // Adding the fonts.
