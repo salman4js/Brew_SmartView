@@ -999,11 +999,11 @@ const HomeRoom = (props) => {
                         <h4 className='strong'>{props.roomno}</h4>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check In </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
+                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
                         </div>
                         <div className='modal-gap'>
                             <label style={{ color: "black" }}> Date Of Check Out </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={prebookdateofcheckout} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} onChange={((e) => setPrebookdateofcheckout(e))} isClearable />
+                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={prebookdateofcheckout} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect onChange={((e) => setPrebookdateofcheckout(e))} isClearable />
                         </div>
                         <div className="modal-gap">
                             <label style={{ color: "black" }}> Customer Name </label>
@@ -1310,11 +1310,9 @@ const HomeRoom = (props) => {
                         )
                     }
                 </div>
-                {!props.edit && (
-
-                    props.prebookconfig ? (
-                        props.isPrebook ? (
-                            props.preValid ? (
+                {!props.edit ? (
+                        props.prebookconfig ? (
+                            props.prevalid ? (
                                 <div className="btn btn-success" onClick={preBookModal}>
                                     Pre Book
                                 </div>
@@ -1324,30 +1322,26 @@ const HomeRoom = (props) => {
                                 </div>
                               )
                         ) : (
-                        null
+                          !props.edit && (
+                              (props.engaged == "true" ? (
+                                  <div className="btn btn-dark" onClick={getUserData}>
+                                      Check-Out
+                                  </div>
+                              ) : (
+                                  <div className="btn btn-info" onClick={handleClose}>
+                                      Check-In
+                                  </div>
+                              )
+                              )
+                          ) 
                     )
-                  ) : (
-                    null
-                  )
-                )}
-                {
-                    !props.edit ? (
-                        (props.engaged == "true" ? (
-                            <div className="btn btn-dark" onClick={getUserData}>
-                                Check-Out
-                            </div>
-                        ) : (
-                            <div className="btn btn-info" onClick={handleClose}>
-                                Check-In
-                            </div>
-                        )
-                        )
-                    ) : (
-                        <div className = "btn btn-success" onClick={getUserData}>
-                            Edit Details
-                        </div>
-                    )
-                }
+                ) : (
+                  <div className = "btn btn-success" onClick={getUserData}>
+                      Edit Details
+                  </div>
+                )
+              }
+                
                 {
                     <div>
                         {

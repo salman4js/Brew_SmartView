@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 const Modals = (props) => {
 
     const [show, setShow] = useState(props.options.show);
-
+    
     // State handler for GST selection!
     const [choice, setChoice] = useState({
         igst: false,

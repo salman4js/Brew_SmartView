@@ -728,3 +728,9 @@ td {
 .chicklet-specific-reports{
   margin-top: 20px;
 }
+
+.prebookcheckin{
+  margin-top: 200px;
+  font-weight: bold;
+  font-size: 18px;
+}
