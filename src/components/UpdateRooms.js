@@ -8,6 +8,9 @@ import { Link, useParams } from "react-router-dom";
 import RoomsUpdate from './RoomsUpdate';
 import changeScreen from './Action';
 
+// Local Storage function!
+import { getStorage } from '../Controller/Storage/Storage';
+
 const UpdateRooms = () => {
 
     const { id } = useParams();
@@ -22,7 +25,7 @@ const UpdateRooms = () => {
     const [loading, setLoading] = useState(false);
     
     // Show delete room option!
-    const [canDelete, setCanDelete] = useState(false);
+    const [canDelete, setCanDelete] = useState(JSON.parse(getStorage("canDelete")));
 
 
     const getData = () => {
