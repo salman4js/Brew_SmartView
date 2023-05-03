@@ -75,6 +75,18 @@ const Client = () => {
         label: "Enable Insights",
         onChange: handleInsights
     })
+    
+    // Room Delete Options Handler!
+    const [optDelete, setOptDelete] = useState({
+      canDelete: false,
+      labelDelete: "Enable Can Delete Option",
+      onChange: optDeleteChange
+    })
+    
+    // optDelete state handler onChange function!
+    function optDeleteChange(value){
+      setOptDelete(prevState => ({...prevState, canDelete: value}))
+    }
 
     function handleInsights(value){
         setInsights(prevState => ({...prevState, isEnable: value}))
@@ -142,6 +154,7 @@ const Client = () => {
                     setGstMode(prevState => ({...prevState, isExclusive: res.data.isExclusive}))
                     setInsights(prevState => ({...prevState, isEnable: res.data.isInsights}))
                     setSpecific(prevState => ({...prevState, isEnable: res.data.isSpecific}))
+                    setOptDelete(prevState => ({...prevState, canDelete: res.data.canDelete}))
                 }
             })
         
@@ -238,7 +251,8 @@ const Client = () => {
             isExtra: isExtra,
             isExclusive: gstMode.isExclusive,
             isInsights: insights.isEnable,
-            isSpecific: specific.isEnable
+            isSpecific: specific.isEnable,
+            canDeleteRooms: optDelete.canDelete
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -366,7 +380,7 @@ const Client = () => {
                                 <div class="card-body">
                                     <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
-                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific}
+                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete}
                                     />
                                     <br />
                                     <button className="btn btn-primary" onClick={() => changeMatrix()}>Update Changes</button>

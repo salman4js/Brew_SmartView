@@ -155,9 +155,11 @@ const RoomsUpdate = (props) => {
                         </div>
                     )
                 }
-                <div className = "btn btn-danger minute-space" onClick={deleteModal}>
-                        Delete Room Data
-                </div>
+                {props.canDelete && (
+                  <div className = "btn btn-danger minute-space" onClick={deleteModal}>
+                          Delete Room Data
+                  </div>
+                )}
             </div>
             <Modal
                 show={show}

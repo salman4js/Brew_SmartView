@@ -546,7 +546,7 @@ const HomeRoom = (props) => {
       
         if(updatePrice > limit){
             _inlineModel['inlineErrorUpdate'] = true;
-            _inlineModel['inlineText'] = "Cannot update rate more than the actual rate!"
+            _inlineModel['inlineText'] = `Cannot update rate more than ${limit}!`
         } else if(updatePrice === undefined) {
             _inlineModel['inlineErrorUpdate'] = true;
             _inlineModel['inlineText'] = "Please provide a valid price!"
