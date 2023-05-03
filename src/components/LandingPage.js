@@ -104,16 +104,6 @@ const LandingPage = () => {
         setIsHourly(JSON.parse(isHourly));
     }
 
-    // Config checking
-    const [configOptions, setConfigOptions] = useState(false);
-    const checkConfig = () => {
-        setMessage("Checking application permissions...");
-        const options = JSON.parse(getStorage("config-value")); // Check if prebook has enabled or not...
-        if(options.some(option => option.config === "PreBook")){
-            setConfigOptions(true);
-        }
-    }
-
     const getData = () => {
         setLoading(true);
         setMessage("Gathering customers details...")
@@ -185,7 +175,6 @@ const LandingPage = () => {
 
     // Check config before the DOM renders!
     useLayoutEffect(() => {
-        checkConfig();
         checkStorage();
     }, [])
 
@@ -256,7 +245,7 @@ const LandingPage = () => {
                                                     return (
                                                         <HomeRoom edit = {false} lodgeName = {splitedIds[1]} node = {setNodeModel} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
                                                             roomid={item._id} id={id} setLoad={setLoad} lodgeid={splitedIds[0]} price={item.price}
-                                                            prebook={item.preBooked} prevalid={item.preValid} isPrebook = {false} prebookconfig={configOptions} discount={item.discount} isGstEnabled={isGstEnabled}
+                                                            prebook={item.preBooked} prevalid={item.preValid} isPrebook = {false} prebookconfig={false} discount={item.discount} isGstEnabled={isGstEnabled}
                                                             isHourly={isHourly} channel={channel} options={options} updatePriceWizard={updatePriceWizard} />
                                                     )
                                                 })

@@ -24,6 +24,7 @@ import Client from './components/Config/Client';
 import Dashboard from './components/Dashboard/Dashboard';
 import Charts from './components/Dashboard/Chart/Charts';
 import EditRoom from './components/edit.room.view/edit.room.view';
+import PrebookCheckin from './components/prebook.view/prebook.checkin.view';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path = "/:id/landingpage" exact element = {<LandingPage />} />
           <Route path = "/:id/editroom" exact element = {<EditRoom />} />
           <Route path = "/:id/rooms" exact element = {<Rooms />} />
+          <Route path = "/:id/prebookcheckin" exact element = {<PrebookCheckin />} />
           <Route path = "/:id/prebookrooms" exact element = {<Prebook_rooms />} />
           <Route path = "/:id/dishes" exact element = {<Dishes />} />
           <Route path = "/:id/notifications" exact element = {<Notifications />} />
