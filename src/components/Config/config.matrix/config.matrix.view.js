@@ -52,6 +52,12 @@ const ConfigMatrix = (props) => {
                     {props.specific.label}
                 </label>
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.optDelete.canDelete} onChange = {() => props.optDelete.onChange(!props.optDelete.canDelete)} />
+                <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                    {props.optDelete.labelDelete}
+                </label>
+            </div>
         </div>
     )
 }

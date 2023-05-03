@@ -20,6 +20,9 @@ const UpdateRooms = () => {
 
     //Loader
     const [loading, setLoading] = useState(false);
+    
+    // Show delete room option!
+    const [canDelete, setCanDelete] = useState(false);
 
 
     const getData = () => {
@@ -103,7 +106,7 @@ const UpdateRooms = () => {
                                     {
                                         room.map((item, key) => {
                                             return (
-                                                <RoomsUpdate roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} load = {() => getData()} price = {item.price} lodgeId = {splitedIds[0]} />
+                                                <RoomsUpdate canDelete = {canDelete} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} load = {() => getData()} price = {item.price} lodgeId = {splitedIds[0]} />
                                             )
                                         })
                                     }
