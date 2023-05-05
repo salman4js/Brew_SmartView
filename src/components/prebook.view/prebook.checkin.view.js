@@ -7,7 +7,7 @@ import Modals from '../Modals';
 import HomeRoom from '../HomeRoom';
 import brewDate from 'brew-date';
 import changeScreen from '../Action';
-import { getStorage, clearStorage } from '../../Controller/Storage/Storage';
+import { getStorage, clearStorage, defaultStorage } from '../../Controller/Storage/Storage';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Link, useParams } from "react-router-dom";
@@ -21,7 +21,7 @@ const PrebookCheckin = () => {
   // Messages for the loader!
   var roomFetchMessage = "Gathering available rooms...";
   var searchFetchMessage = "Fetching all the prebook available rooms...";
-  
+    
   // Channel Manager Handler!
   const [channel, setChannel] = useState(JSON.parse(getStorage("isChannel")));
   
@@ -49,6 +49,22 @@ const PrebookCheckin = () => {
     message: undefined
   })
   
+  // Define the times to exclude
+  const [time, setTime] = useState({
+    omitTimes: undefined,
+    minHour: undefined,
+    maxHour: undefined,
+    checkinDate: undefined,
+    checkoutDate: undefined,
+    checkinTime: undefined,
+    checkoutTime: undefined
+  })
+  
+  // Get excludeTimes!
+  function excludeTimes(selectedDate, selectedRoom){
+    // Add Code!
+  }
+  
   // Stop the loader!
   function stopLoader(loadedValue){
     // Stop the loader!
@@ -62,7 +78,8 @@ const PrebookCheckin = () => {
   
   // Prebook data model handler!
   const [room, setRoom] = useState({
-    omitObjectId: undefined,
+    omitObjectId: [],
+    dateTime: undefined,
     allRooms: undefined
   })
   
@@ -88,8 +105,21 @@ const PrebookCheckin = () => {
   // Date picker state handler!
   const [picker, setPicker] = useState({
     checkinDateTime : undefined,
-    checkoutDateTime: undefined
+    checkinTime: undefined,
+    checkoutDateTime: undefined,
+    checkoutTime: undefined
   })
+  
+  // Set checkin, checkout date and time!
+  function dateTimeSetup(value, constants){
+    if(constants === "Check-In"){
+      const checkTime = brewDate.timeFormat(new Date(value).toLocaleTimeString());
+      setPicker(prevState => ({...prevState, checkinDateTime: value, checkinTime: checkTime}))
+    } else {
+      const checkTime = brewDate.timeFormat(new Date(value).toLocaleTimeString());
+      setPicker(prevState => ({...prevState, checkoutDateTime: value, checkoutTime: checkTime}))
+    }
+  }
   
   // Fetch all rooms!
   function getAllRooms(){
@@ -101,7 +131,7 @@ const PrebookCheckin = () => {
         clearStorage(); // clear storage and navigate back to login page!
         changeScreen();
     } else {
-        axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge`, {
+        axios.post(`${Variables.hostId}/${splitedIds[0]}/availability`, {
             headers: {
                 "x-access-token": localStorage.getItem("token"),
             }
@@ -143,11 +173,17 @@ const PrebookCheckin = () => {
       checkinTime: checkinTime,
       checkoutTime: checkoutTime
     }
-    
+        
     axios.post(`${Variables.hostId}/${splitedIds[0]}/getnonprebook`, data)
       .then(res => {
         if(res.data.success){
-           setRoom(prevState => ({...prevState, omitObjectId: res.data.nonAvailableRoomId }));
+           const dateTime = {
+             "dateTime": JSON.stringify(res.data.dateTime)
+           }
+           
+           defaultStorage(dateTime); // Putting it in the localStorage as the state updates very slowly! for excludeTime function.
+           setTime(prevState => ({...prevState, checkinDate: res.data.checkinDate, checkoutDate: res.data.checkoutDate, checkinTime: res.data.checkinTime, checkoutTime: res.data.checkoutTime}))
+           setRoom(prevState => ({...prevState, omitObjectId: res.data.nonAvailableRoomId}));
            stopLoader(true);
         } else {
           stopLoader(true);
@@ -190,10 +226,11 @@ const PrebookCheckin = () => {
         <div className = "container">
           <div className = "row">
             <div className = "col-5">
-              <DatePicker style={{ color: "black" }} className="form-control" selected = {picker.checkinDateTime !== undefined ? picker.checkinDateTime : Date.now()} showTimeSelect dateFormat='y-MM-dd' onChange={(e) => setPicker(prevState => ({...prevState, checkinDateTime: e}))} isClearable />
+              <DatePicker style={{ color: "black" }} className="form-control" selected = {picker.checkinDateTime !== undefined ? picker.checkinDateTime : Date.now()} showTimeSelect dateFormat='y-MM-dd' onChange={(e) => dateTimeSetup(e, "Check-In")} dateFormat="MMMM d, yyyy h:mm aa"
+ isClearable />
             </div>
             <div className = "col-5">
-              <DatePicker style={{ color: "black" }} className="form-control" selected = {picker.checkoutDateTime !== undefined ? picker.checkoutDateTime : Date.now()} showTimeSelect dateFormat='y-MM-dd' onChange={(e) => setPicker(prevState => ({...prevState, checkoutDateTime: e}))} isClearable />
+              <DatePicker style={{ color: "black" }} className="form-control" selected = {picker.checkoutDateTime !== undefined ? picker.checkoutDateTime : Date.now()} showTimeSelect dateFormat='y-MM-dd' onChange={(e) => dateTimeSetup(e, "Check-Out")} dateFormat="MMMM d, yyyy h:mm aa" isClearable />
             </div> 
             <div className = {getClassName()} onClick = {() => getAvailableRooms()}>
                 Search
@@ -217,14 +254,14 @@ const PrebookCheckin = () => {
                   <div className = "row top-gun">
                     {
                       room.allRooms.map((item,key) => {
-                        if(!room.omitObjectId.includes(item._id)){
+                        if(!room.omitObjectId.includes(item.roomno)){
                           return(
                             <HomeRoom edit = {false} lodgeName = {splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} 
                             roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
                             roomid={item._id} id={id} lodgeid={splitedIds[0]} price={item.price}
-                            prebook={item.preBooked} prevalid={item.preValid} isPrebook = {false} prebookconfig={true} discount={item.discount} 
-                            isGstEnabled={isGstEnabled}
-                            isHourly={isHourly} channel={channel} options={options} updatePriceWizard={updatePriceWizard} />
+                            prebook={item.preBooked} prevalid={item.preValid} isPrebook = {true} prebookconfig={true} discount={item.discount} 
+                            isGstEnabled={isGstEnabled} excludeTime = {time}
+                            isHourly={isHourly} channel={channel} options={options} updatePriceWizard={updatePriceWizard} timeModel = {time} />
                           )
                         }
                       })

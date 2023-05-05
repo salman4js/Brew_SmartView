@@ -54,7 +54,13 @@ const Navbar = (props) => {
                                     options.map((item, key) => {
                                         if (item.config === 'PreBook') {
                                             return (
-                                                <Link className='nav-link dropdown-item' to={`/${props.id}/prebookrooms`} style={{ color: "black" }}> Pre-Book Rooms</Link>
+                                              <li>
+                                                <a class="dropdown-item" href="#"> Prebook rooms &raquo; </a>
+                                                <ul class="dropdown-menu dropdown-submenu dropdown-submenu-left">
+                                                    <Link className='nav-link dropdown-item' to={`/${props.id}/prebookcheckin`} style={{ color: "black" }}> Pre Book Rooms </Link>
+                                                    <Link className='nav-link dropdown-item' to={`/${props.id}/prebookrooms`} style={{ color: "black" }}> All Prebooked Rooms</Link>
+                                                </ul>
+                                              </li>
                                             )
                                         }
                                     })
