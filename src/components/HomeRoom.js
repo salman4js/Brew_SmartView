@@ -20,7 +20,7 @@ import { handleTimeFormat, loadDate, getStayedDays } from './common.functions/co
 
 
 const HomeRoom = (props) => {
-  
+    
     const current = new Date();
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
     const getTime = current.getHours() + ":" + current.getMinutes();
@@ -180,8 +180,8 @@ const HomeRoom = (props) => {
     // Add data to the prebook modal
     const processDataPreBook = () => {
         const changedDate = formatDate(prebookdateofcheckin);
-        const checkinTime = handleTimeFormat(prebookdateofcheckin.toLocaleTimeString()); // For prebook - time of checkin!
-        const checkoutTime = handleTimeFormat(prebookdateofcheckout.toLocaleTimeString()); // For prebook - time of checkout!
+        const checkinTime = props.excludeTime.checkinTime // For prebook - time of checkin!
+        const checkoutTime = props.excludeTime.checkoutTime // For prebook - time of checkout!
         setLoading(true);
         const credentials = {
             prebookusername: prebookusername,
@@ -190,8 +190,8 @@ const HomeRoom = (props) => {
             prebookadults: prebookadults,
             prebookchildren: prebookchildren,
             prebookaadhar: prebookaadhar,
-            prebookdateofcheckin: formatDate(prebookdateofcheckin),
-            prebookdateofcheckout: formatDate(prebookdateofcheckout),
+            prebookdateofcheckin: formatDate(props.excludeTime.checkinDate),
+            prebookdateofcheckout: formatDate(props.excludeTime.checkoutDate),
             prebookadvance: prebookadvance,
             prebookdiscount: prebookdiscount,
             prebookprice: props.price,
@@ -983,67 +983,68 @@ const HomeRoom = (props) => {
                 </Modal>
 
                 {/* // Pre Book Modal  */}
-                <Modal
-                    show={prebookmodal}
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                    background="static"
-                    className="text-center"
-                >
-                    <Modal.Header>
-                        <Modal.Title id="contained-modal-title-vcenter">
-                            Pre Book Check In - Feautured
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <h4 className='strong'>{props.roomno}</h4>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Date Of Check In </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkin Date would go here...' selected={prebookdateofcheckin} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect onChange={((e) => setPrebookdateofcheckin(e))} isClearable />
-                        </div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Date Of Check Out </label>
-                            <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={prebookdateofcheckout} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} showTimeSelect onChange={((e) => setPrebookdateofcheckout(e))} isClearable />
-                        </div>
-                        <div className="modal-gap">
-                            <label style={{ color: "black" }}> Customer Name </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Customer Name" name={prebookusername} value={prebookusername} onChange={(e) => setPrebookusername(e.target.value)} />
-                        </div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Customer Phone Number </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Customer Phone Number' name={prebookphonenumber} value={prebookphonenumber} onChange={(e) => setPrebookphonenumber(e.target.value)} />
-                        </div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Customer Second Phone Number </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Customer Second Phone Number' name={prebooksecondnumber} value={prebooksecondnumber} onChange={(e) => setPrebooksecondnumber(e.target.value)} />
-                        </div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Adults </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.adults' name={prebookadults} value={prebookadults} onChange={(e) => setPrebookadults(e.target.value)} />
-                        </div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Childrens If Any! </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={prebookchildren} value={prebookchildren} onChange={(e) => setPrebookchildren(e.target.value)} />
-                        </div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> ID Number of anyone adult </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='ID Number' name={prebookaadhar} value={prebookaadhar} onChange={(e) => setPrebookaadhar(e.target.value)} />
-                        </div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Advance Amount </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={prebookadvance} value={prebookadvance} onChange={(e) => setPrebookadvance(e.target.value)} />
-                        </div>
-                        <div className='modal-gap'>
-                            <label style={{ color: "black" }}> Discount (Optional) </label>
-                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={prebookdiscount} value={prebookdiscount} onChange={(e) => setPrebookdiscount(e.target.value)} />
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button className="btn btn-secondary" onClick={preBookModal}>Close</Button>
-                        <Button className='btn btn-outline' onClick={processDataPreBook}> Save and Close </Button>
-                    </Modal.Footer>
-                </Modal>
-
+                {props.isPrebook && (
+                  <Modal
+                      show={prebookmodal}
+                      aria-labelledby="contained-modal-title-vcenter"
+                      centered
+                      background="static"
+                      className="text-center"
+                  >
+                      <Modal.Header>
+                          <Modal.Title id="contained-modal-title-vcenter">
+                              Pre Book Check In - Feautured
+                          </Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                          <h4 className='strong'>{props.roomno}</h4>
+                          <div className='modal-gap'>
+                              <label style={{ color: "black" }}> Date & Time Of Check In </label>
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Date of checkin" name={props.excludeTime.checkinDate + " " + props.excludeTime.checkinTime} value={props.excludeTime.checkinDate + " " + props.excludeTime.checkinTime} />
+                          </div>
+                          <div className='modal-gap'>
+                              <label style={{ color: "black" }}> Date & Timee Of Check Out </label>
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Date of checkout" name={props.excludeTime.checkoutDate + " " + props.excludeTime.checkoutTime} value={props.excludeTime.checkoutDate + " " + props.excludeTime.checkoutTime} />
+                          </div>
+                          <div className="modal-gap">
+                              <label style={{ color: "black" }}> Customer Name </label>
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Customer Name" name={prebookusername} value={prebookusername} onChange={(e) => setPrebookusername(e.target.value)} />
+                          </div>
+                          <div className='modal-gap'>
+                              <label style={{ color: "black" }}> Customer Phone Number </label>
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Customer Phone Number' name={prebookphonenumber} value={prebookphonenumber} onChange={(e) => setPrebookphonenumber(e.target.value)} />
+                          </div>
+                          <div className='modal-gap'>
+                              <label style={{ color: "black" }}> Customer Second Phone Number </label>
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Customer Second Phone Number' name={prebooksecondnumber} value={prebooksecondnumber} onChange={(e) => setPrebooksecondnumber(e.target.value)} />
+                          </div>
+                          <div className='modal-gap'>
+                              <label style={{ color: "black" }}> Adults </label>
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.adults' name={prebookadults} value={prebookadults} onChange={(e) => setPrebookadults(e.target.value)} />
+                          </div>
+                          <div className='modal-gap'>
+                              <label style={{ color: "black" }}> Childrens If Any! </label>
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={prebookchildren} value={prebookchildren} onChange={(e) => setPrebookchildren(e.target.value)} />
+                          </div>
+                          <div className='modal-gap'>
+                              <label style={{ color: "black" }}> ID Number of anyone adult </label>
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='ID Number' name={prebookaadhar} value={prebookaadhar} onChange={(e) => setPrebookaadhar(e.target.value)} />
+                          </div>
+                          <div className='modal-gap'>
+                              <label style={{ color: "black" }}> Advance Amount </label>
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={prebookadvance} value={prebookadvance} onChange={(e) => setPrebookadvance(e.target.value)} />
+                          </div>
+                          <div className='modal-gap'>
+                              <label style={{ color: "black" }}> Discount (Optional) </label>
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={prebookdiscount} value={prebookdiscount} onChange={(e) => setPrebookdiscount(e.target.value)} />
+                          </div>
+                      </Modal.Body>
+                      <Modal.Footer>
+                          <Button className="btn btn-secondary" onClick={preBookModal}>Close</Button>
+                          <Button className='btn btn-outline' onClick={processDataPreBook}> Save and Close </Button>
+                      </Modal.Footer>
+                  </Modal>
+                )}
                 {/* // Check Out Modal */}
                 <Modal
                     aria-labelledby="contained-modal-title-vcenter"
