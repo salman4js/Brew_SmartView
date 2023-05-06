@@ -226,11 +226,11 @@ const PrebookCheckin = () => {
         <div className = "container">
           <div className = "row">
             <div className = "col-5">
-              <DatePicker style={{ color: "black" }} className="form-control" selected = {picker.checkinDateTime !== undefined ? picker.checkinDateTime : Date.now()} showTimeSelect dateFormat='y-MM-dd' onChange={(e) => dateTimeSetup(e, "Check-In")} dateFormat="MMMM d, yyyy h:mm aa"
+              <DatePicker style={{ color: "black" }} className="form-control" selected = {picker.checkinDateTime !== undefined ? picker.checkinDateTime : Date.now()} minDate = {Date.now()} showTimeSelect dateFormat='y-MM-dd' onChange={(e) => dateTimeSetup(e, "Check-In")} dateFormat="MMMM d, yyyy h:mm aa"
  isClearable />
             </div>
             <div className = "col-5">
-              <DatePicker style={{ color: "black" }} className="form-control" selected = {picker.checkoutDateTime !== undefined ? picker.checkoutDateTime : Date.now()} showTimeSelect dateFormat='y-MM-dd' onChange={(e) => dateTimeSetup(e, "Check-Out")} dateFormat="MMMM d, yyyy h:mm aa" isClearable />
+              <DatePicker style={{ color: "black" }} className="form-control" selected = {picker.checkoutDateTime !== undefined ? picker.checkoutDateTime : Date.now()} minDate = {Date.now()} showTimeSelect dateFormat='y-MM-dd' onChange={(e) => dateTimeSetup(e, "Check-Out")} dateFormat="MMMM d, yyyy h:mm aa" isClearable />
             </div> 
             <div className = {getClassName()} onClick = {() => getAvailableRooms()}>
                 Search
