@@ -25,9 +25,10 @@ const HomeRoom = (props) => {
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
     const getTime = current.getHours() + ":" + current.getMinutes();
 
-    // Determine exclusive or inclusive GST calculation and isHourly from configuration
+    // Admin configurations!
     var isExclusive = JSON.parse(getStorage("isExclusive"));
     var isHourly = JSON.parse(getStorage("isHourly"));
+    var extraCalc = JSON.parse(getStorage("extraCalc"));
 
     // Exclude dates for prebook modals
     const [excludeDates, setExcludeDates] = useState([])
@@ -336,7 +337,8 @@ const HomeRoom = (props) => {
             stayeddays: stayeddays,
             roomid: props.roomid,
             lodgeid: props.lodgeid,
-            isHourly: isHourly
+            isHourly: isHourly,
+            extraCalc: extraCalc
         }
 
         const generateDishRate = {
@@ -356,7 +358,7 @@ const HomeRoom = (props) => {
         await axios.post(`${Variables.hostId}/${props.lodgeid}/generatebill`, generation)
             .then(res => {
                 if (res.data.success) {
-                    setExtraCollection(res.data.extraBedCollection)
+                    setExtraCollection(res.data.extraBedCollection); // Include extra bed calculation based on number of days stays!
                     handleCloseGeneratedBill();
                     setAmount(res.data.message);
                     // if(res.data.isAdvanced || res.data.discount){
@@ -1203,7 +1205,7 @@ const HomeRoom = (props) => {
                             }
                             {isExtra && (
                                 <h5 style={{ fontWeight: "bold" }}>
-                                    Amount for extra beds: {props.extraBeds * props.extraBedPrice} Rs
+                                    Amount for extra beds: {extraCollection} Rs
                                 </h5>
                             )}
                             <h5 style={{ fontWeight: "bold" }}>Total amount to be paid:

@@ -54,7 +54,8 @@ const Login = () => {
             "emailId": res.data.emailId,
             "isInsights": res.data.isInsights,
             "isSpecific": res.data.isSpecific,
-            "canDelete": res.data.canDelete
+            "canDelete": res.data.canDelete,
+            "extraCalc": res.data.extraCalc
           }
 
           // Populate the modal into localstorage!
