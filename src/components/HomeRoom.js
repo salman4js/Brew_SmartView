@@ -773,7 +773,7 @@ const HomeRoom = (props) => {
             totalDishAmount: calcdishrate,
             isGst: isGst,
             foodGst: calcdishrate * 0.05,
-            stayGst: determineGst()
+            stayGst: determineGst()        
         }
 
         axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
@@ -792,9 +792,7 @@ const HomeRoom = (props) => {
 
     // GST calculation handler!
     function calculateInclusive(){
-        let gstPercent = determinGstPercent();
-        let withGST = gstPercent * ((Number(totalAmount) + Number(amount_advance)) + Number(extraCollection));
-        return Math.round(withGST);
+        return Math.round(getTotalAmount() * getGSTPercent(getTotalAmount()));
     }
 
     // Exclusice GST calculation!
@@ -816,14 +814,19 @@ const HomeRoom = (props) => {
 
     // Get total amount with all the neccessary entities!
     function getTotalAmount(){
-        if(channel.isChannel){
+        if(channel.isChannel || !isExclusive){
             let totalPaidAmount = totalAmount;
             let percent = getGSTPercent(totalPaidAmount);
             let value = totalPaidAmount / (1 + percent);
-            return Math.round(value);
+            return isGst ? Math.round(value) : Number(totalAmount) + Number(extraCollection)
         } else {
             return Number(totalAmount) + Number(extraCollection)
         }
+    }
+    
+    // Get total amount with GST!
+    function getTotalAmountWithGST(){
+      return getTotalAmount() + determineGst()
     }
 
     // Determine GST Percent!
@@ -1233,13 +1236,13 @@ const HomeRoom = (props) => {
                                                 isNaN(Number(calcdishrate) + getTotalAmount() + determineGst()) ? (
                                                     " Calculating..."
                                                 ) : (
-                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + getTotalAmount() + determineGst()) + " Rs")
+                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + getTotalAmountWithGST()) + " Rs")
                                                 )
                                             ) : (
                                                 isNaN(Number(calcdishrate) + Number(totalAmount + extraCollection)) ? (
                                                     " Calculating..."
                                                 ) : (
-                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + getTotalAmount() + determineGst()) + " Rs")
+                                                    (" " + (Number(calcdishrate) + Number(calcdishrate * 0.05) + getTotalAmountWithGST()) + " Rs")
                                                 )
                                             )
                                         }
