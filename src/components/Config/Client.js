@@ -83,6 +83,18 @@ const Client = () => {
       onChange: optDeleteChange
     })
     
+    // Extra bed calculation based on no of stays state handler!
+    const [extraBed, setExtraBed] = useState({
+      isDay: false,
+      labelExtra: "Enable Calculation of extra bed based on stay days!",
+      onChange: handleExtraBed
+    })
+    
+    // Handle Extra Bed State!
+    function handleExtraBed(value){
+      setExtraBed(prevState => ({...prevState, isDay: value}));
+    }
+    
     // optDelete state handler onChange function!
     function optDeleteChange(value){
       setOptDelete(prevState => ({...prevState, canDelete: value}))
@@ -155,6 +167,7 @@ const Client = () => {
                     setInsights(prevState => ({...prevState, isEnable: res.data.isInsights}))
                     setSpecific(prevState => ({...prevState, isEnable: res.data.isSpecific}))
                     setOptDelete(prevState => ({...prevState, canDelete: res.data.canDelete}))
+                    setExtraBed(prevState => ({...prevState, isDay: res.data.extraCalc}))
                 }
             })
         
@@ -252,7 +265,8 @@ const Client = () => {
             isExclusive: gstMode.isExclusive,
             isInsights: insights.isEnable,
             isSpecific: specific.isEnable,
-            canDeleteRooms: optDelete.canDelete
+            canDeleteRooms: optDelete.canDelete,
+            extraCalc : extraBed.isDay
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -373,17 +387,17 @@ const Client = () => {
                                     </div>
                                 )
                             }
-                            <div class="card text-center" style={{ width: "50vh" }}>
-                                <div class="card-header" style={{ color: "black" }}>
+                            <div class="card" style={{ width: "50vh" }}>
+                                <div class="card-header text-center" style={{ color: "black" }}>
                                     Config -  Matrix
                                 </div>
                                 <div class="card-body">
                                     <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
-                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete}
+                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} extraBed = {extraBed}
                                     />
                                     <br />
-                                    <button className="btn btn-primary" onClick={() => changeMatrix()}>Update Changes</button>
+                                    <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>
                             </div>
                             {/* Success Handler */}
