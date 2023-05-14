@@ -209,7 +209,7 @@ const HomeRoom = (props) => {
                     preBookModal();
                     setShowerror(true);
                     setSuccess(res.data.message);
-                    refresh();
+                    props.load(!props.reload);
                 } else {
                     setLoading(false);
                     setShowerror(true);
@@ -258,7 +258,6 @@ const HomeRoom = (props) => {
         //     setSuccess("ID Number should be in Number format...") 
         // } // Removed this check as we take id number which can be anything instead of aadhar number!
         else {
-            //console.log(typeof(formatDate(checkedoutdate)));
             const credentials = {
                 customername: customername,
                 phonenumber: customerphonenumber,
@@ -742,7 +741,8 @@ const HomeRoom = (props) => {
             adults: editDetails.adults,
             childrens: editDetails.childrens,
             userId: editDetails.userId,
-            checkOutTime: editDetails.timeofcheckin
+            checkOutTime: editDetails.timeofcheckin,
+            roomId: props.roomid
         }
 
         axios.post(`${Variables.hostId}/${props.lodgeid}/updateoccupieddata`, options)
