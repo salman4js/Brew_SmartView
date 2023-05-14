@@ -11,6 +11,7 @@ import { getStorage, clearStorage, defaultStorage } from '../../Controller/Stora
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Link, useParams } from "react-router-dom";
+import Success from '../ToastHandler/Success.js';
 
 
 const PrebookCheckin = () => {
@@ -41,6 +42,15 @@ const PrebookCheckin = () => {
   function getClassName(){
     return loader.isLoading ? "col btn btn-primary disabled" : "col btn btn-primary"
   }
+  
+  // Reload state handler!
+  const [reload, setReload] = useState(false);
+  
+  // Toast State Handler!
+  const [toastMessage, setToastMessage] = useState({
+    show: false,
+    text: undefined
+  })
   
   // Loader state handler!
   const [loader, setLoader] = useState({
@@ -102,6 +112,11 @@ const PrebookCheckin = () => {
     })
   }
   
+  // Hide the toast message!
+  function _hideToast(){
+    setToastMessage({show: false})
+  }
+  
   // Date picker state handler!
   const [picker, setPicker] = useState({
     checkinDateTime : undefined,
@@ -152,6 +167,11 @@ const PrebookCheckin = () => {
                 }
             })
     }
+  }
+  
+  // Reload component!
+  function _triggerReload(value){
+    setReload(value)
   }
   
   // Get available rooms for prebooking!
@@ -208,7 +228,10 @@ const PrebookCheckin = () => {
   // Constructor to load all rooms data when the page loads!
   useEffect(() => {
      getAllRooms();
-  }, [])
+     if(reload){
+       setToastMessage(prevState => ({...prevState, show: reload, text: "Customer has been prebooked!"}))
+     }
+  }, [reload])
   
   return(
     <div>
@@ -260,7 +283,7 @@ const PrebookCheckin = () => {
                             roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
                             roomid={item._id} id={id} lodgeid={splitedIds[0]} price={item.price}
                             prebook={item.preBooked} prevalid={item.preValid} isPrebook = {true} prebookconfig={true} discount={item.discount} 
-                            isGstEnabled={isGstEnabled} excludeTime = {time}
+                            isGstEnabled={isGstEnabled} excludeTime = {time} load = {(value) => _triggerReload(value)} reloadValue = {reload}
                             isHourly={isHourly} channel={channel} options={options} updatePriceWizard={updatePriceWizard} timeModel = {time} />
                           )
                         }
@@ -278,6 +301,9 @@ const PrebookCheckin = () => {
           </div>
         )
       }
+      {toastMessage.show && (
+        <Success show = {toastMessage.show} text = {toastMessage.text} handleClose = {() => _hideToast()} />
+      )}
     </div>
   )
 }
