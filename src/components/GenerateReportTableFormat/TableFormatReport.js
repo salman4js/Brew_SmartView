@@ -32,10 +32,16 @@ const TableFormatReport = (props) => {
 
   // Get total amount!
   function getTotalAmount(){
-    if(props.isGst){
-      return props.advance !== undefined ? Number(props.totalAmount) + Number(props.advance) : Number(props.totalAmount)
+    // Handling negative value!
+    const refund = props.refund;
+    if(refund < 0){
+      return Number(props.totalAmount);
     } else {
-      return props.advance !== undefined ? Number(props.bill) + Number(props.advance) : Number(props.bill)
+      if(props.isGst){
+        return props.advance !== undefined ? (Number(props.totalAmount) + Number(props.advance) - Number(props.refund)) : Number(props.totalAmount)
+      } else {
+        return props.advance !== undefined ? (Number(props.bill) + Number(props.advance) - Number(props.refund)) : Number(props.bill)
+      }
     }
   }
 

@@ -16,7 +16,7 @@ import ModalCheckOut from './ModalCheckOut';
 import Wizard from './Wizard/model.wizard.view';
 import { getStorage } from '../Controller/Storage/Storage';
 import Modals from './Modals';
-import { handleTimeFormat, loadDate, getStayedDays } from './common.functions/common.functions';
+import { handleTimeFormat, loadDate, getStayedDays, getExtraBedPrice } from './common.functions/common.functions';
 
 
 const HomeRoom = (props) => {
@@ -78,6 +78,12 @@ const HomeRoom = (props) => {
 
     // Disable GST State Handler!
     const [isGst, setIsGst] = useState(true);
+    
+    // Limit for advance amount state handler!
+    const [limits, setLimits] = useState();
+    
+    // State handler for total amount incase of negative value!
+    const [tNAmount, setTNAmount] = useState(0);
 
     // Total dish rate calculation
     const [calcdishrate, setCalcdishrate] = useState();
@@ -309,11 +315,11 @@ const HomeRoom = (props) => {
     }
 
     // Retrieve User Room data from the API
-    const getUserData = () => {
+    const getUserData = async () => {
         const credentials = {
             roomid: props.roomid
         }
-        axios.post(`${Variables.hostId}/${props.id}/userroom`, credentials)
+        await axios.post(`${Variables.hostId}/${props.id}/userroom`, credentials)
             .then(res => {
                 if (res.data.success) {
                     setUserdata(res.data.message);
@@ -330,9 +336,9 @@ const HomeRoom = (props) => {
     const [advance, setAdvance] = useState();
     const [amount_advance, setAmount_advance] = useState(0);
     const [discountApplied, setDiscountApplied] = useState();
-    const [discountPrice, setDiscountPrice] = useState();
+    const [discountPrice, setDiscountPrice] = useState(0);
     const [totalAmount, setTotalAmount] = useState();
-    const [extraCollection, setExtraCollection] = useState();
+    const [extraCollection, setExtraCollection] = useState(0);
     // Check Out Customer Data
     const clearData = async () => {   
         const credentials = {
@@ -370,30 +376,10 @@ const HomeRoom = (props) => {
             .then(res => {
                 if (res.data.success) {
                     setExtraCollection(res.data.extraBedCollection); // Include extra bed calculation based on number of days stays!
+                    setTNAmount(res.data.message); // Incase of negative value!
                     handleCloseGeneratedBill();
                     setAmount(res.data.message);
-                    // if(res.data.isAdvanced || res.data.discount){
-                    //     if(!res.data.prebook){
-                    //         console.log("Its coming here!")
-                    //         setAdvance(res.data.isAdvanced);
-                    //         setDiscountApplied(res.data.discount);
-                    //         setDiscountPrice(res.data.discountPrice);
-                    //         setAmount_advance(res.data.advanceCheckin);
-                    //         setTotalAmount(res.data.message - res.data.advanceCheckin- res.data.discountPrice)
-                    //     } else {
-                    //         setTotalAmount(res.data.message - res.data.advance);
-                    //         setAmount_advance(res.data.advance)
-                    //         {res.data.prebook === true ? setAdvance(res.data.prebook) : setAdvance(res.data.prebook)};
-                    //     }
-                    // } else if(res.data.prebook){
-                    //     console.log("Hey there advance", res.data.advance)
-                    //     setTotalAmount(res.data.message - res.data.advance);
-                    //     setAmount_advance(res.data.advance)
-                    //     {res.data.prebook === true ? setAdvance(res.data.prebook) : setAdvance(res.data.prebook)};
-                    // } else {
-                    //     console.log("Program coming here!")
-                    //     setTotalAmount(res.data.message);
-                    // }
+                    
                     if (res.data.prebook) {
                         setTotalAmount(res.data.message - res.data.advance - res.data.advanceDiscountPrice);
                         setAmount_advance(res.data.advance);
@@ -462,32 +448,37 @@ const HomeRoom = (props) => {
     }
 
     // Check limit for advance and discount!
-    function checkLimit(limit) {
+    function checkLimit(limits, isCheckoutdate, constant) {
         var limit;
-        if (isChannel) {
-            limit = updatePrice * limit;
+        
+        if(constant === "Discount"){
+            limit = props.price * limits;
         } else {
-            limit = props.price * limit;
+          limit = isCheckoutdate !== undefined ? limits : props.price * limits;
         }
+        
         return limit;
     }
 
     // Function restrict discount!
     function restrictDiscount(val) {
 
-        const limitValue = 3 / 4
+        const limitValue = 3 / 4;
+        
+        const constant = "Discount";
 
-        const Limit = checkLimit(limitValue);
+        const Limit = checkedoutdate !== undefined ? (limits - advanceCheckin) * limitValue : checkLimit(limitValue);
 
         var inlineText = `Discount amount cannot be greater than Rs.${Limit}`
 
         if (val > Limit) {
             _inlineModel['inlineErrorDiscount'] = true;
-            _inlineModel['inlineText'] = inlineText
+            _inlineModel['inlineDiscountText'] = inlineText
             handleInlineToast(_inlineModel)
+            setDiscount(val);
         } else {
             _inlineModel['inlineErrorDiscount'] = false;
-            _inlineModel['inlineText'] = undefined
+            _inlineModel['inlineDiscountText'] = undefined
             handleInlineToast(_inlineModel)
             setDiscount(val); // and then set the value!
         }
@@ -499,26 +490,81 @@ const HomeRoom = (props) => {
         // populate the model
         populateInlineModel(_inlineModel);
     }
+    
+    // Update Extra Count Beds!
+    async function updateExtraCount(value){
+      setExtraCount(value);
+      const extraBedPrice = await getExtraBedPrice(props.roomtype, props.lodgeid);
+      setLimits(limits => {
+        const updateValue = Number(limits) + Number(extraBedPrice);
+        return updateValue
+      })
+    }
+    
+    // Check for the advance amount!
+    function checkAdvance(checkoutDate){
+      const currentDate = brewDate.getFullDate("yyyy/mm/dd");
+      const dateofCheckout = checkoutDate;
+      const stayDays = getStayedDays(currentDate, dateofCheckout);
+      const tAmount = stayDays * +props.price;
+      setTotalAmount(tAmount);
+      // Get the total amount with GST!
+      const totalWithGST = getTotalAmountWithGST(tAmount);
+      if(isNaN(totalWithGST)){
+        checkAdvance(checkoutDate);
+      } else {
+        setLimits(totalWithGST);
+      }
+    }
+    
+    // Restrict Adults Count!
+    function restrictAdults(value){
+      var inlineText = "Adults count cannot be greater than 5."
+      if(value > 5){
+        _inlineModel['inlineAdults'] = true;
+        _inlineModel['inlineAdultsText'] = inlineText
+      } else {
+        _inlineModel['inlineAdults'] = false;
+        setAdults(value);
+      }
+      handleInlineToast(_inlineModel)
+    }
+    
+    // Restrict Childrens Count!
+    function restrictChildrens(value){
+      var inlineText = "Childrens count cannot be greater than 5."
+      if(value > 5){
+        _inlineModel['inlineChildrens'] = true;
+        _inlineModel['inlineChildrensText'] = inlineText
+      } else {
+        _inlineModel['inlineChildrens'] = false;
+        setChildrens(value);
+      }
+      
+      handleInlineToast(_inlineModel)
+
+    }
 
     // Restrict advance amount
     function restrictAdvance(val) {
+      
+        const limitValue =  3 / 4;
+        
+        const constant = "Advance";
+        
+        const limit = checkedoutdate !== undefined ? checkLimit(limits, checkedoutdate, constant) : checkLimit(limitValue, checkedoutdate, constant);
 
-        const limitValue = 3 / 4; // Changed as part of the suggestion oppose to 1 / 2 
-
-        const limit = checkLimit(limitValue); // Removed as part of keeping the advance limit as same as the price!
-
-        var inlineText = `Advance amount cannot be greater than Rs.${limit}`
-
+        var inlineText = `Advance amount cannot be greater than Rs.${limit} without discount amount!`;
+        
+        _inlineModel['inlineErrorAdvance'] = true;
+        _inlineModel['inlineAdvanceText'] = inlineText
+        handleInlineToast(_inlineModel)
+        
         if (val > limit) {
-            _inlineModel['inlineErrorAdvance'] = true;
-            _inlineModel['inlineText'] = inlineText
-            handleInlineToast(_inlineModel)
-        } else {
-            _inlineModel['inlineErrorAdvance'] = false;
-            _inlineModel['inlineText'] = undefined
-            handleInlineToast(_inlineModel)
-            setAdvanceCheckin(val); // and then set the value!
-        }
+          return
+       } else {
+           setAdvanceCheckin(val); // and then set the value!
+       }
 
     }
 
@@ -585,7 +631,7 @@ const HomeRoom = (props) => {
 
     // Populate invoice modal!
     function populateInvoice(value){
-        var gstCalculation = determineGst()
+        var gstCalculation = determineGst();
 
         // Populate the model with userdata!
         userdata.map((options, key) => {
@@ -604,7 +650,7 @@ const HomeRoom = (props) => {
                 isGst: isGst,
                 gst: gstCalculation,
                 stayedDays: stayeddays,
-                roomRent: channel.isChannel ? getTotalAmount() : totalAmount,
+                roomRent: getTotalAmount(),
                 extraBeds: options.extraBeds,
                 extraBedAmount: extraCollection,
                 dateofCheckout: checkoutdate,
@@ -617,12 +663,7 @@ const HomeRoom = (props) => {
                     if(channel.isChannel){
                         return getTotalAmount() + gstCalculation;
                     } else {
-                        const gstCalc = (gstCalculation === undefined ? 0 : gstCalculation);
-                        const tAmount = (totalAmount === undefined ? 0 : totalAmount);
-                        const extraPrice = extraCollection;
-                        const withGST = ((tAmount + gstCalc) + extraPrice);
-                        const withoutGST = tAmount + extraPrice;
-                        return isGst ? withGST : withoutGST;
+                        return isGst ? getTotalAmountWithGST() : getTotalWithoutGST();
                     }
                 },
                 roomno: options.roomno,
@@ -632,18 +673,18 @@ const HomeRoom = (props) => {
     }
 
     // Invoice Generator!
-    function windowPrint() {
+    async function windowPrint() {
         const value = {
             invoice: true,
             tInvoice: false
         }
 
-        getUserData(); // Call this method to retrieve user data
+        await getUserData(); // Call this method to retrieve user data
 
         populateInvoice(value) // Populate the invoice state with userdata...
     }
 
-    function generateInvoice(choices){
+    async function generateInvoice(choices){
         if(inputFieldInvoice.address === undefined || inputFieldInvoice.gstin === undefined ){
             setInputFieldInvoice({
                 ...inputFieldInvoice,
@@ -658,7 +699,7 @@ const HomeRoom = (props) => {
                 cgst: choices.cgst
             }
     
-            getUserData(); // Call this method to retrieve user data
+            await getUserData(); // Call this method to retrieve user data
     
             populateInvoice(value); // Populate the invoice state with userdata...
         }
@@ -777,8 +818,9 @@ const HomeRoom = (props) => {
     }
 
     // Handle Checkout Customer!
-    const checkedOut = () => {
+    const checkedOut = async () => {
         handleCloseGeneratedBill();
+
         const credentials = {
             userid: userid,
             roomid: props.roomid,
@@ -787,11 +829,12 @@ const HomeRoom = (props) => {
             checkoutTime: getTime,
             roomtype: props.roomtype,
             prebook: props.prebook,
-            amount: channel.isChannel ? getTotalAmount() : totalAmount + extraCollection,
+            amount: getTotalAmount(),
+            refund: getReturnAmount(),
             totalDishAmount: calcdishrate,
             isGst: isGst,
             foodGst: calcdishrate * 0.05,
-            stayGst: determineGst()        
+            stayGst: determineGst(),
         }
 
         axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
@@ -807,51 +850,87 @@ const HomeRoom = (props) => {
                 }
             })
     }
+    
 
     // GST calculation handler!
-    function calculateInclusive(){
-        return Math.round(getTotalAmount() * getGSTPercent(getTotalAmount()));
+    function calculateInclusive(t_Amount){
+        return Math.round(getTotalAmount(t_Amount) * getGSTPercent(props.price));
     }
 
     // Exclusice GST calculation!
-    function calculateExclusive(){
-        let tAmount = (Number(totalAmount) + Number(amount_advance)) + Number(extraCollection);
+    function calculateExclusive(t_Amount){
+        let tAmount = totalAmount !== undefined ? getAmount() : Number(t_Amount);
         let gstPercent = determinGstPercent();
         let withGST = gstPercent * tAmount;
         return Math.round(withGST);
     }
 
     // Determine exclusive or inclusive!
-    function determineGst(){
+    function determineGst(t_Amount){
         if(!channel.isChannel){
-            return isExclusive ? calculateExclusive() : calculateInclusive();
+            return isExclusive ? calculateExclusive(t_Amount) : calculateInclusive(t_Amount);
         } else {
            return Math.round(getTotalAmount() * getGSTPercent(getTotalAmount()));
         }
     }
+    
+    // Get Amount with extra collection, considering negative values also!
+    function getAmount(){
+      return totalAmount < 0 ? Number(tNAmount) + Number(extraCollection) : Number(totalAmount) + Number(extraCollection) + Number(amount_advance)
+    }
 
     // Get total amount with all the neccessary entities!
-    function getTotalAmount(){
-        if(channel.isChannel || !isExclusive){
-            let totalPaidAmount = totalAmount;
-            let percent = getGSTPercent(totalPaidAmount);
-            let value = totalPaidAmount / (1 + percent);
-            return isGst ? Math.round(value) : Number(totalAmount) + Number(extraCollection)
-        } else {
-            return Number(totalAmount) + Number(extraCollection)
-        }
+    function getTotalAmount(t_Amount){
+      if(channel.isChannel || !isExclusive){
+          let totalPaidAmount = totalAmount !== undefined ? getTotalAmountForGst() : t_Amount
+          if(Number(totalAmount) < 0){
+            totalPaidAmount = Number(tNAmount) + Number(extraCollection);
+          }
+          let percent = getGSTPercent(props.price);
+          let value = totalPaidAmount / (1 + percent);
+          let withoutGST = Number(totalAmount) < 0 ? Number(tNAmount) + Number(extraCollection) : Number(totalAmount) + Number(extraCollection);
+          return isGst ? Math.round(value) : withoutGST;
+      } else {
+          return getExclusiveAmount(t_Amount);
+      }
     }
     
-    // Get total amount with GST!
-    function getTotalAmountWithGST(){
-      return getTotalAmount() + determineGst()
+    // Get total amount for GST calculation!
+    function getTotalAmountForGst(){
+      return Number(totalAmount) + Number(amount_advance) + Number(extraCollection);
+    }
+
+    // Get amount has to be returned to the customer incase of negative value!
+    function getReturnAmount(){
+      return Math.abs(amount_advance) - getTotalAmountWithGST();
+    }
+
+    
+    // Get exclusive total amount!
+    function getExclusiveAmount(t_Amount){
+      if(totalAmount !== undefined){
+        return totalAmount < 0 ? Number(tNAmount) + Number(extraCollection) : Number(totalAmount) + Number(extraCollection);
+      } else {
+        // Check for negative value!
+        return Number(t_Amount)
+      }
+    }
+    
+    // Get total amount with GST for preview
+    function getTotalAmountWithGST(t_Amount){
+      return (getTotalAmount(t_Amount) + determineGst(t_Amount))
+    }
+    
+    // Get total amount without gst!
+    function getTotalWithoutGST(){
+      return getTotalAmount();
     }
 
     // Determine GST Percent!
     function determinGstPercent(){
         let exclusive = isExclusive;
         if(exclusive){
-            let tAmount = (Number(totalAmount) + Number(amount_advance)) + Number(extraCollection);
+            let tAmount = Number(props.price);
             let gstPercent = tAmount < 7500 ? 0.12 : 0.18;
             return gstPercent;
         } else {
@@ -1171,9 +1250,17 @@ const HomeRoom = (props) => {
                                     null
                                 )
                             }
-                            <p>
-                                Amount to be paid for the suite: {totalAmount}
-                            </p>
+                            {
+                              Number(totalAmount) < 0 ? (
+                                <p>
+                                    Amount has to be returned to the customer: {getReturnAmount()}
+                                </p>
+                              ) : (
+                                <p>
+                                    Amount to be paid for the suite: {totalAmount}
+                                </p>
+                              )
+                            }
                             {
                                 isNaN(Number(totalAmount)) ? (
                                     <div>
@@ -1188,7 +1275,7 @@ const HomeRoom = (props) => {
                                     isGst === true ? (
                                         <div>
                                             <p>
-                                                Amount deducted for GST - {determineGst()}
+                                                Amount deducted for GST: {determineGst()}
                                             </p>
                                         </div>
                                     ) : (

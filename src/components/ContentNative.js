@@ -607,7 +607,7 @@ const ContentNative = () => {
                                                     return (
 
                                                         <TableFormatReport customTable = {(value) => customTable(value)} customModel = {chickletChoice} isGst = {item.isGst} gst = {item.stayGst} totalAmount = {Number(item.totalAmount)} bill = {item.bill} roomno={item.roomno} username={item.username}
-                                                            phonenumber={item.phonenumber}
+                                                            phonenumber={item.phonenumber} refund = {item.refund}
                                                             secphone={item.secondphonenumber} adults={item.adults}
                                                             childrens={item.childrens} checkin={item.dateofcheckin}
                                                             aadharcard={item.aadharcard} checkout={item.dateofcheckout} stayeddays={item.stayedDays}

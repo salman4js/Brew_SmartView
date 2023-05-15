@@ -1,5 +1,6 @@
 const brewDate = require("brew-date");
-
+const axios = require("axios");
+const Variables = require("../Variables")
 
 // Handle checkin time format!
 export function handleTimeFormat(time) {
@@ -56,4 +57,24 @@ export function getStayedDays(checkinDate, checkoutDate){
   } else {
     return diffDays;
   }
+}
+
+// Get extra bed price for the specific room type!
+export async function getExtraBedPrice(roomType, lodgeId){
+  var roomTypePrice;
+  const values = {
+      suitename: roomType
+  }
+  await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getprice`, values)
+    .then(res => {
+      if(res.data.success){
+        res.data.message.map((options, key) => {
+          roomTypePrice = options.extraBedPrice
+        })
+      } else {
+        return false;
+      }
+    })
+    
+  return roomTypePrice;
 }
