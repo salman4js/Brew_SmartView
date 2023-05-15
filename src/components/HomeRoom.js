@@ -1257,13 +1257,13 @@ const HomeRoom = (props) => {
                                 }
                             </h5>
                             {
-                                advance === true ? (
-                                    <p>
-                                        Advance amount has been reduced in the total amount - {amount_advance} Rs!
-                                    </p>
-                                ) : (
-                                    null
-                                )
+                              advance === true ? (
+                                <p>
+                                    Advance amount has been reduced in the total amount - {amount_advance} Rs!
+                                </p>
+                              ) : (
+                                null
+                              )
                             }
                             {
                                 discountApplied === true ? (
