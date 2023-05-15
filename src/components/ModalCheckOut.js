@@ -74,88 +74,90 @@ const ModalCheckOut = (props) => {
         <div>
             {!props.isEdit ? (
                 <div>
-                    <Modal.Body>
-                        <h4 className="strong text-center">{props.roomno}</h4>
-                        <p className="font-big">
-                            Customer Name : {props.username}
-                        </p>
-                        <p className="font-big">
-                            Customer Phone Number : {props.phone}
-                        </p>
-                        <p className = "font-big">
-                            Second Number : {props.secondphonenumber}
-                        </p>
-                        <p className = "font-big">
-                            ID Number : {props.aadharcard}
-                        </p>
-                        <p className="font-big">
-                            Check-In Date : {props.checkin}
-                        </p>
-                        <p className = "font-big">
-                            Check-In Time : {props.checkInTime}
-                        </p>
-                        <p className='font-big'>
-                            Check-Out Date : {date}
-                        </p>
-                        <p className = "font-big">
-                            Check-Out Time : {props.currentTime}
-                        </p>
-                        <p className='font-big'>
-                            Head Count of Adults : {props.adults}
-                        </p>
-                        <p className="font-big">
-                            Head Count of childrens : {props.childrens}
-                        </p>
-                        {isExtra && (
-                            <div>
-                                <p className="font-big">
-                                    Extra Bed: {props.extraBeds}
-                                </p>
-                                <p className="font-big">
-                                    Extra Bed Price Per Bed: {props.extraBedPrice}
-                                </p>
-                            </div>
-                        )}
-                        <p className='font-big'>
-                            No.Of. {stay !== undefined && stay.split(" ")[1] } stay : {stay}
-                        </p>
-                        {
-                            props.discount ? (
-                                <p className='font-big'>
-                                    Discount Applied: True
-                                </p>
-                            ) : (
-                                <p className='font-big'>
-                                    Discount Applied:  False
-                                </p>
-                            )
-                        }
-                        {
-                            props.tempData == undefined ? (
-                                <p className="acknowledgement">
-                                    (Customer hasn't provided any checkout information, Hence taking today's date as checkout date!)
-                                </p>
-                            ) : (
-                                <p className="acknowledgement">
-                                    {
-                                        date == props.tempData ? (
-                                            <p>
-                                                Provided checkout date is matching with today's date, Customer is good to checkout!
-                                            </p>
-                                        ) : (
-                                            <div>
-                                                <p className = "acknowledgement error-text">
-                                                    Provided checkout date({props.tempData}) is not matching with the today's date({date})!
-                                                </p>
-                                            </div>
-                                        )
-                                    }
-                                </p>
-                            )
-                        }
-                        <p className="acknowledgement">
-                            (Please verify all the above details before checking out a customer!)
-                        </p>
+                    <Modal.Body className = "checkin-modal">
+                        <div>
+                          <h4 className="strong text-center">{props.roomno}</h4>
+                          <p className="font-big">
+                              Customer Name : {props.username}
+                          </p>
+                          <p className="font-big">
+                              Customer Phone Number : {props.phone}
+                          </p>
+                          <p className = "font-big">
+                              Second Number : {props.secondphonenumber}
+                          </p>
+                          <p className = "font-big">
+                              ID Number : {props.aadharcard}
+                          </p>
+                          <p className="font-big">
+                              Check-In Date : {props.checkin}
+                          </p>
+                          <p className = "font-big">
+                              Check-In Time : {props.checkInTime}
+                          </p>
+                          <p className='font-big'>
+                              Check-Out Date : {date}
+                          </p>
+                          <p className = "font-big">
+                              Check-Out Time : {props.currentTime}
+                          </p>
+                          <p className='font-big'>
+                              Head Count of Adults : {props.adults}
+                          </p>
+                          <p className="font-big">
+                              Head Count of childrens : {props.childrens}
+                          </p>
+                          {isExtra && (
+                              <div>
+                                  <p className="font-big">
+                                      Extra Bed: {props.extraBeds}
+                                  </p>
+                                  <p className="font-big">
+                                      Extra Bed Price Per Bed: {props.extraBedPrice}
+                                  </p>
+                              </div>
+                          )}
+                          <p className='font-big'>
+                              No.Of. {stay !== undefined && stay.split(" ")[1] } stay : {stay}
+                          </p>
+                          {
+                              props.discount ? (
+                                  <p className='font-big'>
+                                      Discount Applied: True
+                                  </p>
+                              ) : (
+                                  <p className='font-big'>
+                                      Discount Applied:  False
+                                  </p>
+                              )
+                          }
+                          {
+                              props.tempData == undefined ? (
+                                  <p className="acknowledgement">
+                                      (Customer hasn't provided any checkout information, Hence taking today's date as checkout date!)
+                                  </p>
+                              ) : (
+                                  <p className="acknowledgement">
+                                      {
+                                          date == props.tempData ? (
+                                              <p>
+                                                  Provided checkout date is matching with today's date, Customer is good to checkout!
+                                              </p>
+                                          ) : (
+                                              <div>
+                                                  <p className = "acknowledgement error-text">
+                                                      Provided checkout date({props.tempData}) is not matching with the today's date({date})!
+                                                  </p>
+                                              </div>
+                                          )
+                                      }
+                                  </p>
+                              )
+                          }
+                          <p className="acknowledgement">
+                              (Please verify all the above details before checking out a customer!)
+                          </p>
+                        </div>
                     </Modal.Body>
                 </div>
             ) : (
