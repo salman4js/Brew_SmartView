@@ -518,31 +518,49 @@ const HomeRoom = (props) => {
     }
     
     // Restrict Adults Count!
-    function restrictAdults(value){
+    function restrictAdults(value, action){
       var inlineText = "Adults count cannot be greater than 5."
       if(value > 5){
         _inlineModel['inlineAdults'] = true;
         _inlineModel['inlineAdultsText'] = inlineText
       } else {
         _inlineModel['inlineAdults'] = false;
-        setAdults(value);
+        updateAdults(value, action)
       }
       handleInlineToast(_inlineModel)
     }
     
+    // Update adults model data!
+    function updateAdults(value, action){
+      if(action === "CHECK-IN"){
+        setAdults(value)
+      } else {
+        setPrebookadults(value)
+      }
+    }
+    
     // Restrict Childrens Count!
-    function restrictChildrens(value){
+    function restrictChildrens(value, action){
       var inlineText = "Childrens count cannot be greater than 5."
       if(value > 5){
         _inlineModel['inlineChildrens'] = true;
         _inlineModel['inlineChildrensText'] = inlineText
       } else {
         _inlineModel['inlineChildrens'] = false;
-        setChildrens(value);
+        updateChildrens(value, action);
       }
       
       handleInlineToast(_inlineModel)
 
+    }
+    
+    // Update Childrens model!
+    function updateChildrens(value, action){
+      if(action === "CHECK-IN"){
+        setChildrens(value);
+      } else {
+          setPrebookchildren(value)
+      }
     }
 
     // Restrict advance amount
@@ -1032,14 +1050,14 @@ const HomeRoom = (props) => {
                             </div>
                             <div className='modal-gap'>
                                 <label style={{ color: "black" }}> Adults </label>
-                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.adults' name={adults} value={adults} onChange={(e) => restrictAdults(e.target.value)} />
+                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.adults' name={adults} value={adults} onChange={(e) => restrictAdults(e.target.value, "CHECK-IN")} />
                                 {inline.inlineAdults && (
                                     <InlineToast message={inline.inlineAdultsText} />
                                 )}
                             </div>
                             <div className='modal-gap'>
                                 <label style={{ color: "black" }}> Childrens If Any! </label>
-                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={childrens} value={childrens} onChange={(e) => restrictChildrens(e.target.value)} />
+                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={childrens} value={childrens} onChange={(e) => restrictChildrens(e.target.value, "CHECK-IN")} />
                                 {inline.inlineChildrens && (
                                     <InlineToast message={inline.inlineChildrensText} />
                                 )}
@@ -1088,7 +1106,7 @@ const HomeRoom = (props) => {
                       </Modal.Body>
                       <Modal.Footer>
                           <Button className="btn btn-secondary" onClick={handleClose}>Close</Button>
-                          <Button className='btn btn-outline' disabled={inline.inlineErrorAdvance || inline.inlineErrorDiscount} onClick={processData}> Save and Close </Button>
+                          <Button className='btn btn-outline' disabled={inline.inlineErrorDiscount} onClick={processData}> Save and Close </Button>
                       </Modal.Footer>
                   </Modal>
                 )}
@@ -1132,11 +1150,17 @@ const HomeRoom = (props) => {
                           </div>
                           <div className='modal-gap'>
                               <label style={{ color: "black" }}> Adults </label>
-                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.adults' name={prebookadults} value={prebookadults} onChange={(e) => setPrebookadults(e.target.value)} />
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.adults' name={prebookadults} value={prebookadults} onChange={(e) => restrictAdults(e.target.value, "PRE-BOOK")} />
+                              {inline.inlineAdults && (
+                                  <InlineToast message={inline.inlineAdultsText} />
+                              )}
                           </div>
                           <div className='modal-gap'>
                               <label style={{ color: "black" }}> Childrens If Any! </label>
-                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={prebookchildren} value={prebookchildren} onChange={(e) => setPrebookchildren(e.target.value)} />
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={prebookchildren} value={prebookchildren} onChange={(e) => restrictChildrens(e.target.value, "PRE-BOOK")} />
+                              {inline.inlineChildrens && (
+                                  <InlineToast message={inline.inlineChildrensText} />
+                              )}
                           </div>
                           <div className='modal-gap'>
                               <label style={{ color: "black" }}> ID Number of anyone adult </label>
