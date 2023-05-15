@@ -738,9 +738,3 @@ td {
 .btn-center-config-matrix{
   margin-left: 130px;
 }
-
-.checkin-modal{
-  height: auto;
-  max-height: 650px;
-  overflow: auto
-}
