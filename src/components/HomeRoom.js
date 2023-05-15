@@ -899,42 +899,7 @@ const HomeRoom = (props) => {
                           </Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
-                          <h4 className='strong'>{props.roomno}</h4>
-                          {
-                              props.channel ? (
-                                  <div className="modal-gap">
-                                      <label style={{ color: "black" }}> Channel Manager </label>
-                                      <select class="form-select" aria-label="Default select example" onChange={(e) => handleChannel(e.target.value)}>
-                                          <option selected>Choose...</option>
-                                          {
-                                              props.options.map((item, key) => {
-                                                  return (
-                                                      <option>{item}</option>
-                                                  )
-                                              })
-                                          }
-                                      </select>
-                                  </div>
-                              ) : (
-                                  null
-                              )
-                          }
-                          {
-                              props.channel || props.updatePriceWizard ? (
-                                  <div className="modal-gap">
-                                      <label style={{ color: "black" }}> {isChannel ? "Update Price" : "Update Room Price"} </label>
-                                      <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder={isChannel ? "Update Price" : "Update Room Price"} name={updatePrice} value={updatePrice} onChange={(e) => updatePriceWizard(e.target.value)} />
-                                  </div>
-                              ) : (
-                                  null
-                              )
-                          }
-                          <div className="modal-gap">
-                              <label style={{ color: "black" }}> Customer Name </label>
-                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Customer Name" name={customername} value={customername} onChange={(e) => setCustomername(e.target.value)} />
-
-                      <Modal.Body className = "checkin-modal">
-                          <div>
+                          <div className = "checkin-modal">
                             <h4 className='strong'>{props.roomno}</h4>
                             {
                                 props.channel ? (
@@ -1040,74 +1005,7 @@ const HomeRoom = (props) => {
                                     </div>
                                 </div>
                             )}
->>>>>>> Stashed changes
-                          </div>
-                          <div className='modal-gap'>
-                              <label style={{ color: "black" }}> Customer Phone Number </label>
-                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Customer Phone Number' name={customerphonenumber} value={customerphonenumber} onChange={(e) => setCustomerphonenumber(e.target.value)} />
-                          </div>
-                          <div className='modal-gap'>
-                              <label style={{ color: "black" }}> Customer Second Phone Number </label>
-                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Customer Second Phone Number' name={secondphonenumber} value={secondphonenumber} onChange={(e) => setSecondphonenumber(e.target.value)} />
-                          </div>
-                          <div className='modal-gap'>
-                              <label style={{ color: "black" }}> Adults </label>
-                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.adults' name={adults} value={adults} onChange={(e) => setAdults(e.target.value)} />
-                          </div>
-                          <div className='modal-gap'>
-                              <label style={{ color: "black" }}> Childrens If Any! </label>
-                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='No.of.childrens' name={childrens} value={childrens} onChange={(e) => setChildrens(e.target.value)} />
-                          </div>
-                          {!isChannel && (
-                              isExtra ? (
-                                  <div className='modal-gap'>
-                                      <label style={{ color: "black" }}> Extra Beds </label>
-                                      <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Extra Beds' name={extraCount} value={extraCount} onChange={(e) => setExtraCount(e.target.value)} />
-                                  </div>
-                              ) : (
-                                  null
-                              )
-                          )}
-                          <div className='modal-gap'>
-                              <label style={{ color: "black" }}> ID Number of anyone adult </label>
-                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='ID Number' name={aadhar} value={aadhar} onChange={(e) => setAadhar(e.target.value)} />
-                          </div>
-                          {!isChannel && (
-                              <div>
-                                  <div className='modal-gap'>
-                                      <label style={{ color: "black" }}> Advance Amount(Optional) </label>
-                                      <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={advanceCheckin} value={advanceCheckin} onChange={(e) => restrictAdvance(e.target.value)} />
-                                      {
-                                          inline.inlineErrorAdvance ? (
-                                              <InlineToast message={inline.inlineText} />
-                                          ) : (
-                                              null
-                                          )
-                                      }
-                                  </div>
-                                  <div className='modal-gap'>
-                                      <label style={{ color: "black" }}> Discount Amount(Optional) </label>
-                                      <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={discount} value={discount} onChange={(e) => restrictDiscount(e.target.value)} />
-                                      {
-                                          inline.inlineErrorDiscount ? (
-                                              <InlineToast message={inline.inlineText} />
-                                          ) : (
-                                              null
-                                          )
-                                      }
-                                  </div>
-                              </div>
-                          )}
-                          <div className='modal-gap'>
-                              <label style={{ color: "black" }}> Date Of Check In - (Default Date is Today's Date!) </label>
-                              <DatePicker style={{ color: "black" }} className="form-control" selected={Date.now()} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} isClearable />
-                          </div>
-                          {/* Optional Date of checkout for normal bookers */}
-                          <div className='modal-gap'>
-                              <label style={{ color: "black" }}> Date Of Check Out </label>
-                              <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' excludeDates={excludeDates} selected={checkedoutdate} dateFormat='y-MM-dd' minDate={new Date()} onChange={((e) => setCheckedoutdate(e))} isClearable />
-                          </div>
-
+                        </div>
                       </Modal.Body>
                       <Modal.Footer>
                           <Button className="btn btn-secondary" onClick={handleClose}>Close</Button>
@@ -1131,6 +1029,7 @@ const HomeRoom = (props) => {
                           </Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
+                          <div className = "checkin-modal">
                           <h4 className='strong'>{props.roomno}</h4>
                           <div className='modal-gap'>
                               <label style={{ color: "black" }}> Date & Time Of Check In </label>
@@ -1171,6 +1070,7 @@ const HomeRoom = (props) => {
                           <div className='modal-gap'>
                               <label style={{ color: "black" }}> Discount (Optional) </label>
                               <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={prebookdiscount} value={prebookdiscount} onChange={(e) => setPrebookdiscount(e.target.value)} />
+                          </div>
                           </div>
                       </Modal.Body>
                       <Modal.Footer>
