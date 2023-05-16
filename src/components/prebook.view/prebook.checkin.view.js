@@ -174,10 +174,24 @@ const PrebookCheckin = () => {
     setReload(value)
   }
   
+  // Check to see if the checkout date is actually less than the checkin date!
+  function _initiateSearch(){
+    enableLoader(searchFetchMessage, true);
+    if(picker.checkinDateTime > picker.checkoutDateTime){
+      setErrorHandler({
+        show: true,
+        message: "Check in date cannot be greater than the checkout date!",
+        header: false,
+        headerText: false
+      })
+      stopLoader(false);
+    } else {
+      getAvailableRooms();
+    }
+  }
+  
   // Get available rooms for prebooking!
   function getAvailableRooms(){
-
-    enableLoader(searchFetchMessage, true);
         
     // Time Values
     const checkinTime = brewDate.timeFormat(new Date(picker.checkinDateTime).toLocaleTimeString());
@@ -255,7 +269,7 @@ const PrebookCheckin = () => {
             <div className = "col-5">
               <DatePicker style={{ color: "black" }} className="form-control" selected = {picker.checkoutDateTime !== undefined ? picker.checkoutDateTime : Date.now()} minDate = {Date.now()} showTimeSelect onChange={(e) => dateTimeSetup(e, "Check-Out")} dateFormat="MMMM d, yyyy h:mm aa" isClearable />
             </div> 
-            <div className = {getClassName()} onClick = {() => getAvailableRooms()}>
+            <div className = {getClassName()} onClick = {() => _initiateSearch()}>
                 Search
             </div>            
           </div>
@@ -295,9 +309,13 @@ const PrebookCheckin = () => {
           )
         ) : (
           <div>
-            <div className = "container text-center heading-top topic-off prebookcheckin">
-                Search for available rooms by providing date and time!
-            </div>
+            {errorHandler.show ? (
+              <Modals options = {errorHandler} setShow = {(data) => handleShow(data)} />
+            ): (
+              <div className = "container text-center heading-top topic-off prebookcheckin">
+                  Search for available rooms by providing date and time!
+              </div>
+            )}
           </div>
         )
       }
