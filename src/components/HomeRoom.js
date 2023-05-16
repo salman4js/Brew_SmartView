@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { excludeDatesCheckin } from './ExcludeDates/excludesdates';
+import { excludeDatesCheckin, prebookExcludeDates } from './ExcludeDates/excludesdates';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
@@ -31,7 +31,8 @@ const HomeRoom = (props) => {
     var extraCalc = JSON.parse(getStorage("extraCalc"));
 
     // Exclude dates for prebook modals
-    const [excludeDates, setExcludeDates] = useState([])
+    const [excludeDates, setExcludeDates] = useState([]);
+    const [excludeCheckinDates, setExcludeCheckinDates] = useState([]);
     
 
     const [show, setShow] = useState(false);
@@ -140,6 +141,9 @@ const HomeRoom = (props) => {
 
     // Modal Handler!
     const handleClose = () => {
+      if(!show){
+        getExcludeDates(props.roomid)
+      }
         setShow(!show);
     }
 
@@ -283,6 +287,10 @@ const HomeRoom = (props) => {
 
     // Retrieve User Room data from the API
     const getUserData = async () => {
+      
+        // Get exclude dates of the selected room!
+        await getExcludeDates(props.roomid);
+      
         const credentials = {
             roomid: props.roomid
         }
@@ -296,6 +304,16 @@ const HomeRoom = (props) => {
                     setSuccess(res.data.message)
                 }
             })
+    }
+    
+    // Get excluded dates for the selected rooms!
+    async function getExcludeDates(roomId){
+      const result = await prebookExcludeDates(roomId);
+      if(result.success){
+        result.message.map((options, key) => {
+          setExcludeDates(excludeDates => [...excludeDates, new Date(options)])
+        })
+      }
     }
 
 
@@ -1021,12 +1039,12 @@ const HomeRoom = (props) => {
                             }
                             <div className='modal-gap'>
                                 <label style={{ color: "black" }}> Date Of Check In - (Default Date is Today's Date!) </label>
-                                <DatePicker style={{ color: "black" }} className="form-control" selected={Date.now()} excludeDates={excludeDates} dateFormat='y-MM-dd' minDate={new Date()} isClearable />
+                                <DatePicker style={{ color: "black" }} className="form-control" selected={Date.now()} dateFormat='y-MM-dd' minDate={new Date()} isClearable />
                             </div>
                             {/* Optional Date of checkout for normal bookers */}
                             <div className='modal-gap'>
                                 <label style={{ color: "black" }}> Date Of Check Out </label>
-                                <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' excludeDates={excludeDates} selected={checkedoutdate} dateFormat='y-MM-dd' minDate={new Date()} onSelect = {(e) => checkAdvance(e)} onChange={((e) => setCheckedoutdate(e))} isClearable />
+                                <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={checkedoutdate} dateFormat='y-MM-dd' minDate={new Date()} excludeDates = {excludeDates} onSelect = {(e) => checkAdvance(e)} onChange={((e) => setCheckedoutdate(e))} isClearable />
                             </div>
                             <div className="modal-gap">
                                 <label style={{ color: "black" }}> Customer Name </label>
@@ -1204,7 +1222,7 @@ const HomeRoom = (props) => {
                         userdata.map((item, key) => {
                             return (
                                 <ModalCheckOut updateDetails = {setEditDetails} isEdit = {props.edit} extraBeds={props.extraBeds} extraBedPrice={props.extraBedPrice} 
-                                isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} 
+                                isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} roomid = {item.room} excludeDates = {excludeDates}
                                 discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} 
                                 secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} 
                                 childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} 

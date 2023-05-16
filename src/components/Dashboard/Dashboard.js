@@ -232,9 +232,7 @@ const Dashboard = () => {
                 if (res.data.success) {
                     setError(false);
                     res.data.message.map((item) => {
-                        item.forEach(element => {
-                            setExcludeDates(oldValue => [...oldValue, new Date(element)]);
-                        })
+                        setExcludeDates(oldValue => [...oldValue, new Date(item)]);
                     })
                 } else {
                     // TODO: Error handling!

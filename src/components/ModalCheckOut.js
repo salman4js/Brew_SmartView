@@ -11,7 +11,7 @@ const ModalCheckOut = (props) => {
     const date = brewDate.getFullDate("yyyy/mm/dd");
 
     var isExtra = JSON.parse(getStorage("isExtra"));
-
+        
     // Ensure Channel enabled or not!
     function ensureChannel(){
         return props.isChannel === "Walk-In" ? false : true
@@ -195,7 +195,7 @@ const ModalCheckOut = (props) => {
                         <div className="modal-gap">
                             <label style={{ color: "black" }}> Date of Checkout </label>
                             <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Date of checkout' selected = {editDetails.dateofcheckout} dateFormat='y-MM-dd' minDate={new Date()} 
-                            onChange = {(e) => setEditDetails(prevState => ({...prevState, dateofcheckout: e}))} isClearable />
+                            excludeDates = {props.excludeDates} onChange = {(e) => setEditDetails(prevState => ({...prevState, dateofcheckout: e}))} isClearable />
                         </div>
                     </div>
             )}
