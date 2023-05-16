@@ -32,38 +32,7 @@ const HomeRoom = (props) => {
 
     // Exclude dates for prebook modals
     const [excludeDates, setExcludeDates] = useState([])
-    const getExcludeDates = async (roomid) => {
-        await axios.get(`${Variables.hostId}/${roomid}/excludedates`)
-            .then(res => {
-                if (res.data.success) {
-                    res.data.message.map((item) => {
-                        item.forEach(element => {
-                            setExcludeDates(oldValue => [...oldValue, new Date(element)]);
-                        })
-                    })
-                } else {
-                    // TODO: Error handling!
-                }
-            })
-    }
-
-    // Exclude dates for checkin users!
-    const getExcludeDatesCheckin = async (roomid) => {
-        try{
-            const response = await excludeDatesCheckin(roomid);
-            if (response.success) {
-                response.message.map((item) => {
-                    item.forEach(element => {
-                        setExcludeDates(oldValue => [...oldValue, new Date(element)]);
-                    })
-                })
-            } else {
-                // TODO: error handling!
-            }
-        } catch(err){
-            console.warn("getBetween function needs start date and end date...");
-        }
-    }
+    
 
     const [show, setShow] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -81,6 +50,7 @@ const HomeRoom = (props) => {
     
     // Limit for advance amount state handler!
     const [limits, setLimits] = useState();
+    const [prebookLimit, setPrebookLimit] = useState();
     
     // State handler for total amount incase of negative value!
     const [tNAmount, setTNAmount] = useState(0);
@@ -171,8 +141,6 @@ const HomeRoom = (props) => {
     // Modal Handler!
     const handleClose = () => {
         setShow(!show);
-        getExcludeDates(props.roomid);
-        getExcludeDatesCheckin(props.roomid);
     }
 
     const handleModal = () => {
@@ -192,8 +160,7 @@ const HomeRoom = (props) => {
     const [prebookmodal, setPrebookmodal] = useState(false);
     const preBookModal = () => {
         setPrebookmodal(!prebookmodal);
-        getExcludeDates(props.roomid);
-        getExcludeDatesCheckin(props.roomid);
+        checkPrebookAdvance();
     }
 
     // Add data to the prebook modal
@@ -461,13 +428,17 @@ const HomeRoom = (props) => {
     }
 
     // Function restrict discount!
-    function restrictDiscount(val) {
+    function restrictDiscount(val, action) {
 
         const limitValue = 3 / 4;
         
         const constant = "Discount";
 
-        const Limit = checkedoutdate !== undefined ? (limits - advanceCheckin) * limitValue : checkLimit(limitValue);
+        if(action === "CHECK-IN"){
+          var Limit = checkedoutdate !== undefined ? (limits - advanceCheckin) * limitValue : checkLimit(limitValue);
+        } else {
+          var Limit = (prebookLimit - prebookadvance) * limitValue
+        }
 
         var inlineText = `Discount amount cannot be greater than Rs.${Limit}`
 
@@ -475,12 +446,12 @@ const HomeRoom = (props) => {
             _inlineModel['inlineErrorDiscount'] = true;
             _inlineModel['inlineDiscountText'] = inlineText
             handleInlineToast(_inlineModel)
-            setDiscount(val);
+            action === "CHECK-IN" ? setDiscount(val) : setPrebookdiscount(val)
         } else {
             _inlineModel['inlineErrorDiscount'] = false;
             _inlineModel['inlineDiscountText'] = undefined
             handleInlineToast(_inlineModel)
-            setDiscount(val); // and then set the value!
+            action === "CHECK-IN" ? setDiscount(val) : setPrebookdiscount(val)
         }
 
     }
@@ -514,6 +485,22 @@ const HomeRoom = (props) => {
         checkAdvance(checkoutDate);
       } else {
         setLimits(totalWithGST);
+      }
+    }
+    
+    // Check for pre book advance!
+    function checkPrebookAdvance(){
+      const checkinDate = props.excludeTime.checkinDate;
+      const checkoutDate = props.excludeTime.checkoutDate;
+      const stayDays = getStayedDays(checkinDate, checkoutDate);
+      const tAmount = stayDays * +props.price;
+      setTotalAmount(tAmount);
+      // Get the total amount with GST!
+      const totalWithGST = getTotalAmountWithGST(tAmount);
+      if(isNaN(totalWithGST)){
+        checkPrebookAdvance();
+      } else {
+        setPrebookLimit(totalWithGST);
       }
     }
     
@@ -564,13 +551,17 @@ const HomeRoom = (props) => {
     }
 
     // Restrict advance amount
-    function restrictAdvance(val) {
+    function restrictAdvance(val, action) {
       
         const limitValue =  3 / 4;
         
         const constant = "Advance";
         
-        const limit = checkedoutdate !== undefined ? checkLimit(limits, checkedoutdate, constant) : checkLimit(limitValue, checkedoutdate, constant);
+        if(action === "CHECK-IN"){
+          var limit = checkedoutdate !== undefined ? checkLimit(limits, checkedoutdate, constant) : checkLimit(limitValue, checkedoutdate, constant);
+        } else {
+          var limit = checkLimit(prebookLimit, props.excludeTime.checkoutDate, constant);
+        }
 
         var inlineText = `Advance amount cannot be greater than Rs.${limit} without discount amount!`;
         
@@ -581,7 +572,7 @@ const HomeRoom = (props) => {
         if (val > limit) {
           return
        } else {
-           setAdvanceCheckin(val); // and then set the value!
+           action === "CHECK-IN" ? setAdvanceCheckin(val) : setPrebookadvance(val) // and then set the value!
        }
 
     }
@@ -1080,7 +1071,7 @@ const HomeRoom = (props) => {
                                 <div>
                                     <div className='modal-gap'>
                                         <label style={{ color: "black" }}> Advance Amount(Optional) </label>
-                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={advanceCheckin} value={advanceCheckin} onChange={(e) => restrictAdvance(e.target.value)} />
+                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={advanceCheckin} value={advanceCheckin} onChange={(e) => restrictAdvance(e.target.value, "CHECK-IN")} />
                                         {
                                             inline.inlineErrorAdvance ? (
                                                 <InlineToast message={inline.inlineAdvanceText} />
@@ -1091,7 +1082,7 @@ const HomeRoom = (props) => {
                                     </div>
                                     <div className='modal-gap'>
                                         <label style={{ color: "black" }}> Discount Amount(Optional) </label>
-                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={discount} value={discount} onChange={(e) => restrictDiscount(e.target.value)} />
+                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={discount} value={discount} onChange={(e) => restrictDiscount(e.target.value, "CHECK-IN")} />
                                         {
                                             inline.inlineErrorDiscount ? (
                                                 <InlineToast message={inline.inlineDiscountText} />
@@ -1168,17 +1159,31 @@ const HomeRoom = (props) => {
                           </div>
                           <div className='modal-gap'>
                               <label style={{ color: "black" }}> Advance Amount </label>
-                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={prebookadvance} value={prebookadvance} onChange={(e) => setPrebookadvance(e.target.value)} />
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={prebookadvance} value={prebookadvance} onChange={(e) => restrictAdvance(e.target.value, "PRE-BOOK")} />
+                              {
+                                  inline.inlineErrorAdvance ? (
+                                      <InlineToast message={inline.inlineAdvanceText} />
+                                  ) : (
+                                      null
+                                  )
+                              }
                           </div>
                           <div className='modal-gap'>
                               <label style={{ color: "black" }}> Discount (Optional) </label>
-                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={prebookdiscount} value={prebookdiscount} onChange={(e) => setPrebookdiscount(e.target.value)} />
+                              <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Discount Amount' name={prebookdiscount} value={prebookdiscount} onChange={(e) => restrictDiscount(e.target.value, "PRE-BOOK")} />
+                              {
+                                  inline.inlineErrorDiscount ? (
+                                      <InlineToast message={inline.inlineDiscountText} />
+                                  ) : (
+                                      null
+                                  )
+                              }
                           </div>
                           </div>
                       </Modal.Body>
                       <Modal.Footer>
                           <Button className="btn btn-secondary" onClick={preBookModal}>Close</Button>
-                          <Button className='btn btn-outline' onClick={processDataPreBook}> Save and Close </Button>
+                          <Button className='btn btn-outline' disabled = {inline.inlineErrorDiscount} onClick={processDataPreBook}> Save and Close </Button>
                       </Modal.Footer>
                   </Modal>
                 )}
