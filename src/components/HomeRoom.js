@@ -949,6 +949,11 @@ const HomeRoom = (props) => {
       return (getTotalAmount(t_Amount) + determineGst(t_Amount))
     }
     
+    // Get total amount to be paid!
+    function getTotalAmountToPay(){
+      return getTotalAmountWithGST() - amount_advance;
+    }
+    
     // Get total amount without gst!
     function getTotalWithoutGST(){
       return getTotalAmount();
@@ -1369,11 +1374,11 @@ const HomeRoom = (props) => {
                                 )
                             }
                             {isExtra && (
-                                <h5 style={{ fontWeight: "bold" }}>
+                                <p style={{ fontWeight: "bold" }}>
                                     Amount for extra beds: {extraCollection} Rs
-                                </h5>
+                                </p>
                             )}
-                            <h5 style={{ fontWeight: "bold" }}>Total amount to be paid:
+                            <p style={{ fontWeight: "bold" }}>Amount without GST:
                                 {
                                     discountApplied === true ? (
                                         isNaN(Number(calcdishrate) + getTotalAmount()) ? (
@@ -1389,10 +1394,10 @@ const HomeRoom = (props) => {
                                         )
                                     )
                                 }
-                            </h5>
+                            </p>
                             {
                                 isGst ? (
-                                    <h5 style={{ fontWeight: "bold" }}>Total amount to be paid with GST:
+                                    <p style={{ fontWeight: "bold" }}>Amount with GST:
                                         {
                                             discountApplied === true ? (
                                                 isNaN(Number(calcdishrate) + getTotalAmount() + determineGst()) ? (
@@ -1408,12 +1413,23 @@ const HomeRoom = (props) => {
                                                 )
                                             )
                                         }
-                                    </h5>
+                                    </p>
                                 ) : (
                                     <div>
 
                                     </div>
                                 )
+                            }
+                            {
+                              isGst ? (
+                                <h5 style={{ fontWeight: "bold" }}>
+                                    Total Amount To Be Paid: {getTotalAmountToPay()}
+                                </h5>
+                              ) : (
+                                <h5 style={{ fontWeight: "bold" }}>
+                                  Total Amount to be paid: {getTotalAmount()}
+                                </h5>
+                              )
                             }
 
                             {/* Check for channel enabled! */}
