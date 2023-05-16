@@ -474,10 +474,11 @@ const HomeRoom = (props) => {
     
     // Check for the advance amount!
     function checkAdvance(checkoutDate){
+      const priceAmount = updatePrice !== undefined ? Number(updatePrice) : Number(props.price)
       const currentDate = brewDate.getFullDate("yyyy/mm/dd");
       const dateofCheckout = checkoutDate;
       const stayDays = getStayedDays(currentDate, dateofCheckout);
-      const tAmount = stayDays * +props.price;
+      const tAmount = stayDays * priceAmount;
       setTotalAmount(tAmount);
       // Get the total amount with GST!
       const totalWithGST = getTotalAmountWithGST(tAmount);
