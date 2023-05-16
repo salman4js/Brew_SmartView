@@ -50,7 +50,9 @@ const RoomType = (props) => {
             <div className = "card-body" style = {{overflow: "auto"}}>
                 {
                     loader ? (
-                        <Loading />
+                        <div className = "text-center" style = {{color: "black"}}>
+                          Fetching Room Type List...
+                        </div>
                     ) : (
                         <div className = "model-gap">
                             <table style={{ width: "100%", color: "black" }}>

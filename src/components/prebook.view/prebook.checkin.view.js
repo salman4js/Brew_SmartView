@@ -207,6 +207,8 @@ const PrebookCheckin = () => {
       checkinTime: checkinTime,
       checkoutTime: checkoutTime
     }
+    
+    console.warn(data); // Remove later after find out the root cause of am and pm mismatching!
         
     axios.post(`${Variables.hostId}/${splitedIds[0]}/getnonprebook`, data)
       .then(res => {
