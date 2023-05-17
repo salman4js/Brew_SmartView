@@ -212,6 +212,7 @@ const PrebookCheckin = () => {
       var checkoutTime = brewDate.timeFormat(new Date(picker.checkoutDateTime).toLocaleTimeString());
     } else {
       // Time Values
+      console.log(new Date(picker.checkinDateTime).toLocaleTimeString('en-US', options))
       var checkinTime = brewDate.timeFormat(new Date(picker.checkinDateTime).toLocaleTimeString('en-US', options));
       var checkoutTime = brewDate.timeFormat(new Date(picker.checkoutDateTime).toLocaleTimeString('en-US', options));
     }
