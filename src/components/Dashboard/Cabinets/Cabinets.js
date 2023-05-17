@@ -6,10 +6,19 @@ const Cabinets = (props) => {
 
     // Loader handler
     const [loader, setLoader] = useState(false);
-
+    
     // Search handler!
     const [search, setSearch] = useState(false);
     const [searchValue, setSearchValue] = useState("");
+    
+    // Filter favourite customer!
+    function filterFavCustomer(options){
+      try{
+        return options.phonenumber.toLowerCase().includes(searchValue.toLowerCase()) || options.secondphonenumber.toLowerCase().includes(searchValue.toLowerCase()) || options.username.toLowerCase().includes(searchValue.toLowerCase()) || options.aadharcard.toLowerCase().includes(searchValue.toLowerCase());
+      } catch(err){
+        console.warn("Favourite Customer Old Build Second Phone Number Value undefined")
+      }
+    }
 
     // Handle search dialog
     function handleSearch() {
@@ -75,7 +84,7 @@ const Cabinets = (props) => {
                         {
                             props.methodCall === "favourites" && (
                                props.data.filter((options) => {
-                                    return options.phonenumber.toLowerCase().includes(searchValue.toLowerCase()) || options.secondphonenumber.toLowerCase().includes(searchValue.toLowerCase()) || options.username.toLowerCase().includes(searchValue.toLowerCase()) || options.aadharcard.toLowerCase().includes(searchValue.toLowerCase());
+                                    return filterFavCustomer(options);
                                }).map((item,key) => {
                                     return (
                                         <Values roomno={item.username} secphonenumber = {item.secondphonenumber} data={item} helperPanel={(data, id) => props.helperPanel(data, id)} id={props.methodCall} loaderState={(data) => changeLoader(data)} loader={loader} />
