@@ -7,6 +7,12 @@ export function handleTimeFormat(time) {
     return brewDate.timeFormat(time);
 }
 
+// Get the current operating system!
+export function getCurrentOS(){
+  const platform = window.navigator.platform;
+  return platform;
+}
+
 // Convert time from 12 hour format to 24 hour format!
 export function convert12to24(timestart){
   try{
