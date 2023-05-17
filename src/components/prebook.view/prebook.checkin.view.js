@@ -8,6 +8,7 @@ import HomeRoom from '../HomeRoom';
 import brewDate from 'brew-date';
 import changeScreen from '../Action';
 import { getStorage, clearStorage, defaultStorage } from '../../Controller/Storage/Storage';
+import { getCurrentOS } from '../common.functions/common.functions';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Link, useParams } from "react-router-dom";
@@ -192,11 +193,30 @@ const PrebookCheckin = () => {
   
   // Get available rooms for prebooking!
   function getAvailableRooms(){
-        
-    // Time Values
-    const checkinTime = brewDate.timeFormat(new Date(picker.checkinDateTime).toLocaleTimeString());
-    const checkoutTime = brewDate.timeFormat(new Date(picker.checkoutDateTime).toLocaleTimeString())
     
+    var operatingSystem = getCurrentOS();
+    
+    var options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    };
+    
+    if(operatingSystem.search("Linux") !== -1){ // AM and PM format changes based on OS, cause of toLocaleTimeString() method!
+      // Time Values
+      var checkinTime = brewDate.timeFormat(new Date(picker.checkinDateTime).toLocaleTimeString());
+      var checkoutTime = brewDate.timeFormat(new Date(picker.checkoutDateTime).toLocaleTimeString());
+    } else {
+      // Time Values
+      var checkinTime = brewDate.timeFormat(new Date(picker.checkinDateTime).toLocaleTimeString('en-US', options));
+      var checkoutTime = brewDate.timeFormat(new Date(picker.checkoutDateTime).toLocaleTimeString('en-US', options));
+    }
+            
+  
     // Date Values
     const checkinDate = brewDate.format(picker.checkinDateTime, "yyyy/mm/dd");
     const checkoutDate = brewDate.format(picker.checkoutDateTime, "yyyy/mm/dd");
