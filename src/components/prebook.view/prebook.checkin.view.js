@@ -197,9 +197,6 @@ const PrebookCheckin = () => {
     var operatingSystem = getCurrentOS();
     
     var options = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
@@ -212,7 +209,6 @@ const PrebookCheckin = () => {
       var checkoutTime = brewDate.timeFormat(new Date(picker.checkoutDateTime).toLocaleTimeString());
     } else {
       // Time Values
-      console.log(new Date(picker.checkinDateTime).toLocaleTimeString('en-US', options))
       var checkinTime = brewDate.timeFormat(new Date(picker.checkinDateTime).toLocaleTimeString('en-US', options));
       var checkoutTime = brewDate.timeFormat(new Date(picker.checkoutDateTime).toLocaleTimeString('en-US', options));
     }
