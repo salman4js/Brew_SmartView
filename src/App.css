@@ -353,6 +353,12 @@ td {
   bottom: 0 !important;
 }
 
+.sidePanelSticky{
+  position: fixed !important;
+  border-radius: 90 !important;
+  bottom: 0 !important;
+}
+
 .navbar-bg {
   background: rgba(0, 0, 0, 0) linear-gradient(45deg, rgba(2, 129, 255, 0.087) 0%, rgb(18, 44, 105) 58.93%, rgba(7, 142, 179, 0) 100%) repeat scroll 0% 0%;
   color: white;
@@ -742,5 +748,27 @@ td {
 .checkin-modal{
   height: auto;
   max-height: 650px;
+  overflow: auto;
+}
+
+.custom-container{
+  margin: 0 auto;
+  max-width: 78rem;
+  width: 100%;
+}
+
+.heading-bottom-space{
+  margin-bottom: 55px;
+}
+
+.card-view-body{
+  color: black;
+  font-size: 19px;
+  font-weight: 500;
+}
+
+.invoice-container{
+  height: auto;
+  max-height: calc(100% - 90px);
   overflow: auto;
 }
