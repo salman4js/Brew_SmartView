@@ -1,5 +1,7 @@
 import React from 'react';
 import CustomModal from '../../CustomModal/custom.modal.view'
+import { getClassName } from '../../common.functions/common.functions';
+
 
 
 const CardView = (props) => {
@@ -18,13 +20,22 @@ const CardView = (props) => {
     });
   }
   
+  // Get className for the footer buttons!
+  function getClass(variant){
+    return getClassName(variant)
+  }
+  
   // Show Footer Buttons!
   function _showFooterButtons(){
     return(
       props.data?.footerButtons?.show && (
-        <div className  = "btn btn-dark" onClick = {() => props.data.footerButtons.onClick(props.data?.inBodyData.OBJECT_ID)}>
-          {props.data?.footerButtons?.id}
-        </div>
+        props.data?.footerButtons.btns.map((options, key) => {
+          return(
+            <div className  = {getClass(options.variant)} onClick = {() => options.onClick(props.data?.inBodyData.OBJECT_ID)}>
+              {options.id}
+            </div>
+          )
+        })
       )
     )
   }
@@ -48,7 +59,7 @@ const CardView = (props) => {
   
   return(
     <div className="col-4" style={{ paddingBottom: "10vh" }}>
-        <div className="card card-container">
+        <div className="card card-container" style = {{height: '350px'}}>
             <div className="card-header text-handler text-center" style={{ fontWeight: "bold", fontSize: '18px' }}>
               {props.data.header}
             </div>

@@ -7,8 +7,9 @@ import { Link, useParams } from "react-router-dom";
 import { getInvoiceMemory } from './invoice.memory.utils';
 import CardView from '../CardView/card.view/card.view';
 import PanelView from '../SidePanelView/panel.view';
-  
-const InvoiceMemory = () => {
+
+
+const InvoiceMemory = () => {  
   
   //Check the ID and token of the application!
   const { id } = useParams();
@@ -36,8 +37,8 @@ const InvoiceMemory = () => {
   const [data, setData] = useState([]);
   
   // Trigger Loader!
-  function triggerLoader(){
-    setLoader(prevState => ({...prevState, isLoader: !loader.isLoader}))
+  function triggerLoader(value){
+    setLoader(prevState => ({...prevState, isLoader: value}))
   }
   
   // Trigger Modal!
@@ -47,11 +48,14 @@ const InvoiceMemory = () => {
   
   // Load the memory invoice!
   async function _loadMemory(){
+    triggerLoader(true);
     const result = await getInvoiceMemory(splitedIds[0]); //splitedIds[0] as LodgeId
     if(result.data.success){
       setData(result.data.message);
+      triggerLoader(false);
     } else {
-      console.log("Value not loaded")
+      console.log("Value not loaded");
+      triggerLoader(false);
     }
   }
   
@@ -68,7 +72,6 @@ const InvoiceMemory = () => {
   
   // Populate the modal for in modal data!
   function populateModel(options, objectData){
-    console.log(options);
     objectData['Customer Name'] = options.customerName;
     objectData['Checkout Date'] = options.dateofCheckout;
     objectData['CheckIn Date'] = options.dateofCheckin;
@@ -87,6 +90,11 @@ const InvoiceMemory = () => {
     triggerModal(true, result);
   }
   
+  // This method will handle the printing of specific invoice memory!
+  function _printInvoice(){
+    console.log("Invoice Memory Dummy Command.................")
+  }
+  
   // Show Invoice Model View for each data!
   function _showChildView(){
     return(
@@ -103,8 +111,18 @@ const InvoiceMemory = () => {
           },
           footerButtons: {
             show: true,
-            id: "Details",
-            onClick: _detailView
+            btns: [
+            {
+              id: "Details",
+              variant: "info",
+              onClick: _detailView
+            },
+            {
+              id: "Print",
+              variant: "success",
+              onClick: _printInvoice
+            }
+          ]
           },
           isModalEnabled: true
         }
@@ -125,21 +143,29 @@ const InvoiceMemory = () => {
     <div>
       <div>
           <Navbar id={id} name={splitedIds[1]} className="sticky" />
-          <PanelView height = {(value) => setSidePanelHeight(value)} />
-          <div className = "invoice-container">
-            <div className = "text-center heading-bottom-space">
+          {
+            loader.isLoader ? (
+              <Loading message = "Processing Invoice Memory" /> 
+            ) : (
               <div>
-                <h3 className = "heading-top topic-off">
-                  Invoice Memory
-                </h3>
+                <PanelView height = {(value) => setSidePanelHeight(value)} />
+                <div className = "invoice-container">
+                  <div className = "text-center heading-bottom-space">
+                    <div>
+                      <h3 className = "heading-top topic-off">
+                        Invoice Memory
+                      </h3>
+                    </div>
+                  </div>
+                  <div className = "custom-container">
+                    <div className = "row">
+                      {_showChildView()}
+                    </div>  
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className = "custom-container">
-              <div className = "row">
-                {_showChildView()}
-              </div>  
-            </div>
-          </div>
+            )
+          }
       </div>
     </div>
   )

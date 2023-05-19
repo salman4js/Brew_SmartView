@@ -84,3 +84,20 @@ export async function getExtraBedPrice(roomType, lodgeId){
     
   return roomTypePrice;
 }
+
+// Get className based on the model input!
+export function getClassName(variant){
+  if(variant === "secondary"){
+    return "btn btn-secondary";
+  } else if(variant === "primary"){
+    return "btn btn-primary"
+  } else if(variant === "dark") {
+    return "btn btn-dark"
+  } else if(variant === "info"){
+    return "btn btn-info"
+  } else if(variant === "success") {
+    return "btn btn-success"
+  } else {
+    return "btn btn-danger"
+  }
+}
