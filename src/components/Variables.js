@@ -1,4 +1,4 @@
-const Variables = {
+export const Variables = {
     hostId : "https://salman-dev--guileless-sundae-522a29.netlify.app/.netlify/functions/server"
 }
 
