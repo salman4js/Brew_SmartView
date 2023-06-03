@@ -64,6 +64,12 @@ const ConfigMatrix = (props) => {
                     {props.extraBed.labelExtra}
                 </label>
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.grcHandler.isGrcEnabled} onChange = {() => props.grcHandler.onChange(!props.grcHandler.isGrcEnabled)} />
+                <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                    {props.grcHandler.label}
+                </label>
+            </div>
         </div>
     )
 }

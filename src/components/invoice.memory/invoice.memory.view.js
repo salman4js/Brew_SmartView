@@ -27,6 +27,7 @@ const InvoiceMemory = () => {
     centered: true,
     header: "Invoice Memory Details",
     onHide: triggerModal,
+    modalSize: "medium",
     data: undefined
   })
   
@@ -54,7 +55,6 @@ const InvoiceMemory = () => {
       setData(result.data.message);
       triggerLoader(false);
     } else {
-      console.log("Value not loaded");
       triggerLoader(false);
     }
   }

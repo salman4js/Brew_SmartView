@@ -101,3 +101,9 @@ export function getClassName(variant){
     return "btn btn-danger"
   }
 }
+
+
+// Refresh the page!
+export function refreshPage(){
+  window.location.reload();
+}

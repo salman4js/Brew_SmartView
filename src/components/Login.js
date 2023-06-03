@@ -55,7 +55,8 @@ const Login = () => {
             "isInsights": res.data.isInsights,
             "isSpecific": res.data.isSpecific,
             "canDelete": res.data.canDelete,
-            "extraCalc": res.data.extraCalc
+            "extraCalc": res.data.extraCalc,
+            "isGrcPreview": res.data.grcPreview
           }
 
           // Populate the modal into localstorage!

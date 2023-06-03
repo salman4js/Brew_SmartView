@@ -1,7 +1,7 @@
 import React from 'react';
-import CustomModal from '../../CustomModal/custom.modal.view'
+import CustomModal from '../../CustomModal/custom.modal.view';
+import CustomModalBodyitem from '../../CustomModal/custom.modal.body/custom.modal.body.item/custom.modal.body.item'
 import { getClassName } from '../../common.functions/common.functions';
-
 
 
 const CardView = (props) => {
@@ -40,6 +40,13 @@ const CardView = (props) => {
     )
   }
   
+  // Function to get the view for the custom model body item view!
+  function customModalBodyItem(){
+    return Object.keys(props.modalData.data).map((key) => (
+      <CustomModalBodyitem keys = {key} value = {props.modalData.data[key]} />
+    ));
+  }
+  
   // Show Custom Modal!
   function _showCustomModal(){
     // Form modal data and invoice details data!
@@ -47,12 +54,13 @@ const CardView = (props) => {
       show: props.modalData.show,
       onHide: props.modalData.onHide,
       header: props.modalData.header,
-      centered: props.modalData.centered
+      centered: props.modalData.centered,
+      modalSize: props.modalData.modalSize
     }
     
     return(
       props.modalData?.show && (
-        <CustomModal modalData = {modelAndInvoiceData} data = {props.modalData.data}  />
+        <CustomModal modalData = {modelAndInvoiceData} showBodyItemView = {() => customModalBodyItem()}  />
       )
     )
   }

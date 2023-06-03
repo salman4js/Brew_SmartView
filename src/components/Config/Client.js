@@ -57,6 +57,18 @@ const Client = () => {
             setExtraPrice(data);
         }
     }
+    
+    // GRC Enable/Disable state handler!
+    const [grcHandler, setGrcHandler] = useState({
+      isGrcEnabled: false,
+      label: "Enable GRC Preview",
+      onChange: handleGrcAction
+    })
+    
+    // Handle function to disable and enable grc on command!
+    function handleGrcAction(value){
+      setGrcHandler(prevState => ({...prevState, isGrcEnabled: value}));
+    }
 
     // GST Mode Handler!
     const [gstMode, setGstMode] = useState({
@@ -168,6 +180,7 @@ const Client = () => {
                     setSpecific(prevState => ({...prevState, isEnable: res.data.isSpecific}))
                     setOptDelete(prevState => ({...prevState, canDelete: res.data.canDelete}))
                     setExtraBed(prevState => ({...prevState, isDay: res.data.extraCalc}))
+                    setGrcHandler(prevState => ({...prevState, isGrcEnabled: res.data.grcPreview}))
                 }
             })
         
@@ -266,7 +279,8 @@ const Client = () => {
             isInsights: insights.isEnable,
             isSpecific: specific.isEnable,
             canDeleteRooms: optDelete.canDelete,
-            extraCalc : extraBed.isDay
+            extraCalc : extraBed.isDay,
+            grcPreview: grcHandler.isGrcEnabled
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -394,7 +408,7 @@ const Client = () => {
                                 <div class="card-body">
                                     <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
-                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} extraBed = {extraBed}
+                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} extraBed = {extraBed} grcHandler = {grcHandler}
                                     />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>

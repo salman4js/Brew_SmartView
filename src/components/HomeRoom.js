@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import { excludeDatesCheckin, prebookExcludeDates } from './ExcludeDates/excludesdates';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -14,9 +14,10 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ModalCheckOut from './ModalCheckOut';
 import Wizard from './Wizard/model.wizard.view';
-import { getStorage } from '../Controller/Storage/Storage';
+import { getStorage, setStorage } from '../Controller/Storage/Storage';
 import Modals from './Modals';
-import { handleTimeFormat, loadDate, getStayedDays, getExtraBedPrice } from './common.functions/common.functions';
+import GuestRegistration from './GRC/grc.view';
+import { handleTimeFormat, loadDate, getStayedDays, getExtraBedPrice, refreshPage } from './common.functions/common.functions';
 
 
 const HomeRoom = (props) => {
@@ -24,11 +25,16 @@ const HomeRoom = (props) => {
     const current = new Date();
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
     const getTime = current.getHours() + ":" + current.getMinutes();
+    
+    // Reference for the video and photo for GRC!
+    const videoRef = useRef(null);
+    const [stream, setStream] = useState(null);
 
     // Admin configurations!
     var isExclusive = JSON.parse(getStorage("isExclusive"));
     var isHourly = JSON.parse(getStorage("isHourly"));
     var extraCalc = JSON.parse(getStorage("extraCalc"));
+    var isGrcPreview = JSON.parse(getStorage('isGrcPreview'));
 
     // Exclude dates for prebook modals
     const [excludeDates, setExcludeDates] = useState([]);
@@ -220,7 +226,41 @@ const HomeRoom = (props) => {
             return time;
         }
     }
-
+    
+    // React view for GRC preview as a function!
+    function grcView(){
+      
+      // Required Data for the GRC!
+      const data = {
+        customername: customername,
+        phonenumber: customerphonenumber,
+        secondphonenumber: secondphonenumber,
+        adults: adults,
+        childrens: childrens,
+        aadhar: aadhar,
+        checkin: brewDate.getFullDate("yyyy/mm/dd"),
+        checkinTime: getTime,
+        checkout: formatDate(checkedoutdate),
+        checkoutTime: handleCheckoutTime(getTime),
+        roomid: props.roomid,
+        roomno: props.roomno,
+        roomtype: props.roomtype,
+        discount: discount,
+        advance: advanceCheckin,
+        channel: dropdown,
+        isChannel: isChannel,
+        updatePrice: updatePrice,
+        extraBeds: extraCount,
+        extraBedPrice: props.extraBedPrice,
+        lodgeName: props.lodgeName
+      }
+      
+      return(
+        <div>
+          <GuestRegistration data = {data} modalData = {grcPreview} />
+        </div>
+      )
+    }
 
     // Add Data to the model
     const processData = () => {
@@ -275,7 +315,7 @@ const HomeRoom = (props) => {
                         handleClose();
                         setShowerror(true);
                         setSuccess(res.data.message);
-                        refresh();
+                        updateGrcPreview(true, true);
                     } else {
                         setLoading(false);
                         setShowerror(true);
@@ -283,6 +323,49 @@ const HomeRoom = (props) => {
                     }
                 })
         }
+    }
+    
+    
+    // State of boolean to show or hide GRC preview1
+    const [grcPreview, setGrcPreview] = useState({
+      show: false,
+      header: "Guest Registration Card Preview",
+      centered: true,
+      onHide: updateGrcPreview,
+      modalSize: "lg",
+      footerEnabled: true,
+      downloadTriggered: false,
+      footerButtons: [
+        {
+          btnId: "Download",
+          variant: "success",
+          onClick: downloadGrcPreview
+        },
+        {
+          btnId: "Cancel",
+          variant: "secondary",
+          onClick: updateGrcPreview
+        }
+      ]
+    })
+    
+    // Download grc preview!
+    function downloadGrcPreview(){
+      setGrcPreview(prevState => ({...prevState, downloadTriggered: true}));
+      stopWebcam();
+      refresh();
+    }
+    
+    // Update the current GRC Preview!
+    function updateGrcPreview(value, reload){ // Changed the behaviour of the this function, cause this function arguments are
+      // not passed from the child component(grc.view), Its coming as undefined, So to make it work, added !reload to get the expected behaviour!
+      // undefined tunrs to true!
+      if(!reload){
+        setGrcPreview(prevState => ({...prevState, show: value}));
+        refreshPage();
+      } else {
+        setGrcPreview(prevState => ({...prevState, show: value}));
+      }
     }
 
     // Retrieve User Room data from the API
@@ -981,6 +1064,56 @@ const HomeRoom = (props) => {
     function updatePriceWizard(value){
         setUpdatePrice(value);
     }
+    
+      // Access the user camera!
+      function getUserCamera(){
+        navigator.mediaDevices.getUserMedia({
+          video: true
+        })
+        .then((stream) => {
+          setStream(stream)
+          let video = videoRef.current;
+          video.srcObject = stream;
+          video.play()
+        })
+        .catch((err) => {
+          console.warn("Error occured, while accessing camera!")
+        })
+      }
+      
+      // Stop the web camera access!
+      const stopWebcam = () => {
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+          setStream(null);
+        }
+      };
+      
+      // take picture through the user media devices!
+      function takePicture() {
+        let video = videoRef.current;
+        let canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        let context = canvas.getContext('2d');
+        
+        // Draw the current video frame on the canvas
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Convert the canvas content to a data URL representing a PNG image
+        let dataURL = canvas.toDataURL('image/png');
+
+        // Save the image data to local storage
+        setStorage("userMedia", dataURL);
+      }
+
+    
+    // Listen to the video ref and if it changes, get the access to the video camera!
+    useEffect(() => {
+      if(show){
+        getUserCamera()
+      } 
+    }, [show])
 
 
     return (
@@ -1013,6 +1146,14 @@ const HomeRoom = (props) => {
                       <Modal.Body>
                           <div className = "checkin-modal">
                             <h4 className='strong'>{props.roomno}</h4>
+                            {/* Take Guest photo incase grc preview is enabled! */}
+                            {isGrcPreview && (
+                              <div className = "modal-gap">
+                                <video className = "container" ref = {videoRef}> </video>
+                                <div className = "btn btn-info modal-gap" onClick = {() => takePicture()}>Take Photo</div>
+                                <div className = "table-view-bill-line"></div>
+                              </div>
+                            )}
                             {
                                 props.channel ? (
                                     <div className="modal-gap">
@@ -1124,6 +1265,11 @@ const HomeRoom = (props) => {
                           <Button className='btn btn-outline' disabled={inline.inlineErrorDiscount} onClick={processData}> Save and Close </Button>
                       </Modal.Footer>
                   </Modal>
+                )}
+                
+                {/* Guest Registration Card View */}
+                {grcPreview.show && (
+                  grcView()
                 )}
 
                 {/* // Pre Book Modal  */}

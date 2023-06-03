@@ -2,7 +2,7 @@ export function setStorage(key, value){
     localStorage.setItem(key, value);
 }
 
-export function getStorage(key, value){
+export function getStorage(key){
     const result = localStorage.getItem(key);
     return result;
 }
