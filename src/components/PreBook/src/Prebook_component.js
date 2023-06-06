@@ -5,7 +5,7 @@ import brewDate from 'brew-date';
 import Modal from "react-bootstrap/Modal";
 import Variables from '../../Variables';
 import Button from "react-bootstrap/Button";
-import { handleTimeFormat, compareTime, convert12to24 } from '../../common.functions/common.functions.js';
+import { handleTimeFormat, compareTime, convert12to24, getTimeDate } from '../../common.functions/common.functions.js';
 
 
 const Prebook_component = (props) => {
@@ -13,9 +13,35 @@ const Prebook_component = (props) => {
   // Current Date
   const date = brewDate.getFullDate("yyyy/mm/dd");
   var time = brewDate.getTime(); // Time in 24 hour format for easy comparison!
+  
+  // Time to handle channel manager, edit room price, and mismatching time booking price!
+  const timeDate = getTimeDate();
+  const getTime = timeDate.getTime;
 
   // More Details
   const [show, setShow] = useState(false);
+  
+  // State handler for checkin time decider!
+  const [checkinTime, setCheckinTime] = useState({
+    expCheckinTime: undefined,
+    changeCheckinTime: _changeCheckinTime
+  });
+  
+  // Get buttons className!
+  function getButtonClassName(){
+    if(checkinTime.expCheckinTime){
+      return "btn btn-primary";
+    } else if(checkinTime.expCheckinTime === undefined){
+      return "btn btn-info";
+    } else {
+      return "btn btn-secondary"
+    }
+  }
+  
+  // Function to select checkin time!
+  function _changeCheckinTime(value){
+    setCheckinTime(prevState => ({...prevState, expCheckinTime: value}))
+  }
 
   // Handle More Details Modal
   const handleClose = () => {
@@ -74,8 +100,27 @@ const Prebook_component = (props) => {
     return newDate;
   }
   
+  // Check for expected and actual checkin time button disabled!
+  function isButtonDisabled(){
+    if(checkinTime.expCheckinTime !== undefined && checkinTime.expCheckinTime === true){
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  // Function to get the checkin time incase of late entry!
+  function getCheckinTime(){
+    if(checkinTime.expCheckinTime !== undefined && checkinTime.expCheckinTime === true){
+      return props.checkinTime;
+    } else {
+      return getTime;
+    }
+  }
+
   // Check-In to the model
   const processData = () => {
+
     setLoading(true);
     // Validating current date before booking
     if((date == props.dateofcheckin) === false){
@@ -97,7 +142,9 @@ const Prebook_component = (props) => {
         childrens: props.childrens,
         aadhar: props.aadhar,
         checkin: props.dateofcheckin,
-        checkinTime: props.checkinTime,
+        expCheckinTime: props.checkinTime,
+        checkinTime: getCheckinTime(),
+        actualCheckinTime: getTime,
         checkoutTime: props.checkoutTime,
         checkout : props.dateofcheckout,
         roomid: props.roomid,
@@ -107,7 +154,8 @@ const Prebook_component = (props) => {
         discount: props.discount, // Sending duplicate data to the server to prevent including more schema values
         advance: props.advance, // Sending duplicate data to the server to prevent including more schema values
         advancePrebookPrice : props.advance,
-        advanceDiscount: props.discount
+        advanceDiscount: props.discount,
+        channel: props.channel
       }
       axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
         .then(res => {
@@ -136,7 +184,6 @@ const Prebook_component = (props) => {
     axios.post(`${Variables.hostId}/${props.lodgeid}/deleteprebookuserrooms`, credentials)
       .then(res => {
         if (res.data.success) {
-          console.log("Prebook user data deleted");
           handleClose();
           deletePrebookModal();
           props.setLoad(true);
@@ -224,6 +271,23 @@ const Prebook_component = (props) => {
             <p className = "heading-title">
                 Pre Book Price : {props.prebookprice}
             </p>
+            {timeCheck() && (
+              <div>
+                <p className = "heading-title info-message">
+                    Guest arrived late, Which time do you want to choose as their arrival time?
+                </p>
+                <p className = "heading-title">
+                    <span>
+                      <button className = "btn btn-info" disabled = {checkinTime.expCheckinTime !== undefined ? isButtonDisabled() : false} onClick = {() => _changeCheckinTime(true) }>
+                        Take Expected Check In
+                      </button>
+                      <button className = "btn btn-info" style = {{marginLeft: '10px'}} disabled = {checkinTime.expCheckinTime !== undefined ? !isButtonDisabled() : false} onClick = {() => _changeCheckinTime(false) }>
+                        Take Actual Check In
+                      </button>
+                    </span>
+                </p>
+              </div>
+            )}
             <p className="heading-title">
               Customer Name: {props.customername}
             </p>
