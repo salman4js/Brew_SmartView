@@ -165,7 +165,7 @@ const UserDb = () => {
                                                     advance = {item.advance} bill = {item.bill} dishBill = {item.dishbill} foodGst = {item.foodGst} stayGst= {item.stayGst} 
                                                     totalAmount = {Number(item.totalAmount) + Number(item.advance)} isGst = {item.isGst}
                                                     channel = {item.channel} checkinTime = {item.checkinTime} checkoutTime = {item.checkoutTime}
-                                                    receiptId = {item.receiptId} />
+                                                    receiptId = {item.receiptId} actualCheckinTime = {item.actualCheckinTime} />
                                                 )
                                             })
                                         }

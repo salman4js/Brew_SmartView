@@ -9,6 +9,15 @@ const UserDbComp = (props) => {
   const handleClose = () => {
     setShow(!show);
   }
+  
+  // Get actual check in time!
+  function getActualCheckinTime(){
+    if(props.actualCheckinTime !== undefined){
+      return props.actualCheckinTime;
+    } else {
+      return props.checkinTime;
+    }
+  }
 
   // Handle checkin time format!
   function handleTimeFormat(time){
@@ -82,9 +91,21 @@ const UserDbComp = (props) => {
             <p className="font-big">
               Checked In Days: {props.stayeddays}
             </p>
-            <p className="font-big">
-              Checked In : {props.checkin} / {handleTimeFormat(props.checkinTime)}
-            </p>
+            {!props.prebooked && (
+              <p className="font-big">
+                Checked In : {props.checkin} / {handleTimeFormat(props.checkinTime)}
+              </p>
+            )}
+            {props.prebooked && (
+              <div>
+                <p className="font-big">
+                  Provided Checkin Time : {props.checkin} / {handleTimeFormat(props.checkinTime)}
+                </p>
+                <p className="font-big">
+                  Actual Checked-In Time : {handleTimeFormat(getActualCheckinTime())}
+                </p>
+              </div>
+            )}
             <p className="font-big">
               Checked Out: {props.checkout} / {handleTimeFormat(props.checkoutTime)}
             </p>

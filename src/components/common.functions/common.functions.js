@@ -102,6 +102,13 @@ export function getClassName(variant){
   }
 }
 
+export function getTimeDate(){
+  const current = new Date();
+  const getDate = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
+  const getTime = brewDate.timeFormat(current.getHours() + ":" + current.getMinutes());
+  return {getTime, getDate}
+}
+
 
 // Refresh the page!
 export function refreshPage(){

@@ -143,6 +143,9 @@ const HomeRoom = (props) => {
     const [prebookdiscount, setPrebookdiscount] = useState();
     const [prebookdateofcheckin, setPrebookdateofcheckin] = useState();
     const [prebookdateofcheckout, setPrebookdateofcheckout] = useState();
+    const [prebookChannelManager, setPrebookChannelManager] = useState(false);
+    const [prebookChannel, setPrebookChannel] = useState();
+    const [prebookUpdatePrice, setPrebookUpdatePrice] = useState();
 
 
     // Modal Handler!
@@ -172,6 +175,15 @@ const HomeRoom = (props) => {
         setPrebookmodal(!prebookmodal);
         checkPrebookAdvance();
     }
+    
+    // get prebook price if the price has been updated through channel manager!
+    function getPrebookPrice(){
+      if(prebookUpdatePrice !== undefined){
+        return prebookUpdatePrice
+      } else {
+        return props.price;
+      }
+    }
 
     // Add data to the prebook modal
     const processDataPreBook = () => {
@@ -190,11 +202,13 @@ const HomeRoom = (props) => {
             prebookdateofcheckout: formatDate(props.excludeTime.checkoutDate),
             prebookadvance: prebookadvance,
             prebookdiscount: prebookdiscount,
-            prebookprice: props.price,
+            prebookprice: getPrebookPrice(),
             suitetype: props.roomtype,
             roomid: props.roomid,
             checkinTime: checkinTime,
-            checkoutTime: checkoutTime
+            checkoutTime: checkoutTime,
+            prebookChannelManager: prebookChannelManager,
+            prebookChannel: prebookChannel
         }
 
         axios.post(`${Variables.hostId}/${props.lodgeid}/addprebookuserrooms`, credentials)
@@ -504,15 +518,18 @@ const HomeRoom = (props) => {
     }
 
     // Handle Channel Manager!
-    function handleChannel(value) {
+    function handleChannel(value, mode) {
+      
+        const isChannel = (value !== "Walk-In");
 
         // Check if the rate has to be updated or not!
-        if (value !== "Walk-In") {
-            setIsChannel(true);
+        if(mode === "check-in"){
+          setIsChannel(isChannel)
+          setDropdown(value)
         } else {
-            setIsChannel(false);
+          setPrebookChannelManager(isChannel)
+          setPrebookChannel(value)
         }
-        setDropdown(value);
     }
 
     // Check limit for advance and discount!
@@ -1061,8 +1078,12 @@ const HomeRoom = (props) => {
     }
 
     // If channel manager enabled, Update the given price as the total amount (Updating on server side) or just update the room price!
-    function updatePriceWizard(value){
-        setUpdatePrice(value);
+    function updatePriceWizard(value, action){
+        if(action === "check-in"){
+          setUpdatePrice(value);
+        } else {
+          setPrebookUpdatePrice(value);
+        }
     }
     
       // Access the user camera!
@@ -1111,7 +1132,9 @@ const HomeRoom = (props) => {
     // Listen to the video ref and if it changes, get the access to the video camera!
     useEffect(() => {
       if(show){
-        getUserCamera()
+        if(isGrcPreview){
+            getUserCamera()
+        }
       } 
     }, [show])
 
@@ -1158,7 +1181,7 @@ const HomeRoom = (props) => {
                                 props.channel ? (
                                     <div className="modal-gap">
                                         <label style={{ color: "black" }}> Channel Manager </label>
-                                        <select class="form-select" aria-label="Default select example" onChange={(e) => handleChannel(e.target.value)}>
+                                        <select class="form-select" aria-label="Default select example" onChange={(e) => handleChannel(e.target.value, "check-in")}>
                                             <option selected>Choose...</option>
                                             {
                                                 props.options.map((item, key) => {
@@ -1177,7 +1200,7 @@ const HomeRoom = (props) => {
                                 props.channel || props.updatePriceWizard ? (
                                     <div className="modal-gap">
                                         <label style={{ color: "black" }}> {isChannel ? "Update Price" : "Update Room Price"} </label>
-                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder={isChannel ? "Update Price" : "Update Room Price"} name={updatePrice} value={updatePrice} onChange={(e) => updatePriceWizard(e.target.value)} />
+                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder={isChannel ? "Update Price" : "Update Room Price"} name={updatePrice} value={updatePrice} onChange={(e) => updatePriceWizard(e.target.value, "check-in")} />
                                     </div>
                                 ) : (
                                     null
@@ -1289,6 +1312,31 @@ const HomeRoom = (props) => {
                       <Modal.Body>
                           <div className = "checkin-modal">
                           <h4 className='strong'>{props.roomno}</h4>
+                          {
+                              props.channel ? (
+                                  <div>
+                                    <div className="modal-gap">
+                                        <label style={{ color: "black" }}> Channel Manager </label>
+                                        <select class="form-select" aria-label="Default select example" onChange={(e) => handleChannel(e.target.value, "pre-book")}>
+                                            <option selected>Choose...</option>
+                                            {
+                                                props.options.map((item, key) => {
+                                                    return (
+                                                        <option>{item}</option>
+                                                    )
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+                                    <div className="modal-gap">
+                                        <label style={{ color: "black" }}> {isChannel ? "Update Price" : "Update Room Price"} </label>
+                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder={isChannel ? "Update Price" : "Update Room Price"} name={prebookUpdatePrice} value={prebookUpdatePrice} onChange={(e) => updatePriceWizard(e.target.value, "pre-book")} />
+                                    </div>
+                                  </div>
+                              ) : (
+                                  null
+                              )
+                          }
                           <div className='modal-gap'>
                               <label style={{ color: "black" }}> Date & Time Of Check In </label>
                               <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Date of checkin" name={props.excludeTime.checkinDate + " " + props.excludeTime.checkinTime} value={props.excludeTime.checkinDate + " " + props.excludeTime.checkinTime} />

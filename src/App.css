@@ -787,3 +787,7 @@ td {
   max-height: calc(100% - 90px);
   overflow: auto;
 }
+
+.info-message{
+  color: blue;
+}
