@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import retrieveDate from '../../PreBook_Date_Spike/DateCorrector';
+import EditPrebookRoomItem from '../../edit.room.view/edit.prebook.room.view/edit.prebook.room.item.view';
+import CustomModal from '../../CustomModal/custom.modal.view';
 import axios from "axios";
 import brewDate from 'brew-date';
 import Modal from "react-bootstrap/Modal";
@@ -36,6 +38,72 @@ const Prebook_component = (props) => {
     } else {
       return "btn btn-secondary"
     }
+  }
+  
+  // Custom Modal on hide!
+  function isCustomModalDestroyed(){
+    return !editDetails.isEditMode;
+  }
+  
+  // Trigger custom modal!
+  function _triggerCustomModal(){
+    _triggerEditMode(false)
+  }
+  
+  // Custom Modal view child registration!
+  function _showPrebookEditView(){
+    
+    // Form neccessary data from the prebook details
+    const prebookData = {
+      dateofcheckin: props.dateofcheckin,
+      checkinTime: props.checkinTime,
+      adults: props.adults,
+      childrens: props.childrens,
+      discount: props.discount
+    }
+    
+    return(
+      <div>
+        <EditPrebookRoomItem data = {prebookData} show = {editDetails.isEditMode} onHide = {() => _triggerEditMode(false)}  />
+      </div>
+    )
+  }
+
+
+  // Pending amount state handler!
+  const [pending, setPending] = useState({
+    isPending: false,
+    pendingAmount: undefined,
+    label: "Pending Amount",
+    placeholder: `Remaining amount has to be paid: `,
+    value: undefined
+  })
+  
+  // Edit details state handler!
+  const [editDetails, setEditDetails] = useState({
+    isEditMode: false,
+    onSave: _dummyFunction,
+    onCancel: _dummyFunction
+  })
+  
+  // trigger edit mode and vice versa!
+  function _triggerEditMode(value){
+    setEditDetails(prevState => ({...prevState, isEditMode: value}))
+  }
+  
+  // On Save and on cancel dummy function!
+  function _dummyFunction(){
+    console.log("Prebook edit details dummy command...........")
+  }
+  
+  // Update pending amount state!
+  function updatePendingState(state, value){
+    setPending(prevState => ({...prevState, isPending: state, pendingAmount: value}));
+  }
+  
+  // Update pending value!
+  function updatePendingValue(value){
+    setPending(prevState => ({...prevState, value: value}))
   }
   
   // Function to select checkin time!
@@ -86,6 +154,14 @@ const Prebook_component = (props) => {
     }
   }
   
+  // pending amount needs to be paid!
+  function pendingAmount(){
+    const pendingAmount = props.prebookprice - props.advance;
+    if(pendingAmount > 0){
+      updatePendingState(true, pendingAmount);
+    }
+  }
+  
   // Do time check!
   function timeCheck(){
     const loadedTime = loadTime();
@@ -115,6 +191,15 @@ const Prebook_component = (props) => {
       return props.checkinTime;
     } else {
       return getTime;
+    }
+  }
+  
+  // Get prebook advance amount!
+  function getPrebookAdvance(){
+    if(pending.value !== undefined){
+      return props.advance + pending.value;
+    } else {
+      return props.advance
     }
   }
 
@@ -153,7 +238,7 @@ const Prebook_component = (props) => {
         prebook : true,
         discount: props.discount, // Sending duplicate data to the server to prevent including more schema values
         advance: props.advance, // Sending duplicate data to the server to prevent including more schema values
-        advancePrebookPrice : props.advance,
+        advancePrebookPrice : getPrebookAdvance(),
         advanceDiscount: props.discount,
         channel: props.channel
       }
@@ -192,6 +277,11 @@ const Prebook_component = (props) => {
         }
       })
   }
+  
+  // On render function!
+  useEffect(() => {
+    pendingAmount()
+  }, [])
 
   return (
     <div class="col-4" style={{ paddingBottom: "10vh" }}>
@@ -266,7 +356,7 @@ const Prebook_component = (props) => {
           <Modal.Title className="text-center">More Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="container text-center">
+          <div className="container text-center checkin-modal">
 
             <p className = "heading-title">
                 Pre Book Price : {props.prebookprice}
@@ -286,6 +376,16 @@ const Prebook_component = (props) => {
                       </button>
                     </span>
                 </p>
+              </div>
+            )}
+            {pending.isPending && (
+              <div>
+                <div className = "table-view-bill-line"></div>
+                <label className = "heading-title">{pending.label}</label>
+                <p>
+                  <input className = "form-control" placeholder = {pending.placeholder + pending.pendingAmount.toString() + 'Rs'} value = {pending.value} name = {pending.value} onChange = {(e) => updatePendingValue(e.target.value) }  />
+                </p>
+                <div className = "table-view-bill-line"></div>
               </div>
             )}
             <p className="heading-title">
@@ -330,6 +430,9 @@ const Prebook_component = (props) => {
           <Button variant="danger" onClick={deletePrebookModal}>
             Cancel Pre Booking
           </Button>
+          <Button variant="info" onClick={() => _triggerEditMode(true)}>
+            Edit details
+          </Button>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
@@ -348,6 +451,11 @@ const Prebook_component = (props) => {
           Updating, please wait!
         </Modal.Body>
       </Modal>
+      
+      {/* Edit Prebook Customer Details */}
+      {editDetails.isEditMode && (
+        _showPrebookEditView()
+      )}
 
       {/* Server Response */}
       <div>
