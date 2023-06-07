@@ -102,6 +102,7 @@ export function getClassName(variant){
   }
 }
 
+// Get time and date for the current date!
 export function getTimeDate(){
   const current = new Date();
   const getDate = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
@@ -109,6 +110,9 @@ export function getTimeDate(){
   return {getTime, getDate}
 }
 
+export function formatDateToCustomFormat(date){
+  return brewDate.formatDateToCustomFormat(date)
+}
 
 // Refresh the page!
 export function refreshPage(){
