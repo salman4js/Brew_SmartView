@@ -32,28 +32,6 @@ const Prebook_component = (props) => {
   // Is grc enabled!
   var isGrcPreview = JSON.parse(getStorage('isGrcPreview'));
   
-  // Custom modal state handler!
-  const [customModal, setCustomModal] = useState({
-    show: false,
-    onHide: stopPhotoSpace,
-    header: "Guest registration photo space",
-    centered: true,
-    modalSize: 'medium',
-    footerEnabled: true,
-    footerButtons: [
-      {
-        btnId: "Take Photo",
-        variant: "info",
-        onClick: takePicture
-      },
-      {
-        btnId: "Cancel",
-        variant: "secondary",
-        onClick: stopPhotoSpace
-      }
-    ]
-  })
-  
   // State handler for GRC preview!
   const [grcPreview, setGrcPreview] = useState({
     show: false,
@@ -91,12 +69,6 @@ const Prebook_component = (props) => {
   // Trigger grc view!
   function toggleGrcView(value){
     setGrcPreview(prevState => ({...prevState, show: value}))
-  }
-  
-  // Close photo space!
-  function stopPhotoSpace(){
-    stopWebcam() // Stop the webcamera access!
-    setCustomModal(prevState => ({...prevState, show: false}))
   }
   
   // Get prebook data for edit and GRC!
