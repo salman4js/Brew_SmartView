@@ -12,7 +12,7 @@ const RegistrationCard = (props) => {
     area: getStorage('area'),
     emailId: getStorage('emailId'),
     ownnerNumber: getStorage('owner-number'),
-    lodgeName: props.data.lodgeName,
+    lodgeName: getStorage('lodge-name'),
     userMedia: getStorage('userMedia')
   }
   
@@ -47,10 +47,10 @@ const RegistrationCard = (props) => {
             Room Type: {props.data.roomtype}
         </div>
         <div>
-            Checkin Date & Time: {props.data.checkin}, {props.data.checkinTime}
+            Checkin Date & Time: {props.data.dateofcheckin}, {props.data.checkinTime}
         </div>
         <div>
-          Exp. Checkout Date & Time: {props.data.checkout}, {props.data.checkoutTime}
+          Exp. Checkout Date & Time: {props.data.dateofcheckout}, {props.data.checkoutTime}
         </div>
       </div>
     )

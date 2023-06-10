@@ -3,26 +3,42 @@ import DateField from './datefield/datefield.view';
 import TextField from './textfield/textfield.view';
 
 const MetadataFields = (props) => {
+  
+  // Get input value!
+  function getInputValue(event, attribute){
+    if(attribute === 'textField'){
+      return event.target.value;
+    } else {
+      return event;
+    }
+  }
 
   // Handle input change!
-  const handleInputChange = (index, event) => {
+  const handleInputChange = (index, event, attribute) => {
     const updatedPrebookEdit = [...props.data]; // Create a copy of the state array
-    updatedPrebookEdit[index].value = event.target.value; // Update the value at the specified index
+    updatedPrebookEdit[index].value = getInputValue(event, attribute) // Update the value at the specified index
     props.updateData(updatedPrebookEdit); // Update the state with the updated array
   };
+  
+  // Disable and enable buttons!
+  function toggleButtonValue(){
+    props.toggleButtonProp(0, false)
+  }
 
   return (
     <>
       {props.data.map((field, index) => {
         if (field.attribute === 'dateField') {
           return (
-            <DateField data = {field} />
+            <DateField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
           );
         }
 
         if (field.attribute === 'textField') {
           return (
-            <TextField data = {field} index = {index} handleInputChange = {(index, event) => handleInputChange(index, event)} />
+            <TextField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}
+              toggleButtonValue = {() => toggleButtonValue()}
+             />
           );
         }
 

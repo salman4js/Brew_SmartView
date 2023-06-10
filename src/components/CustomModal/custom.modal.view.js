@@ -11,7 +11,7 @@ const CustomModal = (props) => {
       props.modalData.footerEnabled && props.modalData.footerButtons.map((options, key) => {
         return(
           <div>
-              <Button variant = {options.variant} onClick = {() => options.onClick()}>
+              <Button variant = {options.variant} disabled = {options.disabled} onClick = {() => options.onClick()}>
                 {options.btnId}
               </Button>
           </div>

@@ -1,24 +1,133 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import retrieveDate from '../../PreBook_Date_Spike/DateCorrector';
 import EditPrebookRoomItem from '../../edit.room.view/edit.prebook.room.view/edit.prebook.room.item.view';
 import CustomModal from '../../CustomModal/custom.modal.view';
+import GuestRegistration from '../../GRC/grc.view';
 import axios from "axios";
 import brewDate from 'brew-date';
 import Modal from "react-bootstrap/Modal";
 import Variables from '../../Variables';
 import Button from "react-bootstrap/Button";
-import { handleTimeFormat, compareTime, convert12to24, getTimeDate } from '../../common.functions/common.functions.js';
+import {getStorage, setStorage} from '../../../Controller/Storage/Storage';
+import { handleTimeFormat, compareTime, convert12to24, getTimeDate, refreshPage } from '../../common.functions/common.functions.js';
 
 
 const Prebook_component = (props) => {
-
+  
+  // Video reference1
+  const videoRef = useRef(null);
+  
+  // Video stream state handler!
+  const [stream, setStream] = useState(null);
+  
   // Current Date
   const date = brewDate.getFullDate("yyyy/mm/dd");
   var time = brewDate.getTime(); // Time in 24 hour format for easy comparison!
-  
+    
   // Time to handle channel manager, edit room price, and mismatching time booking price!
   const timeDate = getTimeDate();
   const getTime = timeDate.getTime;
+
+  
+  // Is grc enabled!
+  var isGrcPreview = JSON.parse(getStorage('isGrcPreview'));
+  
+  // Custom modal state handler!
+  const [customModal, setCustomModal] = useState({
+    show: false,
+    onHide: stopPhotoSpace,
+    header: "Guest registration photo space",
+    centered: true,
+    modalSize: 'medium',
+    footerEnabled: true,
+    footerButtons: [
+      {
+        btnId: "Take Photo",
+        variant: "info",
+        onClick: takePicture
+      },
+      {
+        btnId: "Cancel",
+        variant: "secondary",
+        onClick: stopPhotoSpace
+      }
+    ]
+  })
+  
+  // State handler for GRC preview!
+  const [grcPreview, setGrcPreview] = useState({
+    show: false,
+    header: "Guest Registration Card Preview",
+    centered: true,
+    modalSize: "lg",
+    footerEnabled: true,
+    downloadTriggered: false,
+    footerButtons: [
+      {
+        btnId: "Download",
+        variant: "success",
+        onClick: downloadGrcPreview
+      },
+      {
+        btnId: "Cancel",
+        variant: "secondary",
+        onClick: cancelGrcPreview
+      }
+    ]
+  })
+  
+  // Cancel the grc preview process!
+  function cancelGrcPreview(){
+    setGrcPreview(prevState => ({...prevState, show: false}));
+    stopWebcam();
+  }
+  
+  // Download Grc preview!
+  function downloadGrcPreview(){
+    setGrcPreview(prevState => ({...prevState, downloadTriggered: true}));
+    deletePrebook();
+  };
+  
+  // Trigger grc view!
+  function toggleGrcView(value){
+    setGrcPreview(prevState => ({...prevState, show: value}))
+  }
+  
+  // Close photo space!
+  function stopPhotoSpace(){
+    stopWebcam() // Stop the webcamera access!
+    setCustomModal(prevState => ({...prevState, show: false}))
+  }
+  
+  // Get prebook data for edit and GRC!
+  function getPrebookData(){
+    const prebookData = {
+        customername: props.customername,
+        phonenumber: props.phonenumber,
+        roomno: props.roomno,
+        dateofcheckin: props.dateofcheckin,
+        dateofcheckout: props.dateofcheckout,
+        checkinTime: props.checkinTime,
+        checkoutTime: props.checkoutTime,
+        adults: props.adults,
+        childrens: props.childrens,
+        discount: props.discount,
+        aadharcard: props.aadhar,
+        prebookId: props.prebookuser,
+        lodgeId: props.lodgeid
+    }
+    
+    return prebookData;
+  }
+
+  // Show GRC view!
+  function _showGrcView(){
+    // Form the data required for the GRC!
+    const grcData = getPrebookData();
+    return(
+      <GuestRegistration data = {grcData} modalData = {grcPreview} />
+    )
+  }
 
   // More Details
   const [show, setShow] = useState(false);
@@ -54,21 +163,25 @@ const Prebook_component = (props) => {
   function _showPrebookEditView(){
     
     // Form neccessary data from the prebook details
-    const prebookData = {
-      dateofcheckin: props.dateofcheckin,
-      checkinTime: props.checkinTime,
-      adults: props.adults,
-      childrens: props.childrens,
-      discount: props.discount
+    const prebookData = getPrebookData()
+    
+    // Check for pending amount in advance!
+    if(pending.isPending){
+      prebookData['advance'] = props.advance;
+      prebookData['advancePending'] = pending.pendingAmount
     }
     
     return(
       <div>
-        <EditPrebookRoomItem data = {prebookData} show = {editDetails.isEditMode} onHide = {() => _triggerEditMode(false)}  />
+        <EditPrebookRoomItem data = {prebookData} show = {editDetails.isEditMode} onHide = {() => _triggerEditMode(false)} onReload = {() => updateItemView(true)}  />
       </div>
     )
   }
-
+  
+  // Update the item view from the parents component!
+  function updateItemView(value){
+    props.setLoad(value);
+  }
 
   // Pending amount state handler!
   const [pending, setPending] = useState({
@@ -81,9 +194,7 @@ const Prebook_component = (props) => {
   
   // Edit details state handler!
   const [editDetails, setEditDetails] = useState({
-    isEditMode: false,
-    onSave: _dummyFunction,
-    onCancel: _dummyFunction
+    isEditMode: false
   })
   
   // trigger edit mode and vice versa!
@@ -91,19 +202,17 @@ const Prebook_component = (props) => {
     setEditDetails(prevState => ({...prevState, isEditMode: value}))
   }
   
-  // On Save and on cancel dummy function!
-  function _dummyFunction(){
-    console.log("Prebook edit details dummy command...........")
-  }
-  
   // Update pending amount state!
   function updatePendingState(state, value){
     setPending(prevState => ({...prevState, isPending: state, pendingAmount: value}));
   }
   
-  // Update pending value!
-  function updatePendingValue(value){
-    setPending(prevState => ({...prevState, value: value}))
+  // pending amount needs to be paid!
+  function pendingAmount(){
+    const pendingAmount = props.prebookprice - props.advance;
+    if(pendingAmount > 0){
+      updatePendingState(true, pendingAmount);
+    }
   }
   
   // Function to select checkin time!
@@ -153,15 +262,7 @@ const Prebook_component = (props) => {
         console.log("Earlier release we dont have checkin time!")
     }
   }
-  
-  // pending amount needs to be paid!
-  function pendingAmount(){
-    const pendingAmount = props.prebookprice - props.advance;
-    if(pendingAmount > 0){
-      updatePendingState(true, pendingAmount);
-    }
-  }
-  
+
   // Do time check!
   function timeCheck(){
     const loadedTime = loadTime();
@@ -193,19 +294,9 @@ const Prebook_component = (props) => {
       return getTime;
     }
   }
-  
-  // Get prebook advance amount!
-  function getPrebookAdvance(){
-    if(pending.value !== undefined){
-      return props.advance + pending.value;
-    } else {
-      return props.advance
-    }
-  }
 
   // Check-In to the model
   const processData = () => {
-
     setLoading(true);
     // Validating current date before booking
     if((date == props.dateofcheckin) === false){
@@ -238,7 +329,6 @@ const Prebook_component = (props) => {
         prebook : true,
         discount: props.discount, // Sending duplicate data to the server to prevent including more schema values
         advance: props.advance, // Sending duplicate data to the server to prevent including more schema values
-        advancePrebookPrice : getPrebookAdvance(),
         advanceDiscount: props.discount,
         channel: props.channel
       }
@@ -250,8 +340,11 @@ const Prebook_component = (props) => {
             handleClose();
             setShowerror(true);
             setSuccess(res.data.message);
-            deletePrebook();
-            // props.setLoad(!props.setLoad);
+            if(isGrcPreview){ // Call the grc preview only if its enabled!
+              toggleGrcView(true);
+            } else {
+              deletePrebook();
+            }
           } else {
             setLoading(false);
             setShowerror(true);
@@ -263,25 +356,88 @@ const Prebook_component = (props) => {
 
   // Delete prebook order
   const deletePrebook = () => {
-    const credentials = {
-      prebookUserId: props.prebookuser
+    return new Promise((resolve, reject) => {
+      const credentials = {
+        prebookUserId: props.prebookuser
+      }
+      axios.post(`${Variables.hostId}/${props.lodgeid}/deleteprebookuserrooms`, credentials)
+        .then(res => {
+          if (res.data.success) {
+            handleClose();
+            deletePrebookModal();
+            props.setLoad(true);
+            resolve();
+          } else {
+            reject();
+          }
+        })
+    })
+  }
+  
+  // Check for the camera access and turn on the camera accordingly!
+  function checkCameraAccess(){
+    if(show){
+      if(isGrcPreview){
+        accessMedia()
+      }
+    } else {
+      stopWebcam();
     }
-    axios.post(`${Variables.hostId}/${props.lodgeid}/deleteprebookuserrooms`, credentials)
-      .then(res => {
-        if (res.data.success) {
-          handleClose();
-          deletePrebookModal();
-          props.setLoad(true);
-        } else {
-          console.log("Some internal error occured!");
-        }
-      })
+  }
+  
+  // Access the user media devices!
+  function accessMedia(){
+    navigator.mediaDevices.getUserMedia({
+      video: true
+    })
+    .then((value) => {
+      setStream(value) // Camear object stream!
+      let video = videoRef.current;
+      video.srcObject = value;
+      video.play()
+    })
+    .catch((err) => {
+      console.warn("Error occured, while accessing camera!")
+    })
+  }
+  
+  // Stop the web camera access!
+  const stopWebcam = () => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
+    }
+  };
+  
+  // Take picture!
+  function takePicture(){
+    let video = videoRef.current;
+    let canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    let context = canvas.getContext('2d');
+    
+    // Draw the current video frame on the canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Convert the canvas content to a data URL representing a PNG image
+    let dataURL = canvas.toDataURL('image/png');
+
+    // Save the image data to local storage
+    setStorage("userMedia", dataURL); 
+    stopWebcam()
   }
   
   // On render function!
   useEffect(() => {
     pendingAmount()
   }, [])
+  
+  // Call the access media function only when the grc preview state changes!
+  useEffect(() => {
+    checkCameraAccess();
+  }, [show])
+  
 
   return (
     <div class="col-4" style={{ paddingBottom: "10vh" }}>
@@ -361,6 +517,12 @@ const Prebook_component = (props) => {
             <p className = "heading-title">
                 Pre Book Price : {props.prebookprice}
             </p>
+            {isGrcPreview && (
+              <div className = "modal-gap">
+                <video className = "container" ref = {videoRef}> </video>
+                <button className = "btn btn-info" onClick = {() => takePicture()}> Take Photo </button>
+              </div>
+            )}
             {timeCheck() && (
               <div>
                 <p className = "heading-title info-message">
@@ -376,16 +538,6 @@ const Prebook_component = (props) => {
                       </button>
                     </span>
                 </p>
-              </div>
-            )}
-            {pending.isPending && (
-              <div>
-                <div className = "table-view-bill-line"></div>
-                <label className = "heading-title">{pending.label}</label>
-                <p>
-                  <input className = "form-control" placeholder = {pending.placeholder + pending.pendingAmount.toString() + 'Rs'} value = {pending.value} name = {pending.value} onChange = {(e) => updatePendingValue(e.target.value) }  />
-                </p>
-                <div className = "table-view-bill-line"></div>
               </div>
             )}
             <p className="heading-title">
@@ -455,6 +607,11 @@ const Prebook_component = (props) => {
       {/* Edit Prebook Customer Details */}
       {editDetails.isEditMode && (
         _showPrebookEditView()
+      )}
+      
+      {/* GRC preview */}
+      {grcPreview.show && (
+        _showGrcView()
       )}
 
       {/* Server Response */}

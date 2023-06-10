@@ -251,10 +251,10 @@ const HomeRoom = (props) => {
         secondphonenumber: secondphonenumber,
         adults: adults,
         childrens: childrens,
-        aadhar: aadhar,
-        checkin: brewDate.getFullDate("yyyy/mm/dd"),
+        aadharcard: aadhar,
+        dateofcheckin: brewDate.getFullDate("yyyy/mm/dd"),
         checkinTime: getTime,
-        checkout: formatDate(checkedoutdate),
+        dateofcheckout: formatDate(checkedoutdate),
         checkoutTime: handleCheckoutTime(getTime),
         roomid: props.roomid,
         roomno: props.roomno,
@@ -266,7 +266,6 @@ const HomeRoom = (props) => {
         updatePrice: updatePrice,
         extraBeds: extraCount,
         extraBedPrice: props.extraBedPrice,
-        lodgeName: props.lodgeName
       }
       
       return(
