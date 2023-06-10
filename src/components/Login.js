@@ -129,7 +129,8 @@ const Login = () => {
                 "gstin" : res.data.gstin,
                 "pan" : res.data.pan,
                 "owner-name" : res.data.name,
-                "owner-number" : res.data.number
+                "owner-number" : res.data.number,
+                "lodge-name": res.data.lodgename
               }
               
               defaultStorage(defaultData);

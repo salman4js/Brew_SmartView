@@ -7,6 +7,26 @@ export function handleTimeFormat(time) {
     return brewDate.timeFormat(time);
 }
 
+// Convert mm/dd/yyy intp dd/mm/yyyy
+export function convertFormat(date){
+  try{
+    const result = date.split("/");
+    return `${result[0]}/${result[1]}/${result[2]}`
+  } catch(err){
+    return date;
+  }
+}
+
+// Convert date into server readable format!
+export function convertServerFormat(date){
+  try{
+    const result = date.split("/");
+    return `${result[2]}/${result[0]}/${result[1]}`
+  } catch(err){
+    return date;
+  }
+}
+
 // Get the current operating system!
 export function getCurrentOS(){
   const platform = window.navigator.platform;
@@ -110,8 +130,14 @@ export function getTimeDate(){
   return {getTime, getDate}
 }
 
+// Convert date into custom format!
 export function formatDateToCustomFormat(date){
   return brewDate.formatDateToCustomFormat(date)
+}
+
+// Convert custom format into date format!
+export function formatCustomIntoDateFormat(date, time){
+  return brewDate.formatCustomDateToDateFormat(date, time)
 }
 
 // Refresh the page!

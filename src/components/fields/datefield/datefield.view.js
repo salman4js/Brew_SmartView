@@ -1,21 +1,27 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import {formatDateToCustomFormat} from '../../common.functions/common.functions'
+import {formatCustomIntoDateFormat, convertFormat} from '../../common.functions/common.functions'
 
 const DateField = (props) => {
   
   // Get selected date in the date-picker understandable format!
   function getSelectedDate(){
-    return formatDateToCustomFormat(props.data.value)
+    return new Date(formatCustomIntoDateFormat(convertFormat(props.data.value)))
   }
+  
+  // Get max date!
+  function getMaxDate(){
+    return new Date(props.data.maxDate)
+  }
+  
 
   return(
     <div className = "modal-gap">
-        <label style={{ color: "black" }}> {props.data.placeholder} </label>
+        <label style={{ color: "black" }}> {props.data.label} </label>
         <DatePicker style={{ color: "black" }} className="form-control" placeholderText={props.data.placeholder} 
-        selected = {getSelectedDate()} dateFormat='y-MM-dd' minDate={new Date()}
-        onChange={((e) => props.handleInputChange(props.index, e))} isClearable />
+        selected = {getSelectedDate()} dateFormat={props.data.dateFormat} minDate={new Date()} maxDate= {getMaxDate()} showTimeSelect = {props.data.showTimeSelect}
+        onChange={((e) => props.handleInputChange(props.index, e, props.data.attribute))} isClearable />
     </div>
   )
   

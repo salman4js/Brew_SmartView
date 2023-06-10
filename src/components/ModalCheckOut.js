@@ -16,7 +16,7 @@ const ModalCheckOut = (props) => {
     function ensureChannel(){
         return props.isChannel === "Walk-In" ? false : true
     }
-
+    
     // Edit details state handler!
     const [editDetails, setEditDetails] = useState({
         isEdit: props.edit,
