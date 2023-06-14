@@ -4,7 +4,7 @@ const PanelItemView = (props) => {
   return(
     <div className = "file-items">
      <span className = "brew-title-workspace side-align">
-        Hey there!
+        {props.data}
      </span>
     </div>
   )

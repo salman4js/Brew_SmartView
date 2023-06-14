@@ -649,6 +649,10 @@ td {
   margin-bottom: 5px;
 }
 
+.modal-assist-view-header-line{
+  border:0.5px solid rgba(225, 223, 223, 0.816);
+}
+
 .update-price-configured{
   font-size: 14px;
   cursor: pointer;
@@ -790,4 +794,57 @@ td {
 
 .info-message{
   color: blue;
+}
+
+.modal-assist{
+  background-color: white;
+  position:absolute;
+  top:0px;
+  right:0px;
+  bottom:0px;
+  left:0px;
+  box-shadow: 0 2px 0px 0px white, 0 -2px 0px 0px white, 2px 0 8px -4px rgb(0,0,0), -2px 0 8px -2px rgb(0,0,0);
+}
+
+.modal-assist-header{
+  color: black;
+}
+
+.sidepanel-wrapper{
+    display: flex;
+    min-width: min-content;
+}
+
+.sidepanel-wrapper .flex-1{
+    width: 300px;
+}
+
+.flex-1{
+    flex: 0 1 300px;
+}
+
+.flex-2{
+    flex: 2;
+    width: 100%
+}
+
+.brew-title-workspace{
+    color:  black;
+}
+
+.side-align{
+    margin-left: 15px;
+}
+
+.file-items{
+    padding: 5px;
+    cursor: pointer;
+}
+
+.files div:hover{
+    background-color: #ddd;
+}
+
+.sidepanel-header-control{
+  float: right;
 }

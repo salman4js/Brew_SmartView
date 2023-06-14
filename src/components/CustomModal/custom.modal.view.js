@@ -4,11 +4,11 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button'
 
 const CustomModal = (props) => {
-  
+
   // Custom modal footer buttons!
   function showCustomModalFooter(){
     return(
-      props.modalData.footerEnabled && props.modalData.footerButtons.map((options, key) => {
+      props.modalData?.footerEnabled && props.modalData?.footerButtons.map((options, key) => {
         return(
           <div>
               <Button variant = {options.variant} disabled = {options.disabled} onClick = {() => options.onClick()}>
@@ -30,10 +30,10 @@ const CustomModal = (props) => {
         size = {props.modalData.modalSize}
     >
         <Modal.Header closeButton>
-          {props.modalData.header}
+          {props.modalData?.header}
         </Modal.Header>
         <CustomModalBody data = {() => props.showBodyItemView()} />
-        {props.modalData.footerEnabled && (
+        {props.modalData?.footerEnabled && (
             <Modal.Footer>
               {showCustomModalFooter()}
             </Modal.Footer>
