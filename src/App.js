@@ -26,6 +26,7 @@ import Charts from './components/Dashboard/Chart/Charts';
 import EditRoom from './components/edit.room.view/edit.room.view';
 import PrebookCheckin from './components/prebook.view/prebook.checkin.view';
 import InvoiceMemory from './components/invoice.memory/invoice.memory.view';
+import VoucherView from './components/vouchers/vouchers.view'
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
           <Route path = "/:id/client-config" exact element = {<Client />} />
           <Route path = "/:id/chart-dashboard" exact element = {<Charts />} />
           <Route path = "/:id/invoicememory" exact element = {<InvoiceMemory />} />
+          <Route path = "/:id/vouchers" exact element = {<VoucherView />} />
         </Routes>
       </Router>
     </div>

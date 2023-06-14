@@ -31,9 +31,6 @@ const InvoiceMemory = () => {
     data: undefined
   })
   
-  // Side panel height reference!
-  const [sidePanelHeight, setSidePanelHeight] = useState();
-  
   // Data State Handler!
   const [data, setData] = useState([]);
   
@@ -148,7 +145,6 @@ const InvoiceMemory = () => {
               <Loading message = "Processing Invoice Memory" /> 
             ) : (
               <div>
-                <PanelView height = {(value) => setSidePanelHeight(value)} />
                 <div className = "invoice-container">
                   <div className = "text-center heading-bottom-space">
                     <div>
