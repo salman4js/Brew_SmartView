@@ -848,3 +848,8 @@ td {
 .sidepanel-header-control{
   float: right;
 }
+
+.cheat-code{
+  margin-left: 10px;
+  margin-right: 10px;
+}

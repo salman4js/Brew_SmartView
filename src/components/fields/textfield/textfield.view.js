@@ -23,12 +23,17 @@ const TextField = (props) => {
     )
   }
   
+  // Get value for the placeholder!
+  function getValue(){
+    return props.data.value !== undefined ? props.data.value : props.data.placeholder;
+  }
+  
 
   return(
     <div className="modal-gap">
         <label style={{ color: "black" }}> {props.data.label} </label>
         <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" 
-        placeholder={props.data.value} onChange = {(event) => checkLimit(event)} />
+        placeholder={getValue()} onChange = {(event) => checkLimit(event)} />
         {props.data?.inlineToast !== undefined && (
           _showInlineToast()
         )}
