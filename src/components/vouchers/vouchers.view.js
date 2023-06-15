@@ -3,9 +3,11 @@ import ModalAssist from '../modal.assist/modal.assist.view';
 import CustomModal from '../CustomModal/custom.modal.view';
 import PanelItemView from '../SidePanelView/panel.item/panel.item.view';
 import VoucherContent from './vouchers.content.view';
-import { getVouchersList } from './vouchers.utils.js';
+import MetadataFields from '../fields/metadata.fields.view'
+import { getVouchersList, addVouchersList, getVoucherModelList } from './vouchers.utils.js';
 import { Link, useParams } from "react-router-dom";
-import { globalMessage, commonLabel, activityLoader } from '../common.functions/common.functions.view'
+import { globalMessage, commonLabel, activityLoader } from '../common.functions/common.functions.view';
+import { nodeConvertor, validateFieldData, _clearData } from '../common.functions/node.convertor';
 
 const VoucherView = () => {
   
@@ -17,6 +19,50 @@ const VoucherView = () => {
   const [modalAssist, setModalAssist] = useState({
     header: "Vouchers Content Assist"
   })
+  
+  // Custom modal input field state handler!
+  const [inputField, setInputField] = useState([
+    {
+      value: undefined,
+      placeholder: "Name of the voucher",
+      label: "Voucher Name",
+      name: 'voucherName',
+      attribute: 'textField',
+      isRequired: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please enter a valid voucher name'
+      }
+    }
+  ])
+  
+  // get field data from the node convertor!
+  function getFieldData(){
+    return nodeConvertor(inputField);
+  }
+  
+  // Clear field data!
+  function _clearFieldData(){
+    const updatedFieldData = _clearData(inputField);
+    setInputField(updatedFieldData);
+  }
+  
+  // Enable inline toast message for input field!
+  function _enableInlineToast(nodeValue){
+    // Create a copy of the inputField array
+     const updatedInputField = [...inputField];
+
+     // Find the object where isShow needs to be updated
+     const targetObjectIndex = updatedInputField.findIndex(item => item.name === nodeValue);
+
+     // If the object is found, update the isShow property
+     if (targetObjectIndex !== -1) {
+       updatedInputField[targetObjectIndex].inlineToast.isShow = true;
+     }
+
+     // Set the modified copy of the inputField array back into the state
+     setInputField(updatedInputField);
+  }
   
   // Get modal assist height and store it in the state!
   function storeModalAssistHeight(value){
@@ -30,8 +76,14 @@ const VoucherView = () => {
     headerControl: true,
     headerControlEvent: _openCustomDialog,
     eventTrigerred: false,
+    enableLoader: true,
     data: undefined
   })
+  
+  // Enable / Disable side panel loader!
+  function _sidePanelLoader(value){
+    setSidepanel(prevState => ({...prevState, enableLoader: value}));
+  }
   
   // trigger custom dialog!
   function _openCustomDialog(){
@@ -52,11 +104,51 @@ const VoucherView = () => {
       header: "Add new voucher",
       centered: false,
       modalSize: "medium",
+      footerEnabled: true,
+      footerButtons: [
+        {
+          btnId: "Create",
+          variant: "success",
+          onClick: onCreateAction
+        }
+      ]
     }
     
     return(
-      <CustomModal modalData = {data} showBodyItemView = {() => console.log("custom modal child triggered")}  />
+      <CustomModal modalData = {data} showBodyItemView = {() => customModalChildView()}  />
     )
+  }
+  
+  // Show custom modal child view!
+  function customModalChildView(){
+    return(
+      <div className = "text-center">
+        <MetadataFields data = {inputField} updateData = {setInputField}  />
+      </div>
+    )
+  }
+  
+  // On create action!
+  function onCreateAction(){
+    const isValid = validateFieldData(inputField);
+    if(!isValid.isValid){
+      _enableInlineToast(isValid.statusName);
+    } else {
+      _sidePanelLoader(true); // Enable side panel loader!
+      const fieldData = getFieldData(); // Convert the data into server based format!
+      _saveCreation(splitedIds[0], fieldData);
+    }
+  }
+  
+  // Save creation1
+  async function _saveCreation(lodgeId, data){
+    const result = await addVouchersList(lodgeId, data);
+    if(result.data.success){
+      _sidePanelLoader(false);
+      _clearFieldData();
+      _closeCustomDialog();
+      vouchersList();
+    }
   }
   
   // Panel child view setup!
@@ -68,11 +160,11 @@ const VoucherView = () => {
       textCenter: true
     }
     
-    if(sidepanel.data === undefined){
+    if(sidepanel.enableLoader){
       return activityLoader(opts)
     }
     
-    if(sidepanel.data.length === 0){
+    if(sidepanel.data?.length === 0){
       return commonLabel(opts)
     }
 
@@ -87,10 +179,18 @@ const VoucherView = () => {
     return (
       sidepanel.data.map((options, key) => {
         return(
-          <PanelItemView data = {options.voucherName} />
+          <PanelItemView data = {options.voucherName} _id = {options._id} onClick = {(id) => panelItemOnClick(id)} />
         )
       })
     )
+  }
+  
+  // Side panel item on click!
+  async function panelItemOnClick(voucherId){
+    var data = {};
+    data['voucherId'] = voucherId;
+    const result = await getVoucherModelList(splitedIds[0], data);
+    console.log(result)
   }
   
   // Set up the voucher content view!
@@ -104,7 +204,7 @@ const VoucherView = () => {
   async function vouchersList(){
     const result = await getVouchersList(splitedIds[0]);
     if(result.data.success){
-      setSidepanel(prevState => ({...prevState, data: result.data.message}))
+      setSidepanel(prevState => ({...prevState, data: result.data.message, enableLoader: false}))
     }
   }
   
