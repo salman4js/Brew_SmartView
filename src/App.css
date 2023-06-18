@@ -849,7 +849,21 @@ td {
   float: right;
 }
 
+.metadata-table-header{
+  width: 290px;
+  color: black;
+}
+
+.metadata-tablecell-view{
+  color: black;
+  width: 290px;
+}
+
 .cheat-code{
   margin-left: 10px;
   margin-right: 10px;
+}
+
+.inline-menu{
+  float: right;
 }
