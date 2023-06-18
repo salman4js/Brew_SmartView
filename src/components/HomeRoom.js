@@ -1212,7 +1212,7 @@ const HomeRoom = (props) => {
                             {/* Optional Date of checkout for normal bookers */}
                             <div className='modal-gap'>
                                 <label style={{ color: "black" }}> Date Of Check Out </label>
-                                <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={checkedoutdate} dateFormat='y-MM-dd' minDate={new Date()} excludeDates = {excludeDates} onSelect = {(e) => checkAdvance(e)} onChange={((e) => console.log(e))} isClearable />
+                                <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Checkout Date would go here...' selected={checkedoutdate} dateFormat='y-MM-dd' minDate={new Date()} excludeDates = {excludeDates} onSelect = {(e) => checkAdvance(e)} onChange={((e) => setCheckedoutdate(e))} isClearable />
                             </div>
                             <div className="modal-gap">
                                 <label style={{ color: "black" }}> Customer Name </label>

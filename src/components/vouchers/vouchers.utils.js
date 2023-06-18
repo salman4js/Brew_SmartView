@@ -20,6 +20,12 @@ async function getVoucherModelList(lodgeId, data){
   return result;
 }
 
+// add voucher model list!
+async function addVoucherModelList(lodgeId, data){
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/addvouchermodel`, data)
+  return result;
+}
+
 module.exports = {
-  getVouchersList, addVouchersList, getVoucherModelList
+  getVouchersList, addVouchersList, getVoucherModelList, addVoucherModelList
 }

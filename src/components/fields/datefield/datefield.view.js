@@ -7,7 +7,7 @@ const DateField = (props) => {
   
   // Get selected date in the date-picker understandable format!
   function getSelectedDate(){
-    return new Date(formatCustomIntoDateFormat(convertFormat(props.data.value)))
+    return props.data.value !== undefined ? new Date(formatCustomIntoDateFormat(convertFormat(props.data.value))) : new Date()
   }
   
   // Get max date!

@@ -7,6 +7,16 @@ const TextField = (props) => {
   function checkLimit(event){ 
     const limit = props.data.limitValue !== undefined ? props.data.limitValue : 0; // By default limit value would be zero!
     var isGreater = event.target.value > limit;
+    
+    if(props.data.limitValue !== undefined){
+      handleLimit(isGreater, event);
+    } else {
+      props.handleInputChange(props.index, event, props.data.attribute)
+    }
+  }
+  
+  // Handle limit value from the field data!
+  function handleLimit(isGreater, event){
     if(!isGreater){
       props.handleInputChange(props.index, event, props.data.attribute)
     } else {
