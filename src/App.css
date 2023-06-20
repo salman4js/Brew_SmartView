@@ -867,3 +867,19 @@ td {
 .inline-menu{
   float: right;
 }
+
+.metadata-label{
+  color: black;
+}
+
+.metadata-dropdown-wrapper{
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 2px 0px 0px white, 0 -2px 0px 0px white, 2px 0 8px -4px rgb(0,0,0), -2px 0 8px -2px rgb(0,0,0);
+  z-index: 1
+}
+
+.metadata-dropdown-list:hover{
+  background-color: #f1f1f1;
+}
+

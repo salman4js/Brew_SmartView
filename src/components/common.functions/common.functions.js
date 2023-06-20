@@ -122,6 +122,23 @@ export function getClassName(variant){
   }
 }
 
+// Get custom style based on the state value!
+export function getStyle(status){
+  return{
+    width: status.width,
+    marginBottom: status.marginBottom,
+    marginRight: status.marginRight,
+    paddingRight: status.paddingRight,
+    paddingLeft: status.paddingLeft,
+    color: status.color,
+    fontSize: status.fontSize,
+    border: status.border,
+    backgroundColor: status.backgroundColor,
+    cursor: status.cursor,
+    zIndex: status.zIndex
+  }
+}
+
 // Get time and date for the current date!
 export function getTimeDate(){
   const current = new Date();

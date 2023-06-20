@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import ModalAssist from '../modal.assist/modal.assist.view';
 import CustomModal from '../CustomModal/custom.modal.view';
 import PanelItemView from '../SidePanelView/panel.item/panel.item.view';
@@ -17,9 +18,15 @@ const VoucherView = () => {
   const { id } = useParams();
   const splitedIds = id.split(/[-]/);
   
+  // History reference!
+  const navigate = useNavigate();
+  
   // Modal assist state handler!
   const [modalAssist, setModalAssist] = useState({
-    header: "Vouchers Content Assist"
+    header: "Vouchers Content Assist",
+    style: {
+      fontWeight: "bold"
+    }
   })
   
   // Table view state handler!
@@ -362,6 +369,7 @@ const VoucherView = () => {
   
   // Call the functions on onRender!
   useEffect(() => {
+    navigate(`/${id}/vouchers`, {replace: true});
     vouchersList()
   }, [])
   
