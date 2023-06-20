@@ -89,9 +89,13 @@ const Login = () => {
   }
 
   // Navigate user to the dashboard!
-  function navigateUser(id, lodgeName){
+  function navigateUser(id, lodgeName, redirect){
     // If account is not locked, allow the user to the base!
-    navigate(`/${id}-${lodgeName}/dashboard`, { replace: true })
+    if(redirect === "livixius"){
+      navigate(`/${id}-${lodgeName}/dashboard`, { replace: true })
+    } else {
+      navigate(`/${id}-${lodgeName}/vouchers`, { replace: true })
+    }
   }
 
   const processData = async (e) => {
@@ -137,7 +141,7 @@ const Login = () => {
               
               await checkConfig(res.data.hostId, res.data.lodgename); // Check for config matrix
               await checkOptions(res.data.hostId, res.data.lodgename); // Check for the config cabinets!
-              navigateUser(res.data.hostId, res.data.lodgename); // Navigate to the dashboard
+              navigateUser(res.data.hostId, res.data.lodgename, res.data.redirect); // Navigate to the dashboard
             }
           } else {
             setLoading(false);

@@ -49,8 +49,6 @@ const EditConfig = () => {
   // Process Data in a server!
   const processData = () => {
     setLoading(true);
-    console.log("Loader function called...")
-    console.log(selected);
     const credentials = {
       suitetype: selected,
       price: price,

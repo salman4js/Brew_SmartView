@@ -11,14 +11,33 @@ const VoucherContent = (props) => {
       value: undefined,
       placeholder: "Advanced filter cheat code",
       name: 'cheatCode',
-      attribute: 'textField'
+      attribute: 'dataListField',
+      options: [{
+          value: "Add Date from `date1` to `date2`"
+        },
+        {
+          value: "Filter Name 'Enter name to be filtered'"
+        },
+        {
+          value: "Hey there!"
+        }
+      ],
+      style: {
+        color: "black",
+        fontSize: "15px",
+        paddingRight: "10px",
+        paddingLeft: "10px",
+        cursor: "pointer",
+      }
     }
   ])
   
   // Render cheat code input field!
   function _renderCheatCode(){
     return(
-      <MetadataFields data = {cheatCode} />
+      <div>
+        <MetadataFields data = {cheatCode} updateData = {setCheatCode} />
+      </div>
     )
   }
   

@@ -1,15 +1,17 @@
 import React from 'react';
 import DateField from './datefield/datefield.view';
 import TextField from './textfield/textfield.view';
+import ListField from './listfield/listfield.view';
+import DataList from './dataListField/datalist.field.view';
 
 const MetadataFields = (props) => {
   
   // Get input value!
   function getInputValue(event, attribute){
-    if(attribute === 'textField'){
-      return event.target.value;
-    } else {
+    if(attribute === 'dateField' || attribute === "dataListField"){
       return event;
+    } else {
+      return event.target.value;
     }
   }
 
@@ -44,6 +46,18 @@ const MetadataFields = (props) => {
               toggleButtonValue = {() => toggleButtonValue()}
              />
           );
+        }
+        
+        if(field.attribute === 'listField') {
+          return(
+            <ListField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
+          )
+        }
+        
+        if(field.attribute === 'dataListField') {
+          return(
+            <DataList data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
+          )
         }
 
         return null;

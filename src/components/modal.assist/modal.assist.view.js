@@ -6,10 +6,17 @@ const ModalAssist = (props) => {
   const modalAssist = useRef(null);
   const modalAssistHeader = useRef(null);
   
+  // Get custom style for modal assist!
+  function getStyle(){
+    return{
+      fontWeight: props.data.style?.fontWeight
+    }
+  }
+  
   // Render modal assist header!
   function _showHeader(){
     return(
-      <div className = "text-center">
+      <div className = "text-center" style = {getStyle()}>
         {props.data.header}
         <div className = "modal-assist-view-header-line"></div>
       </div>
