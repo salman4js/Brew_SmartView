@@ -6,15 +6,23 @@ const DropdownField = (props) => {
   
   // Render list for the data list field!
   function _renderList(){
-    return(
-      props.data.options.map((opts, key) => {
-        return(
-          <div className = "metadata-dropdown-list" style = {getStyle(props.data.style)} onClick = {() => props.setSelected(opts.value)}>
-            {opts.value}
-          </div>
-        )
-      })
-    )
+    if(props.data.showListValue()){
+      return(
+        props.data.options.map((opts, key) => {
+          return(
+            <div className = "metadata-dropdown-list" style = {getStyle(props.data.style)} onClick = {() => props.setSelected(opts.value)}>
+              {opts.value}
+            </div>
+          )
+        })
+      )
+    } else {
+      return(
+        <div className = "metadata-dropdown-list" style = {getStyle(props.data.style)}>
+          {props.data.noneValue}
+        </div>
+      )
+    }
   }
     
   return(

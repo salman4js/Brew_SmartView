@@ -34,7 +34,8 @@ const VoucherView = () => {
     cellValues: undefined,
     headerValue: undefined,
     infoMessage: "No vouchers has been selected...",
-    tableLoader: false
+    tableLoader: false,
+    selectedVoucherId: undefined
   })
   
   // Trigger table loader!
@@ -336,26 +337,14 @@ const VoucherView = () => {
     const result = await getVoucherModelList(splitedIds[0], data);
     if(result.data.success){
       _triggerTableLoader(false);  
-      var value = _deleteDefaultValues(result.data.message);
-      setTableView(prevState => ({...prevState, cellValues: value, headerValue: result.data.tableHeaders, infoMessage: result.data.infoMessage}));
+      setTableView(prevState => ({...prevState, cellValues: result.data.message, headerValue: result.data.tableHeaders, infoMessage: result.data.infoMessage, selectedVoucherId: voucherId}));
     }
   }
-  
-  // Remove mongodb default values from the return values!
-  function _deleteDefaultValues(value){
-    var result = [...value];
-    result.map((options, key) => {
-      delete options._id;
-      delete options.voucherId;
-      delete options.__v;
-    })
-    return result;
-  }
-  
+
   // Set up the voucher content view!
   function voucherContentView(){
     return(
-      <VoucherContent data = {sidepanel} childView = {() => panelChildView()} tableData = {tableView} />
+      <VoucherContent data = {sidepanel} childView = {() => panelChildView()} tableData = {tableView} lodgeId = {splitedIds[0]} />
     )
   }
   
@@ -369,7 +358,6 @@ const VoucherView = () => {
   
   // Call the functions on onRender!
   useEffect(() => {
-    navigate(`/${id}/vouchers`, {replace: true});
     vouchersList()
   }, [])
   
