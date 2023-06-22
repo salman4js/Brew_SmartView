@@ -2,7 +2,7 @@ import React from 'react';
 import { commonLabel, activityLoader } from '../common.functions/common.functions.view';
 import MetadataTableHeader from './metadata.table.header/metadata.table.header';
 import MetadataTableCellView from './metadata.tablecell.view/metadata.tablecell.view';
-import {convertIntoArrays} from '../common.functions/node.convertor'
+import {convertIntoArrays, isEmpty} from '../common.functions/node.convertor'
 
 const MetadataTable = (props) => {
   
@@ -15,15 +15,6 @@ const MetadataTable = (props) => {
       textCenter: true
     }
     return activityLoader(opts);
-  }
-    
-  // Check if the object is empty of not!
-  function isEmpty(value){
-    if(value !== undefined && Array.isArray(value) === true && value.length !== 0){
-      return false;
-    } else {
-      return true;
-    }
   }
   
   // Render table View!
@@ -52,10 +43,23 @@ const MetadataTable = (props) => {
     )
   }
   
+  // Remove mongodb default values from the return values!
+  function _deleteDefaultValues(value, idInstance){
+    var result = [...value];
+    result.map((options, key) => {
+      delete options._id;
+      delete options[idInstance];
+      delete options.__v;
+    })
+    return result;
+  }
+  
   // Render table cell view!
   function _renderTableCellView(){
+    // Remove the default mongodb instances!
+    const value = _deleteDefaultValues(props.data.cellValues, props.idInstance);
     // Convert the object values into an array values!
-    var tableCellValue = convertIntoArrays(props.data.cellValues)
+    var tableCellValue = convertIntoArrays(value);
     return(
       <MetadataTableCellView data = {tableCellValue} />
     )

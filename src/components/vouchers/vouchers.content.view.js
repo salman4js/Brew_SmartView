@@ -1,25 +1,34 @@
 import React, {useState} from 'react';
+import { getFilteredModel } from './vouchers.utils';
 import PanelView from '../SidePanelView/panel.view';
 import MetadataTable from '../metadata.table.view/metadata.table.view';
 import MetadataFields from '../fields/metadata.fields.view';
+import { nodeConvertor, validateFieldData, _clearData, _enableInlineToast, isEmpty } from '../common.functions/node.convertor';
+import { setStorage, getStorage } from '../../Controller/Storage/Storage'
 
 const VoucherContent = (props) => {
   
+  // Selected voucher id state handler!
+  const [selectedVoucherId, setSelectedVoucherId] = useState();
+
   // Cheat code state handler!
   const [cheatCode, setCheatCode] = useState([
     {
       value: undefined,
       placeholder: "Advanced filter cheat code",
-      name: 'cheatCode',
+      name: 'query',
       attribute: 'dataListField',
+      onEnter: _saveSelectedValue,
+      showListValue: showListValue,
+      noneValue: "None",
       options: [{
-          value: "Add Date from `date1` to `date2`"
+          value: "Filter CashMode 'Enter Cash Mode to be filtered'"
         },
         {
-          value: "Filter Name 'Enter name to be filtered'"
+          value: "Filter Particulars 'Enter name to be filtered'"
         },
         {
-          value: "Hey there!"
+          value: "Filter Date 'Enter date to be filtered'"
         }
       ],
       style: {
@@ -32,6 +41,26 @@ const VoucherContent = (props) => {
     }
   ])
   
+  // Determine to show list value!
+  function showListValue(){
+    return getStorage('selectedVoucherId') !== "undefined" ? true : false
+  }
+
+  // Data list field onEnter save value!
+  async function _saveSelectedValue(){
+    const fieldData = getFieldData();
+    // Get the selected voucher id!
+    var selectedVoucherId = getStorage("selectedVoucherId");
+    // Form up the params!
+    fieldData['voucherId'] = selectedVoucherId;
+    const result = await getFilteredModel(props.lodgeId, fieldData);
+  }
+  
+  // Get field data!
+  function getFieldData(){
+    return nodeConvertor(cheatCode);
+  }
+  
   // Render cheat code input field!
   function _renderCheatCode(){
     return(
@@ -40,11 +69,15 @@ const VoucherContent = (props) => {
       </div>
     )
   }
-  
+
   // Render table view!
   function _renderTableView(){
+    
+    // Store the selected voucher id!
+    setStorage("selectedVoucherId", props.tableData.selectedVoucherId);
+    
     return(
-      <MetadataTable data = {props.tableData} height = {props.data.height} />
+      <MetadataTable data = {props.tableData} height = {props.data.height} idInstance = {"voucherId"} />
     )
   }
   

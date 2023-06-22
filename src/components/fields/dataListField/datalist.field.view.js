@@ -14,7 +14,7 @@ const DataList = (props) => {
   // Set the selected value from the dropdown field!
   function setSelected(value){
     setDropdown(prevState => ({...prevState, selected: value}));
-    props.handleInputChange(props.index, value, props.data.attribute);
+    inputChange(props.index, value, props.data.attribute);
   }
   
   // Reference for input field!
@@ -42,11 +42,24 @@ const DataList = (props) => {
     setDropdown(prevState => ({...prevState, isOpen: !currentState}));
   }
   
+  // Save selected data on `Enter` key!
+  function _saveSelectedData(e){
+    if(e.key === 'Enter'){
+      props.data.onEnter();
+    }
+  }
+  
+  // Handle Input change to metadata fields!
+  function inputChange(index, value, attribute){
+    props.handleInputChange(index, value, attribute);
+  }
+  
   return(
     <div className = "modal-gap">
       <label className = "metadata-label">{props.data?.label}</label>
       <input type="text" className="form-control" ref = {dataListFieldRef}
-      placeholder={getValue()} onClick = {() => triggerDropdown(dropdown.isOpen)} />
+      placeholder={getValue()} value = {props.data.value} onClick = {() => triggerDropdown(dropdown.isOpen)} 
+      onKeyPress = {(e) => _saveSelectedData(e)} onChange = {(e) => inputChange(props.index, e.target.value, props.data.attribute)} />
       {dropdown.isOpen && (
         <div className = "metadata-label">
           <DropdownField data = {getDropdownProps()} setSelected = {(value) => setSelected(value)} />

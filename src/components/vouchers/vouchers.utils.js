@@ -26,6 +26,12 @@ async function addVoucherModelList(lodgeId, data){
   return result;
 }
 
+// Get voucher model result based on the filter query!
+async function getFilteredModel(lodgeId, data){
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/cheatcodefilter`, data)
+  return result;
+}
+
 module.exports = {
-  getVouchersList, addVouchersList, getVoucherModelList, addVoucherModelList
+  getVouchersList, addVouchersList, getVoucherModelList, addVoucherModelList, getFilteredModel
 }

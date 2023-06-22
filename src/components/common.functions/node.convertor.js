@@ -104,3 +104,12 @@ export function convertIntoArrays(value){
   
   return arrValue;
 }
+
+// Check if the object is empty of not!
+export function isEmpty(value){
+  if(value !== undefined && Array.isArray(value) === true && value.length !== 0){
+    return false;
+  } else {
+    return true;
+  }
+}
