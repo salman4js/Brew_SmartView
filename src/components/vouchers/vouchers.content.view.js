@@ -28,7 +28,10 @@ const VoucherContent = (props) => {
           value: "Filter Particulars 'Enter name to be filtered'"
         },
         {
-          value: "Filter Date 'Enter date to be filtered'"
+          value: "Filter Date From 'date1' To 'date2'"
+        },
+        {
+          value: "Filter All Voucher Model Data"
         }
       ],
       style: {
@@ -54,6 +57,9 @@ const VoucherContent = (props) => {
     // Form up the params!
     fieldData['voucherId'] = selectedVoucherId;
     const result = await getFilteredModel(props.lodgeId, fieldData);
+    if(result.data.success){
+      props.getFilteredModel(result, selectedVoucherId)
+    }
   }
   
   // Get field data!

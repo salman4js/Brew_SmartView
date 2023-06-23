@@ -1,7 +1,9 @@
 import React from "react";
+import MetadataFields from '../../fields/metadata.fields.view'
 
 
 const ConfigMatrix = (props) => {
+  
     return (
         <div>
             <div class="form-check">
@@ -69,6 +71,11 @@ const ConfigMatrix = (props) => {
                 <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
                     {props.grcHandler.label}
                 </label>
+            </div>
+            <div className = "modal-gap"></div>
+            <div className = "table-view-bill-line"></div>
+            <div className = "form-check">
+              <MetadataFields data = {props.redirectTo} updateData = {props.updateRedirectTo} />
             </div>
         </div>
     )

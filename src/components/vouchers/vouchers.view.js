@@ -335,6 +335,11 @@ const VoucherView = () => {
     var data = {};
     data['voucherId'] = voucherId;
     const result = await getVoucherModelList(splitedIds[0], data);
+    updateTableCellData(result, voucherId)
+  }
+  
+  // Get the filtered model based on the filter query!
+  function updateTableCellData(result, voucherId){
     if(result.data.success){
       _triggerTableLoader(false);  
       setTableView(prevState => ({...prevState, cellValues: result.data.message, headerValue: result.data.tableHeaders, infoMessage: result.data.infoMessage, selectedVoucherId: voucherId}));
@@ -344,7 +349,7 @@ const VoucherView = () => {
   // Set up the voucher content view!
   function voucherContentView(){
     return(
-      <VoucherContent data = {sidepanel} childView = {() => panelChildView()} tableData = {tableView} lodgeId = {splitedIds[0]} />
+      <VoucherContent data = {sidepanel} childView = {() => panelChildView()} tableData = {tableView} lodgeId = {splitedIds[0]} getFilteredModel = {(filteredData, voucherId) => updateTableCellData(filteredData, voucherId)} />
     )
   }
   
