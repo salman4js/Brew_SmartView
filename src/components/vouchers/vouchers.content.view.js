@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { getFilteredModel } from './vouchers.utils';
+import { getFilteredModel } from './vouchers.utils.js';
 import PanelView from '../SidePanelView/panel.view';
 import MetadataTable from '../metadata.table.view/metadata.table.view';
 import MetadataFields from '../fields/metadata.fields.view';
