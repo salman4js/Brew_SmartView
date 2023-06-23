@@ -9,11 +9,16 @@ const ListField = (props) => {
     props.handleInputChange(props.index, event, props.data.attribute)
   }
   
+  // Get selected value for the options!
+  function getSelected(){
+    return props.data.value !== undefined ? props.data.value : props.data.placeholder;
+  }
+  
   return(
     <div className = "modal-gap text-center">
       <label className = "metadata-label" style = {getStyle(props.data.style)}> {props.data.label} </label>
       <select className = "form-control" onChange = {(event) => inputChange(event)}>
-        <option value="" disabled selected>{props.data.placeholder}</option>
+        <option value="" disabled selected>{getSelected()}</option>
         {props.data?.options?.map((opts, key) => {
           return(
             <option>{opts.value}</option>

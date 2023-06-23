@@ -5,6 +5,7 @@ import Error from '../ToastHandler/Error';
 import Feed from '../Configure_Transport/Feed_tMode/Feed';
 import axios from 'axios';
 import Loading from '../Loading';
+import {nodeConvertor} from '../common.functions/node.convertor';
 import { Link, useParams } from "react-router-dom";
 
 // Importing Config Matrix!
@@ -102,6 +103,51 @@ const Client = () => {
       onChange: handleExtraBed
     })
     
+    // Redirect state handler to determin the product has to logged in!
+    const [redirect, setRedirect] = useState([
+      {
+      value: undefined,
+      placeholder: "Choose the software has to be redirected",
+      label: "Choose the redirected to",
+      name: 'redirectTo',
+      attribute: 'listField',
+      isSelected: false,
+      redirectLabel: "Select which software needs to be accessed!",
+      redirectTo: "livixius",
+      options: [
+        {
+          value: "livixius"
+        },
+        {
+          value: "vouchers"
+        }
+      ],
+      style: {
+        color: "black",
+        fontSize: "15px",
+        paddingRight: "10px",
+        paddingLeft: "10px",
+        cursor: "pointer",
+      }
+    }
+  ])
+  
+    
+    // Get field data!
+    function getFieldData(state){
+      return nodeConvertor(state);
+    }
+    
+    // Handle redirect to state handler!
+    function updateRedirectTo(nodeValue, value){
+      const updatedState = [...redirect];
+      const targetObjectState = updatedState.findIndex(item => item.name === nodeValue);
+      if(targetObjectState !== -1){
+        updatedState[targetObjectState].value = value;
+      }
+      setRedirect(updatedState);
+    }
+    
     // Handle Extra Bed State!
     function handleExtraBed(value){
       setExtraBed(prevState => ({...prevState, isDay: value}));
@@ -180,7 +226,8 @@ const Client = () => {
                     setSpecific(prevState => ({...prevState, isEnable: res.data.isSpecific}))
                     setOptDelete(prevState => ({...prevState, canDelete: res.data.canDelete}))
                     setExtraBed(prevState => ({...prevState, isDay: res.data.extraCalc}))
-                    setGrcHandler(prevState => ({...prevState, isGrcEnabled: res.data.grcPreview}))
+                    setGrcHandler(prevState => ({...prevState, isGrcEnabled: res.data.grcPreview}));
+                    updateRedirectTo("redirectTo", res.data.redirectTo)
                 }
             })
         
@@ -268,6 +315,7 @@ const Client = () => {
 
     // Change Matrix config data!
     function changeMatrix() {
+        const redirectToFieldData = getFieldData(redirect);
         setLoading(true);
         const data = {
             isGst: isGst,
@@ -280,7 +328,8 @@ const Client = () => {
             isSpecific: specific.isEnable,
             canDeleteRooms: optDelete.canDelete,
             extraCalc : extraBed.isDay,
-            grcPreview: grcHandler.isGrcEnabled
+            grcPreview: grcHandler.isGrcEnabled,
+            redirectTo: redirectToFieldData.redirectTo
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -408,7 +457,8 @@ const Client = () => {
                                 <div class="card-body">
                                     <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
-                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} extraBed = {extraBed} grcHandler = {grcHandler}
+                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
+                                    extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect}
                                     />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>

@@ -5,7 +5,7 @@ import ListField from './listfield/listfield.view';
 import DataList from './dataListField/datalist.field.view';
 
 const MetadataFields = (props) => {
-  
+      
   // Get input value!
   function getInputValue(event, attribute){
     if(attribute === 'dateField' || attribute === "dataListField"){
