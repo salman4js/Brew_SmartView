@@ -9,7 +9,8 @@ import { getVouchersList, addVouchersList, getVoucherModelList, addVoucherModelL
 import { Link, useParams } from "react-router-dom";
 import { globalMessage, commonLabel, activityLoader } from '../common.functions/common.functions.view';
 import { nodeConvertor, validateFieldData, _clearData, _enableInlineToast } from '../common.functions/node.convertor';
-import {formatCustomIntoDateFormat, convertFormat, convertServerFormat} from '../common.functions/common.functions';
+import {formatCustomIntoDateFormat, convertFormat, convertServerFormat } from '../common.functions/common.functions';
+import changeScreen from '../Action';
 
 
 const VoucherView = () => {
@@ -24,10 +25,29 @@ const VoucherView = () => {
   // Modal assist state handler!
   const [modalAssist, setModalAssist] = useState({
     header: "Vouchers Content Assist",
+    _showHeaderChildView: _showHeaderChildView,
     style: {
       fontWeight: "bold"
     }
   })
+  
+  // Modal assist header child view!
+  function _showHeaderChildView(){
+    return(
+      <div className = "brew-cursor" onClick = {() => changeScreen()}>
+        LogOut
+      </div>
+    )
+  }
+  
+  function dummyFunction(){
+    return(
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+      </svg>
+    )
+  }
   
   // Table view state handler!
   const [tableView, setTableView] = useState({

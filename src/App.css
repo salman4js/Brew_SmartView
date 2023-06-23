@@ -883,3 +883,12 @@ td {
   background-color: #f1f1f1;
 }
 
+.modal-assist-header-rightside-view{
+  float: right;
+  margin-right: 12px;
+}
+
+.brew-cursor{
+  cursor: pointer;
+}
+

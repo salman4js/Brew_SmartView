@@ -13,11 +13,21 @@ const ModalAssist = (props) => {
     }
   }
   
+  // Modal assist header child view from the parent!
+  function _showHeaderChildView(){
+    return props.data._showHeaderChildView();
+  }
+  
   // Render modal assist header!
   function _showHeader(){
     return(
       <div className = "text-center" style = {getStyle()}>
-        {props.data.header}
+        <span>
+          {props.data.header}
+        </span>
+        <span className = "modal-assist-header-rightside-view">
+          {_showHeaderChildView()}
+        </span>
         <div className = "modal-assist-view-header-line"></div>
       </div>
     )
