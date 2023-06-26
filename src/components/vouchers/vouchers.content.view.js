@@ -4,12 +4,16 @@ import PanelView from '../SidePanelView/panel.view';
 import MetadataTable from '../metadata.table.view/metadata.table.view';
 import MetadataFields from '../fields/metadata.fields.view';
 import { nodeConvertor, validateFieldData, _clearData, _enableInlineToast, isEmpty } from '../common.functions/node.convertor';
+import { activityLoader } from '../common.functions/common.functions.view';
 import { setStorage, getStorage } from '../../Controller/Storage/Storage'
 
 const VoucherContent = (props) => {
   
   // Selected voucher id state handler!
   const [selectedVoucherId, setSelectedVoucherId] = useState();
+  
+  // Loader state handler for table!
+  const [isLoading, setIsLoading] = useState(false);
 
   // Cheat code state handler!
   const [cheatCode, setCheatCode] = useState([
@@ -51,6 +55,7 @@ const VoucherContent = (props) => {
 
   // Data list field onEnter save value!
   async function _saveSelectedValue(){
+    _toggleLoader(true);
     const fieldData = getFieldData();
     // Get the selected voucher id!
     var selectedVoucherId = getStorage("selectedVoucherId");
@@ -58,6 +63,7 @@ const VoucherContent = (props) => {
     fieldData['voucherId'] = selectedVoucherId;
     const result = await getFilteredModel(props.lodgeId, fieldData);
     if(result.data.success){
+      _toggleLoader(false);
       props.getFilteredModel(result, selectedVoucherId)
     }
   }
@@ -82,9 +88,24 @@ const VoucherContent = (props) => {
     // Store the selected voucher id!
     setStorage("selectedVoucherId", props.tableData.selectedVoucherId);
     
-    return(
-      <MetadataTable data = {props.tableData} height = {props.data.height} idInstance = {"voucherId"} />
-    )
+    if(!isLoading){
+      return(
+        <MetadataTable data = {props.tableData} height = {props.data.height} idInstance = {"voucherId"} />
+      )
+    } else {
+      var opts = {
+        color: "black",
+        marginTop: (props.data.height) / 2.5 + "px",
+        textCenter: true
+      }
+      
+      return activityLoader(opts);
+    }
+  }
+  
+  // toggle loader between on and off!
+  function _toggleLoader(action){
+    setIsLoading(action);
   }
   
   return(
