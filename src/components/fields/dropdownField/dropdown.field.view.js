@@ -2,8 +2,7 @@ import React from 'react';
 import { getStyle } from '../../common.functions/common.functions'
 
 
-const DropdownField = (props) => {
-  
+const DropdownField = (props) => {  
   // Render list for the data list field!
   function _renderList(){
     if(props.data.showListValue()){
