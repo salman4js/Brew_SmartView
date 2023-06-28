@@ -18,6 +18,18 @@ const Client = () => {
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
     const token = localStorage.getItem("token");
+    
+    // Multiple Receptionist State Handler!
+    const [multipleLogin, setMultipleLogin] = useState({
+      label: "Enable Multiple Receptionist",
+      onChange: _toggleMultipleLogin,
+      isEnabled: false
+    })
+    
+    // Toggle multiple login receptionist1
+    function _toggleMultipleLogin(value){
+      setMultipleLogin(prevState => ({...prevState, isEnabled: value}))
+    }
 
     // Loader option handler!
     const [loader, setLoader] = useState(false);
@@ -227,6 +239,7 @@ const Client = () => {
                     setOptDelete(prevState => ({...prevState, canDelete: res.data.canDelete}))
                     setExtraBed(prevState => ({...prevState, isDay: res.data.extraCalc}))
                     setGrcHandler(prevState => ({...prevState, isGrcEnabled: res.data.grcPreview}));
+                    setMultipleLogin(prevState => ({...prevState, isEnabled: res.data.multipleLogins}))
                     updateRedirectTo("redirectTo", res.data.redirectTo)
                 }
             })
@@ -329,7 +342,8 @@ const Client = () => {
             canDeleteRooms: optDelete.canDelete,
             extraCalc : extraBed.isDay,
             grcPreview: grcHandler.isGrcEnabled,
-            redirectTo: redirectToFieldData.redirectTo
+            redirectTo: redirectToFieldData.redirectTo,
+            multipleLogin: multipleLogin.isEnabled
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -458,7 +472,7 @@ const Client = () => {
                                     <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
                                     extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
-                                    extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect}
+                                    extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
                                     />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>

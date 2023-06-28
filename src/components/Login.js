@@ -89,10 +89,11 @@ const Login = () => {
   }
 
   // Navigate user to the dashboard!
-  function navigateUser(id, lodgeName, redirect){
+  function navigateUser(id, lodgeName, redirect, isMultipleLogins){
     // If account is not locked, allow the user to the base!
+    const chooseRoute = isMultipleLogins ? "chooselogin" : "dashboard"; // Navigate to chooselogin if multiple login is enabled!
     if(redirect === "livixius"){
-      navigate(`/${id}-${lodgeName}/dashboard`, { replace: true })
+      navigate(`/${id}-${lodgeName}/${chooseRoute}`, { replace: true })
     } else {
       navigate(`/${id}-${lodgeName}/vouchers`, { replace: true })
     }
@@ -134,14 +135,15 @@ const Login = () => {
                 "pan" : res.data.pan,
                 "owner-name" : res.data.name,
                 "owner-number" : res.data.number,
-                "lodge-name": res.data.lodgename
+                "lodge-name": res.data.lodgename,
+                "redirectTo": res.data.redirect
               }
               
               defaultStorage(defaultData);
               
               await checkConfig(res.data.hostId, res.data.lodgename); // Check for config matrix
               await checkOptions(res.data.hostId, res.data.lodgename); // Check for the config cabinets!
-              navigateUser(res.data.hostId, res.data.lodgename, res.data.redirect); // Navigate to the dashboard
+              navigateUser(res.data.hostId, res.data.lodgename, res.data.redirect, res.data.multipleLogins); // Navigate to the dashboard
             }
           } else {
             setLoading(false);

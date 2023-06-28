@@ -27,7 +27,8 @@ const VoucherView = () => {
     header: "Vouchers Content Assist",
     _showHeaderChildView: _showHeaderChildView,
     style: {
-      fontWeight: "bold"
+      fontWeight: "bold",
+      overflow: "auto"
     }
   })
   
@@ -360,7 +361,10 @@ const VoucherView = () => {
   // Set up the voucher content view!
   function voucherContentView(){
     return(
-      <VoucherContent data = {sidepanel} childView = {() => panelChildView()} tableData = {tableView} lodgeId = {splitedIds[0]} getFilteredModel = {(filteredData, voucherId) => updateTableCellData(filteredData, voucherId)} />
+      <VoucherContent data = {sidepanel} childView = {() => panelChildView()} 
+      tableData = {tableView} lodgeId = {splitedIds[0]} 
+      getFilteredModel = {(filteredData, voucherId) => updateTableCellData(filteredData, voucherId)}
+      updateSidepanelHeight = {(value) => storeModalAssistHeight(value)} />
     )
   }
   

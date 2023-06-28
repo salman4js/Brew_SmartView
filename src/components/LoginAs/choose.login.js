@@ -1,0 +1,227 @@
+import React, {useState} from 'react';
+import { loginAs } from './choose.login.utils';
+import CustomModal from '../CustomModal/custom.modal.view';
+import MetadataFields from '../fields/metadata.fields.view';
+import { Link, useNavigate, useParams } from "react-router-dom";
+import ModalAssist from '../modal.assist/modal.assist.view';
+import { activityLoader } from '../common.functions/common.functions.view';
+import { validateFieldData, nodeConvertor } from '../common.functions/node.convertor';
+import {getStorage, setStorage, defaultStorage} from '../../Controller/Storage/Storage'
+
+const ChooseLogin = () => {
+  
+  // Navigate reference!
+  let navigate = useNavigate();
+  
+  // User Id reference!
+  const { id } = useParams();
+  const splitedIds = id.split(/[-]/);
+  
+  // Local storage reference!
+  var redirectTo = getStorage("redirectTo");
+  
+  // Custom login dialog state handler!
+  const [customLogin, setCustomLogin] = useState([
+    {
+      value: undefined,
+      placeholder: "Enter Your Username",
+      label: "Username",
+      name: 'username',
+      attribute: 'textField',
+      isRequired: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Enter a valid username'
+      }
+    },
+    {
+      value: undefined,
+      placeholder: "Enter Your Password",
+      label: "Password",
+      name: 'password',
+      attribute: 'textField',
+      isRequired: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Enter a valid password'
+      }
+    }
+  ])
+  
+  // Modal assist state handler!
+  const [modalAssist, setModalAssist] = useState({
+    header: "Login As",
+    _showHeaderChildView: _showHeaderChildView,
+    height: undefined,
+    style: {
+      fontWeight: "bold",
+      marginLeft: "30px",
+      marginRight: "30px",
+      marginTop: "30px",
+      marginBottom: "30px",
+      overflow: "hidden"
+    }
+  })
+  
+  // Custom login modal dialog!
+  const [customModal, setCustomModal] = useState({
+    show: undefined,
+    onHide: customModelonHide,
+    header: "Login as receptionist",
+    bodyFooter: undefined,
+    bodyFooterView: _showBodyFooterView,
+    bodyFooterErrorText: "Please check your credentials!",
+    centered: false,
+    modalSize: 'medium',
+    footerEnabled: true,
+    footerButtons: [
+      {
+        btnId: "Login",
+        disabled: false,
+        variant: "success",
+        onClick: validateUser
+      },
+      {
+        btnId: "Cancel",
+        variant: "secondary",
+        onClick: customModelonHide
+      }
+    ]
+  })
+  
+  // Custom modal on hide!
+  function customModelonHide(){
+    setCustomModal(prevState => ({...prevState, show: false}))
+  }
+  
+  // Custom modal body header view!
+  function _showBodyFooterView(){
+    return(
+      <div className = "text-center" style = {{color: "red", fontSize: '12px'}}>
+        {customModal.bodyFooterErrorText}
+      </div>
+    )
+  }
+  
+  // Update modal assist height to the modal assist state!
+  function setModalAssistHeight(value){
+    setModalAssist(prevState => ({...prevState, height: value}))
+  }
+  
+  // Header child view for the modal assist!
+  function _showHeaderChildView(){
+    return;
+  }
+  
+  // Show login choose dialog!
+  function _showChooseDialog(){
+    return(
+      <ModalAssist data = {modalAssist} childView = {() => _renderChildView()} height = {(value) => setModalAssistHeight(value)} />
+    )
+  }
+  
+  // Login fields handler!
+  function loginFieldHandler(){
+    return(
+      <div className = "text-center">
+        <MetadataFields data = {customLogin} updateData = {setCustomLogin} />
+      </div>
+    )
+  }
+  
+  // Show custom login modal!
+  function _showCustomLoginModal(){
+    return(
+      <CustomModal modalData = {customModal} showBodyItemView = {() => loginFieldHandler()}  />
+    )
+  }
+  
+  // Validate entered user credentials!
+  async function validateUser(){
+    const isFieldValid = await validateFieldData(customLogin, setCustomLogin);
+    if(isFieldValid.length === 0){
+      const fieldData = nodeConvertor(customLogin);
+      fieldData["lodge"] = splitedIds[0];
+      const result = await loginAs(fieldData);
+      if(result.data.success){
+        const storageData = {
+          "loggedInUser": result.data.loggedInUser,
+          "loggedInAsRecep": result.data.loggedInAsRecep
+        }
+        defaultStorage(storageData);
+        navigateUser("landingpage");
+      } else {
+        _loginAsError(true, result.data.message);
+      }
+    }
+  }
+  
+  // Show error incase of login error!
+  function _loginAsError(value, message){
+    setCustomModal(prevState => ({...prevState, bodyFooter: value}));
+  }
+
+  // Navigate user to the appropriate product!
+  function navigateUser(route){
+    setStorage("loggedInID", id); // Store the login ID in local storage!
+    if(redirectTo === "livixius"){
+      navigate(`/${id}/${route}`, { replace: true })
+    } else {
+      navigate(`/${id}/vouchers`, { replace: true })
+    }
+  }
+  
+  // Handle Multiple Logins!
+  function handleLogin(key){
+    if(key === "manager"){
+      var route = "dashboard"
+      navigateUser(route);
+    } else {
+      _triggerCustomLogin();
+    }
+  }
+  
+  // trigger custom login for receptionist!
+  function _triggerCustomLogin(){
+    setCustomModal(prevState => ({...prevState, show: true}))
+  }
+  
+  // Show child view component!
+  function _renderChildView(){
+    if(modalAssist.height !== undefined){
+      return(
+        <div>
+          <div className = "text-center" style = {{backgroundColor: "#000000ba", height: (modalAssist.height / 2) + "px"}} onClick = {() => handleLogin("receptionist")}>
+            <div style = {{paddingTop: (modalAssist.height / 5) + "px", cursor: "pointer"}}>
+              Login As Receptionist
+            </div>
+          </div>
+          <div className = "text-center" style = {{backgroundColor: "rgb(51 0 255 / 50%)", height: (modalAssist.height / 1.7) + "px"}} onClick = {() => handleLogin("manager")}>
+            <div style = {{paddingTop: (modalAssist.height / 5) + "px", cursor: "pointer"}}>
+              Login As Manager
+            </div>
+          </div>
+        </div>
+      )
+    } else {
+      var opts = {
+        color: "black",
+        marginTop: "360px",
+        textCenter: true
+      }
+      return activityLoader(opts);
+    }
+  }
+  
+  
+  return(
+    <div>
+      {_showChooseDialog()}
+      {customModal.show && (
+        _showCustomLoginModal()
+      )}
+    </div>
+  )
+}
+
+export default ChooseLogin;

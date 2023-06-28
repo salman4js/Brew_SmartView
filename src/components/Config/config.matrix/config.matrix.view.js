@@ -72,6 +72,12 @@ const ConfigMatrix = (props) => {
                     {props.grcHandler.label}
                 </label>
             </div>
+            <div className = "form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.multipleLogin.isEnabled} onChange = {() => props.multipleLogin.onChange(!props.multipleLogin.isEnabled)} />
+              <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                  {props.multipleLogin.label}
+              </label>
+            </div>
             <div className = "modal-gap"></div>
             <div className = "table-view-bill-line"></div>
             <div className = "form-check">
