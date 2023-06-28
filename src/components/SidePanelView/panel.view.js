@@ -28,15 +28,15 @@ const PanelView = (props) => {
   
   // Send the height back to the parent container!
   useEffect(() => {
-    //props.height(sidePanelRef.current.offsetHeight);
+    props.height(sidePanelRef.current.offsetHeight);
   }, [])
   
   return(
     <div className = "sidepanel-container">
+        <div className = "workspace-title text-center" ref = {workSpaceRef}>
+          {_showHeaderView()}
+        </div>
         <div className = "sidepanel" ref = {sidePanelRef} style = {{height: props.data.height + "px"}}>
-          <div className = "workspace-title text-center" ref = {workSpaceRef}>
-            {_showHeaderView()}
-          </div>
           <div className = "files">
             {props.childView()}
           </div>

@@ -798,6 +798,7 @@ td {
 
 .modal-assist{
   background-color: white;
+  overflow: hidden;
   position:absolute;
   top:0px;
   right:0px;

@@ -11,6 +11,7 @@ const Invoice = (props) => {
     // Retrieve area and email from local storage!
     const area = getStorage("area");
     const emailId = getStorage("emailId");
+    const loggedInAsRecep = JSON.parse(getStorage("loggedInAsRecep"));
 
     // navigate back to home page!
     function navigateBack() {
@@ -134,6 +135,8 @@ const Invoice = (props) => {
                     </p>
                     <div className="invoice-header" style={{ color: "black" }}>
                         Payment Id: {props.node.receiptId}
+                        <br />
+                        Cashier: {loggedInAsRecep ? getStorage("loggedInUser") + "(Receptionist)" : "Manager"}
                     </div>
                     <hr />
                     <table style={{ width: "100%", color: "black" }} >

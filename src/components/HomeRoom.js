@@ -1,5 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import { excludeDatesCheckin, prebookExcludeDates } from './ExcludeDates/excludesdates';
+import CustomModal from './CustomModal/custom.modal.view';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
@@ -1126,7 +1127,6 @@ const HomeRoom = (props) => {
         // Save the image data to local storage
         setStorage("userMedia", dataURL);
       }
-
     
     // Listen to the video ref and if it changes, get the access to the video camera!
     useEffect(() => {
