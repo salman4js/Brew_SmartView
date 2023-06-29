@@ -28,6 +28,7 @@ import PrebookCheckin from './components/prebook.view/prebook.checkin.view';
 import InvoiceMemory from './components/invoice.memory/invoice.memory.view';
 import VoucherView from './components/vouchers/vouchers.view';
 import ChooseLogin from './components/LoginAs/choose.login';
+import ManageRecep from './components/ManageRecep/manage.recep';
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
           <Route path = "/:id/invoicememory" exact element = {<InvoiceMemory />} />
           <Route path = "/:id/vouchers" exact element = {<VoucherView />} />
           <Route path = "/:id/chooselogin" exact element = {<ChooseLogin /> } />
+          <Route path = "/:id/managerecep" exact element = {<ManageRecep />} />
         </Routes>
       </Router>
     </div>

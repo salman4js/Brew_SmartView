@@ -12,7 +12,7 @@ const ChooseLogin = () => {
   
   // Navigate reference!
   let navigate = useNavigate();
-  
+
   // User Id reference!
   const { id } = useParams();
   const splitedIds = id.split(/[-]/);
@@ -148,8 +148,9 @@ const ChooseLogin = () => {
           "loggedInUser": result.data.loggedInUser,
           "loggedInAsRecep": result.data.loggedInAsRecep
         }
+        const loginRoute = result.data.loggedInAsRecep ? "landingpage" : "dashboard"
         defaultStorage(storageData);
-        navigateUser("landingpage");
+        navigateUser(loginRoute);
       } else {
         _loginAsError(true, result.data.message);
       }
@@ -173,12 +174,7 @@ const ChooseLogin = () => {
   
   // Handle Multiple Logins!
   function handleLogin(key){
-    if(key === "manager"){
-      var route = "dashboard"
-      navigateUser(route);
-    } else {
-      _triggerCustomLogin();
-    }
+    _triggerCustomLogin();
   }
   
   // trigger custom login for receptionist!
