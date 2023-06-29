@@ -2,7 +2,13 @@
 export function nodeConvertor(status){
   const result = {};
   status.map((options, index) => {
-    result[options.name] = options.value;
+    if(options.attribute !== "listField"){
+      result[options.name] = options.value;
+    } else {
+      options.options.map((opts, key) => {
+        result[options.name] = opts.actualValue; // Handles list field actualValue issue!
+      })
+    }
   })
   return result;
 }
