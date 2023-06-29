@@ -60,6 +60,12 @@ const ModalAssist = (props) => {
   useEffect(() => {
     const assistChildHeight = modalAssist.current.offsetHeight;
     const assistHeaderHeight = modalAssistHeader.current.offsetHeight;
+    if(props.data.getWidth){
+      props.width(modalAssist.current.offsetWidth);
+    }
+    if(props.data.getHeaderHeight){
+      props.headerHeight(assistHeaderHeight);
+    }
     props.height(assistChildHeight - assistHeaderHeight - assistHeaderHeight); // Sending the height to the parent component!
   }, [])
   

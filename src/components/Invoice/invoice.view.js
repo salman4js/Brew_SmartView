@@ -136,7 +136,7 @@ const Invoice = (props) => {
                     <div className="invoice-header" style={{ color: "black" }}>
                         Payment Id: {props.node.receiptId}
                         <br />
-                        Cashier: {loggedInAsRecep ? getStorage("loggedInUser") + "(Receptionist)" : "Manager"}
+                        Cashier: {loggedInAsRecep ? getStorage("loggedInUser") + "(Receptionist)" : getStorage("loggedInUser") + "(Manager)"}
                     </div>
                     <hr />
                     <table style={{ width: "100%", color: "black" }} >

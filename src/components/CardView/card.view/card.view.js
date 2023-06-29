@@ -2,49 +2,27 @@ import React from 'react';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import CustomModalBodyitem from '../../CustomModal/custom.modal.body/custom.modal.body.item/custom.modal.body.item'
 import { getClassName } from '../../common.functions/common.functions';
+import Button from 'react-bootstrap/Button'
 
 
 const CardView = (props) => {
-  
-  // Show Card Body Data!
-  function _showCardBodyView(){
-    const bodyData = Object.entries(props.data.inBodyData);
-    return bodyData.map(([key, value]) => {
-      if(key !== "OBJECT_ID"){
-        return(
-          <p className = "card-view-body">
-            {key}: {value}
-          </p>
-        )
-      }
-    });
-  }
-  
+    
   // Get className for the footer buttons!
   function getClass(variant){
     return getClassName(variant)
   }
   
-  // Show Footer Buttons!
+  // Render footer buttons!
   function _showFooterButtons(){
     return(
-      props.data?.footerButtons?.show && (
-        props.data?.footerButtons.btns.map((options, key) => {
-          return(
-            <div className  = {getClass(options.variant)} onClick = {() => options.onClick(props.data?.inBodyData.OBJECT_ID)}>
-              {options.id}
-            </div>
-          )
-        })
-      )
+      props.data?.footerEnabled && props.data?.footerButtons.map((options, key) => {
+        return(
+          <Button variant = {options.variant} disabled = {options.disabled} onClick = {() => options.onClick()}>
+            {options.btnId}
+          </Button>
+        )
+      })
     )
-  }
-  
-  // Function to get the view for the custom model body item view!
-  function customModalBodyItem(){
-    return Object.keys(props.modalData.data).map((key) => (
-      <CustomModalBodyitem keys = {key} value = {props.modalData.data[key]} />
-    ));
   }
   
   // Show Custom Modal!
@@ -60,25 +38,25 @@ const CardView = (props) => {
     
     return(
       props.modalData?.show && (
-        <CustomModal modalData = {modelAndInvoiceData} showBodyItemView = {() => customModalBodyItem()}  />
+        <CustomModal modalData = {modelAndInvoiceData} showBodyItemView = {() => props.customModalBodyItem()}  />
       )
     )
   }
   
   return(
-    <div className="col-4" style={{ paddingBottom: "10vh" }}>
-        <div className="card card-container" style = {{height: '350px'}}>
-            <div className="card-header text-handler text-center" style={{ fontWeight: "bold", fontSize: '18px' }}>
-              {props.data.header}
-            </div>
-            <div className = "card-body text-center">
-              {_showCardBodyView()}
-            </div>
-            {_showFooterButtons()}
-            {props.data?.isModalEnabled && (
-              _showCustomModal()
-            )}
+    <div className="card" style = {{height: props.data.height}}>
+        <div className="card-header text-handler text-center">
+          {props.data?.header}
         </div>
+        <div className = "card-body text-center">
+          {props.data._showBodyChildView()}
+        </div>
+        {props.data?.footerEnabled && (
+          _showFooterButtons()
+        )}
+        {props.data?.isModalEnabled && (
+          _showCustomModal()
+        )}
     </div>
   )
 }

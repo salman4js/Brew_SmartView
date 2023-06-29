@@ -5,7 +5,7 @@ import MetadataTableCellView from './metadata.tablecell.view/metadata.tablecell.
 import {convertIntoArrays, isEmpty} from '../common.functions/node.convertor'
 
 const MetadataTable = (props) => {
-  
+
   // Show table loader!
   function _showLoader(){
     // Options!
@@ -27,7 +27,6 @@ const MetadataTable = (props) => {
       return(
         <table className = "text-center cheat-code">
           {_renderTableHeader()}
-          
         </table>
       )
     }

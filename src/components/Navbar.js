@@ -10,6 +10,11 @@ const Navbar = (props) => {
     //Check the ID and token of the application!
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
+    
+    // Check if logged in as manager or not!
+    function isLoggedInAsManager(){
+      return !(JSON.parse(getStorage("loggedInAsRecep")))
+    }
 
     // config options handler!
     const [options, setOptions] = useState([]);
@@ -108,6 +113,9 @@ const Navbar = (props) => {
                                     <ul class="dropdown-menu dropdown-submenu dropdown-submenu-left">
                                         <Link className='nav-link dropdown-item' to={`/${props.id}/configure`} style={{ color: "black" }}> Add Room Type </Link>
                                         <Link className='nav-link dropdown-item' to={`/${props.id}/editconfig`} style={{ color: "black" }}> Edit Room Type Data</Link>
+                                        {isLoggedInAsManager() && (
+                                          <Link className='nav-link dropdown-item' to={`/${props.id}/managerecep`} style={{ color: "black" }}> Add Receptionist Account </Link>
+                                        )}
                                         {
                                             options.map((item, key) => {
                                                 if (item.config === 'Dish') {

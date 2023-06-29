@@ -893,3 +893,12 @@ td {
   cursor: pointer;
 }
 
+.manage-recep-wrapper{
+  display: flex;
+}
+
+.manage-recep-table-center{
+  margin-left: 100px;
+  overflow: auto;
+}
+
