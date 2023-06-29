@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
 import CardView from '../../CardView/card.view/card.view';
 import MetadataFields from '../../fields/metadata.fields.view';
+import {nodeConvertor, validateFieldData} from '../../common.functions/node.convertor'
 
 const ManageRecepAdd = (props) => {
   
   // Card view state handler!
   const [cardView, setCardView] = useState({
     header: "Add Accounts",
-    height: "380px",
+    height: "400px",
     _showBodyChildView : _showCardBodyView,
     footerEnabled: true,
     footerButtons: [
@@ -21,8 +22,14 @@ const ManageRecepAdd = (props) => {
   })
   
   // Add the account to the server!
-  function saveData(){
-    
+  async function saveData(){
+    // Validate the field data
+    const isValidData = await validateFieldData(inputFields, setInputFields);
+    // Get the field data in server form!
+    if(isValidData.length === 0){
+      const fieldData = nodeConvertor(inputFields);
+      console.log(fieldData)
+    }
   }
   
   
@@ -37,7 +44,7 @@ const ManageRecepAdd = (props) => {
       isRequired: true,
       inlineToast: {
         isShow: false,
-        inlineMessage: 'Enter a valid username'
+        inlineMessage: 'Please enter a valid username'
       }
     },
     {
@@ -49,7 +56,7 @@ const ManageRecepAdd = (props) => {
       isRequired: true,
       inlineToast: {
         isShow: false,
-        inlineMessage: 'Enter a valid password'
+        inlineMessage: 'PLease enter a valid password'
       }
     },
     {
@@ -61,10 +68,12 @@ const ManageRecepAdd = (props) => {
       noneValue: "None",
       options: [
         {
-          value: "Manager Level Authorization"
+          value: "Manager Level Authorization",
+          actualValue: "managerLevel"
         },
         {
-          value: "Receptionist Level Authorization"
+          value: "Receptionist Level Authorization",
+          actualValue: "receptionistLevel"
         }
       ],
       style: {
