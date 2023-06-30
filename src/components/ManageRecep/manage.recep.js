@@ -5,7 +5,8 @@ import Navbar from '../Navbar';
 import ModalAssist from '../modal.assist/modal.assist.view';
 import ManageRecepAdd from './manage.recep.add.accounts/manage.recep.add.accounts';
 import ManagerRecepDetails from './manage.recep.details/manage.recep.details';
-import {activityLoader} from '../common.functions/common.functions.view'
+import {activityLoader} from '../common.functions/common.functions.view';
+import {domRefresh} from '../common.functions/node.convertor';
 
 const ManageRecep = () => {
   
@@ -69,7 +70,7 @@ const ManageRecep = () => {
   function _showAddAccounts(){
     return(
       <div style = {{marginTop: (modalAssist.height / 4) + "px", padding: "30px"}}>
-        <ManageRecepAdd />
+        <ManageRecepAdd lodgeId = {splitedIds[0]} domRefresh = {() => domRefresh()}/>
       </div>
     )
   }

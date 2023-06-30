@@ -2,13 +2,7 @@
 export function nodeConvertor(status){
   const result = {};
   status.map((options, index) => {
-    if(options.attribute !== "listField"){
-      result[options.name] = options.value;
-    } else {
-      options.options.map((opts, key) => {
-        result[options.name] = opts.actualValue; // Handles list field actualValue issue!
-      })
-    }
+    result[options.name] = options.value;
   })
   return result;
 }
@@ -118,4 +112,9 @@ export function isEmpty(value){
   } else {
     return true;
   }
+}
+
+// Refresh the entire page when needed!
+export function domRefresh(){
+  window.location.reload();
 }

@@ -14,6 +14,11 @@ const ListField = (props) => {
     return props.data.value !== undefined ? props.data.value : props.data.placeholder;
   }
   
+  // Get value for the selected data!
+  function getValue(opts){
+    return opts.actualValue !== undefined ? opts.actualValue : opts.value;
+  }
+  
   return(
     <div className = "modal-gap text-center">
       <label className = "metadata-label" style = {getStyle(props.data.style)}> {props.data.label} </label>
@@ -21,7 +26,7 @@ const ListField = (props) => {
         <option value="" disabled selected>{getSelected()}</option>
         {props.data?.options?.map((opts, key) => {
           return(
-            <option>{opts.value}</option>
+            <option value = {getValue(opts)}>{opts.value}</option>
           )
         })}
       </select>
