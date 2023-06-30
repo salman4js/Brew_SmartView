@@ -18,7 +18,7 @@ const ManageRecepDetails = (props) => {
   function _showCardBodyView(){
     return(
       <div className = "manage-recep-table-center">
-        <MetadataTable data = {props.tableView} height = {500} idInstance = {"lodge"} />
+        <MetadataTable data = {props.tableView} height = {500} idInstance = {"lodge"} checkbox = {props.checkboxView} />
       </div>
     )
   }

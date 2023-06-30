@@ -855,6 +855,15 @@ td {
   color: black;
 }
 
+.card-body{
+  overflow: auto;
+}
+
+.metadata-table-checkbox{
+  width: 30px;
+  color: "black"
+}
+
 .metadata-tablecell-view{
   color: black;
   width: 290px;
@@ -898,7 +907,7 @@ td {
 }
 
 .manage-recep-table-center{
-  margin-left: 120px;
+  margin-left: 110px;
   overflow: auto;
 }
 

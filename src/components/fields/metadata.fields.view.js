@@ -3,9 +3,10 @@ import DateField from './datefield/datefield.view';
 import TextField from './textfield/textfield.view';
 import ListField from './listfield/listfield.view';
 import DataList from './dataListField/datalist.field.view';
+import CheckBox from './checkBoxField/checkbox.field.view';
 
 const MetadataFields = (props) => {
-      
+
   // Get input value!
   function getInputValue(event, attribute){
     if(attribute === 'dateField' || attribute === "dataListField"){
@@ -57,6 +58,12 @@ const MetadataFields = (props) => {
         if(field.attribute === 'dataListField') {
           return(
             <DataList data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
+          )
+        }
+        
+        if(field.attribute === "checkBoxField"){
+          return(
+            <CheckBox data = {field} index = {index} />
           )
         }
 
