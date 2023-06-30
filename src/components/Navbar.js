@@ -114,7 +114,7 @@ const Navbar = (props) => {
                                         <Link className='nav-link dropdown-item' to={`/${props.id}/configure`} style={{ color: "black" }}> Add Room Type </Link>
                                         <Link className='nav-link dropdown-item' to={`/${props.id}/editconfig`} style={{ color: "black" }}> Edit Room Type Data</Link>
                                         {isLoggedInAsManager() && (
-                                          <Link className='nav-link dropdown-item' to={`/${props.id}/managerecep`} style={{ color: "black" }}> Add Receptionist Account </Link>
+                                          <Link className='nav-link dropdown-item' to={`/${props.id}/managerecep`} style={{ color: "black" }}> Add Multiple Account </Link>
                                         )}
                                         {
                                             options.map((item, key) => {

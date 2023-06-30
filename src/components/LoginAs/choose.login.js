@@ -164,7 +164,6 @@ const ChooseLogin = () => {
 
   // Navigate user to the appropriate product!
   function navigateUser(route){
-    setStorage("loggedInID", id); // Store the login ID in local storage!
     if(redirectTo === "livixius"){
       navigate(`/${id}/${route}`, { replace: true })
     } else {

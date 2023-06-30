@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import CardView from '../../CardView/card.view/card.view';
 import MetadataFields from '../../fields/metadata.fields.view';
-import {nodeConvertor, validateFieldData} from '../../common.functions/node.convertor'
+import {addAccount} from '../manage.recep.utils/manage.recep.utils';
+import {nodeConvertor, validateFieldData, _clearData} from '../../common.functions/node.convertor'
 
 const ManageRecepAdd = (props) => {
   
@@ -28,7 +29,14 @@ const ManageRecepAdd = (props) => {
     // Get the field data in server form!
     if(isValidData.length === 0){
       const fieldData = nodeConvertor(inputFields);
-      console.log(fieldData)
+      fieldData['lodge'] = props.lodgeId;
+      const result = await addAccount(fieldData);
+      if(result.data.success){
+        const updatedField = _clearData(inputFields);
+        setInputFields(updatedField); // State is taking some time to update plus, 
+        // We are calling the _showBodyChildView from cardView which actually prevents the re-rendering!
+        props.domRefresh();
+      }
     }
   }
   
