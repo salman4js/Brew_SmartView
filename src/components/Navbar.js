@@ -21,6 +21,9 @@ const Navbar = (props) => {
 
     // Config Insights check
     var isInsights = JSON.parse(getStorage("isInsights"));
+    
+    // Permission levels!
+    var loggedInAsRecep = JSON.parse(getStorage("loggedInAsRecep"));
 
     useEffect(() => {
         setOptions(JSON.parse(getStorage("config-value")));
@@ -70,8 +73,8 @@ const Navbar = (props) => {
                                         }
                                     })
                                 }
-                                <Link className='nav-link dropdown-item' to={`/${props.id}/addrooms`} style={{ color: "black" }}> Add Rooms </Link>
-                                <Link className='nav-link dropdown-item' to={`/${props.id}/updaterooms`} style={{ color: "black" }}> Update Rooms </Link>
+                                {!loggedInAsRecep && <Link className='nav-link dropdown-item' to={`/${props.id}/addrooms`} style={{ color: "black" }}> Add Rooms </Link>}
+                                {!loggedInAsRecep && <Link className='nav-link dropdown-item' to={`/${props.id}/updaterooms`} style={{ color: "black" }}> Update Rooms </Link>}
                             </div>
                         </li>
                         {
@@ -109,7 +112,7 @@ const Navbar = (props) => {
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 {/* <Link className='nav-link dropdown-item' to={`/${props.id}/configure`} style={{ color: "black" }}> Configure Bill </Link> */}
                                 <li>
-                                    <a class="dropdown-item" href="#"> Configure Settings &raquo; </a>
+                                    {!loggedInAsRecep && <a class="dropdown-item" href="#"> Configure Settings &raquo; </a>}
                                     <ul class="dropdown-menu dropdown-submenu dropdown-submenu-left">
                                         <Link className='nav-link dropdown-item' to={`/${props.id}/configure`} style={{ color: "black" }}> Add Room Type </Link>
                                         <Link className='nav-link dropdown-item' to={`/${props.id}/editconfig`} style={{ color: "black" }}> Edit Room Type Data</Link>
@@ -145,7 +148,7 @@ const Navbar = (props) => {
                                     </ul>
                                 </li>
                                 <Link className='nav-link dropdown-item' to={`/${props.id}/editroom`} style={{ color: "black" }}> Edit Customer Details </Link>
-                                <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}>   Booking History </Link>
+                                {!loggedInAsRecep && <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}>   Booking History </Link>}
                                 <Link className='nav-link dropdown-item' to={`/login`} style={{ color: "black" }}>   LogOut </Link>
                             </div>
                         </li>

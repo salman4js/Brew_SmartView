@@ -36,7 +36,7 @@ const MetadataTable = (props) => {
   function _renderTableHeader(){
     return(
       <div>
-        <MetadataTableHeader data = {props.data.headerValue} />
+        <MetadataTableHeader data = {props.data.headerValue} checkbox = {props.data.checkbox} />
         {_renderTableCellView()}
       </div>
     )
@@ -60,7 +60,7 @@ const MetadataTable = (props) => {
     // Convert the object values into an array values!
     var tableCellValue = convertIntoArrays(value);
     return(
-      <MetadataTableCellView data = {tableCellValue} />
+      <MetadataTableCellView data = {tableCellValue} checkbox = {props.data.checkbox} />
     )
   }
   

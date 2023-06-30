@@ -20,6 +20,13 @@ const ManageRecep = () => {
     headerValue: undefined,
     infoMessage: "Fetching user account details...",
     tableLoader: true,
+    checkbox: [
+      {
+        attribute: "checkBoxField",
+        enableCellCheckbox: true,
+        enableHeaderCheckbox: false
+      }
+    ]
   })
   
   // Trigger the table loader!
