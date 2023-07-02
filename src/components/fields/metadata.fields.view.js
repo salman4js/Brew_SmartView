@@ -63,7 +63,7 @@ const MetadataFields = (props) => {
         
         if(field.attribute === "checkBoxField"){
           return(
-            <CheckBox data = {field} index = {index} />
+            <CheckBox data = {field} index = {index} checkboxIndex = {props.checkboxIndex} />
           )
         }
 

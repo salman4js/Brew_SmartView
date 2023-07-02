@@ -80,7 +80,6 @@ const Login = () => {
           setStorage("config-value", JSON.stringify(res.data.message));
           setLoading(false)
         } else {
-          console.error(res.data.message);
           setLoading(false);
           setError(res.data.message)
           setShow(!show);

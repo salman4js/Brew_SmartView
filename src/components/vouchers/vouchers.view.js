@@ -47,7 +47,49 @@ const VoucherView = () => {
     headerValue: undefined,
     infoMessage: "No vouchers has been selected...",
     tableLoader: false,
-    selectedVoucherId: undefined
+    selectedVoucherId: undefined,
+    isCheckboxSelected: false,
+    enableCheckbox: true,
+    checkbox: [
+      {
+        select: checkboxSelected,
+        value: false,
+        attribute: "checkBoxField",
+        enableCellCheckbox: true,
+        enableHeaderCheckbox: false
+      }
+    ],
+    commandHelper: false,
+    commands: [
+      {
+        value: "Edit",
+        onClick: vouchersList
+      },
+      {
+        value: "Delete",
+        onClick: vouchersList
+      }
+    ]
+  })
+  
+  // Perform action after the checkbox is being selected!
+  function checkboxSelected(value){
+    setCommandHelper(prevState => ({...prevState, commandHelper: value}))
+  }
+  
+  // Command helper state handler!
+  const [commandHelper, setCommandHelper] = useState({
+    commandHelper : false,
+    commands: [
+      {
+        value: "Edit",
+        onClick: null
+      },
+      {
+        value: "Delete",
+        onClick: null
+      }
+    ]
   })
   
   // Trigger table loader!
@@ -361,7 +403,7 @@ const VoucherView = () => {
   // Set up the voucher content view!
   function voucherContentView(){
     return(
-      <VoucherContent data = {sidepanel} childView = {() => panelChildView()} 
+      <VoucherContent data = {sidepanel} commandHelper = {commandHelper} childView = {() => panelChildView()} 
       tableData = {tableView} lodgeId = {splitedIds[0]} 
       getFilteredModel = {(filteredData, voucherId) => updateTableCellData(filteredData, voucherId)}
       updateSidepanelHeight = {(value) => storeModalAssistHeight(value)} />

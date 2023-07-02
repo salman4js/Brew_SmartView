@@ -143,7 +143,9 @@ const ChooseLogin = () => {
       const fieldData = nodeConvertor(customLogin);
       fieldData["lodge"] = splitedIds[0];
       const result = await loginAs(fieldData);
-      if(result.data.success){
+      const permissionLevel = getStorage("permissionLevel");
+      const accessGranted = (permissionLevel === result.data.permissionLevel);
+      if(result.data.success && accessGranted){
         const storageData = {
           "loggedInUser": result.data.loggedInUser,
           "loggedInAsRecep": result.data.loggedInAsRecep
@@ -173,6 +175,7 @@ const ChooseLogin = () => {
   
   // Handle Multiple Logins!
   function handleLogin(key){
+    setStorage("permissionLevel", key); // Storing the accessing level to validate the credentials once verified by the server!
     _triggerCustomLogin();
   }
   
@@ -186,12 +189,12 @@ const ChooseLogin = () => {
     if(modalAssist.height !== undefined){
       return(
         <div>
-          <div className = "text-center" style = {{backgroundColor: "#000000ba", height: (modalAssist.height / 2) + "px"}} onClick = {() => handleLogin("receptionist")}>
+          <div className = "text-center" style = {{backgroundColor: "#000000ba", height: (modalAssist.height / 2) + "px"}} onClick = {() => handleLogin("receptionistLevel")}>
             <div style = {{paddingTop: (modalAssist.height / 5) + "px", cursor: "pointer"}}>
               Login As Receptionist
             </div>
           </div>
-          <div className = "text-center" style = {{backgroundColor: "rgb(51 0 255 / 50%)", height: (modalAssist.height / 1.7) + "px"}} onClick = {() => handleLogin("manager")}>
+          <div className = "text-center" style = {{backgroundColor: "rgb(51 0 255 / 50%)", height: (modalAssist.height / 1.7) + "px"}} onClick = {() => handleLogin("managerLevel")}>
             <div style = {{paddingTop: (modalAssist.height / 5) + "px", cursor: "pointer"}}>
               Login As Manager
             </div>

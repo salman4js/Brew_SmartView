@@ -1,5 +1,7 @@
 import React from 'react';
 import CustomModal from '../../CustomModal/custom.modal.view';
+import CommandHelper from '../../fields/commandField/command.helper.field'
+import {activityLoader} from '../../common.functions/common.functions.view'
 import CustomModalBodyitem from '../../CustomModal/custom.modal.body/custom.modal.body.item/custom.modal.body.item'
 import { getClassName } from '../../common.functions/common.functions';
 import Button from 'react-bootstrap/Button'
@@ -10,6 +12,23 @@ const CardView = (props) => {
   // Get className for the footer buttons!
   function getClass(variant){
     return getClassName(variant)
+  }
+  
+  // Show commandHelper for performing activity!
+  function _showCommands(){
+    return <CommandHelper data = {props.data.commands} />
+  }
+  
+  // Show activity loader!
+  function _showActivityLoader(){
+    // Options!
+    var opts = {
+      color: "black",
+      marginTop: (props.data.height / 4) + "px",
+      textCenter: true
+    }
+    
+    return activityLoader(opts)
   }
   
   // Render footer buttons!
@@ -44,12 +63,15 @@ const CardView = (props) => {
   }
   
   return(
-    <div className="card" style = {{height: props.data.height}}>
+    <div className="card" style = {{height: props.data.height + "px"}}>
         <div className="card-header text-handler text-center">
           {props.data?.header}
         </div>
+        {props.data.commandHelper && (
+          _showCommands()
+        )}
         <div className = "card-body text-center">
-          {props.data._showBodyChildView()}
+          {props.data.enableLoader ? _showActivityLoader() : props.data._showBodyChildView()}
         </div>
         {props.data?.footerEnabled && (
           _showFooterButtons()

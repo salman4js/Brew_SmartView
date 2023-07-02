@@ -9,8 +9,9 @@ const ManageRecepAdd = (props) => {
   // Card view state handler!
   const [cardView, setCardView] = useState({
     header: "Add Accounts",
-    height: "400px",
+    height: "400",
     _showBodyChildView : _showCardBodyView,
+    enableLoader: false,
     footerEnabled: true,
     footerButtons: [
       {
@@ -22,8 +23,14 @@ const ManageRecepAdd = (props) => {
     ]
   })
   
+  // Trigger loader!
+  function _triggerLoader(value){
+    setCardView(prevState => ({...prevState, enableLoader: value}))
+  }
+  
   // Add the account to the server!
   async function saveData(){
+    _triggerLoader(true);
     // Validate the field data
     const isValidData = await validateFieldData(inputFields, setInputFields);
     // Get the field data in server form!
@@ -35,6 +42,7 @@ const ManageRecepAdd = (props) => {
         const updatedField = _clearData(inputFields);
         setInputFields(updatedField); // State is taking some time to update plus, 
         // We are calling the _showBodyChildView from cardView which actually prevents the re-rendering!
+          _triggerLoader(false);
         props.domRefresh();
       }
     }

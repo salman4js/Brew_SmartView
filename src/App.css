@@ -911,3 +911,17 @@ td {
   overflow: auto;
 }
 
+.metadata-command-helper{
+  background-color: #dddd;
+  border: 1px solid white;
+}
+
+.metadata-command-fields{
+  padding: 0px 20px 0px 20px;
+  color: black;
+}
+
+.metadata-command-fields:hover{
+  background-color: #f1f1f1
+}
+
