@@ -1,10 +1,16 @@
 const brewDate = require("brew-date");
 const axios = require("axios");
-const Variables = require("../Variables")
+const Variables = require("../Variables");
+const storage = require("../../Controller/Storage/Storage")
 
 // Handle checkin time format!
 export function handleTimeFormat(time) {
     return brewDate.timeFormat(time);
+}
+
+// get current lodgeId!
+export function getLodgeId(){
+  return storage.getStorage("loggedInID");
 }
 
 // Convert mm/dd/yyy intp dd/mm/yyyy

@@ -36,7 +36,9 @@ const MetadataTable = (props) => {
   function _renderTableHeader(){
     return(
       <div>
-        <MetadataTableHeader data = {props.data.headerValue} checkbox = {props.data.checkbox} />
+        <MetadataTableHeader data = {props.data.headerValue} checkbox = {props.data.checkbox} 
+        enableCheckbox = {props.data.enableCheckbox} enableCommandHelper = {props.data.commandHelper}
+        commands = {props.data.commands} />
         {_renderTableCellView()}
       </div>
     )
@@ -46,7 +48,7 @@ const MetadataTable = (props) => {
   function _deleteDefaultValues(value, idInstance){
     var result = [...value];
     result.map((options, key) => {
-      delete options._id;
+      // delete options._id;
       delete options[idInstance];
       delete options.__v;
     })
@@ -60,7 +62,7 @@ const MetadataTable = (props) => {
     // Convert the object values into an array values!
     var tableCellValue = convertIntoArrays(value);
     return(
-      <MetadataTableCellView data = {tableCellValue} checkbox = {props.data.checkbox} />
+      <MetadataTableCellView data = {tableCellValue} checkbox = {props.data.checkbox} enableCheckbox = {props.data.enableCheckbox} />
     )
   }
   

@@ -3,17 +3,22 @@ import { getFilteredModel } from './vouchers.utils.js';
 import PanelView from '../SidePanelView/panel.view';
 import MetadataTable from '../metadata.table.view/metadata.table.view';
 import MetadataFields from '../fields/metadata.fields.view';
+import CommandHelper from '../fields/commandField/command.helper.field'
 import { nodeConvertor, validateFieldData, _clearData, _enableInlineToast, isEmpty } from '../common.functions/node.convertor';
 import { activityLoader } from '../common.functions/common.functions.view';
 import { setStorage, getStorage } from '../../Controller/Storage/Storage'
 
 const VoucherContent = (props) => {
-  
   // Selected voucher id state handler!
   const [selectedVoucherId, setSelectedVoucherId] = useState();
   
   // Loader state handler for table!
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Show command helper!
+  function _showCommandHelper(){
+    return <CommandHelper data = {props.commandHelper.commands} />
+  }
 
   // Cheat code state handler!
   const [cheatCode, setCheatCode] = useState([
@@ -114,6 +119,9 @@ const VoucherContent = (props) => {
         <PanelView data = {props.data} childView = {() => props.childView()} height = {(value) => props.updateSidepanelHeight(value)} />
       </div>
       <div className = "flex-2">
+        {props.commandHelper.commandHelper && (
+          _showCommandHelper()
+        )}
         <div className = "cheat-code">
           {_renderCheatCode()}
         </div>
