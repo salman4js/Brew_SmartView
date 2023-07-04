@@ -387,7 +387,6 @@ const HomeRoom = (props) => {
       
         // Get exclude dates of the selected room!
         await getExcludeDates(props.roomid);
-      
         const credentials = {
             roomid: props.roomid
         }
@@ -605,6 +604,8 @@ const HomeRoom = (props) => {
       } else {
         setLimits(totalWithGST);
       }
+      
+      return totalWithGST;
     }
     
     // Check for pre book advance!
@@ -923,6 +924,8 @@ const HomeRoom = (props) => {
             username: editDetails.username,
             phonenumber: editDetails.phonenumber,
             secondphonenumber: editDetails.secondphonenumber,
+            advance: editDetails.advance,
+            updatedAdvance: editDetails.isAdvanceAttrChanges ? Number(editDetails.prevAdvance) + Number(editDetails.advance) : editDetails.advance,
             aadharcard: editDetails.aadharcard,
             dateofcheckout: formatDate(editDetails.dateofcheckout),
             adults: editDetails.adults,
@@ -1421,8 +1424,8 @@ const HomeRoom = (props) => {
                             return (
                                 <ModalCheckOut updateDetails = {setEditDetails} isEdit = {props.edit} extraBeds={props.extraBeds} extraBedPrice={props.extraBedPrice} 
                                 isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} roomid = {item.room} excludeDates = {excludeDates}
-                                discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} 
-                                secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} 
+                                discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} advance = {item.advance} getTotalAmountWithGST = {() => checkAdvance(item.dateofcheckout)}
+                                secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults}
                                 childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} 
                                 stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} isChannel = {item.channel} setChannel = {(value, channelName) => setChannel(prevState => ({...prevState, isChannel: value, channelName: channelName}))} />
                             )

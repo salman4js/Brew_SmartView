@@ -5,6 +5,7 @@ import Navbar from "../Navbar";
 import Loading from "../Loading";
 import Variables from "../Variables";
 import { Link, useParams } from "react-router-dom";
+import {clearStorage} from '../../Controller/Storage/Storage'
 import changeScreen from "../Action";
 
 
@@ -49,7 +50,7 @@ const EditRoom = () => {
 
     // Navigate back to login screen incase of session expires!
     function navigateToLogin() {
-        localStorage.clear();
+        clearStorage(); // Clear out the session storage!
         changeScreen();
     }
 
@@ -112,7 +113,7 @@ const EditRoom = () => {
                                             return (
                                                 <HomeRoom edit={true} lodgeName={splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
                                                     roomid={item._id} id={id} lodgeid={splitedIds[0]} price={item.price} isPrebook = {false}
-                                                    prebook={item.preBooked} prevalid={item.preValid} discount={item.discount} 
+                                                    prebook={item.preBooked} prevalid={item.preValid} discount={item.discount} advance = {item.advancePrice}
                                                  />
                                             )
                                         })

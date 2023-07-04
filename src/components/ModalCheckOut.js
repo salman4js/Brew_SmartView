@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal from "react-bootstrap/Modal";
+import InlineToast from './InlineToast/Inline.toast.view';
 import brewDate from 'brew-date';
 import { getStorage } from '../Controller/Storage/Storage';
 import DatePicker from 'react-datepicker';
@@ -23,6 +24,9 @@ const ModalCheckOut = (props) => {
         username: props.username,
         phonenumber: props.phone,
         secondphonenumber: props.secondphonenumber,
+        advance: props.advance,
+        isAdvanceAttrChanges: false,
+        prevAdvance: props.advance,
         aadharcard: props.aadharcard,
         adults: props.adults,
         childrens: props.childrens,
@@ -68,8 +72,9 @@ const ModalCheckOut = (props) => {
                     setStay(diffDays + " Days");
             }
         }
-
     }, [])
+    
+    
     return (
         <div>
             {!props.isEdit ? (
@@ -176,6 +181,12 @@ const ModalCheckOut = (props) => {
                             <label style={{ color: "black" }}> Second Phone Number </label>
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Second Phone Number" name = {editDetails.secondphonenumber} value = {editDetails.secondphonenumber} 
                             onChange = {(e) => setEditDetails(prevState => ({...prevState, secondphonenumber: e.target.value}))} />
+                        </div>
+                        <div className="modal-gap">
+                            <label style={{ color: "black" }}> Payment (Given amount) </label>
+                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter payments made by customer" name = {editDetails.advance} value = {editDetails.advance} 
+                            onChange = {(e) => setEditDetails(prevState => ({...prevState, advance: e.target.value, isAdvanceAttrChanges: true}))} />
+                            <InlineToast message = {`Remaining amount to be paid by this customer ${props.getTotalAmountWithGST() - props.advance}`} />
                         </div>
                         <div className="modal-gap">
                             <label style={{ color: "black" }}> Adults </label>
