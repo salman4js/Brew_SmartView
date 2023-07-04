@@ -18,6 +18,7 @@ import Wizard from './Wizard/model.wizard.view';
 import { getStorage, setStorage } from '../Controller/Storage/Storage';
 import Modals from './Modals';
 import GuestRegistration from './GRC/grc.view';
+import {universalLang} from './universalLang/universalLang'
 import { handleTimeFormat, loadDate, getStayedDays, getExtraBedPrice, refreshPage } from './common.functions/common.functions';
 
 
@@ -316,6 +317,8 @@ const HomeRoom = (props) => {
                 roomno: props.roomno,
                 discount: discount,
                 advance: advanceCheckin,
+                amountFor: universalLang.InitialPayment,
+                dateTime: brewDate.getFullDate("dd/mmm") +  " " + brewDate.timeFormat(brewDate.getTime()),
                 channel: dropdown,
                 isChannel: isChannel,
                 updatePrice: updatePrice,
@@ -926,12 +929,15 @@ const HomeRoom = (props) => {
             secondphonenumber: editDetails.secondphonenumber,
             advance: editDetails.advance,
             updatedAdvance: editDetails.isAdvanceAttrChanges ? Number(editDetails.prevAdvance) + Number(editDetails.advance) : editDetails.advance,
+            amountFor: universalLang.editCustomerDetailsAdvance,
+            dateTime: brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime()),
             aadharcard: editDetails.aadharcard,
             dateofcheckout: formatDate(editDetails.dateofcheckout),
             adults: editDetails.adults,
             childrens: editDetails.childrens,
             userId: editDetails.userId,
             checkOutTime: editDetails.timeofcheckin,
+            roomno: props.roomno,
             roomId: props.roomid
         }
 
