@@ -136,11 +136,14 @@ export function getStyle(status){
     marginRight: status.marginRight,
     paddingRight: status.paddingRight,
     paddingLeft: status.paddingLeft,
+    paddingTop: status.paddingTop,
+    paddingBottom: status.paddingBottom,
     color: status.color,
     fontSize: status.fontSize,
     border: status.border,
     backgroundColor: status.backgroundColor,
     cursor: status.cursor,
+    float: status.float,
     zIndex: status.zIndex
   }
 }

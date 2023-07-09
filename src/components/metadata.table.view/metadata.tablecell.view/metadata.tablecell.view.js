@@ -28,7 +28,7 @@ const MetadataTableCellView = (props) => {
             {options.map((opts, modelId) => {
               if(modelId !== 0){
                 return (
-                  <td className="metadata-tablecell-view" key={modelId}>
+                  <td className="metadata-tablecell-view" key={modelId} style = {{width: props.width}}>
                     {opts}
                   </td>
                 )

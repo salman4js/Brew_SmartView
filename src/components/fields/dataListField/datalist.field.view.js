@@ -14,6 +14,7 @@ const DataList = (props) => {
   // Set the selected value from the dropdown field!
   function setSelected(value){
     setDropdown(prevState => ({...prevState, selected: value}));
+    triggerDropdown(dropdown.isOpen); // Close the dropdown when the value is selected!
     inputChange(props.index, value, props.data.attribute);
   }
   
@@ -21,14 +22,14 @@ const DataList = (props) => {
   const dataListFieldRef = useRef(null);
   
   // Get the width of the input field!
-  function getInputFieldWidth(){
+  function getFieldWidth(){
     return dataListFieldRef.current.offsetWidth;
   }
   
   // Get the data needed for the dropdown field!
   function getDropdownProps(){
     const data = props.data;
-    data.style['width'] = getInputFieldWidth() + "px";
+    data.style['width'] = getFieldWidth() + "px"
     return data;
   }
   
@@ -45,7 +46,7 @@ const DataList = (props) => {
   // Save selected data on `Enter` key!
   function _saveSelectedData(e){
     if(e.key === 'Enter'){
-      props.data.onEnter();
+      props.data.onEnter && props.data.onEnter();
     }
   }
   
@@ -55,11 +56,27 @@ const DataList = (props) => {
   }
   
   return(
-    <div className = "modal-gap">
-      <label className = "metadata-label">{props.data?.label}</label>
-      <input type="text" className="form-control" ref = {dataListFieldRef}
-      placeholder={getValue()} value = {props.data.value} onClick = {() => triggerDropdown(dropdown.isOpen)} 
-      onKeyPress = {(e) => _saveSelectedData(e)} onChange = {(e) => inputChange(props.index, e.target.value, props.data.attribute)} />
+    <div>
+      {props.data.allowInputField && (
+        <div className = "modal-gap">
+          <label className = "metadata-label">{props.data?.label}</label>
+          <input type="text" className="form-control" ref = {dataListFieldRef}
+          placeholder={getValue()} value = {props.data.value} onClick = {() => triggerDropdown(dropdown.isOpen)} 
+          onKeyPress = {(e) => _saveSelectedData(e)} onChange = {(e) => inputChange(props.index, e.target.value, props.data.attribute)} />
+        </div>
+      )}
+      {props.data.allowPanelField && (
+        <div className = "metadata-panel-helper" style = {{height: props.data?.height + "px"}}>
+          <div className = "metadata-panel-helper-options brew-cursor" onClick = {() => triggerDropdown(dropdown.isOpen)} ref = {dataListFieldRef}>
+            {props.data.value !== undefined ? props.data.value : props.data.selectedValue}
+            <span className = "metadata-panel-helper-options-drodown">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5zM8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6z"/>
+              </svg>
+            </span>
+          </div>
+        </div>
+      )}
       {dropdown.isOpen && (
         <div className = "metadata-label">
           <DropdownField data = {getDropdownProps()} setSelected = {(value) => setSelected(value)} />

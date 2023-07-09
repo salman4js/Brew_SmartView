@@ -126,7 +126,7 @@ const LandingPage = () => {
                     } else {
                         setLoading(false);
                         localStorage.clear();
-                        changeScreen();
+                        changeScreen(false);
                     }
                 })
         }

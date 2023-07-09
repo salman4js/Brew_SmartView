@@ -1,3 +1,5 @@
+const storage = require("../../Controller/Storage/Storage")
+
 // Convert the data into server understandable format!
 export function nodeConvertor(status){
   const result = {};
@@ -88,7 +90,11 @@ export function _clearData(status){
   const oldFieldData = [...status];
   
   oldFieldData.map((options, key) => {
-    options.value = undefined;
+    if(options.defaultValue !== undefined){
+      options.value = options.defaultValue;
+    } else {
+      options.value = undefined;
+    }
   })
   
   return oldFieldData;
@@ -113,6 +119,45 @@ export function isEmpty(value){
     return true;
   }
 }
+
+// Checkbox selection handler!
+export function checkboxSelection(value, setState, storageId){
+  var selectedCount = storage.getStorage(storageId);
+  if(value){
+    const updatedCount = Number(selectedCount) + 1
+    storage.setStorage(storageId, updatedCount)
+    setState && setState(prevState => ({...prevState, commandHelper: value}))
+  } else {
+      const updatedCount = Number(selectedCount) - 1
+      storage.setStorage(storageId, updatedCount);
+      if(value !== undefined && updatedCount === 0){
+        setState && setState(prevState => ({...prevState, commandHelper: value}))
+      } 
+  }
+}
+
+// Handle enable / disable commands for command helper!
+export function handleCommands(commands, setState, enable){
+  commands.forEach((opts) => {
+    setState(prevState => {
+      const updatedCommands = prevState.commands.map((command, index) => {
+        if(command.value === opts){
+          return{
+            ...command,
+            disabled: enable
+          }
+        } 
+        return command;
+      });
+      
+      return {
+        ...prevState,
+        commands: updatedCommands
+      }
+    })
+  })
+}
+
 
 // Refresh the entire page when needed!
 export function domRefresh(){

@@ -6,6 +6,14 @@ export const removeValue = (value) => {
   }
 }
 
+// Remove all value from the global state!
+export const removeAllValue = (value) => {
+  return{
+    type: "REMOVEALL",
+    value: value
+  }
+}
+
 // Add value to the global state as the selected item!
 export const addValue = (value) => {
   return{

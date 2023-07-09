@@ -1,7 +1,7 @@
 import React from 'react';
 
 const CommnadHelper = (props) => {
-  
+
   // Show command for performing actions based on the parent component view!
   function _showCommands(){
     return(

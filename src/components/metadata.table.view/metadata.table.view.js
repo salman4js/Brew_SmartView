@@ -38,7 +38,7 @@ const MetadataTable = (props) => {
       <div>
         <MetadataTableHeader data = {props.data.headerValue} checkbox = {props.data.checkbox} 
         enableCheckbox = {props.data.enableCheckbox} enableCommandHelper = {props.data.commandHelper}
-        commands = {props.data.commands} />
+        commands = {props.data.commands} width = {props.data.tableCellWidth} />
         {_renderTableCellView()}
       </div>
     )
@@ -61,8 +61,9 @@ const MetadataTable = (props) => {
     const value = _deleteDefaultValues(props.data.cellValues, props.idInstance);
     // Convert the object values into an array values!
     var tableCellValue = convertIntoArrays(value);
+
     return(
-      <MetadataTableCellView data = {tableCellValue} checkbox = {props.data.checkbox} enableCheckbox = {props.data.enableCheckbox} />
+      <MetadataTableCellView data = {tableCellValue} checkbox = {props.data.checkbox} enableCheckbox = {props.data.enableCheckbox} width = {props.data.tableCellWidth} />
     )
   }
   

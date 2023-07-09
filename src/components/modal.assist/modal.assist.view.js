@@ -15,7 +15,7 @@ const ModalAssist = (props) => {
   
   // Modal assist header child view from the parent!
   function _showHeaderChildView(){
-    return props.data?._showHeaderChildView();
+    return props.data._showHeaderChildView && props.data?._showHeaderChildView();
   }
   
   // Render modal assist header!
@@ -35,7 +35,7 @@ const ModalAssist = (props) => {
   
   // Modal assist content view!
   function _showContentAssist(){
-    return props.childView()
+    return props.childView && props.childView()
   }
   
   // Get modal assist style!
@@ -61,12 +61,12 @@ const ModalAssist = (props) => {
     const assistChildHeight = modalAssist.current.offsetHeight;
     const assistHeaderHeight = modalAssistHeader.current.offsetHeight;
     if(props.data.getWidth){
-      props.width(modalAssist.current.offsetWidth);
+      props.width && props.width(modalAssist.current.offsetWidth);
     }
     if(props.data.getHeaderHeight){
-      props.headerHeight(assistHeaderHeight);
+      props.headerHeight && props.headerHeight(assistHeaderHeight);
     }
-    props.height(assistChildHeight - assistHeaderHeight - assistHeaderHeight); // Sending the height to the parent component!
+    props.height && props.height(assistChildHeight - assistHeaderHeight - assistHeaderHeight); // Sending the height to the parent component!
   }, [])
   
   return(

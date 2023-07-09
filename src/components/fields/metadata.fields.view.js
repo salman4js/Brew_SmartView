@@ -5,6 +5,7 @@ import ListField from './listfield/listfield.view';
 import DataList from './dataListField/datalist.field.view';
 import CheckBox from './checkBoxField/checkbox.field.view';
 
+
 const MetadataFields = (props) => {
 
   // Get input value!
@@ -20,16 +21,14 @@ const MetadataFields = (props) => {
   const handleInputChange = (index, event, attribute) => {
     const fieldState = [...props.data]; // Create a copy of the state array
     fieldState[index].value = getInputValue(event, attribute) // Update the value at the specified index
+    fieldState[index].isChanged = true; // Change the metafield value to true when the value changed!
+    props.toggleButtonProp &&  props.toggleButtonProp("success", false); // Make buttons enable when the field value is changed!
     props.updateData(fieldState); // Update the state with the updated array
   };
   
   // Disable and enable custom modals footer buttons!
   function toggleButtonValue(){
-    try{
-      props.toggleButtonProp(0, false)
-    } catch(err){
-      
-    }
+    props.toggleButtonProp && props.toggleButtonProp("success", true)
   }
 
   return (
