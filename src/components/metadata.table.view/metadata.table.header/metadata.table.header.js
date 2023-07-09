@@ -33,7 +33,7 @@ const MetadataTableHeader = (props) => {
       )}
         {props.data.map((options, key) => {
           return(
-            <th className = "metadata-table-header">
+            <th className = "metadata-table-header" style = {{width: props.width}}>
               {options}
             </th>
           )

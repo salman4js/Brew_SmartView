@@ -14,6 +14,7 @@ export function globalMessage(opts){
   return(
     <Modal
         show={opts.show}
+        onHide = {() => opts.onHide()}
     >
         <Modal.Header closeButton>
             <Modal.Body className="text-center">

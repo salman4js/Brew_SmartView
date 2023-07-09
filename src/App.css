@@ -851,7 +851,6 @@ td {
 }
 
 .metadata-table-header{
-  width: 290px;
   color: black;
 }
 
@@ -866,7 +865,6 @@ td {
 
 .metadata-tablecell-view{
   color: black;
-  width: 290px;
 }
 
 .cheat-code{
@@ -924,4 +922,37 @@ td {
 .metadata-command-fields:hover{
   background-color: #f1f1f1
 }
+
+.fixed-command-helper{
+  position: relative;
+}
+
+.metadata-table-view-payment-tracker{
+  margin-top: 26px;
+  overflow: auto;
+}
+
+.metadata-panel-helper{
+  background-color: rgba(0,0,0,.03);
+  padding-left: 10px;
+}
+
+.metadata-panel-helper-options{
+  color: black;
+  width: 200px;
+}
+
+.metadata-panel-helper-options-drodown{
+  margin-left: 4px;
+}
+
+.receipt-generation-container{
+  padding-left: 80px;
+  padding-right: 80px;
+}
+
+.vouchers-content-table-view{
+  overflow: auto;
+}
+
 

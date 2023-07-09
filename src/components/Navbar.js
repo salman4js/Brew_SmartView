@@ -148,6 +148,7 @@ const Navbar = (props) => {
                                     </ul>
                                 </li>
                                 <Link className='nav-link dropdown-item' to={`/${props.id}/editroom`} style={{ color: "black" }}> Edit Customer Details </Link>
+                                <Link className='nav-link dropdown-item' to={`/${props.id}/paymenttracker`} style={{ color: "black" }}> Payment Tracker </Link>
                                 {!loggedInAsRecep && <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}>   Booking History </Link>}
                                 <Link className='nav-link dropdown-item' to={`/login`} style={{ color: "black" }}>   LogOut </Link>
                             </div>

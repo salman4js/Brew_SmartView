@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import brewDate from 'brew-date';
 import Variables from '../../Variables';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import MetadataFields from '../../fields/metadata.fields.view';
 import {formatCustomIntoDateFormat, convertFormat, convertServerFormat} from '../../common.functions/common.functions';
 import {nodeConvertor} from '../../common.functions/node.convertor';
+import {universalLang} from '../../universalLang/universalLang';
+
 
 const EditPrebookRoomItem = (props) => {
   
@@ -14,6 +17,13 @@ const EditPrebookRoomItem = (props) => {
     onStart: _triggerLoading
   })
   
+  // Payment tracker state handler!
+  const [paymentTracker, setPaymentTracker] = useState({
+    prevAmount: props.data.advance,
+    amountFor: universalLang.prebookInbetweenAdvance
+  })
+  
+    
   // Start and stop loader!
   function _triggerLoading(value){
     setLoading(prevState => ({...prevState, isLoading: value}))
@@ -30,7 +40,7 @@ const EditPrebookRoomItem = (props) => {
     footerButtons: [
       {
         btnId: "Save",
-        disabled: false,
+        disabled: true,
         variant: "success",
         onClick: saveData
       },
@@ -43,15 +53,15 @@ const EditPrebookRoomItem = (props) => {
     toggleButtonProp: toggleButtonProp
   })
   
-  // Make button disabled!
-  function toggleButtonProp(btnIndex, value) {
+  // Make button enabled when the field is changed!!
+  function toggleButtonProp(variant, isEnable) {
     setCustomModal(prevState => ({
       ...prevState,
       footerButtons: prevState.footerButtons.map((button, index) => {
-        if (button.variant === btnIndex) {
+        if (button.variant === variant) {
           return {
             ...button,
-            disabled: value
+            disabled: isEnable
           };
         }
         return button;
@@ -59,17 +69,59 @@ const EditPrebookRoomItem = (props) => {
     }));
   }
   
+  // Check if the advance property value is changed!
+  function isAdvPropChanged(){
+    var result;
+    prebookEdit.map((options, index) => {
+      if(options.name === "prebookAdvance"){
+        result =  options.isChanged;
+      }
+    })
+    
+    return result;
+  }
+  
+  // Add prev value with user entered data!
+  function addPrevValue(prebookAdvance){
+    // Check if the advance property value is changed!
+    const isValueChanged = isAdvPropChanged();
+    if(isValueChanged){
+      return Number(prebookAdvance) + Number(paymentTracker.prevAmount)
+    } else {
+      return Number(prebookAdvance);
+    }
+  }
+  
   // Send the formed data into the server!
   function saveData(){
     // Start the loader!
     _triggerLoading(true);
-    
+
     const fieldData = getFieldData(); // Get the form data!
+
+    // Add with previous advance value!
+    const updatedAdvanceValue = addPrevValue(fieldData.prebookAdvance); // Add user entered advance amount with previous value!
+    
+    // Update the fieldData with updated advance value!
+    fieldData.prebookAdvance = updatedAdvanceValue;
     
     fieldData.prebookDateofCheckin = convertServerFormat(formatCustomIntoDateFormat(fieldData.prebookDateofCheckin)); // Convert the date into dd/mm/yyy format!
     
-    fieldData['prebookId'] = props.data.prebookId
+    fieldData['prebookId'] = props.data.prebookId;
     
+    // Add neccessary params for paymentTracker!
+    const enteredAmount = getFieldData();
+    fieldData['paymentTracker'] = {};
+    fieldData.paymentTracker['roomno'] = props.data.roomno;
+    fieldData.paymentTracker['room'] = props.data.roomid;
+    fieldData.paymentTracker['amount'] = enteredAmount.prebookAdvance; // Amount paid now! 
+    fieldData.paymentTracker['isPrebook'] = true;
+    fieldData.paymentTracker['lodge'] = props.data.lodgeId;
+    fieldData.paymentTracker['amountFor'] = paymentTracker.amountFor;
+    fieldData.paymentTracker['dateTime'] = brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime());
+    fieldData.paymentTracker['callPaymentTracker'] = isAdvPropChanged(); // If its true, then the advance field has been changed
+    // Hence calling the paymentTracker!
+
     axios.post(`${Variables.hostId}/${props.data.lodgeId}/editprebookedrooms`, fieldData)
       .then(res => {
         if(res.data.success){
@@ -98,35 +150,40 @@ const EditPrebookRoomItem = (props) => {
       name: 'prebookDateofCheckin',
       attribute: 'dateField',
       showTimeSelect: false,
-      dateFormat: 'MMMM d, yyyy'
+      dateFormat: 'MMMM d, yyyy',
+      isChanged: false
     },
     {
       value: props.data.aadharcard,
       placeholder: "ID Number",
       label: "ID Number",
       name: 'prebookAadhar',
-      attribute: 'textField'
+      attribute: 'textField',
+      isChanged: false
     },
     {
       value: props.data.adults,
       placeholder: "Adults count",
       label: "Adults count",
       name: 'prebookAdults',
-      attribute: 'textField'
+      attribute: 'textField',
+      isChanged: false
     },
     {
       value: props.data.childrens,
       placeholder: "Childrens count",
       label: "Childrens count",
       name: 'prebookChildrens',
-      attribute: 'textField'
+      attribute: 'textField',
+      isChanged: false
     },
     {
       value: props.data.discount,
       placeholder: "Discount amount",
       label: "Discount amount",
       name: "prebookDiscount",
-      attribute: 'textField'
+      attribute: 'textField',
+      isChanged: false
     },
     {
       value: props.data.advance,
@@ -134,6 +191,7 @@ const EditPrebookRoomItem = (props) => {
       label: "Advance Amount",
       name: "prebookAdvance",
       attribute: 'textField',
+      isChanged: false,
       inlineToast: {
         isShow: true,
         inlineMessage: `Remaining amount has to be paid ${props.data.advancePending} Rs`
@@ -146,7 +204,7 @@ const EditPrebookRoomItem = (props) => {
   function customModalBodyItem(){
     return(
       <div className = "text-center">
-        <MetadataFields data = {prebookEdit} updateData = {setPrebookEdit} toggleButtonProp = {(btnIndex, value) => toggleButtonProp(btnIndex, value)} />
+        <MetadataFields data = {prebookEdit} updateData = {setPrebookEdit} toggleButtonProp = {(variant, isEnable) => toggleButtonProp(variant, isEnable)} />
       </div>
     )
   }

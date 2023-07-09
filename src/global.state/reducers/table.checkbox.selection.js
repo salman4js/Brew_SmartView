@@ -6,6 +6,8 @@ const checkboxSelection = (state = [], action) => {
       return state.filter((value) => value !== action.value);
     case "GET":
       return state;
+    case "REMOVEALL":
+      return []
     default: 
       return state;
   }

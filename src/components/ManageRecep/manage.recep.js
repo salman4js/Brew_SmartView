@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {addValue, removeValue, getValue} from '../../global.state/actions/index';
+import {addValue, removeValue, getValue, removeAllValue} from '../../global.state/actions/index';
 import MetadataFields from '../fields/metadata.fields.view'
 import {getAccountDetails, deleteMultiple, editLogins} from './manage.recep.utils/manage.recep.utils';
+import {useCheckboxSelection} from '../global.state/global.state.manager'
 import { Link, useParams } from "react-router-dom";
 import Navbar from '../Navbar';
 import ModalAssist from '../modal.assist/modal.assist.view';
@@ -11,8 +12,8 @@ import ManageRecepAdd from './manage.recep.add.accounts/manage.recep.add.account
 import ManagerRecepDetails from './manage.recep.details/manage.recep.details';
 import {activityLoader} from '../common.functions/common.functions.view';
 import {validateFieldData} from '../common.functions/node.convertor';
-import {domRefresh, nodeConvertor} from '../common.functions/node.convertor';
-import {getStorage, setStorage} from '../../Controller/Storage/Storage'
+import {domRefresh, nodeConvertor, checkboxSelection} from '../common.functions/node.convertor';
+import {getStorage, setStorage, removeItemStorage} from '../../Controller/Storage/Storage'
 
 const ManageRecep = () => {
   
@@ -21,8 +22,7 @@ const ManageRecep = () => {
   const splitedIds = id.split(/[-]/);
   
   // Global state management - Checkbox selection!
-  var checkboxSelector = useSelector(state => state.checkboxSelection);
-  setStorage("selectedItem", JSON.stringify(checkboxSelector));
+  var checkboxSelector = useCheckboxSelection();
   const dispatch = useDispatch();
   
   // Modal assist state handler!
@@ -54,9 +54,10 @@ const ManageRecep = () => {
     infoMessage: "Fetching user account details...",
     tableLoader: true,
     enableCheckbox: true,
-    isCheckboxSelected: false,
+    commandHelper: false,
     commandDisabled: undefined,
     selectedCheckBoxId: [],
+    tableCellWidth : "290px",
     checkbox: [
       {
         select: checkboxSelected,
@@ -129,7 +130,8 @@ const ManageRecep = () => {
     const result = await deleteMultiple(data);
     if(result.data.success){
       _toggleSuccessModal(result.data.success, result.data.message);
-      checkboxSelected(undefined, -1);
+      destroyCommandHelper();
+      removeItemStorage("selectedItem");
     }
   }
   
@@ -187,7 +189,7 @@ const ManageRecep = () => {
       const result = await editLogins(fieldData);
       _toggleEditModal(); // Destroy the edit modal
       _toggleSuccessModal(result.data.success, result.data.message); // trigger the success modal
-      checkboxSelected(undefined, -1); // Destroy the command helper when the operation is done!
+      destroyCommandHelper() // Destroy the command helper when the operation is done!
     }
   }
   
@@ -206,33 +208,30 @@ const ManageRecep = () => {
   
   // Perform action after the checkbox is being selected!
   function checkboxSelected(value, index){
-    // Checkbox selected count reference!
-    var selectedCount = getStorage("manage-recep-selected-count");
-    
+    var storageId = "manage-recep-selected-count";
+    checkboxSelection(value, setTableView, storageId);
+    setModelId(value, index); // Set modelId to the global state based on the action!
+    isCommandsValid()
+  }
+  
+  // Destroy command helper when the operation is done!
+  function destroyCommandHelper(){
+    dispatch(removeAllValue());
+    setTableView(prevState => ({...prevState, commandHelper: false}));
+  }
+  
+  // Store and remove modalId based on action!
+  function setModelId(value, index){
     if(value){
-      // Store the selected model id to the global state management!
       dispatch(addValue(index))
-      // Perform actions to show the appropriate commands
-      const updatedCount = Number(selectedCount) + 1
-      setStorage("manage-recep-selected-count", updatedCount);
-      setTableView(prevState => ({...prevState, isCheckboxSelected: value}));
-      selectedCount = updatedCount
     } else {
-      // Remove the selected model id from the global state!
-      dispatch(removeValue(index));
-      // Perform actions to show the appropriate commands
-      const updatedCount = Number(selectedCount) - 1;
-      setStorage("manage-recep-selected-count", updatedCount);
-      selectedCount = updatedCount
-      if(updatedCount === 0){
-        setTableView(prevState => ({...prevState, isCheckboxSelected: value}))
-      }
+      dispatch(removeValue(index))
     }
-    isCommandsValid(selectedCount)
   }
   
   // Check the commands are valid for the user selection!
-  function isCommandsValid(selectedCount){
+  function isCommandsValid(){
+    const selectedCount = getStorage("manage-recep-selected-count")
     if(selectedCount > 1){
       setTableView(prevState => ({...prevState, commandDisabled: "Edit"}))
     } else {
@@ -335,6 +334,7 @@ const ManageRecep = () => {
   useEffect(() => {
     getTableData();
     setStorage("manage-recep-selected-count", 0); // Maintain the selected count in the local storage!
+    removeItemStorage("selectedItem");// Remove any undeleted selection id's
   }, [])
   
   return(

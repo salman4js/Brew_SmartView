@@ -3,13 +3,11 @@ export function setStorage(key, value){
     sessionStorage.setItem(key, value);
 }
 
-
 // Get the specific session storage values!
 export function getStorage(key){
     const result = sessionStorage.getItem(key);
     return result;
 }
-
 
 // Store into the session storage multiple values!
 export function defaultStorage(data){
@@ -18,6 +16,11 @@ export function defaultStorage(data){
     }
 }
 
+// Clear particular item from the storage!
+export function removeItemStorage(key){
+  const result = sessionStorage.removeItem(key);
+  return result;
+}
 
 // Clear the session storage!
 export function clearStorage(){

@@ -45,11 +45,13 @@ const VoucherView = () => {
   const [tableView, setTableView] = useState({
     cellValues: undefined,
     headerValue: undefined,
+    tableHeight: undefined,
     infoMessage: "No vouchers has been selected...",
     tableLoader: false,
     selectedVoucherId: undefined,
     isCheckboxSelected: false,
     enableCheckbox: true,
+    tableCellWidth : "290px",
     checkbox: [
       {
         select: checkboxSelected,
@@ -58,24 +60,8 @@ const VoucherView = () => {
         enableCellCheckbox: true,
         enableHeaderCheckbox: false
       }
-    ],
-    commandHelper: false,
-    commands: [
-      {
-        value: "Edit",
-        onClick: vouchersList
-      },
-      {
-        value: "Delete",
-        onClick: vouchersList
-      }
     ]
   })
-  
-  // Perform action after the checkbox is being selected!
-  function checkboxSelected(value){
-    setCommandHelper(prevState => ({...prevState, commandHelper: value}))
-  }
   
   // Command helper state handler!
   const [commandHelper, setCommandHelper] = useState({
@@ -91,6 +77,11 @@ const VoucherView = () => {
       }
     ]
   })
+  
+  // Perform action after the checkbox is being selected!
+  function checkboxSelected(value){
+    setCommandHelper(prevState => ({...prevState, commandHelper: value}))
+  }
   
   // Trigger table loader!
   function _triggerTableLoader(value){
@@ -129,11 +120,12 @@ const VoucherView = () => {
     },
     {
       value: new Date(),
+      defaultValue: new Date(),
       placeholder: "Date",
       label: "Date",
       name: 'dateTime',
       attribute: 'dateField',
-      isRequired: true,
+      isRequired: false,
       inlineToast: {
         isShow: false,
         inlineMessage: 'Please provide a valid input.'
@@ -164,7 +156,8 @@ const VoucherView = () => {
       }
     },
     {
-      value: undefined,
+      value: 0,
+      defaultValue: 0,
       placeholder: "Receipt",
       label: "Receipt",
       name: 'receipt',
@@ -176,7 +169,8 @@ const VoucherView = () => {
       }
     },
     {
-      value: undefined,
+      value: 0,
+      defaultValue: 0,
       placeholder: "Payment",
       label: "Payment",
       name: 'payment',
@@ -399,6 +393,12 @@ const VoucherView = () => {
       setTableView(prevState => ({...prevState, cellValues: result.data.message, headerValue: result.data.tableHeaders, infoMessage: result.data.infoMessage, selectedVoucherId: voucherId}));
     }
   }
+  
+  // Calculate height for the metadata table for vouchers content!
+  function calculateHeight(commandHelper, cheatCode){
+    const height = cheatCode.current.offsetHeight + commandHelper.current.offsetHeight;
+    setTableView(prevState => ({...prevState, tableHeight: height}));
+  }
 
   // Set up the voucher content view!
   function voucherContentView(){
@@ -406,7 +406,7 @@ const VoucherView = () => {
       <VoucherContent data = {sidepanel} commandHelper = {commandHelper} childView = {() => panelChildView()} 
       tableData = {tableView} lodgeId = {splitedIds[0]} 
       getFilteredModel = {(filteredData, voucherId) => updateTableCellData(filteredData, voucherId)}
-      updateSidepanelHeight = {(value) => storeModalAssistHeight(value)} />
+      updateSidepanelHeight = {(value) => storeModalAssistHeight(value)} getElementRef = {(commandHelper, cheatCode) => calculateHeight(commandHelper, cheatCode)} />
     )
   }
   

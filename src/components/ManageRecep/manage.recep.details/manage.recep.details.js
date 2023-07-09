@@ -28,7 +28,7 @@ const ManageRecepDetails = (props) => {
   
   // Update the card state when parent dependant state changes!
   function updateCardState(){
-    setCardView(prevState => ({...prevState, commandHelper: props.tableView.isCheckboxSelected}));
+    setCardView(prevState => ({...prevState, commandHelper: props.tableView.commandHelper}));
     setCardView(prevState => {
       const updatedCommands = prevState.commands.map((command, index) => {
         if (command.value === props.tableView.commandDisabled) {

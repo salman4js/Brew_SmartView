@@ -28,7 +28,7 @@ const PanelView = (props) => {
   
   // Send the height back to the parent container!
   useEffect(() => {
-    props.height(sidePanelRef.current.offsetHeight);
+    props.height && props.height(sidePanelRef.current.offsetHeight);
   }, [])
   
   return(
@@ -38,7 +38,7 @@ const PanelView = (props) => {
         </div>
         <div className = "sidepanel" ref = {sidePanelRef} style = {{height: props.data.height + "px"}}>
           <div className = "files">
-            {props.childView()}
+            {props.childView && props.childView()}
           </div>
         </div>
     </div>

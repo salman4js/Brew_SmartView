@@ -193,6 +193,7 @@ const HomeRoom = (props) => {
         const checkinTime = props.excludeTime.checkinTime // For prebook - time of checkin!
         const checkoutTime = props.excludeTime.checkoutTime // For prebook - time of checkout!
         setLoading(true);
+        
         const credentials = {
             prebookusername: prebookusername,
             prebookphonenumber: prebookphonenumber,
@@ -212,6 +213,17 @@ const HomeRoom = (props) => {
             prebookChannelManager: prebookChannelManager,
             prebookChannel: prebookChannel
         }
+        
+        // Adding payment tracker params into the credentials!
+        credentials['paymentTracker'] = {};
+        credentials.paymentTracker['callPaymentTracker'] = prebookadvance !== undefined ? true : false 
+        credentials.paymentTracker['amount'] = prebookadvance 
+        credentials.paymentTracker['amountFor'] = universalLang.InitialPrebookPayment
+        credentials.paymentTracker['room'] = props.roomid 
+        credentials.paymentTracker['roomno'] = props.roomno
+        credentials.paymentTracker['isPrebook'] = true 
+        credentials.paymentTracker['lodge'] = props.lodgeid
+        credentials.paymentTracker['dateTime'] = brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime())
 
         axios.post(`${Variables.hostId}/${props.lodgeid}/addprebookuserrooms`, credentials)
             .then(res => {
@@ -318,6 +330,7 @@ const HomeRoom = (props) => {
                 discount: discount,
                 advance: advanceCheckin,
                 amountFor: universalLang.InitialPayment,
+                isPrebook: false,
                 dateTime: brewDate.getFullDate("dd/mmm") +  " " + brewDate.timeFormat(brewDate.getTime()),
                 channel: dropdown,
                 isChannel: isChannel,
@@ -391,8 +404,11 @@ const HomeRoom = (props) => {
         // Get exclude dates of the selected room!
         await getExcludeDates(props.roomid);
         const credentials = {
-            roomid: props.roomid
+            roomid: props.roomid,
+            isHourly: isHourly,
+            stayeddays: stayeddays,
         }
+
         await axios.post(`${Variables.hostId}/${props.id}/userroom`, credentials)
             .then(res => {
                 if (res.data.success) {
@@ -938,7 +954,8 @@ const HomeRoom = (props) => {
             userId: editDetails.userId,
             checkOutTime: editDetails.timeofcheckin,
             roomno: props.roomno,
-            roomId: props.roomid
+            roomId: props.roomid,
+            isPrebook: false
         }
 
         axios.post(`${Variables.hostId}/${props.lodgeid}/updateoccupieddata`, options)
@@ -1013,7 +1030,12 @@ const HomeRoom = (props) => {
     
     // Get Amount with extra collection, considering negative values also!
     function getAmount(){
-      return totalAmount < 0 ? Number(tNAmount) + Number(extraCollection) : Number(totalAmount) + Number(extraCollection) + Number(amount_advance)
+      if(totalAmount !== 0){
+        return totalAmount < 0 ? Number(tNAmount) + Number(extraCollection) : Number(totalAmount) + Number(extraCollection) + Number(amount_advance)
+      } else {
+        return 0;
+      }
+      
     }
 
     // Get total amount with all the neccessary entities!
@@ -1431,8 +1453,8 @@ const HomeRoom = (props) => {
                                 <ModalCheckOut updateDetails = {setEditDetails} isEdit = {props.edit} extraBeds={props.extraBeds} extraBedPrice={props.extraBedPrice} 
                                 isHourly={props.isHourly} currentTime={getTime} checkInTime={item.checkinTime} roomid = {item.room} excludeDates = {excludeDates}
                                 discount={props.discount} roomno={props.roomno} username={item.username} phone={item.phonenumber} advance = {item.advance} getTotalAmountWithGST = {() => checkAdvance(item.dateofcheckout)}
-                                secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults}
-                                childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin} 
+                                secondphonenumber={item.secondphonenumber} aadharcard={item.aadharcard} adults={item.adults} remainingAmount = {userdata.remainingAmount}
+                                childrens={item.childrens} user={item._id} userid={setUserid} checkin={item.dateofcheckin}
                                 stayeddays={setStayeddays} checkoutdate={setCheckoutdate} tempData={item.dateofcheckout} isChannel = {item.channel} setChannel = {(value, channelName) => setChannel(prevState => ({...prevState, isChannel: value, channelName: channelName}))} />
                             )
                         })

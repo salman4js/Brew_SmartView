@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { getFilteredModel } from './vouchers.utils.js';
 import PanelView from '../SidePanelView/panel.view';
 import MetadataTable from '../metadata.table.view/metadata.table.view';
@@ -9,11 +9,15 @@ import { activityLoader } from '../common.functions/common.functions.view';
 import { setStorage, getStorage } from '../../Controller/Storage/Storage'
 
 const VoucherContent = (props) => {
-  // Selected voucher id state handler!
-  const [selectedVoucherId, setSelectedVoucherId] = useState();
-  
+  console.log(props.data.height - props.tableData.tableHeight)
   // Loader state handler for table!
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Cheat code element reference!
+  const cheatCodeRef = useRef(null);
+  
+  // Command Helper element reference!
+  const commandHelperRef = useRef(null);
   
   // Show command helper!
   function _showCommandHelper(){
@@ -29,6 +33,8 @@ const VoucherContent = (props) => {
       attribute: 'dataListField',
       onEnter: _saveSelectedValue,
       showListValue: showListValue,
+      allowInputField: true,
+      allowPanelField: false,
       noneValue: "None",
       options: [{
           value: "Filter CashMode 'Enter Cash Mode to be filtered'"
@@ -113,19 +119,31 @@ const VoucherContent = (props) => {
     setIsLoading(action);
   }
   
+  // Calculate the table height from the parent component!
+  function calculateTableHeight(){
+    props.getElementRef && props.getElementRef(commandHelperRef, cheatCodeRef)
+  }
+  
+  // Send the elements reference to the parent component to re calculate the height!
+  useEffect(() => {
+    calculateTableHeight();
+  }, [props.commandHelper.commandHelper])
+  
   return(
     <div className = "sidepanel-wrapper">
       <div className = "flex-1">
         <PanelView data = {props.data} childView = {() => props.childView()} height = {(value) => props.updateSidepanelHeight(value)} />
       </div>
       <div className = "flex-2">
-        {props.commandHelper.commandHelper && (
-          _showCommandHelper()
-        )}
-        <div className = "cheat-code">
+        <div className = "voucher-content-commandhelper" ref = {commandHelperRef}>
+          {props.commandHelper.commandHelper && (
+            _showCommandHelper()
+          )}
+        </div>
+        <div className = "cheat-code" ref = {cheatCodeRef}>
           {_renderCheatCode()}
         </div>
-        <div className = "metadata-table-view">
+        <div className = "metadata-table-view vouchers-content-table-view" style = {{height: props.data.height - props.tableData.tableHeight}}>
           {_renderTableView()}
         </div>
       </div>

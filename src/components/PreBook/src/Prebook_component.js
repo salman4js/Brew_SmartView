@@ -86,7 +86,9 @@ const Prebook_component = (props) => {
         discount: props.discount,
         aadharcard: props.aadhar,
         prebookId: props.prebookuser,
-        lodgeId: props.lodgeid
+        lodgeId: props.lodgeid,
+        roomno: props.roomno,
+        roomid: props.roomid
     }
     
     return prebookData;
@@ -302,7 +304,9 @@ const Prebook_component = (props) => {
         discount: props.discount, // Sending duplicate data to the server to prevent including more schema values
         advance: props.advance, // Sending duplicate data to the server to prevent including more schema values
         advanceDiscount: props.discount,
-        channel: props.channel
+        channel: props.channel,
+        userId: props.prebookuser,
+        dateTime: brewDate.getFullDate("dd/mmm") + " " + brewDate.getTime()
       }
       axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
         .then(res => {
