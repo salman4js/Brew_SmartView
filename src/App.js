@@ -29,7 +29,8 @@ import InvoiceMemory from './components/invoice.memory/invoice.memory.view';
 import VoucherView from './components/vouchers/vouchers.view';
 import ChooseLogin from './components/LoginAs/choose.login';
 import ManageRecep from './components/ManageRecep/manage.recep';
-import PaymentTracker from './components/paymentTracker/payment.tracker'
+import PaymentTracker from './components/paymentTracker/payment.tracker';
+import RefundTracker from './components/refund.tracker/refund.tracker.view';
 
 function App() {
   return (
@@ -66,6 +67,7 @@ function App() {
           <Route path = "/:id/chooselogin" exact element = {<ChooseLogin /> } />
           <Route path = "/:id/managerecep" exact element = {<ManageRecep />} />
           <Route path = "/:id/paymenttracker" exact element = {<PaymentTracker />} />
+          <Route path = "/:id/refundtracker" exact element = {<RefundTracker />} />
         </Routes>
       </Router>
     </div>

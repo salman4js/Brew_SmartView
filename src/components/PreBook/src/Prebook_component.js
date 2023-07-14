@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import retrieveDate from '../../PreBook_Date_Spike/DateCorrector';
 import EditPrebookRoomItem from '../../edit.room.view/edit.prebook.room.view/edit.prebook.room.item.view';
+import { addRefundTracker } from './prebook.components.utils/prebook.components.utils';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import GuestRegistration from '../../GRC/grc.view';
 import axios from "axios";
@@ -8,6 +9,7 @@ import brewDate from 'brew-date';
 import Modal from "react-bootstrap/Modal";
 import Variables from '../../Variables';
 import Button from "react-bootstrap/Button";
+import {universalLang} from '../../universalLang/universalLang';
 import {getStorage, setStorage} from '../../../Controller/Storage/Storage';
 import { handleTimeFormat, compareTime, convert12to24, getTimeDate, refreshPage } from '../../common.functions/common.functions.js';
 
@@ -31,6 +33,75 @@ const Prebook_component = (props) => {
   
   // Is grc enabled!
   var isGrcPreview = JSON.parse(getStorage('isGrcPreview'));
+  
+  // Custom modal state handler!
+  const [customModal, setCustomModal] = useState({
+    show: false,
+    onHide: onHideCustomModal,
+    header: undefined,
+    bodyMessage: undefined,
+    refundableAmount: undefined,
+    centered: true,
+    modalSize: 'medium',
+    footerEnabled: true,
+    footerButtons: [
+      {
+        btnId: "Refund Amount",
+        disabled: false,
+        variant: "success",
+        onClick: onRefund
+      },
+      {
+        btnId: "Cancel",
+        disabled: false,
+        variant: "secondary",
+        onClick: onHideCustomModal
+      }
+    ]
+  })
+
+  // On show custom modal!
+  async function _showCustomModal(message, refundableAmount){
+    setStorage("refundable-amount", refundableAmount);
+    await setCustomModal(prevState => ({...prevState, show: true, bodyMessage: message, header: "Refund Alert", refundableAmount: refundableAmount}))
+  }
+  
+  // On hide custom modal!
+  function onHideCustomModal(){
+    setCustomModal(prevState => ({...prevState, show: false}))
+  }
+  
+  // Custom modal child view!
+  function customModalBodyItem(){
+    return(
+      <>
+        <p>
+          {customModal.bodyMessage}
+        </p>
+        <p>
+          Refundable Amount: {customModal.refundableAmount} Rs
+        </p>
+      </>
+    )
+  }
+
+  // On save custom modal!
+  async function onRefund(){
+    const data = {
+      lodge: props.lodgeid,
+      date: brewDate.getFullDate("dd/mm/yyyy"),
+      refundFor: "Prebook cancelled, advance amount refund",
+      roomno: props.roomno,
+      roomId: props.roomid,
+      username: props.customername,
+      userId: props.prebookuser,
+      refundAmount: getStorage("refundable-amount")
+    }
+    const result = await addRefundTracker(data);
+    if(result.data.success){
+      deletePrebook(); // When refund tracker updated, delete the prebook entry!
+    }
+  }
   
   // State handler for GRC preview!
   const [grcPreview, setGrcPreview] = useState({
@@ -196,6 +267,8 @@ const Prebook_component = (props) => {
 
   // Handle More Details Modal
   const handleClose = () => {
+    setStorage("refundable-amount", 0); // Set the default value as 0, 
+    // Everytime the preview modal appears!
     setShow(!show);
   }
 
@@ -331,23 +404,24 @@ const Prebook_component = (props) => {
   }
 
   // Delete prebook order
-  const deletePrebook = () => {
-    return new Promise((resolve, reject) => {
-      const credentials = {
-        prebookUserId: props.prebookuser
-      }
-      axios.post(`${Variables.hostId}/${props.lodgeid}/deleteprebookuserrooms`, credentials)
-        .then(res => {
-          if (res.data.success) {
-            handleClose();
-            deletePrebookModal();
-            props.setLoad(true);
-            resolve();
-          } else {
-            reject();
-          }
-        })
-    })
+  const deletePrebook = () => {    
+    setLoading(true);
+    const credentials = {
+      prebookUserId: props.prebookuser
+    }
+    axios.post(`${Variables.hostId}/${props.lodgeid}/deleteprebookuserrooms`, credentials)
+      .then(res => {
+        if (res.data.success) {
+          setLoading(false);
+          deletePrebookModal();
+          props.setLoad(true);
+        } else {
+          setLoading(false);
+          deletePrebookModal();
+          handleClose();
+          _showCustomModal(res.data.message, res.data.refundAmount)
+        }
+      })
   }
   
   // Check for the camera access and turn on the camera accordingly!
@@ -612,6 +686,11 @@ const Prebook_component = (props) => {
           )
         }
       </div>
+      
+      {customModal.show && (
+        <CustomModal modalData = {customModal} showBodyItemView = {() => customModalBodyItem()} />
+      )}
+      
     </div>
   )
 }

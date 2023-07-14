@@ -187,7 +187,6 @@ const PaymentTracker = (props) => {
   // Check for the valid commands, and disable the invalid!
   function isCommandsValid(){
     const selectedCount = getStorage("payment-tracker-selected-count");
-    console.log(selectedCount)
     var commands = ['Delete'];
     var state = selectedCount > 1;
     handleCommands(commands, setCommandHelper, state);
@@ -299,7 +298,7 @@ const PaymentTracker = (props) => {
   // Set up the payment content view!
   function paymentTrackerContent(){
     return(
-      <PaymentTrackerContent data = {sidepanel} tableData = {tableView} childView = {() => _showPanelChildView()}
+      <PaymentTrackerContent data = {sidepanel} idInstance = {"room"} tableData = {tableView} childView = {() => _showPanelChildView()}
       updateSidepanelHeight = {(value) => storeModalAssistHeight(value)} commandHelper = {commandHelper} 
       panelHelper = {panelHelper} updatePanelHelper = {(state) => updatePanelHelper(state)}  />
     )

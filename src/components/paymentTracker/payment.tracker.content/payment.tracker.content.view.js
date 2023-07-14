@@ -9,7 +9,7 @@ const PaymentTrackerContent = (props) => {
   // Render metadata table view!
   function _renderTableView(){
     return(
-      <MetadataTable data = {props.tableData} height = {props.data.height} idInstance = {"room"}  />
+      <MetadataTable data = {props.tableData} height = {props.data.height} idInstance = {props.idInstance}  />
     )
   }
   
@@ -33,7 +33,7 @@ const PaymentTrackerContent = (props) => {
         {props.tableData?.showPanelField && (
           _showPanelField()
         )}
-        {props.commandHelper.commandHelper && (
+        {props.commandHelper?.commandHelper && (
           <div className = "fixed-command-helper">
             {commandHelper()}
           </div>

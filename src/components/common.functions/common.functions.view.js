@@ -1,6 +1,17 @@
 import React from 'react';
+import Navbar from '../Navbar';
 import Modal from 'react-bootstrap/Modal';
 
+// Navbar view for throughout the application!
+export function _renderNavbar(id, splitedIds){
+  return(
+    <div>
+      <Navbar id={id} name={splitedIds[1]} />
+    </div>
+  )
+}
+
+// Form a style instance and return it!
 function getStyle(options){
   return{
     marginTop: options.marginTop,
