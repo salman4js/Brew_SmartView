@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 const PanelItemView = (props) => {
-  
+
   // Mouse Over state handler!
   const [inlineAction, setInlineAction] = useState({
-    mouseOver: false
+    mouseOver: false,
   })
   
   // Render inline menu!
@@ -20,6 +20,20 @@ const PanelItemView = (props) => {
     )
   }
   
+  // Highlight the selected item1
+  function getStyle(){
+    if(props.selectedItem !== undefined){
+      return{
+        backgroundColor: props.selectedItem[props.selectedItem.length - 1] === props._id ? "#ddd" : "#f1f1f1"
+      }
+    } 
+  }
+
+  // On select item!
+  async function selectItem(value){
+    props.onClick(props._id);
+  }
+  
   // trigger mouse over event!
   function _triggerMouseOver(){
     setInlineAction(prevState => ({...prevState, mouseOver: true}))
@@ -29,9 +43,12 @@ const PanelItemView = (props) => {
   function _triggerMouseOut(){
     setInlineAction(prevState => ({...prevState, mouseOver: false}))
   }
+
   
   return(
-    <div className = "file-items" onClick = {() => props.onClick(props._id)} onMouseOver = {() => _triggerMouseOver()} onMouseOut = {() => _triggerMouseOut()}>
+    <div className = "file-items" onClick = {() => selectItem(!inlineAction.selectedId)} 
+    onMouseOver = {() => _triggerMouseOver()} onMouseOut = {() => _triggerMouseOut()}
+    style = {getStyle()}>
      <span className = "brew-title-workspace side-align">
         {props.data}
      </span>

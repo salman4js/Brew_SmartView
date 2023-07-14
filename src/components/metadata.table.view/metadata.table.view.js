@@ -20,7 +20,7 @@ const MetadataTable = (props) => {
   // Render table View!
   function _renderTableView(){
     // Check if the object is empty or not!
-    if(isEmpty(props.data.cellValues)){
+    if(isEmpty(props.data?.cellValues)){
       return _emptyTable();
     } else {
       // Get the options header and put it in the object!
@@ -49,7 +49,13 @@ const MetadataTable = (props) => {
     var result = [...value];
     result.map((options, key) => {
       // delete options._id;
-      delete options[idInstance];
+      if(Array.isArray(idInstance)){
+        idInstance.forEach((opts) => {
+          delete options[opts]
+        })
+      } else {
+        delete options[idInstance];
+      }
       delete options.__v;
     })
     return result;
@@ -58,7 +64,7 @@ const MetadataTable = (props) => {
   // Render table cell view!
   function _renderTableCellView(){
     // Remove the default mongodb instances!
-    const value = _deleteDefaultValues(props.data.cellValues, props.idInstance);
+    const value = _deleteDefaultValues(props.data?.cellValues, props.idInstance);
     // Convert the object values into an array values!
     var tableCellValue = convertIntoArrays(value);
 
@@ -71,7 +77,7 @@ const MetadataTable = (props) => {
   function _emptyTable(){
     // Options!
     var opts = {
-      message: props.data.infoMessage,
+      message: props.data?.infoMessage,
       color: "black",
       marginTop: (props.height) / 2.2 + "px",
       textCenter: true
@@ -81,11 +87,11 @@ const MetadataTable = (props) => {
   
   return(
     <div>
-      {props.data.tableLoader && (
+      {props.data?.tableLoader && (
         _showLoader()
       )}
       
-      {!props.data.tableLoader && (
+      {!props.data?.tableLoader && (
         _renderTableView()
       )}
     </div>

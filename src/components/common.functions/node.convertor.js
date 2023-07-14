@@ -9,6 +9,11 @@ export function nodeConvertor(status){
   return result;
 }
 
+// Get state data --> Use this when states are not updating in reusable components!
+export function getStateData(state){
+  return state;
+}
+
 // Validate field data for expected input!
 function _validateData(status, setStatus){
   return new Promise((resolve, reject) => {
