@@ -123,9 +123,15 @@ const Login = () => {
             setMessage("Checking for a account lockout...");
             if(res.data.isLocked){
               // Show Account Lockout Dialog!
-              setError(res.data.isLockedMessage);
-              setLoading(false); // Close off the loader!
-              setShow(res.data.isLocked);
+              setLoading(false);
+              const data = {
+                show: true,
+                message: res.data.isLockedMessage,
+                header: true,
+                headerText: "Warning!",
+              }
+
+              populateModal(data);
             } else {
               setMessage("Validating your config file...");
               
