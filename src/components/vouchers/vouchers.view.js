@@ -1,14 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
+import {useSelector, useDispatch} from 'react-redux';
+import {useCheckboxSelection} from '../global.state/global.state.manager'
+import {addValue, removeValue, getValue, removeAllValue} from '../../global.state/actions/index';
 import ModalAssist from '../modal.assist/modal.assist.view';
 import CustomModal from '../CustomModal/custom.modal.view';
 import PanelItemView from '../SidePanelView/panel.item/panel.item.view';
 import VoucherContent from './vouchers.content.view';
 import MetadataFields from '../fields/metadata.fields.view';
-import { getVouchersList, addVouchersList, getVoucherModelList, addVoucherModelList } from './vouchers.utils.js';
+import { getVouchersList, addVouchersList, getVoucherModelList, addVoucherModelList, editVoucherModelList, deleteVoucherModelList, getPrevVoucherModel } from './vouchers.utils.js';
 import { Link, useParams } from "react-router-dom";
+import {setStorage, getStorage, removeItemStorage} from '../../Controller/Storage/Storage'
 import { globalMessage, commonLabel, activityLoader } from '../common.functions/common.functions.view';
-import { nodeConvertor, validateFieldData, _clearData, _enableInlineToast } from '../common.functions/node.convertor';
+import { nodeConvertor, validateFieldData, _clearData, _enableInlineToast, checkboxSelection, handleCommands } from '../common.functions/node.convertor';
 import {formatCustomIntoDateFormat, convertFormat, convertServerFormat } from '../common.functions/common.functions';
 import changeScreen from '../Action';
 
@@ -18,6 +22,10 @@ const VoucherView = () => {
   //Check the ID and token of the application!
   const { id } = useParams();
   const splitedIds = id.split(/[-]/);
+  
+  // Global state management - Checkbox selection!
+  var checkboxSelector = useCheckboxSelection();
+  const dispatch = useDispatch();
   
   // History reference!
   const navigate = useNavigate();
@@ -69,18 +77,81 @@ const VoucherView = () => {
     commands: [
       {
         value: "Edit",
-        onClick: null
+        onClick: _getPrevVoucherValue
       },
       {
         value: "Delete",
-        onClick: null
+        onClick: onDeleteVoucherModel
       }
     ]
-  })
+  });
+
+  // Get previous voucher value!
+  async function _getPrevVoucherValue(){
+    var acknowledgerMessage = "Fetching previous value..."
+    _triggerAcknowledger(acknowledgerMessage)
+    const checkboxSelection = JSON.parse(getStorage("selectedItem"));
+    // Get previous value for the selected voucher model!
+    var data = {};
+    data["voucherId"] = checkboxSelection[0]; // Since we support only one edit at a time!
+    const prevData = await getPrevVoucherModel(splitedIds[0], data);
+    if(prevData.data.success){
+      killAcknowledger();
+      _triggerEditModel(checkboxSelection[0])
+    }
+  }
+  
+  // On Delete voucher model!
+  async function onDeleteVoucherModel(){
+    const checkboxSelection = JSON.parse(getStorage("selectedItem"));
+    const data = {};
+    data['voucherId'] = checkboxSelection;
+    const result = await deleteVoucherModelList(splitedIds[0], data);
+    if(result.data.success){
+      destroyCommandHelper();
+      panelItemOnClick(result.data.voucherId);
+    }
+  }
+  
+  // On edit voucher model!
+  async function _triggerEditModel(checkboxSelection){
+    var inlineHeader = "Edit Voucher Model";
+    var customModalButtonId = "Edit";
+    _triggerAddVoucherModel(checkboxSelection, inlineHeader, customModalButtonId) // Checkbox selection will always be one,
+    // Since we support only single item edit at a time!
+  }
   
   // Perform action after the checkbox is being selected!
-  function checkboxSelected(value){
-    setCommandHelper(prevState => ({...prevState, commandHelper: value}))
+  function checkboxSelected(value, modelId){
+    var storageId = "voucher-selected-count";
+    checkboxSelection(value, setCommandHelper, storageId);
+    setModelId(value, modelId);
+    isCommandsValid();
+  }
+  
+  // Check for the valid commands, and disable the invalid!
+  function isCommandsValid(){
+    const selectedCount = getStorage("voucher-selected-count");
+    var commands = ['Edit'];
+    var state = selectedCount > 1;
+    handleCommands(commands, setCommandHelper, state);
+  }
+  
+  // Store and remove modelId from the global state based on the action!
+  function setModelId(value, modelId){
+    if(value){
+      dispatch(addValue(modelId));
+    } else {
+      dispatch(removeValue(modelId));
+    }
+  }
+  
+  // Destroy command helper!
+  function destroyCommandHelper(){
+    dispatch(removeAllValue()) // Clear out the global state manager,
+    // Before destroying the command helper!
+    setStorage("voucher-selected-count", 0);
+    setCommandHelper(prevState => ({...prevState, commandHelper: false}));
   }
   
   // Trigger table loader!
@@ -209,8 +280,34 @@ const VoucherView = () => {
     enableLoader: true,
     data: undefined,
     inlineAction: false,
-    voucherId: undefined
-  })
+    inlineHeader: undefined,
+    customModalButtonId: undefined,
+    voucherId: undefined,
+    voucherModelId: undefined,
+  });
+  
+  // Global message state handler!
+  const [acknowledger, setAcknowledger] = useState({
+    show: false,
+    message: undefined,
+    closeButton: false,
+    onHide: killAcknowledger
+  });
+  
+  // Kill Global Message!
+  function killAcknowledger(){
+    setAcknowledger(prevState => ({...prevState, show: false}));
+  };
+  
+  // trigger the global message!
+  function _triggerAcknowledger(message){
+    setAcknowledger(prevState => ({...prevState, show: true, message:message}));
+  }
+  
+  // Show global message!
+  function _showGlobalMessage(){
+    return globalMessage(acknowledger);
+  }
   
   // Enable / Disable side panel loader!
   function _sidePanelLoader(value){
@@ -276,13 +373,15 @@ const VoucherView = () => {
   }
   
   // On voucher model create action!
-  async function onVoucherModelCreate(){
+  async function onVoucherModelAction(){
+    var mode = sidepanel.customModalButtonId; // Considering the button modal ID as the mode (Edit || Delete);
     const isValid = await validateFieldData(voucherModel, setVoucherModel);
     if(isValid.length === 0){
       const fieldData = getFieldData(voucherModel);
       _closeVoucherModelDialog();
       _triggerTableLoader(true);
-      _saveVoucherModelCreation(splitedIds[0], fieldData);
+      mode === "Create" && _saveVoucherModelCreation(splitedIds[0], fieldData);
+      mode === "Edit" && _onEditVoucherModel(splitedIds[0], fieldData);
     }
   }
   
@@ -313,6 +412,21 @@ const VoucherView = () => {
     }
   }
   
+  // On edit voucher model data!
+  async function _onEditVoucherModel(lodgeId, data){
+    data['voucherId'] = sidepanel.voucherId;
+    data.dateTime = convertServerFormat(formatCustomIntoDateFormat(data.dateTime)); // Convert the date into dd/mm/yyy format!
+    const result = await editVoucherModelList(lodgeId, data);
+    if(result.data.success){
+      _triggerTableLoader(false);
+      destroyCommandHelper();
+      _clearFieldData(voucherModel, setVoucherModel);
+      panelItemOnClick(result.data.voucherId);
+    } else {
+      _triggerTableLoader(false);
+    }
+  }
+  
   // Panel child view setup!
   function panelChildView(){
     var opts = {
@@ -338,20 +452,22 @@ const VoucherView = () => {
   
   // Panel child item view!
   function childItemView(){
+    var inlineHeader = "Add new voucher model";
+    var cutomModalButtonId = "Create"
     return (
       sidepanel.data.map((options, key) => {
         return(
           <PanelItemView data = {options.voucherName} _id = {options._id} 
           onClick = {(id) => panelItemOnClick(id)} showInlineMenu = {true}
-          inlineAction = {(voucherId) => _triggerAddVoucherModel(voucherId)} />
+          inlineAction = {(voucherId) => _triggerAddVoucherModel(voucherId, inlineHeader, cutomModalButtonId)} />
         )
       })
     )
   }
   
   // Panel Item view inline action functionality!
-  function _triggerAddVoucherModel(voucherId){
-    setSidepanel(prevState => ({...prevState, inlineAction: true, voucherId: voucherId}))
+  function _triggerAddVoucherModel(voucherId, inlineHeader, modalButtonId){
+    setSidepanel(prevState => ({...prevState, inlineAction: true, voucherId: voucherId, inlineHeader: inlineHeader, customModalButtonId: modalButtonId}))
   }
   
   // Show add voucher model view!
@@ -359,13 +475,13 @@ const VoucherView = () => {
     const data = {
       show: true,
       onHide: onCloseAction,
-      header: `Add new voucher model`,
+      header: sidepanel.inlineHeader,
       centered: false,
       modalSize: "medium",
       footerEnabled: true,
       footerButtons: [
         {
-          btnId: "Create",
+          btnId: sidepanel.customModalButtonId,
           variant: "success",
           onClick: onCreateAction
         }
@@ -420,7 +536,9 @@ const VoucherView = () => {
   
   // Call the functions on onRender!
   useEffect(() => {
-    vouchersList()
+    vouchersList();
+    setStorage("voucher-selected-count", 0);
+    removeItemStorage("selectedItem"); // Remove any unused selection id's
   }, [])
   
   return(
@@ -430,7 +548,10 @@ const VoucherView = () => {
         _showCustomDialog(_closeCustomDialog, onVoucherCreate, inputField, setInputField)
       )}
       {sidepanel.inlineAction && (
-        _showAddVoucherModel(_closeVoucherModelDialog, onVoucherModelCreate, voucherModel, setVoucherModel)
+        _showAddVoucherModel(_closeVoucherModelDialog, onVoucherModelAction, voucherModel, setVoucherModel)
+      )}
+      {acknowledger.show && (
+        _showGlobalMessage()
       )}
     </div>
   )

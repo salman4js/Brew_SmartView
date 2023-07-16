@@ -16,7 +16,8 @@ function getStyle(options){
   return{
     marginTop: options.marginTop,
     color: options.color,
-    textAlign: options.textCenter ? "center" : "none"
+    textAlign: options.textCenter ? "center" : "none",
+    marginLeft: options.marginLeft
   }
 }
 
@@ -27,7 +28,7 @@ export function globalMessage(opts){
         show={opts.show}
         onHide = {() => opts.onHide()}
     >
-        <Modal.Header closeButton>
+        <Modal.Header closeButton = {opts.closeButton}>
             <Modal.Body className="text-center">
                 {opts.message}
             </Modal.Body>

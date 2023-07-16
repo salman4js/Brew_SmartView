@@ -190,7 +190,7 @@ const Invoice = (props) => {
         return (
             <div>
               {/* Bill Generation */}
-              {props.node.tInvoice && (
+              {!props.node.tInvoice && (
                 <div className="container invoice" style={{ height: window.innerHeight }}>
                     <div id="invoice-view">
                         <div className="text-center invoice-header" id="invoice" style={{ color: "black", cursor: "pointer" }} onClick={() => navigateBack()}>
@@ -271,7 +271,7 @@ const Invoice = (props) => {
               )}
               
               {/* Tax invoice */}
-              {props.node.invoice && (
+              {!props.node.invoice && (
                 <div className="container invoice">
                     {renderInvoiceHeader()}
                     <div className=" text-center invoice-total main-invoice-header" style={{ fontWeight: "bold" }}>

@@ -19,26 +19,28 @@ const MetadataTableHeader = (props) => {
       {props.enableCommandHelper && (
         _showCommands()
       )}
-      <tr>
-      {props.enableCheckbox && (
-        props.checkbox.map((field, index) => {
-          return (
-            field.enableCellCheckbox && (
-              <th className="metadata-table-checkbox" key={index}>
-                {field.enableHeaderCheckbox && _checkBoxView(field)}
+      <thead>
+        <tr>
+        {props.enableCheckbox && (
+          props.checkbox.map((field, index) => {
+            return (
+              field.enableCellCheckbox && (
+                <th className = "metadata-content-table-header-checkbox" key={index}>
+                  {field.enableHeaderCheckbox && _checkBoxView(field)}
+                </th>
+              )
+            );
+          })
+        )}
+          {props.data.map((options, key) => {
+            return(
+              <th className = "text-center" style = {{width: props.width}}>
+                {options}
               </th>
             )
-          );
-        })
-      )}
-        {props.data.map((options, key) => {
-          return(
-            <th className = "metadata-table-header" style = {{width: props.width}}>
-              {options}
-            </th>
-          )
-        })}
-      </tr>
+          })}
+        </tr>
+      </thead>
     </div>
   )
 }

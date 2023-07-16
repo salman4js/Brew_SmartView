@@ -13,28 +13,30 @@ const MetadataTableCellView = (props) => {
     return (
       props.data.map((options, key) => {
         return (
-          <tr key={key}>
-            {props.enableCheckbox && (
-              props.checkbox.map((field, index) => {
-                return (
-                  field.enableCellCheckbox && (
-                    <td className="metadata-table-checkbox" key={index}>
-                      {_renderCheckBoxView(options)}
+          <tbody>
+            <tr key={key}>
+              {props.enableCheckbox && (
+                props.checkbox.map((field, index) => {
+                  return (
+                    field.enableCellCheckbox && (
+                      <td key={index}>
+                        {_renderCheckBoxView(options)}
+                      </td>
+                    )
+                  )
+                })
+              )}
+              {options.map((opts, modelId) => {
+                if(modelId !== 0){
+                  return (
+                    <td className="metadata-tablecell-view" key={modelId} style = {{width: props.width}}>
+                      {opts}
                     </td>
                   )
-                )
-              })
-            )}
-            {options.map((opts, modelId) => {
-              if(modelId !== 0){
-                return (
-                  <td className="metadata-tablecell-view" key={modelId} style = {{width: props.width}}>
-                    {opts}
-                  </td>
-                )
-              }
-            })}
-          </tr>
+                }
+              })}
+            </tr>
+          </tbody>
         )
       })
     )

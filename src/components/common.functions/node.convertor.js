@@ -163,7 +163,6 @@ export function handleCommands(commands, setState, enable){
   })
 }
 
-
 // Refresh the entire page when needed!
 export function domRefresh(){
   window.location.reload();

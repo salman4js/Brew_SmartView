@@ -22,3 +22,9 @@ export async function getPaymentDetails(lodgeId, data){
   const paymentDetails = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getpaymentdetails`, data);
   return paymentDetails;
 }
+
+// Delete single payment tracker instance!
+export async function deletePaymentTracker(lodgeId, data){
+  const paymentTracker = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/deletesinglepayment`, data);
+  return paymentTracker;
+}

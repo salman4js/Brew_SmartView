@@ -9,7 +9,7 @@ import { activityLoader } from '../common.functions/common.functions.view';
 import { setStorage, getStorage } from '../../Controller/Storage/Storage'
 
 const VoucherContent = (props) => {
-  console.log(props.data.height - props.tableData.tableHeight)
+
   // Loader state handler for table!
   const [isLoading, setIsLoading] = useState(false);
   
