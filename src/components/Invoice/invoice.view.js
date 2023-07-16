@@ -173,7 +173,7 @@ const Invoice = (props) => {
                     )}
                     <div className="table-view-bill-line"></div>                
                     <p>
-                        Grand Total: {props.node.amount()}
+                        Grand Total: {props.node.amount && props.node.amount()}
                     </p>
                 </div>
             </div>
@@ -190,7 +190,7 @@ const Invoice = (props) => {
         return (
             <div>
               {/* Bill Generation */}
-              {!props.node.tInvoice && (
+              {props.node.invoice && (
                 <div className="container invoice" style={{ height: window.innerHeight }}>
                     <div id="invoice-view">
                         <div className="text-center invoice-header" id="invoice" style={{ color: "black", cursor: "pointer" }} onClick={() => navigateBack()}>
@@ -206,7 +206,7 @@ const Invoice = (props) => {
                             Hey there, {props.node.customerName}
                         </div>
                         <p style={{ color: "black" }}>
-                            This is the receipt for the payment of {props.node.amount()} you made to {props.node.lodgeName}!
+                            This is the receipt for the payment of {props.node.amount && props.node.amount()} you made to {props.node.lodgeName}!
                         </p>
                         <div className="invoice-header" style={{ color: "black" }}>
                             Payment Id: {props.node.receiptId}
@@ -264,14 +264,14 @@ const Invoice = (props) => {
                             </div>
                         )}
                         <div className="invoice-total-amount">
-                            Total Amount: {props.node.amount()}
+                            Total Amount: {props.node.amount && props.node.amount()}
                         </div>
                     </div>
                 </div>
               )}
               
               {/* Tax invoice */}
-              {!props.node.invoice && (
+              {props.node.tInvoice && (
                 <div className="container invoice">
                     {renderInvoiceHeader()}
                     <div className=" text-center invoice-total main-invoice-header" style={{ fontWeight: "bold" }}>
