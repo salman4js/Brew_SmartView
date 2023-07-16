@@ -26,6 +26,24 @@ export async function addVoucherModelList(lodgeId, data){
   return result;
 }
 
+// Edit voucher model list!
+export async function editVoucherModelList(lodgeId, data){
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/editvouchermodel`, data)
+  return result;
+}
+
+// Get previous voucher model!
+export async function getPrevVoucherModel(lodgeId, data){
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getprevvouchermodel`, data)
+  return result;
+}
+
+// Delete voucher model list!
+export async function deleteVoucherModelList(lodgeId, data){
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/deletevouchermodel`, data)
+  return result;
+}
+
 // Get voucher model result based on the filter query!
 export async function getFilteredModel(lodgeId, data){
   const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/cheatcodefilter`, data)

@@ -955,4 +955,35 @@ td {
   overflow: auto;
 }
 
+.metadata-content-table {
+    border-collapse: collapse;
+    font-size: 0.9em;
+    min-width: 400px;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    color: black;
+}
+
+.metadata-content-table thead tr {
+    background-color: grey;
+    color: #ffffff;
+    text-align: left;
+    font-weight: bold;
+}
+
+.metadata-content-table-header-checkbox{
+  width: 34.5px;
+}
+
+.metadata-content-table th,
+.metadata-content-table td {
+    padding: 12px 10px;
+}
+
+.metadata-content-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+    background-color: #f1f1f1;
+}
+
+
 

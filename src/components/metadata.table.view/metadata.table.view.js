@@ -25,7 +25,7 @@ const MetadataTable = (props) => {
     } else {
       // Get the options header and put it in the object!
       return(
-        <table className = "text-center cheat-code">
+        <table className = "text-center metadata-content-table cheat-code">
           {_renderTableHeader()}
         </table>
       )
@@ -79,8 +79,8 @@ const MetadataTable = (props) => {
     var opts = {
       message: props.data?.infoMessage,
       color: "black",
-      marginTop: (props.height) / 2.2 + "px",
-      textCenter: true
+      marginTop: (props.height) / 2.5 + "px",
+      textCenter: true,
     }
     return commonLabel(opts);
   }

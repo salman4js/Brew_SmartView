@@ -4,7 +4,7 @@ import {useCheckboxSelection} from '../global.state/global.state.manager'
 import {addValue, removeValue, getValue, removeAllValue} from '../../global.state/actions/index';
 import PaymentTrackerContent from './payment.tracker.content/payment.tracker.content.view'
 import PanelItemView from '../SidePanelView/panel.item/panel.item.view';
-import { getRoomList, getPaymentTracker, getPaymentDetails} from './payment.tracker.utils/payment.tracker.utils';
+import { getRoomList, getPaymentTracker, getPaymentDetails, deletePaymentTracker} from './payment.tracker.utils/payment.tracker.utils';
 import { globalMessage, commonLabel, activityLoader } from '../common.functions/common.functions.view';
 import { checkboxSelection, handleCommands } from '../common.functions/node.convertor';
 import { getStorage, setStorage, removeItemStorage} from '../../Controller/Storage/Storage'
@@ -147,11 +147,29 @@ const PaymentTracker = (props) => {
       },
       {
         value: "Delete",
-        onClick: null,
+        onClick: onDeletePaymentTracker,
         disabled: false
       }
     ]
   })
+
+  // onDelete action!
+  async function onDeletePaymentTracker(){
+    _triggerTableLoader(true);
+    const checkboxSelection = JSON.parse(getStorage("selectedItem"));
+    const data = {};
+    data['paymentId'] = checkboxSelection;
+    data['isPrebook'] = getState();
+    const result = await deletePaymentTracker(splitedIds[0], data);
+    if(result.data.success){
+      destroyCommandHelper();
+      panelItemOnClick(result.data.roomId);
+    } else {
+      _triggerTableLoader(false);
+      // Trigger the global acknowledger!
+      setMessage(prevState => ({...prevState, show: true, message: result.data.message}))
+    }
+  }
   
   // Generate receipt for the selection!
   async function generateReceipt(){
