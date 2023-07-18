@@ -216,7 +216,7 @@ const HomeRoom = (props) => {
         
         // Adding payment tracker params into the credentials!
         credentials['paymentTracker'] = {};
-        credentials.paymentTracker['callPaymentTracker'] = prebookadvance !== undefined ? true : false 
+        credentials.paymentTracker['callPaymentTracker'] = true 
         credentials.paymentTracker['amount'] = prebookadvance 
         credentials.paymentTracker['amountFor'] = universalLang.InitialPrebookPayment
         credentials.paymentTracker['room'] = props.roomid 
@@ -939,12 +939,21 @@ const HomeRoom = (props) => {
 
     // Update Customer Details!
     function updateOptions(){
+
+      var updatedAdvance = 0;
+      // If there is prev advance, add it into the advance to get the updated advance.
+      if(editDetails.prevAdvance !== undefined && editDetails.prevAdvance !== null){
+        updatedAdvance = (Number(editDetails.prevAdvance) + Number(editDetails.advance)).toString()
+      } else {
+        updatedAdvance = editDetails.advance
+      }
+
         const options = {
             username: editDetails.username,
             phonenumber: editDetails.phonenumber,
             secondphonenumber: editDetails.secondphonenumber,
             advance: editDetails.advance,
-            updatedAdvance: editDetails.isAdvanceAttrChanges ? Number(editDetails.prevAdvance) + Number(editDetails.advance) : editDetails.advance,
+            updatedAdvance: editDetails.isAdvanceAttrChanges ? updatedAdvance : editDetails.advance,
             amountFor: universalLang.editCustomerDetailsAdvance,
             dateTime: brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime()),
             aadharcard: editDetails.aadharcard,

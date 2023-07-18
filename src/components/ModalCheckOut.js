@@ -10,12 +10,18 @@ const ModalCheckOut = (props) => {
 
     const [stay, setStay] = useState();
     const date = brewDate.getFullDate("yyyy/mm/dd");
-
+    
     var isExtra = JSON.parse(getStorage("isExtra"));
         
     // Ensure Channel enabled or not!
     function ensureChannel(){
         return props.isChannel === "Walk-In" ? false : true
+    }
+    
+    // Get remainingAmount to be paid by the customer for edit customer details!
+    function getRemainingAmount(){
+      var advance = props.advance !== undefined ? props.advance : 0;
+      return props.getTotalAmountWithGST() - advance;
     }
     
     // Edit details state handler!
@@ -186,7 +192,7 @@ const ModalCheckOut = (props) => {
                             <label style={{ color: "black" }}> Payment (Given amount) </label>
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter payments made by customer" name = {editDetails.advance} value = {editDetails.advance} 
                             onChange = {(e) => setEditDetails(prevState => ({...prevState, advance: e.target.value, isAdvanceAttrChanges: true}))} />
-                            <InlineToast message = {`Remaining amount to be paid by this customer ${props.getTotalAmountWithGST() - props.advance}`} />
+                            <InlineToast message = {`Remaining amount to be paid by this customer ${getRemainingAmount()}`} />
                         </div>
                         <div className="modal-gap">
                             <label style={{ color: "black" }}> Adults </label>

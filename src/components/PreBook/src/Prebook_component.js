@@ -254,7 +254,8 @@ const Prebook_component = (props) => {
   
   // pending amount needs to be paid!
   function pendingAmount(){
-    const pendingAmount = props.prebookprice - props.advance;
+    var advance = props.advance !== undefined ? props.advance : 0;
+    const pendingAmount = props.prebookprice - advance;
     if(pendingAmount > 0){
       updatePendingState(true, pendingAmount);
     }
