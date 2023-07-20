@@ -216,7 +216,7 @@ const HomeRoom = (props) => {
         
         // Adding payment tracker params into the credentials!
         credentials['paymentTracker'] = {};
-        credentials.paymentTracker['callPaymentTracker'] = true 
+        credentials.paymentTracker['callPaymentTracker'] = true; 
         credentials.paymentTracker['amount'] = prebookadvance 
         credentials.paymentTracker['amountFor'] = universalLang.InitialPrebookPayment
         credentials.paymentTracker['room'] = props.roomid 
@@ -832,8 +832,10 @@ const HomeRoom = (props) => {
         populateInvoice(value) // Populate the invoice state with userdata...
     }
 
+    // Invoice generation custom question modal validator!
     async function generateInvoice(choices){
-        if(inputFieldInvoice.address === undefined || inputFieldInvoice.gstin === undefined ){
+        var validateInvoiceDetails = JSON.parse(getStorage("validateInvoiceDetails")); // Let it be config driven!
+        if(validateInvoiceDetails && (inputFieldInvoice.address === undefined || inputFieldInvoice.gstin === undefined)){
             setInputFieldInvoice({
                 ...inputFieldInvoice,
                 error: true,

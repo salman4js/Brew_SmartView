@@ -8,10 +8,15 @@ import Button from 'react-bootstrap/Button'
 
 
 const CardView = (props) => {
-    
+
   // Get className for the footer buttons!
   function getClass(variant){
     return getClassName(variant)
+  }
+  
+  // Get card child view style!
+  function getChildViewStyle(){
+    return props.data.childViewClass !== undefined ? props.data.childViewClass : 'card-body text-center'
   }
   
   // Show commandHelper for performing activity!
@@ -63,15 +68,15 @@ const CardView = (props) => {
   }
   
   return(
-    <div className="card" style = {{height: props.data.height + "px"}}>
+    <div className="card" style = {{height: props.data?.height + "px", width: props.data?.width + "px"}}>
         <div className="card-header text-handler text-center">
           {props.data?.header}
         </div>
-        {props.data.commandHelper && (
+        {props.data?.commandHelper && (
           _showCommands()
         )}
-        <div className = "card-body text-center">
-          {props.data.enableLoader ? _showActivityLoader() : props.data._showBodyChildView()}
+        <div className = {getChildViewStyle()}>
+          {props.data?.enableLoader ? _showActivityLoader() : props.data?._showBodyChildView()}
         </div>
         {props.data?.footerEnabled && (
           _showFooterButtons()

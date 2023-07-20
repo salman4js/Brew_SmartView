@@ -78,6 +78,24 @@ const ConfigMatrix = (props) => {
                   {props.multipleLogin.label}
               </label>
             </div>
+            <div className = "form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.invoiceConfig.printManager} onChange = {() => props.invoiceConfig.onChange(!props.invoiceConfig.printManager, props.invoiceConfig.removePan, props.invoiceConfig.validateInvoiceDetails)} />
+              <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                  {props.invoiceConfig.printManagerLabel}
+              </label>
+            </div>
+            <div className = "form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.invoiceConfig.removePan} onChange = {() => props.invoiceConfig.onChange(props.invoiceConfig.printManager, !props.invoiceConfig.removePan, props.invoiceConfig.validateInvoiceDetails)} />
+              <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                  {props.invoiceConfig.removePanLabel}
+              </label>
+            </div>
+            <div className = "form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.invoiceConfig.validateInvoiceDetails} onChange = {() => props.invoiceConfig.onChange(props.invoiceConfig.printManager, props.invoiceConfig.removePan, !props.invoiceConfig.validateInvoiceDetails)} />
+              <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                  {props.invoiceConfig.validateInvoiceDetailsLabel}
+              </label>
+            </div>
             <div className = "modal-gap"></div>
             <div className = "table-view-bill-line"></div>
             <div className = "form-check">
