@@ -56,7 +56,10 @@ const Login = () => {
             "isSpecific": res.data.isSpecific,
             "canDelete": res.data.canDelete,
             "extraCalc": res.data.extraCalc,
-            "isGrcPreview": res.data.grcPreview
+            "isGrcPreview": res.data.grcPreview,
+            "removePan": res.data.removePan,
+            "printManager": res.data.printManager,
+            "validateInvoiceDetails": res.data.validateInvoiceDetails
           }
 
           // Populate the modal into localstorage!

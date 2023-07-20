@@ -187,7 +187,23 @@ const Client = () => {
         isEnable: false,
         label: "Enable Specific Reports",
         onChange: handleReports
+    });
+    
+    // Invoice configuration state handler!
+    const [invoiceConfig, setInvoiceConfig] = useState({
+      removePan: false,
+      removePanLabel: "Remove pan number on invoice!",
+      printManager: false,
+      printManagerLabel: "Print manager instead of manager name",
+      validateInvoiceDetails: false,
+      validateInvoiceDetailsLabel: "Do validation for invoice details",
+      onChange: onChangeInvoiceConfig
     })
+    
+    // Function to handle changes on invoice config!
+    function onChangeInvoiceConfig(printManager,removePan, validateInvoiceDetails){
+      setInvoiceConfig(prevState => ({...prevState, removePan: removePan, printManager: printManager, validateInvoiceDetails: validateInvoiceDetails}))
+    }
 
     // Function to handle specific reports!
     function handleReports(value){
@@ -213,6 +229,7 @@ const Client = () => {
 
     // Show applied config from the server!
     const checkConfig = () => {
+        setLoading(true)
         axios.get(`${Variables.hostId}/${splitedIds[0]}/config-checking`)
             .then(res => {
                 if (res.data.success) {
@@ -221,10 +238,12 @@ const Client = () => {
                     //TODO : Erro handling!
                 }
             })
+        setLoading(false);
     }
 
     // Check Matrix Data!
     const checkMatrix = () => {
+        setLoading(true)
         axios.get(`${Variables.hostId}/${splitedIds[0]}/check-matrix`)
             .then(res => {
                 if(res.data.success){
@@ -239,11 +258,13 @@ const Client = () => {
                     setOptDelete(prevState => ({...prevState, canDelete: res.data.canDelete}))
                     setExtraBed(prevState => ({...prevState, isDay: res.data.extraCalc}))
                     setGrcHandler(prevState => ({...prevState, isGrcEnabled: res.data.grcPreview}));
-                    setMultipleLogin(prevState => ({...prevState, isEnabled: res.data.multipleLogins}))
+                    setMultipleLogin(prevState => ({...prevState, isEnabled: res.data.multipleLogins}));
+                    setInvoiceConfig(prevState => ({...prevState, removePan: res.data.removePan, 
+                      printManager: res.data.printManager, validateInvoiceDetails: res.data.validateInvoiceDetails}))
                     updateRedirectTo("redirectTo", res.data.redirectTo)
                 }
             })
-        
+       setLoading(false)
     }
 
     // Disbale the enabled config!
@@ -343,22 +364,22 @@ const Client = () => {
             extraCalc : extraBed.isDay,
             grcPreview: grcHandler.isGrcEnabled,
             redirectTo: redirectToFieldData.redirectTo,
-            multipleLogin: multipleLogin.isEnabled
+            multipleLogin: multipleLogin.isEnabled,
+            removePan: invoiceConfig.removePan,
+            printManager: invoiceConfig.printManager,
+            validateInvoiceDetails: invoiceConfig.validateInvoiceDetails
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
                 if (resp.data.success) {
-                    setLoading(false);
                     setSuccess(!success)
                     setSuccessText(resp.data.message);
                 } else {
-                    setLoading(false);
                     setSuccess(!success)
                     setSuccessText(resp.data.message);
                 }
             })
             .catch(err => {
-                setLoading(false)
                 setError(!error)
                 setErrorText("Some internal error occured")
             })
@@ -386,10 +407,12 @@ const Client = () => {
 
 
     return (
-        <div className="container align-down" style={{ display: "flex", justifyContent: "center" }}>
+        <div className="align-down" style={{ display: "flex", justifyContent: "center", paddingLeft: "100px" }}>
             {
                 loading ? (
-                    <Loading />
+                    <div className = "container">
+                      <Loading />
+                    </div>
                 ) : (
                     <div className='row'>
                         <div className='col'>
@@ -401,7 +424,7 @@ const Client = () => {
                                     </div>
                                 )
                             }
-                            <div class="card text-center" style={{ width: "50vh" }}>
+                            <div class="card text-center" style={{ width: "50vh", height: "50vh" }}>
                                 <div class="card-header" style={{ color: "black" }}>
                                     Config -  Featured
                                 </div>
@@ -464,7 +487,7 @@ const Client = () => {
                                     </div>
                                 )
                             }
-                            <div class="card" style={{ width: "50vh" }}>
+                            <div class="card" style={{ width: "50vh", height: '50vh' }}>
                                 <div class="card-header text-center" style={{ color: "black" }}>
                                     Config -  Matrix
                                 </div>
@@ -473,7 +496,7 @@ const Client = () => {
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
                                     extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
                                     extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
-                                    />
+                                    invoiceConfig = {invoiceConfig} />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>

@@ -10,7 +10,7 @@ const MetadataFields = (props) => {
 
   // Get input value!
   function getInputValue(event, attribute){
-    if(attribute === 'dateField' || attribute === "dataListField"){
+    if(attribute === 'dateField' || attribute === "dataListField" || attribute === "checkBoxField"){
       return event;
     } else {
       return event.target.value;
@@ -62,7 +62,8 @@ const MetadataFields = (props) => {
         
         if(field.attribute === "checkBoxField"){
           return(
-            <CheckBox data = {field} index = {index} checkboxIndex = {props.checkboxIndex} />
+            <CheckBox data = {field} index = {index} checkboxIndex = {props.checkboxIndex} 
+            handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}  />
           )
         }
 

@@ -722,6 +722,10 @@ td {
   float: right;
 }
 
+.authorized-guest-sign{
+  float: left;
+}
+
 .choiceBtns{
   margin-top: 20px;
 }
@@ -995,6 +999,10 @@ td {
 .metadata-navbar-container{
   display: flex;
   align-items: center;
+}
+
+.metadata-checkbox-label{
+  margin-left: 8px;
 }
 
 

@@ -14,7 +14,9 @@ const Invoice = (props) => {
     const area = getStorage("area");
     const emailId = getStorage("emailId");
     const loggedInAsRecep = JSON.parse(getStorage("loggedInAsRecep"));
-
+    const removePan = JSON.parse(getStorage("removePan"));
+    const printManager = JSON.parse(getStorage("printManager"));
+    
     // navigate back to home page!
     function navigateBack() {
         props.onHide()
@@ -91,9 +93,11 @@ const Invoice = (props) => {
                 <p className="col">
                     GSTIN: {getStorage("gstin")}
                 </p>
-                <p className="col">
-                    PAN: {getStorage("pan")}
-                </p>
+                {!removePan && (
+                  <p className="col">
+                      PAN: {getStorage("pan")}
+                  </p>
+                )}
             </div>
         </div>
       )
@@ -308,9 +312,17 @@ const Invoice = (props) => {
                             {amountRenderer()}
                         </div>
                         <div className = "surround-border" style = {{width: "100%"}}>
+                          <div className = "authorized-guest-sign">
+                              <div className = "text-center invoice-total">
+                                  ""
+                                  <div className = "invoice-total">
+                                      Guest Signature
+                                  </div>
+                                </div>
+                            </div>
                             <div className = "authorized-sign">
                                 <div className = "text-center invoice-total">
-                                    {getStorage("owner-name")}
+                                    {printManager ? "Manager" : getStorage("owner-name")}
                                     <div className = "invoice-total">
                                         Authorized Signatory
                                     </div>
