@@ -55,120 +55,122 @@ const UserDbComp = (props) => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className='text-center'>
-            <h4>{props.roomno}</h4>
-            <p className = "font-big">
-              Receipt Id: {props.receiptId}
-            </p>
-            <p className="font-big">
-              Customer Name: {props.username}
-            </p>
-            <p className="font-big">
-              Contact Details: {props.phonenumber}
-            </p>
-            <p className="font-big">
-              Alternative Contact Details: {props.secphone}
-            </p>
-              {
-                props.prebooked ==  true ? (
+            <div className = "checkin-modal">
+              <h4>{props.roomno}</h4>
+              <p className = "font-big">
+                Receipt Id: {props.receiptId}
+              </p>
+              <p className="font-big">
+                Customer Name: {props.username}
+              </p>
+              <p className="font-big">
+                Contact Details: {props.phonenumber}
+              </p>
+              <p className="font-big">
+                Alternative Contact Details: {props.secphone}
+              </p>
+                {
+                  props.prebooked ==  true ? (
+                    <p className="font-big">
+                      PreBooked: Yes
+                    </p>
+                  ) : (
+                    <p className="font-big">
+                      PreBooked: No
+                    </p>
+                  )
+                }
+              <p className="font-big">
+                Adults: {props.adults}
+              </p>
+              <p className="font-big">
+                Childrens: {props.childrens}
+              </p>
+              <p className="font-big">
+                ID Number: {props.aadharcard}
+              </p>
+              <p className="font-big">
+                Checked In Days: {props.stayeddays}
+              </p>
+              {!props.prebooked && (
+                <p className="font-big">
+                  Checked In : {props.checkin} / {handleTimeFormat(props.checkinTime)}
+                </p>
+              )}
+              {props.prebooked && (
+                <div>
                   <p className="font-big">
-                    PreBooked: Yes
+                    Provided Checkin Time : {props.checkin} / {handleTimeFormat(props.checkinTime)}
+                  </p>
+                  <p className="font-big">
+                    Actual Checked-In Time : {handleTimeFormat(getActualCheckinTime())}
+                  </p>
+                </div>
+              )}
+              <p className="font-big">
+                Checked Out: {props.checkout} / {handleTimeFormat(props.checkoutTime)}
+              </p>
+              {
+                props.discount ===  undefined || props.discount === null ? (
+                  <p className="font-big">
+                    Discount Applied: False
                   </p>
                 ) : (
-                  <p className="font-big">
-                    PreBooked: No
-                  </p>
+                  <div>
+                    <p className="font-big">
+                      Discount Applied: True
+                    </p>
+                    <p className="font-big">
+                      Discount Amount: {props.discount === "" ? 0 : props.discount}
+                    </p>
+                  </div>
                 )
               }
-            <p className="font-big">
-              Adults: {props.adults}
-            </p>
-            <p className="font-big">
-              Childrens: {props.childrens}
-            </p>
-            <p className="font-big">
-              ID Number: {props.aadharcard}
-            </p>
-            <p className="font-big">
-              Checked In Days: {props.stayeddays}
-            </p>
-            {!props.prebooked && (
-              <p className="font-big">
-                Checked In : {props.checkin} / {handleTimeFormat(props.checkinTime)}
-              </p>
-            )}
-            {props.prebooked && (
-              <div>
+              {
+               props.advance === undefined || props.advance === null ? (
                 <p className="font-big">
-                  Provided Checkin Time : {props.checkin} / {handleTimeFormat(props.checkinTime)}
+                  Advance Applied: False
                 </p>
-                <p className="font-big">
-                  Actual Checked-In Time : {handleTimeFormat(getActualCheckinTime())}
-                </p>
-              </div>
-            )}
-            <p className="font-big">
-              Checked Out: {props.checkout} / {handleTimeFormat(props.checkoutTime)}
-            </p>
-            {
-              props.discount ===  undefined || props.discount === null ? (
-                <p className="font-big">
-                  Discount Applied: False
-                </p>
-              ) : (
+               ) : (
                 <div>
                   <p className="font-big">
-                    Discount Applied: True
+                    Advance Applied: True
                   </p>
                   <p className="font-big">
-                    Discount Amount: {props.discount === "" ? 0 : props.discount}
+                    Advance Amount: {props.advance === "" ? 0 : props.advance}
                   </p>
                 </div>
-              )
-            }
-            {
-             props.advance === undefined || props.advance === null ? (
+               )
+              }
               <p className="font-big">
-                Advance Applied: False
+                  Dish Amount : {props.dishBill}
               </p>
-             ) : (
-              <div>
-                <p className="font-big">
-                  Advance Applied: True
-                </p>
-                <p className="font-big">
-                  Advance Amount: {props.advance === "" ? 0 : props.advance}
-                </p>
-              </div>
-             )
-            }
-            <p className="font-big">
-                Dish Amount : {props.dishBill}
-            </p>
-            <p className='font-big'>
-              Dish GST Amount: {props.foodGst}
-            </p>
-            <p className="font-big">
-                Stay Amount : {props.bill}
-            </p>
-            <p className = "font-big">
-              Channel : {props.channel}
-            </p>
-            {
-              props.isGst ? (
-                <div>
-                  <p className = 'font-big'>
-                    Stay GST Amount: {props.stayGst}
-                  </p>
-                  <p className='font-big'>
-                    Total Paid Amount: {props.totalAmount}
-                  </p>
-                </div>
-              ) : (
-                <div>
+              <p className='font-big'>
+                Dish GST Amount: {props.foodGst}
+              </p>
+              <p className="font-big">
+                  Stay Amount : {props.bill}
+              </p>
+              <p className = "font-big">
+                Channel : {props.channel}
+              </p>
+              {
+                props.isGst ? (
+                  <div>
+                    <p className = 'font-big'>
+                      Stay GST Amount: {props.stayGst}
+                    </p>
+                    <p className='font-big'>
+                      Total Paid Amount: {props.totalAmount}
+                    </p>
+                  </div>
+                ) : (
+                  <div>
 
-                </div>
-              )
-            }
+                  </div>
+                )
+              }
+            </div>
           </Modal.Body>
           <Modal.Footer>
             <Button className='btn btn-info' onClick={handleClose}>Close</Button>

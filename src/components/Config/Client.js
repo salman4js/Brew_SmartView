@@ -118,30 +118,30 @@ const Client = () => {
     // Redirect state handler to determin the product has to logged in!
     const [redirect, setRedirect] = useState([
       {
-      value: undefined,
-      placeholder: "Choose the software has to be redirected",
-      label: "Choose the redirected to",
-      name: 'redirectTo',
-      attribute: 'listField',
-      isSelected: false,
-      redirectLabel: "Select which software needs to be accessed!",
-      redirectTo: "livixius",
-      options: [
-        {
-          value: "livixius"
-        },
-        {
-          value: "vouchers"
+        value: undefined,
+        placeholder: "Choose the software has to be redirected",
+        label: "Choose the redirected to",
+        name: 'redirectTo',
+        attribute: 'listField',
+        isSelected: false,
+        redirectLabel: "Select which software needs to be accessed!",
+        redirectTo: "livixius",
+        options: [
+          {
+            value: "livixius"
+          },
+          {
+            value: "vouchers"
+          }
+        ],
+        style: {
+          color: "black",
+          fontSize: "15px",
+          paddingRight: "10px",
+          paddingLeft: "10px",
+          cursor: "pointer",
         }
-      ],
-      style: {
-        color: "black",
-        fontSize: "15px",
-        paddingRight: "10px",
-        paddingLeft: "10px",
-        cursor: "pointer",
       }
-    }
   ])
   
     
@@ -158,6 +158,18 @@ const Client = () => {
         updatedState[targetObjectState].value = value;
       }
       setRedirect(updatedState);
+    }
+    
+    // Update universal message!
+    function updateUniversalMessage(nodeValue, value){
+      const updatedState = [...universalMessage];
+      const targetObjectState = updatedState.findIndex(item => item.name === nodeValue);
+      if(targetObjectState !== -1){
+        updatedState[targetObjectState].value = value.message;
+        updatedState[targetObjectState].inlineToast.isShow = value.show;
+        updatedState[targetObjectState].inlineToast.inlineMessage = value.show ? "Message still in banner" : "Message has been killed"
+      }
+      setUniversalMessage(updatedState);
     }
     
     // Handle Extra Bed State!
@@ -209,6 +221,21 @@ const Client = () => {
     function handleReports(value){
         setSpecific(prevState => ({...prevState, isEnable: value}))
     }
+    
+    // Universal Message handler!
+    const [universalMessage, setUniversalMessage] = useState([
+      {
+        value: undefined,
+        placeholder: "Universal Message",
+        label: "Enter the universal message",
+        name: 'message',
+        attribute: 'textField',
+        inlineToast: {
+          isShow: false,
+          inlineMessage: 'Message has been killed'
+        }
+      }
+    ])
 
     // Set Options
     const [options, setOptions] = useState([]);
@@ -261,7 +288,8 @@ const Client = () => {
                     setMultipleLogin(prevState => ({...prevState, isEnabled: res.data.multipleLogins}));
                     setInvoiceConfig(prevState => ({...prevState, removePan: res.data.removePan, 
                       printManager: res.data.printManager, validateInvoiceDetails: res.data.validateInvoiceDetails}))
-                    updateRedirectTo("redirectTo", res.data.redirectTo)
+                    updateRedirectTo("redirectTo", res.data.redirectTo);
+                    updateUniversalMessage('message', res.data.universalMessage)
                 }
             })
        setLoading(false)
@@ -350,6 +378,8 @@ const Client = () => {
     // Change Matrix config data!
     function changeMatrix() {
         const redirectToFieldData = getFieldData(redirect);
+        const universalMessageFieldData = getFieldData(universalMessage);
+        universalMessageFieldData['show'] = true
         setLoading(true);
         const data = {
             isGst: isGst,
@@ -367,7 +397,8 @@ const Client = () => {
             multipleLogin: multipleLogin.isEnabled,
             removePan: invoiceConfig.removePan,
             printManager: invoiceConfig.printManager,
-            validateInvoiceDetails: invoiceConfig.validateInvoiceDetails
+            validateInvoiceDetails: invoiceConfig.validateInvoiceDetails,
+            universalMessage: universalMessageFieldData
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -496,7 +527,7 @@ const Client = () => {
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
                                     extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
                                     extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
-                                    invoiceConfig = {invoiceConfig} />
+                                    invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>

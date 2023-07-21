@@ -3,7 +3,7 @@ import MetadataFields from '../../fields/metadata.fields.view'
 
 
 const ConfigMatrix = (props) => {
-  
+
     return (
         <div>
             <div class="form-check">
@@ -100,6 +100,9 @@ const ConfigMatrix = (props) => {
             <div className = "table-view-bill-line"></div>
             <div className = "form-check">
               <MetadataFields data = {props.redirectTo} updateData = {props.updateRedirectTo} />
+            </div>
+            <div className = "form-check">
+              <MetadataFields data = {props.universalMessage} updateData = {props.updateUniversalMessage} />
             </div>
         </div>
     )

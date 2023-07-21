@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import Variables from './Variables';
+import {useDispatch} from 'react-redux';
+import {initializeGlobalMessage} from '../global.state/actions/index';
 import Loading from "./Loading";
 import axios from 'axios';
 import Modals from "./Modals";
@@ -9,6 +11,8 @@ import { defaultStorage, setStorage } from '../Controller/Storage/Storage';
 const Login = () => {
 
   let navigate = useNavigate();
+  
+  var dispatch = useDispatch();
 
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
@@ -42,6 +46,8 @@ const Login = () => {
     await axios.get(`${Variables.hostId}/${id}/check-matrix`)
       .then(res => {
         if(res.data.success){
+          // Update the globalMessage status to FETCH since we have to fetch it for the first time when user logins!
+          _updateGlobalMessageStatus();
           // Set isGst and isHourly basis in localstorage!
           const data = {
             "isGst" : res.data.isGstEnabled,
@@ -71,6 +77,11 @@ const Login = () => {
           setShow(!show);
         }
       })
+  }
+  
+  // Update the global message status to 'FETCH';
+  function _updateGlobalMessageStatus(){
+    dispatch(initializeGlobalMessage())
   }
 
   // Check the config for the enabled chicklets!

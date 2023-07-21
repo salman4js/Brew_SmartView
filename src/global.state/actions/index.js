@@ -28,3 +28,28 @@ export const getValue = () => {
     type: "GET"
   }
 }
+
+// Global message acions handlers!
+export const createGlobalMessage = (value) => {
+  return{
+    type: "SHOW",
+    value: value.message,
+    status: "SHOW"
+  }
+}
+
+export const killGlobalMessage = (value) => {
+  return {
+    type: "KILL",
+    value: value.message,
+    status: "NEVER"
+  }
+}
+
+export const initializeGlobalMessage = () => {
+  return {
+    type: "INITIALIZE",
+    value: null,
+    status: "FETCH"
+  }
+}
