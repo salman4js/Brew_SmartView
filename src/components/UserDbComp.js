@@ -69,6 +69,9 @@ const UserDbComp = (props) => {
               <p className="font-big">
                 Alternative Contact Details: {props.secphone}
               </p>
+              <p className = "font-big">
+                Address Details: {props.address !== undefined ? props.address : "Not Provided"}
+              </p>
                 {
                   props.prebooked ==  true ? (
                     <p className="font-big">

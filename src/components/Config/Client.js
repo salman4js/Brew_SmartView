@@ -391,7 +391,7 @@ const Client = () => {
     function changeMatrix() {
         const redirectToFieldData = getFieldData(redirect);
         const universalMessageFieldData = getFieldData(universalMessage);
-        universalMessageFieldData['show'] = true
+        universalMessageFieldData['show'] = universalMessageFieldData.message !== undefined ? true : false
         setLoading(true);
         const data = {
             isGst: isGst,
