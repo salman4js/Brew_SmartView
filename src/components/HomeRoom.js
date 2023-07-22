@@ -87,6 +87,7 @@ const HomeRoom = (props) => {
     const [customername, setCustomername] = useState();
     const [customerphonenumber, setCustomerphonenumber] = useState();
     const [secondphonenumber, setSecondphonenumber] = useState();
+    const [address, setAddress] = useState();
     const [adults, setAdults] = useState(0);
     const [childrens, setChildrens] = useState(0);
     const [day, setDay] = useState(null);
@@ -318,6 +319,7 @@ const HomeRoom = (props) => {
                 customername: customername,
                 phonenumber: customerphonenumber,
                 secondphonenumber: secondphonenumber,
+                address: address,
                 adults: adults,
                 childrens: childrens,
                 aadhar: aadhar,
@@ -1267,6 +1269,10 @@ const HomeRoom = (props) => {
                             <div className='modal-gap'>
                                 <label style={{ color: "black" }}> Customer Second Phone Number </label>
                                 <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Customer Second Phone Number' name={secondphonenumber} value={secondphonenumber} onChange={(e) => setSecondphonenumber(e.target.value)} />
+                            </div>
+                            <div className='modal-gap'>
+                                <label style={{ color: "black" }}> Customer Address </label>
+                                <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Customer Address' name={address} value={address} onChange={(e) => setAddress(e.target.value)} />
                             </div>
                             <div className='modal-gap'>
                                 <label style={{ color: "black" }}> Adults </label>

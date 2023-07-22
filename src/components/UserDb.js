@@ -17,6 +17,11 @@ const UserDb = () => {
 
     //Loader
     const [loading, setLoading] = useState(false);
+    
+    // Get total amount!
+    function getTotalAmount(totalAmount, advance){
+      return advance !== undefined ? Number(totalAmount) + Number(advance) : Number(totalAmount)
+    }
 
     //Search Configuration
     const [search, setSearch] = useState("");
@@ -36,7 +41,7 @@ const UserDb = () => {
                 .then(res => {
                     if (res.data.success) {
                         setLoading(false);
-                        setData(res.data.message);
+                        setData(res.data.message.reverse());
                     } else {
                         setLoading(false);
                         localStorage.clear();
@@ -118,6 +123,9 @@ const UserDb = () => {
                                                     Contact Number
                                                 </option>
                                                 <option>
+                                                  Address
+                                                </option>
+                                                <option>
                                                     ID Number
                                                 </option>
                                                 <option>
@@ -141,6 +149,8 @@ const UserDb = () => {
                                                     return value.username.toLowerCase().includes(search.toLowerCase());
                                                 } else if(sort == "Contact Number"){
                                                     return value.phonenumber.toLowerCase().includes(search.toLowerCase());
+                                                } else if(sort === "Address"){
+                                                  return value.address && value.address.toLowerCase().includes(search.toLowerCase());
                                                 } else if(sort == "ID Number"){
                                                     return value.aadharcard.toLowerCase().includes(search.toLowerCase());
                                                 } else if(sort == "Checked In Days"){
@@ -159,11 +169,11 @@ const UserDb = () => {
                                             }).map((item,key) => {
                                                 return(
                                                     <UserDbComp roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} 
-                                                    secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} 
+                                                    secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} address = {item.address}
                                                     checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} 
                                                     stayeddays={item.stayedDays} prebooked = {item.prebooked} discount = {item.discount} 
                                                     advance = {item.advance} bill = {item.bill} dishBill = {item.dishbill} foodGst = {item.foodGst} stayGst= {item.stayGst} 
-                                                    totalAmount = {Number(item.totalAmount) + Number(item.advance)} isGst = {item.isGst}
+                                                    totalAmount = {getTotalAmount(item.totalAmount, item.advance)} isGst = {item.isGst}
                                                     channel = {item.channel} checkinTime = {item.checkinTime} checkoutTime = {item.checkoutTime}
                                                     receiptId = {item.receiptId} actualCheckinTime = {item.actualCheckinTime} />
                                                 )
