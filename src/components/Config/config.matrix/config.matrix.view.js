@@ -79,6 +79,12 @@ const ConfigMatrix = (props) => {
               </label>
             </div>
             <div className = "form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.refundTracker.isEnabled} onChange = {() => props.refundTracker.onChange(!props.refundTracker.isEnabled)} />
+              <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                  {props.refundTracker.label}
+              </label>
+            </div>
+            <div className = "form-check">
               <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.invoiceConfig.printManager} onChange = {() => props.invoiceConfig.onChange(!props.invoiceConfig.printManager, props.invoiceConfig.removePan, props.invoiceConfig.validateInvoiceDetails)} />
               <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
                   {props.invoiceConfig.printManagerLabel}

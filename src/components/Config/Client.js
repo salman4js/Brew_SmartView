@@ -142,8 +142,19 @@ const Client = () => {
           cursor: "pointer",
         }
       }
-  ])
+  ]);
   
+  // RefundTracker state handler!
+  const [refundTracker, setRefundTracker] = useState({
+    isEnabled: false,
+    onChange: updateRefundTracker,
+    label: "Refund Tracker"
+  })
+  
+  // Update refund tracker!
+  function updateRefundTracker(value){
+    setRefundTracker(prevState => ({...prevState, isEnabled: value}))
+  }
     
     // Get field data!
     function getFieldData(state){
@@ -288,6 +299,7 @@ const Client = () => {
                     setMultipleLogin(prevState => ({...prevState, isEnabled: res.data.multipleLogins}));
                     setInvoiceConfig(prevState => ({...prevState, removePan: res.data.removePan, 
                       printManager: res.data.printManager, validateInvoiceDetails: res.data.validateInvoiceDetails}))
+                    setRefundTracker(prevState => ({...prevState, isEnabled: res.data.refundTracker}))
                     updateRedirectTo("redirectTo", res.data.redirectTo);
                     updateUniversalMessage('message', res.data.universalMessage)
                 }
@@ -398,7 +410,8 @@ const Client = () => {
             removePan: invoiceConfig.removePan,
             printManager: invoiceConfig.printManager,
             validateInvoiceDetails: invoiceConfig.validateInvoiceDetails,
-            universalMessage: universalMessageFieldData
+            universalMessage: universalMessageFieldData,
+            refundTracker: refundTracker.isEnabled
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -527,7 +540,7 @@ const Client = () => {
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
                                     extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
                                     extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
-                                    invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} />
+                                    invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} refundTracker = {refundTracker} />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>

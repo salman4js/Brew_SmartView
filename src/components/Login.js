@@ -66,7 +66,8 @@ const Login = () => {
             "removePan": res.data.removePan,
             "printManager": res.data.printManager,
             "validateInvoiceDetails": res.data.validateInvoiceDetails,
-            "refundPercentage": res.data.refundPercentage
+            "refundPercentage": res.data.refundPercentage,
+            "isRefundTrackerEnabled": res.data.refundTracker
           }
 
           // Populate the modal into localstorage!

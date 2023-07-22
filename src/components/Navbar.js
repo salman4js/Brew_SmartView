@@ -23,6 +23,11 @@ const Navbar = (props) => {
     function isLoggedInAsManager(){
       return !(JSON.parse(getStorage("loggedInAsRecep")))
     }
+    
+    // Check if refund tracker is enabled or not!
+    function isRefundTrackerEnabled(){
+      return JSON.parse(getStorage("isRefundTrackerEnabled"));
+    }
 
     // config options handler!
     const [options, setOptions] = useState([]);
@@ -222,7 +227,9 @@ const Navbar = (props) => {
                                   </li>
                                   <Link className='nav-link dropdown-item' to={`/${props.id}/editroom`} style={{ color: "black" }}> Edit Customer Details </Link>
                                   <Link className='nav-link dropdown-item' to={`/${props.id}/paymenttracker`} style={{ color: "black" }}> Payment Tracker </Link>
-                                  
+                                  {isRefundTrackerEnabled() && (
+                                    <Link className='nav-link dropdown-item' to={`/${props.id}/refundtracker`} style={{ color: "black" }}> Refund Tracker </Link>
+                                  )}
                                   {!loggedInAsRecep && <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}>   Booking History </Link>}
                                   <Link className='nav-link dropdown-item' to={`/login`} style={{ color: "black" }}>   LogOut </Link>
                               </div>
