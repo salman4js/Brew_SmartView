@@ -65,7 +65,8 @@ const Login = () => {
             "isGrcPreview": res.data.grcPreview,
             "removePan": res.data.removePan,
             "printManager": res.data.printManager,
-            "validateInvoiceDetails": res.data.validateInvoiceDetails
+            "validateInvoiceDetails": res.data.validateInvoiceDetails,
+            "refundPercentage": res.data.refundPercentage
           }
 
           // Populate the modal into localstorage!
