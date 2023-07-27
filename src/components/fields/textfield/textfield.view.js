@@ -38,11 +38,16 @@ const TextField = (props) => {
     return props.data.value !== undefined ? props.data.value : props.data.placeholder;
   }
   
+  // Get type of the input fields based on the data!
+  function getType(){
+    return props.data.type !== undefined ? props.data.type : "text"; // Setting the default type as 'text'
+  }
+  
 
   return(
     <div className="modal-gap">
         <label style={{ color: "black" }}> {props.data.label} </label>
-        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" 
+        <input type={getType()} className="form-control" aria-describedby="input-field" 
         placeholder={getValue()} onChange = {(event) => checkLimit(event)} />
         {props.data?.inlineToast !== undefined && (
           _showInlineToast()

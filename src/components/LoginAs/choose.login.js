@@ -41,6 +41,7 @@ const ChooseLogin = () => {
       name: 'password',
       attribute: 'textField',
       isRequired: true,
+      type: "password",
       inlineToast: {
         isShow: false,
         inlineMessage: 'Enter a valid password'
@@ -67,7 +68,7 @@ const ChooseLogin = () => {
   const [customModal, setCustomModal] = useState({
     show: undefined,
     onHide: customModelonHide,
-    header: "Login as receptionist",
+    header: undefined,
     bodyFooter: undefined,
     bodyFooterView: _showBodyFooterView,
     bodyFooterErrorText: "Please check your credentials!",
@@ -176,12 +177,18 @@ const ChooseLogin = () => {
   // Handle Multiple Logins!
   function handleLogin(key){
     setStorage("permissionLevel", key); // Storing the accessing level to validate the credentials once verified by the server!
-    _triggerCustomLogin();
+    _triggerCustomLogin(key);
+  }
+  
+  // Get login user label!
+  function getUserLabel(key){
+    return key !== "managerLevel" ? "Login as receptionist" : "Login as manager"
   }
   
   // trigger custom login for receptionist!
-  function _triggerCustomLogin(){
-    setCustomModal(prevState => ({...prevState, show: true}))
+  function _triggerCustomLogin(key){
+    var customModalHeader = getUserLabel(key);
+    setCustomModal(prevState => ({...prevState, show: true, header: customModalHeader}));
   }
   
   // Show child view component!
