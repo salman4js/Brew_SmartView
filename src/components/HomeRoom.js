@@ -821,7 +821,7 @@ const HomeRoom = (props) => {
                 roomno: options.roomno,
                 lodgeName: props.lodgeName,
                 taxableValue: function(){
-                  return getRoomRent() - Number(options.discount) + Number(options.extraBeds)
+                  return getRoomRent() - Number(options.discount) + Number(extraCollection)
                 }
             })
         })
