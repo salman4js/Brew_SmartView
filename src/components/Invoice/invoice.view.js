@@ -158,7 +158,7 @@ const Invoice = (props) => {
                 <div className="table-view-bill-line"></div>                
                 <div className="invoice-total">
                     <p>
-                        Total Taxable Value: {props.node.roomRent}
+                        Total Taxable Value: {props.node.taxableValue()}
                     </p>
                     {props.node.igst && (
                         <p>
