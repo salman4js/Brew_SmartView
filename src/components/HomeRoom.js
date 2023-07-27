@@ -441,6 +441,7 @@ const HomeRoom = (props) => {
     const [discountPrice, setDiscountPrice] = useState(0);
     const [totalAmount, setTotalAmount] = useState();
     const [extraCollection, setExtraCollection] = useState(0);
+    const [roomRent, setRoomRent] = useState(0);
     // Check Out Customer Data
     const clearData = async () => {   
         const credentials = {
@@ -477,6 +478,7 @@ const HomeRoom = (props) => {
         await axios.post(`${Variables.hostId}/${props.lodgeid}/generatebill`, generation)
             .then(res => {
                 if (res.data.success) {
+                    setRoomRent(res.data.message) // To get the actual room rent for the respective stay!
                     setExtraCollection(res.data.extraBedCollection); // Include extra bed calculation based on number of days stays!
                     setTNAmount(res.data.message); // Incase of negative value!
                     handleCloseGeneratedBill();
@@ -800,7 +802,7 @@ const HomeRoom = (props) => {
                 isGst: isGst,
                 gst: gstCalculation,
                 stayedDays: stayeddays,
-                roomRent: getTotalAmount() + amount_advance,
+                roomRent: getRoomRent(),
                 extraBeds: options.extraBeds,
                 extraBedAmount: extraCollection,
                 dateofCheckout: checkoutdate,
@@ -1049,6 +1051,11 @@ const HomeRoom = (props) => {
         return 0;
       }
       
+    }
+    
+    // Get the total room rent without advance and discount getting excluded...
+    function getRoomRent(){
+      return roomRent;
     }
 
     // Get total amount with all the neccessary entities!
