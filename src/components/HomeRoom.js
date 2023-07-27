@@ -800,7 +800,7 @@ const HomeRoom = (props) => {
                 isGst: isGst,
                 gst: gstCalculation,
                 stayedDays: stayeddays,
-                roomRent: getTotalAmount(),
+                roomRent: getTotalAmount() + amount_advance,
                 extraBeds: options.extraBeds,
                 extraBedAmount: extraCollection,
                 dateofCheckout: checkoutdate,
@@ -813,7 +813,7 @@ const HomeRoom = (props) => {
                     if(channel.isChannel){
                         return getTotalAmount() + gstCalculation;
                     } else {
-                        return isGst ? getTotalAmountWithGST() : getTotalWithoutGST();
+                        return isGst ? getTotalAmountToPay() : getTotalWithoutGST();
                     }
                 },
                 roomno: options.roomno,
@@ -1053,6 +1053,8 @@ const HomeRoom = (props) => {
 
     // Get total amount with all the neccessary entities!
     function getTotalAmount(t_Amount){
+      // Incase of channel manager, Inclusive calculation will be taken by default, Since the Guest
+      // Would have already for the tax in channel manager portal...
       if(channel.isChannel || !isExclusive){
           let totalPaidAmount = totalAmount !== undefined ? getTotalAmountForGst() : t_Amount
           if(Number(totalAmount) < 0){
@@ -1090,12 +1092,14 @@ const HomeRoom = (props) => {
     
     // Get total amount with GST for preview
     function getTotalAmountWithGST(t_Amount){
+      const totalAmount = getTotalAmount(t_Amount);
+      const gst = determineGst(t_Amount)
       return (getTotalAmount(t_Amount) + determineGst(t_Amount))
     }
     
     // Get total amount to be paid!
     function getTotalAmountToPay(){
-      return getTotalAmountWithGST() - amount_advance;
+      return getTotalAmountWithGST() + amount_advance;
     }
     
     // Get total amount without gst!
@@ -1527,6 +1531,41 @@ const HomeRoom = (props) => {
                                 }
                             </h5>
                             {
+                                isNaN(Number(totalAmount)) ? (
+                                    <div>
+                                        <p>
+                                            Amount deducted for CGST - Calculating...
+                                        </p>
+                                        <p>
+                                            Amount deducted for SGST - Calculating...
+                                        </p>
+                                    </div>
+                                ) : (
+                                    isGst === true ? (
+                                        <div>
+                                            <p>
+                                                Amount deducted for GST: {determineGst()}
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div>
+
+                                        </div>
+                                    )
+                                )
+                            }
+                            {
+                              isGst ? (
+                                <p style={{ fontWeight: "bold" }}>
+                                    Total Amount To Be Paid: {getTotalAmountToPay()}
+                                </p>
+                              ) : (
+                                <p style={{ fontWeight: "bold" }}>
+                                  Total Amount to be paid: {getTotalAmount()}
+                                </p>
+                              )
+                            }
+                            {
                               advance === true ? (
                                 <p>
                                     Advance amount has been reduced in the total amount - {amount_advance} Rs!
@@ -1555,30 +1594,7 @@ const HomeRoom = (props) => {
                                 </p>
                               )
                             }
-                            {
-                                isNaN(Number(totalAmount)) ? (
-                                    <div>
-                                        <p>
-                                            Amount deducted for CGST - Calculating...
-                                        </p>
-                                        <p>
-                                            Amount deducted for SGST - Calculating...
-                                        </p>
-                                    </div>
-                                ) : (
-                                    isGst === true ? (
-                                        <div>
-                                            <p>
-                                                Amount deducted for GST: {determineGst()}
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <div>
-
-                                        </div>
-                                    )
-                                )
-                            }
+                            
                             <table className="table">
                                 <thead>
                                     <tr>
@@ -1619,7 +1635,7 @@ const HomeRoom = (props) => {
                                     Amount for extra beds: {extraCollection} Rs
                                 </p>
                             )}
-                            <p style={{ fontWeight: "bold" }}>Amount without GST:
+                            <p style={{ fontWeight: "bold" }}>Balance Amount without GST:
                                 {
                                     discountApplied === true ? (
                                         isNaN(Number(calcdishrate) + getTotalAmount()) ? (
@@ -1638,7 +1654,7 @@ const HomeRoom = (props) => {
                             </p>
                             {
                                 isGst ? (
-                                    <p style={{ fontWeight: "bold" }}>Amount with GST:
+                                    <p style={{ fontWeight: "bold", color: "green" }}>Balance Amount With GST:
                                         {
                                             discountApplied === true ? (
                                                 isNaN(Number(calcdishrate) + getTotalAmount() + determineGst()) ? (
@@ -1660,17 +1676,6 @@ const HomeRoom = (props) => {
 
                                     </div>
                                 )
-                            }
-                            {
-                              isGst ? (
-                                <h5 style={{ fontWeight: "bold" }}>
-                                    Total Amount To Be Paid: {getTotalAmountToPay()}
-                                </h5>
-                              ) : (
-                                <h5 style={{ fontWeight: "bold" }}>
-                                  Total Amount to be paid: {getTotalAmount()}
-                                </h5>
-                              )
                             }
 
                             {/* Check for channel enabled! */}
