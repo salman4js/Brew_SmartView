@@ -9,7 +9,7 @@ const Modals = (props) => {
     // State handler for GST selection!
     const [choice, setChoice] = useState({
         igst: false,
-        cgst: false
+        cgst: true
     })
 
     const handleClose = () => {
