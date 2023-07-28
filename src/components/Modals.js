@@ -56,7 +56,7 @@ const Modals = (props) => {
                         </div>
                     )}
 
-                    {/* // Choice options GST options! */}
+                    {/* Choice options GST options! */}
                     {props.options && props.options.choiceAttr && (
                         <div className="choiceBtns">
                             <div class="form-check">

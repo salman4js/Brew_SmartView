@@ -29,6 +29,11 @@ const Invoice = (props) => {
         navigateBack()
     }
     
+    // Get invoice name!
+    function getInvoiceName(){
+      return props.node.invoiceName !== undefined ? props.node.invoiceName : props.node.customerName
+    }
+    
     // Common customer details!
     function customerDetails(){
       return(
@@ -109,7 +114,7 @@ const Invoice = (props) => {
         return (
             <div className="left-align">
                 <div>
-                    Name: {props.node.customerName}
+                    Name: {getInvoiceName()}
                 </div>
                 <div>
                     Phone Number: {props.node.phoneNumber}
