@@ -792,6 +792,7 @@ const HomeRoom = (props) => {
                 tInvoice: value.tInvoice, // Will not open the TAX invoice generator if false!
                 address: inputFieldInvoice.address,
                 gstin: inputFieldInvoice.gstin,
+                invoiceName: inputFieldInvoice.name,
                 customerName: options.username,
                 phoneNumber: options.phonenumber,
                 igst: value.igst,
@@ -863,6 +864,7 @@ const HomeRoom = (props) => {
     }
 
     const [inputFieldInvoice, setInputFieldInvoice] = useState({
+        name: undefined,
         address: undefined,
         gstin: undefined,
         show: false,
@@ -913,9 +915,11 @@ const HomeRoom = (props) => {
     function inputField(){
         return(
             <div>
+                <input placeholder = "Enter customer name" className = "form-control" onChange = {(e) => setInputFieldInvoice(prevState => ({...prevState, name: e.target.value}))} />
+                <br />
                 <input placeholder="Enter your customer address details" className="form-control" onChange={(e) => setInputFieldInvoice(prevState => ({...prevState, address: e.target.value}))} />
                 <br />
-                <input placeholder="Enter your customer GST IN" className="form-control" onChange={(e) => setInputFieldInvoice(prevState => ({...prevState, gstin: e.target.value}))} />
+                <input placeholder="Enter your customer GST IN" className="form-control" onChange={(e) => setInputFieldInvoice(prevState => ({...prevState, gstin: e.target.value}))} />                
             </div>
         )
     }
