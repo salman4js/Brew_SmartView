@@ -250,10 +250,10 @@ const Invoice = (props) => {
                             </thead>
                         </table>
                         <div className="invoice-total">
-                            Date of check-in: {props.node.dateofCheckIn}
+                            Date & Time of check-in: {props.node.dateofCheckIn} / {props.node.checkinTime}
                         </div>
                         <div className="invoice-total">
-                            Date of check-out: {props.node.dateofCheckout}
+                            Date & Time of check-out: {props.node.dateofCheckout} / {props.node.checkoutTime}
                         </div>
                         <div className="invoice-total">
                             Payment Date: {props.node.dateofCheckout}
@@ -307,7 +307,13 @@ const Invoice = (props) => {
                                 Date of check-in: {props.node.dateofCheckIn}
                             </p>
                             <p className="invoice-total">
+                                Time of check-in: {props.node.checkinTime}
+                            </p>
+                            <p className="invoice-total">
                                 Date of check-out: {props.node.dateofCheckout}
+                            </p>
+                            <p className="invoice-total">
+                                Time of check-out: {props.node.checkoutTime}
                             </p>
                             <p className="invoice-total">
                                 Payment Date: {props.node.dateofCheckout}
