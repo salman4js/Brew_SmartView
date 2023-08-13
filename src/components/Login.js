@@ -49,25 +49,26 @@ const Login = () => {
           // Update the globalMessage status to FETCH since we have to fetch it for the first time when user logins!
           _updateGlobalMessageStatus();
           // Set isGst and isHourly basis in localstorage!
+          console.log(res.data.object)
           const data = {
-            "isGst" : res.data.isGstEnabled,
-            "isHourly" : res.data.isHourly,
-            "isChannel": res.data.isChannel,
-            "updatePrice" : res.data.updatePrice,
-            "isExtra": res.data.isExtra,
-            "isExclusive": res.data.isExclusive,
-            "area" : res.data.address,
-            "emailId": res.data.emailId,
-            "isInsights": res.data.isInsights,
-            "isSpecific": res.data.isSpecific,
-            "canDelete": res.data.canDelete,
-            "extraCalc": res.data.extraCalc,
-            "isGrcPreview": res.data.grcPreview,
-            "removePan": res.data.removePan,
-            "printManager": res.data.printManager,
-            "validateInvoiceDetails": res.data.validateInvoiceDetails,
-            "refundPercentage": res.data.refundPercentage,
-            "isRefundTrackerEnabled": res.data.refundTracker !== undefined ? res.data.refundTracker : false
+            "isGst" : res.data.object.isGst,
+            "isHourly" : res.data.object.isHourly,
+            "isChannel": res.data.object.isChannel,
+            "updatePrice" : res.data.object.updatePrice,
+            "isExtra": res.data.object.isExtra,
+            "isExclusive": res.data.object.isExclusive,
+            "area" : res.data.object.address,
+            "emailId": res.data.object.emailId,
+            "isInsights": res.data.object.isInsights,
+            "isSpecific": res.data.object.isSpecific,
+            "canDelete": res.data.object.canDelete,
+            "extraCalc": res.data.object.extraCalc,
+            "isGrcPreview": res.data.object.grcPreview,
+            "removePan": res.data.object.removePan,
+            "printManager": res.data.object.printManager,
+            "validateInvoiceDetails": res.data.object.validateInvoiceDetails,
+            "refundPercentage": res.data.object.refundPercentage,
+            "isRefundTrackerEnabled": res.data.object.refundTracker !== undefined ? res.data.object.refundTracker : false
           }
 
           // Populate the modal into localstorage!
