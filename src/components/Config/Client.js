@@ -7,7 +7,7 @@ import axios from 'axios';
 import Loading from '../Loading';
 import {nodeConvertor} from '../common.functions/node.convertor';
 import { Link, useParams } from "react-router-dom";
-
+import { addRoomStatus } from '../room.status.utils/room.status.utils';
 // Importing Config Matrix!
 import ConfigMatrix from './config.matrix/config.matrix.view';
 
@@ -18,6 +18,37 @@ const Client = () => {
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
     const token = localStorage.getItem("token");
+    
+    // State handler for adding room state!
+    const [roomState, setRoomState] = useState();
+    
+    // State handler for room status configuration!
+    const [roomStatus, setRoomStatus] = useState({
+      name: undefined,
+      afterCheckedout: undefined,
+      inCleaning: undefined,
+      afterCleaning: undefined,
+      afterCheckin: undefined
+    });
+    
+    // Function to update the room status!
+    function updateRoomStatus(id, name, key){
+      if(key === "afterCheckedout"){
+        setRoomStatus(prevState => ({...prevState, afterCheckedout: name}));
+      }
+      
+      if(key === "inCleaning"){
+        setRoomStatus(prevState => ({...prevState, inCleaning: name}));
+      }
+      
+      if(key === "afterCheckin"){
+        setRoomStatus(prevState => ({...prevState, afterCheckin: name}))
+      }
+      
+      if(key === "afterCleaned"){
+        setRoomStatus(prevState => ({...prevState, afterCleaning: name}))
+      }
+    }
     
     // Multiple Receptionist State Handler!
     const [multipleLogin, setMultipleLogin] = useState({
@@ -285,23 +316,27 @@ const Client = () => {
         axios.get(`${Variables.hostId}/${splitedIds[0]}/check-matrix`)
             .then(res => {
                 if(res.data.success){
-                    setIsGst(res.data.isGstEnabled);
-                    setIsHourly(res.data.isHourly);
-                    setIsChannel(res.data.isChannel);
-                    setUpdatePrice(res.data.updatePrice);
+                    setIsGst(res.data.object.isGstEnabled);
+                    setIsHourly(res.data.object.isHourly);
+                    setIsChannel(res.data.object.isChannel);
+                    setUpdatePrice(res.data.object.updatePrice);
                     setIsExtra(res.data.isExtra);
-                    setGstMode(prevState => ({...prevState, isExclusive: res.data.isExclusive}))
-                    setInsights(prevState => ({...prevState, isEnable: res.data.isInsights}))
-                    setSpecific(prevState => ({...prevState, isEnable: res.data.isSpecific}))
-                    setOptDelete(prevState => ({...prevState, canDelete: res.data.canDelete}))
-                    setExtraBed(prevState => ({...prevState, isDay: res.data.extraCalc}))
-                    setGrcHandler(prevState => ({...prevState, isGrcEnabled: res.data.grcPreview}));
-                    setMultipleLogin(prevState => ({...prevState, isEnabled: res.data.multipleLogins}));
-                    setInvoiceConfig(prevState => ({...prevState, removePan: res.data.removePan, 
-                      printManager: res.data.printManager, validateInvoiceDetails: res.data.validateInvoiceDetails}))
-                    setRefundTracker(prevState => ({...prevState, isEnabled: res.data.refundTracker}))
-                    updateRedirectTo("redirectTo", res.data.redirectTo);
-                    updateUniversalMessage('message', res.data.universalMessage)
+                    setGstMode(prevState => ({...prevState, isExclusive: res.data.object.isExclusive}))
+                    setInsights(prevState => ({...prevState, isEnable: res.data.object.isInsights}))
+                    setSpecific(prevState => ({...prevState, isEnable: res.data.object.isSpecific}))
+                    setOptDelete(prevState => ({...prevState, canDelete: res.data.object.canDelete}))
+                    setExtraBed(prevState => ({...prevState, isDay: res.data.object.extraCalc}))
+                    setGrcHandler(prevState => ({...prevState, isGrcEnabled: res.data.object.grcPreview}));
+                    setMultipleLogin(prevState => ({...prevState, isEnabled: res.data.object.multipleLogins}));
+                    setInvoiceConfig(prevState => ({...prevState, removePan: res.data.object.removePan, 
+                      printManager: res.data.object.printManager, validateInvoiceDetails: res.data.object.validateInvoiceDetails}))
+                    setRefundTracker(prevState => ({...prevState, isEnabled: res.data.object.refundTracker}))
+                    updateRedirectTo("redirectTo", res.data.object.redirectTo);
+                    updateUniversalMessage('message', res.data.object.universalMessage);
+                    setRoomStatus(prevState => ({...prevState, afterCheckedout: res.data.object.afterCheckedout}))
+                    setRoomStatus(prevState => ({...prevState, inCleaning: res.data.object.inCleaning}))
+                    setRoomStatus(prevState => ({...prevState, afterCheckin: res.data.object.afterCheckin}))
+                    setRoomStatus(prevState => ({...prevState, afterCleaning: res.data.object.afterCleaned}))
                 }
             })
        setLoading(false)
@@ -330,7 +365,17 @@ const Client = () => {
             .finally(() => {
                 checkConfig();
             })
-
+    }
+    
+    // Add room state!
+    async function addRoomState(){
+      var data = {lodgeId: splitedIds[0], statusName: roomState};
+      const result = await addRoomStatus(data);
+      if(result.data.success){
+        setLoader(false);
+        setSuccess(!success);
+        setSuccessText("Room status created successfully!");
+      }
     }
 
     // Process the data!
@@ -411,7 +456,11 @@ const Client = () => {
             printManager: invoiceConfig.printManager,
             validateInvoiceDetails: invoiceConfig.validateInvoiceDetails,
             universalMessage: universalMessageFieldData,
-            refundTracker: refundTracker.isEnabled
+            refundTracker: refundTracker.isEnabled,
+            afterCheckedout: roomStatus.afterCheckedout,
+            inCleaning: roomStatus.inCleaning,
+            afterCheckin: roomStatus.afterCheckin,
+            afterCleaning: roomStatus.afterCleaning
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -431,6 +480,20 @@ const Client = () => {
                 checkMatrix();
             })
 
+    };
+    
+    // Get the room status of the lodge for configuration!
+    async function getRoomStatus(){
+      await axios.get(`${Variables.hostId}/${splitedIds[0]}/getallroomstatus`)
+        .then(res => {
+          if(res.data.success){
+            setRoomStatus(prevState => ({...prevState, name: res.data.data}))
+          }
+        })
+        .catch(err => {
+          setError(!error);
+          setErrorText("Some internal error occured")
+        })
     }
 
     // Getting the data before the DOM renders!
@@ -442,6 +505,7 @@ const Client = () => {
     useEffect(() => {
         checkConfig();
         checkMatrix();
+        getRoomStatus();
     }, [])
 
     // Reseting the error message back to the initial state
@@ -501,10 +565,44 @@ const Client = () => {
                                                     {
                                                         value.map((item, key) => {
                                                             return (
-                                                                <Feed name={item.config} id={item._id} onDelete={(id) => onDelete(id)} />
+                                                                <Feed name={item.config} id={item._id} onSelect={(id, name) => onDelete(id, name)} />
                                                             )
                                                         })
                                                     }
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card text-center" style={{ width: "50vh", marginTop: "10px", marginBottom: "10px" }}>
+                                <div class="card-header" style={{ color: "black" }}>
+                                    Config -  Room Status
+                                </div>
+                                <div class="card-body">
+                                    <div className='modal-gap'>
+                                        <label style={{ color: "black" }}> Add room status </label>
+                                        <input className = 'form-control' placeholder = "Enter room status" value = {roomState} name = {roomState} onChange = {(e) => setRoomState(e.target.value)} />
+                                    </div>
+                                    <br />
+                                    <button className='btn btn-info' onClick={() => addRoomState()}> Create Room State </button>
+                                </div>
+                                <div style={{ color: "black", fontSize: "18px" }}>
+                                    <div>
+                                        {
+                                            loader ? (
+                                                <div className="modal-gap">
+                                                    Loading, please wait...
+                                                </div>
+                                            ) : (
+                                                <div className="overscroll">
+                                                  {roomStatus.name && roomStatus.name.map((opts, index) => {
+                                                    return(
+                                                      <Feed name={opts.statusName} id={opts._id} 
+                                                      onSelect={(id, name) => updateRoomStatus(id, name, 'afterCheckin')}
+                                                      highlight = {true} selected = {roomStatus.afterCheckin} />
+                                                    )
+                                                  })}
                                                 </div>
                                             )
                                         }
@@ -543,6 +641,55 @@ const Client = () => {
                                     invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} refundTracker = {refundTracker} />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
+                                </div>
+                            </div>
+                            <div class="card" style={{ width: "50vh", height: '50vh', marginTop: "10px", marginBottom: "10px" }}>
+                                <div class="card-header text-center" style={{ color: "black" }}>
+                                    Config -  Room Status
+                                </div>
+                                <div class="card-body">
+                                    <p className = "text-center" style = {{color: "black"}}>
+                                      Question to configure room status!
+                                    </p>
+                                    <p className = "text-center" style = {{color: "black"}}>
+                                      When the room has been checkedout, what status should the room move into?
+                                    </p>
+                                    {roomStatus.name && roomStatus.name.map((opts, index) => {
+                                      return(
+                                        <Feed name={opts.statusName} id={opts._id} 
+                                        onSelect={(id, name) => updateRoomStatus(id, name, 'afterCheckedout')} highlight = {true} selected = {roomStatus.afterCheckedout} />
+                                      )
+                                    })}
+                                    <p className = "text-center" style = {{color: "black"}}>
+                                      When the room is in dirty state, what status should the room move into?
+                                    </p>
+                                    {roomStatus.name && roomStatus.name.map((opts, index) => {
+                                      return(
+                                        <Feed name={opts.statusName} id={opts._id} 
+                                        onSelect={(id, name) => updateRoomStatus(id, name, 'inCleaning')} highlight = {true} selected = {roomStatus.inCleaning} />
+                                      )
+                                    })}
+                                    <p className = "text-center" style = {{color: "black"}}>
+                                      When the room has been cleaned, what status should the room move into?
+                                    </p>
+                                    {roomStatus.name && roomStatus.name.map((opts, index) => {
+                                      return(
+                                        <Feed name={opts.statusName} id={opts._id} 
+                                        onSelect={(id, name) => updateRoomStatus(id, name, 'afterCleaned')}
+                                        highlight = {true} selected = {roomStatus.afterCleaning} />
+                                      )
+                                    })}
+                                    <p className = "text-center" style = {{color: "black"}}>
+                                      When the room has been checkedin, what status should the room move into?
+                                    </p>
+                                    {roomStatus.name && roomStatus.name.map((opts, index) => {
+                                      return(
+                                        <Feed name={opts.statusName} id={opts._id} 
+                                        onSelect={(id, name) => updateRoomStatus(id, name, 'afterCheckin')}
+                                        highlight = {true} selected = {roomStatus.afterCheckin} />
+                                      )
+                                    })}
+                                    <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Config Room Status</button>
                                 </div>
                             </div>
                             {/* Success Handler */}

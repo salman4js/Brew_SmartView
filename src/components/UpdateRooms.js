@@ -7,6 +7,7 @@ import Loading from './Loading';
 import { Link, useParams } from "react-router-dom";
 import RoomsUpdate from './RoomsUpdate';
 import changeScreen from './Action';
+import { getRoomStatus } from './room.status.utils/room.status.utils';
 
 // Local Storage function!
 import { getStorage } from '../Controller/Storage/Storage';
@@ -23,6 +24,9 @@ const UpdateRooms = () => {
 
     //Loader
     const [loading, setLoading] = useState(false);
+    
+    // Room status state handler!
+    const [roomStatus, setRoomStatus] = useState([]);
     
     // Show delete room option!
     const [canDelete, setCanDelete] = useState(JSON.parse(getStorage("canDelete")));
@@ -52,9 +56,18 @@ const UpdateRooms = () => {
         }
         //setLoad(false);
     }
+    
+    // Get all the predefined status for tha particular lodge!
+    async function getPredefinedStatus(){
+      const result = await getRoomStatus(splitedIds[0])
+      if(result.data.success){
+        setRoomStatus(result.data.data)
+      }
+    }
 
     useEffect(() => {
-        getData()
+        getData();
+        getPredefinedStatus();
     },[])
 
 
@@ -109,7 +122,10 @@ const UpdateRooms = () => {
                                     {
                                         room.map((item, key) => {
                                             return (
-                                                <RoomsUpdate canDelete = {canDelete} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} load = {() => getData()} price = {item.price} lodgeId = {splitedIds[0]} />
+                                                <RoomsUpdate roomStatusConstant = {item.roomStatusConstant} roomStates = {roomStatus} roomState = {item.roomStatus} 
+                                                  canDelete = {canDelete} floorNo = {item.floorNo} roomno={item.roomno} 
+                                                  engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} 
+                                                  load = {() => getData()} price = {item.price} lodgeId = {splitedIds[0]} />
                                             )
                                         })
                                     }

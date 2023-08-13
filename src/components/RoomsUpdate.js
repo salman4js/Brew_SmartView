@@ -21,9 +21,11 @@ const RoomsUpdate = (props) => {
 
     // Udpate Rooms
     const [roomno, setRoomno] = useState(props.roomno);
+    const [floorNo, setFloorNo] = useState(props.floorNo);
     const [bedcount, setBedcount] = useState(props.bedcount);
     const [suitetype, setSuitetype] = useState(props.roomtype);
     const [success, setSuccess] = useState();
+    const [roomState, setRoomState] = useState();
 
     //Loader--Modal
     const [loading, setLoading] = useState(false);
@@ -32,14 +34,16 @@ const RoomsUpdate = (props) => {
     const updateRooms = () => {
         setLoading(true);
         const credentials = {
+            floorNo: floorNo,
             roomno: roomno,
             bedcount: bedcount,
             suitename: suitetype,
+            roomStatusConstant: 'customState',
+            roomStatus: roomState,
             roomId: props.roomid
         }
         axios.post(`${Variables.hostId}/${props.lodgeId}/roomupdater`, credentials)
             .then(res => {
-                console.log(res.data);
                 if (res.data.success) {
                     setLoading(false);
                     setShowerror(true)
@@ -62,7 +66,7 @@ const RoomsUpdate = (props) => {
     }
 
     // Getting Options
-    const G_Options = () => {
+    const getRoomTypes = () => {
         axios.post(`${Variables.hostId}/${splitedIds[0]}/allroomtype`)
             .then(data => {
                 setOption(data.data.message);
@@ -74,7 +78,6 @@ const RoomsUpdate = (props) => {
 
     const deleteRoom = () => {
         setLoading(true);
-        console.log("Delete config triggered!");
         const credentials = {
             roomId: props.roomid
         }
@@ -125,10 +128,27 @@ const RoomsUpdate = (props) => {
 
     const Occupied = () => {
         setOccupied(!occupied);
+    };
+    
+    // Dropdown with room status!
+    function showDropdownWithRoomStatus(){
+      if(props.roomStatusConstant !== 'customState'){
+        return(
+          props.roomStates.map((item,key) => {
+            return(
+              <option>{item.statusName}</option>
+            )
+          })
+        )
+      } else {
+        return(
+          <option>Release</option>
+        )
+      }
     }
 
     useEffect(() => {
-        G_Options()
+        getRoomTypes();
     }, [])
 
     return (
@@ -182,6 +202,10 @@ const RoomsUpdate = (props) => {
                         <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Room No" name={roomno} value={roomno} onChange={(e) => setRoomno(e.target.value)} />
                     </div>
                     <div className='modal-gap'>
+                        <label style={{ color: "black" }}> Floor No </label>
+                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Floor No" name={floorNo} value={floorNo} onChange={(e) => setFloorNo(e.target.value)} />
+                    </div>
+                    <div className='modal-gap'>
                         <label style={{ color: "black" }}> Bed Count </label>
                         <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Bed Count' name={bedcount} value={bedcount} onChange={(e) => setBedcount(e.target.value)} />
                     </div>
@@ -197,7 +221,13 @@ const RoomsUpdate = (props) => {
                                 })
                             }
                         </select>
-
+                    </div>
+                    <div className='modal-gap'>
+                        <label style={{ color: "black" }}> Room State </label>
+                        <select class="form-select" aria-label="Default select example" onChange={(e) => setRoomState(e.target.value)}>
+                            <option selected>Choose...</option>
+                            {showDropdownWithRoomStatus()}
+                        </select>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>

@@ -21,6 +21,7 @@ const AddRooms = () => {
 
     // Add Rooms 
     const [roomno, setRoomno] = useState("");
+    const [floorNo, setFloorNo] = useState("");
     const [bedcount, setBedcount] = useState("");
     const [suitetype, setSuitetype] = useState("");
     const [option, setOption] = useState([]);
@@ -71,6 +72,7 @@ const AddRooms = () => {
         e.preventDefault();
         setLoading(true);
         const credentials = {
+            floorNo: floorNo,
             roomno: roomno,
             bedcount: bedcount,
             suitename: suitetype,
@@ -84,6 +86,7 @@ const AddRooms = () => {
                         setLoading(false);
                         setError(res.data);
                         setShow(true);
+                        setFloorNo("");
                         setRoomno("");
                         setBedcount("");
                         setSuitetype("");
@@ -92,6 +95,7 @@ const AddRooms = () => {
                         setLoading(false);
                         setError(res.data.message)
                         setInvaliddata(true);
+                        setFloorNo("");
                         setRoomno("");
                         setBedcount("");
                         setSuitetype("");
@@ -197,6 +201,10 @@ const AddRooms = () => {
                                                     <div className='modal-gap'>
                                                         <label style={{ color: "black" }}> Room No </label>
                                                         <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Room No" name={roomno} value={roomno} onChange={(e) => setRoomno(e.target.value)} />
+                                                    </div>
+                                                    <div className='modal-gap'>
+                                                        <label style={{ color: "black" }}> Floor No </label>
+                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Floor No" name={floorNo} value={floorNo} onChange={(e) => setFloorNo(e.target.value)} />
                                                     </div>
                                                     <div className='modal-gap'>
                                                         <label style={{ color: "black" }}> Bed Count </label>

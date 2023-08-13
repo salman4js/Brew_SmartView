@@ -1,5 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import { excludeDatesCheckin, prebookExcludeDates } from './ExcludeDates/excludesdates';
+import { moveToNextState } from './room.status.utils/room.status.utils';
 import CustomModal from './CustomModal/custom.modal.view';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -23,7 +24,7 @@ import { handleTimeFormat, loadDate, getStayedDays, getExtraBedPrice, refreshPag
 
 
 const HomeRoom = (props) => {
-    
+
     const current = new Date();
     const date = `${current.getFullYear()}/${current.getMonth() + 1}/${current.getDate()}`;
     const getTime = current.getHours() + ":" + current.getMinutes();
@@ -1189,6 +1190,75 @@ const HomeRoom = (props) => {
         // Save the image data to local storage
         setStorage("userMedia", dataURL);
       }
+      
+    // Move the current state room to next state!
+    async function changeState(){
+        var data = {lodgeId: props.lodgeid, roomId: props.roomid};
+        const result = await moveToNextState(data);
+        if(result.data.success){
+          updateGrcPreview();
+        }
+    }
+    
+    // Determine based on the props and the room status!
+    function determineButton(){
+      
+      // Get className for the status buttons!
+      function getClassName(){
+        if(props.roomStatusConstant === 'inCleaning'){
+          return 'btn btn-success'
+        }
+        
+        if(props.roomStatusConstant === "afterCheckedout"){
+          return 'btn btn-danger'
+        }
+        
+        if(props.roomStatusConstant === 'customState'){
+          return 'btn btn-secondary'
+        } else {
+          return 'btn btn-primary'
+        }
+      }
+      
+      // function to get the button text!
+      function getButtonText(){
+        if(props.roomStatusConstant !== 'customState'){
+          return props.nextStatus !== "" && props.nextStatus !== undefined ? `${`(` + props.roomStatus + `)`} Move to Next State ${`(` + props.nextStatus + `)`}` : 'Check-In'
+        } else {
+          return props.roomStatus
+        }
+      }
+      
+      // Function to determine the goto function!
+      function chooseGoTo(){
+        if(props.roomStatusConstant !== 'customState'){
+          return props.nextStatus !== "" && props.nextStatus !== undefined ? changeState() : handleClose();
+        } else {
+          return;
+        }
+      }
+      
+      // Function to get the button name!
+      function getButtonName(){
+        return(
+          <div className = {getClassName()} onClick = {() => chooseGoTo()}>
+            {getButtonText()}
+          </div>
+        )
+      }
+      return(
+        (props.engaged == "true" ? (
+            <div className="btn btn-dark" onClick={getUserData}>
+                Check-Out
+            </div>
+        ) : (
+           <>
+            {getButtonName()}
+           </>
+        )
+        )
+      )
+    }
     
     // Listen to the video ref and if it changes, get the access to the video camera!
     useEffect(() => {
@@ -1204,7 +1274,7 @@ const HomeRoom = (props) => {
         <div class="col-4" style={{ paddingBottom: "10vh" }}>
             <div class="card text-center">
                 <div class="card-header" style={{ color: "black" }}>
-                    <strong>Room No : {props.roomno}</strong>
+                    <strong>Room No : {props.roomno} ({props.floorNo+'F'})</strong>
                 </div>
                 <div class="card-body">
                     <p style={{ color: "black" }}> Engaged : {props.engaged}</p>
@@ -1769,16 +1839,7 @@ const HomeRoom = (props) => {
                               )
                         ) : (
                           !props.edit && (
-                              (props.engaged == "true" ? (
-                                  <div className="btn btn-dark" onClick={getUserData}>
-                                      Check-Out
-                                  </div>
-                              ) : (
-                                  <div className="btn btn-info" onClick={handleClose}>
-                                      Check-In
-                                  </div>
-                              )
-                              )
+                              determineButton()
                           ) 
                     )
                 ) : (
