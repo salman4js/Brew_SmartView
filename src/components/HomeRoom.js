@@ -293,7 +293,7 @@ const HomeRoom = (props) => {
 
     // Add Data to the model
     const processData = () => {
-
+        
         setLoading(true);
         // Keeping the checkout date optional as per the design!
         const isnum = /^\d+$/;
@@ -356,8 +356,7 @@ const HomeRoom = (props) => {
                     }
                 })
         }
-    }
-    
+    };
     
     // State of boolean to show or hide GRC preview1
     const [grcPreview, setGrcPreview] = useState({
@@ -484,7 +483,6 @@ const HomeRoom = (props) => {
                     setTNAmount(res.data.message); // Incase of negative value!
                     handleCloseGeneratedBill();
                     setAmount(res.data.message);
-                    
                     if (res.data.prebook) {
                         setTotalAmount(res.data.message - res.data.advance - res.data.advanceDiscountPrice);
                         setAmount_advance(res.data.advance);
@@ -1114,7 +1112,11 @@ const HomeRoom = (props) => {
     
     // Get total amount to be paid!
     function getTotalAmountToPay(){
-      return getTotalAmountWithGST() + amount_advance;
+      if(Number(totalAmount) < 0){
+        return getTotalAmountWithGST();
+      } else {
+        return getTotalAmountWithGST() + amount_advance;
+      }
     }
     
     // Get total amount without gst!
