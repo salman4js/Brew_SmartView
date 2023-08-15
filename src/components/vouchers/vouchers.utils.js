@@ -16,37 +16,43 @@ export async function addVouchersList(lodgeId, data){
 
 // get voucher model list1
 export async function getVoucherModelList(lodgeId, data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getvouchermodel`, data) 
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getvouchermodel`, data); 
   return result;
 }
 
 // add voucher model list!
 export async function addVoucherModelList(lodgeId, data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/addvouchermodel`, data)
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/addvouchermodel`, data);
   return result;
 }
 
 // Edit voucher model list!
 export async function editVoucherModelList(lodgeId, data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/editvouchermodel`, data)
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/editvouchermodel`, data);
   return result;
 }
 
 // Get previous voucher model!
 export async function getPrevVoucherModel(lodgeId, data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getprevvouchermodel`, data)
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getprevvouchermodel`, data);
   return result;
 }
 
 // Delete voucher model list!
 export async function deleteVoucherModelList(lodgeId, data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/deletevouchermodel`, data)
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/deletevouchermodel`, data);
   return result;
 }
 
 // Get voucher model result based on the filter query!
 export async function getFilteredModel(lodgeId, data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/cheatcodefilter`, data)
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/cheatcodefilter`, data);
+  return result;
+};
+
+// Get net profit preview!
+export async function getNetProfitPreview(lodgeId){
+  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getnetprofitpreview`);
   return result;
 }
 

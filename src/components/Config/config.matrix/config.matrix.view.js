@@ -102,6 +102,12 @@ const ConfigMatrix = (props) => {
                   {props.invoiceConfig.validateInvoiceDetailsLabel}
               </label>
             </div>
+            <div className = "form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.linkVouchersWithLivixius.isEnabled} onChange = {() => props.linkVouchersWithLivixius.onChange(!props.linkVouchersWithLivixius.isEnabled)} />
+              <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
+                  {props.linkVouchersWithLivixius.label}
+              </label>
+            </div>
             <div className = "modal-gap"></div>
             <div className = "table-view-bill-line"></div>
             <div className = "form-check">

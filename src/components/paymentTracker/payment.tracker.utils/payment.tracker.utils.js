@@ -27,4 +27,10 @@ export async function getPaymentDetails(lodgeId, data){
 export async function deletePaymentTracker(lodgeId, data){
   const paymentTracker = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/deletesinglepayment`, data);
   return paymentTracker;
+};
+
+// Get all tha payment tracker regardless of the prebook and checkout status!
+export async function getAllPaymentTracker(data){
+  const paymentTracker = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/getallpaymenttracker`, data);
+  return paymentTracker;
 }
