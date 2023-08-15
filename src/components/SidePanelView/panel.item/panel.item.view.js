@@ -47,14 +47,14 @@ const PanelItemView = (props) => {
   
   return(
     <div className = "file-items" onClick = {() => selectItem(!inlineAction.selectedId)} 
-    onMouseOver = {() => _triggerMouseOver()} onMouseOut = {() => _triggerMouseOut()}
-    style = {getStyle()}>
-     <span className = "brew-title-workspace side-align">
-        {props.data}
-     </span>
-     {props.showInlineMenu && inlineAction.mouseOver && (
-       _inlineMenu()
-     )}
+      onMouseOver = {() => _triggerMouseOver()} onMouseOut = {() => _triggerMouseOut()}
+      style = {getStyle()}>
+       <span className = "brew-title-workspace side-align">
+          {props.showIndentationArrow && '> '}{props.data}
+       </span>
+       {props.showInlineMenu && inlineAction.mouseOver && (
+         _inlineMenu()
+       )}
     </div>
   )
 }

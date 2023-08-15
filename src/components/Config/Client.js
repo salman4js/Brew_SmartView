@@ -31,6 +31,18 @@ const Client = () => {
       afterCheckin: undefined
     });
     
+    // Link vouchers with livixius!
+    const [linkWithLivixius, setLinkWithLivixius] = useState({
+      label: "Link livixius with vouchers",
+      onChange: _linkVouchersWithLivixius,
+      isEnabled: false
+    });
+    
+    // Function to link vouchers with livixius!
+    function _linkVouchersWithLivixius(value){
+      setLinkWithLivixius(prevState => ({...prevState, isEnabled: value}))
+    }
+    
     // Function to update the room status!
     function updateRoomStatus(id, name, key){
       if(key === "afterCheckedout"){
@@ -336,7 +348,8 @@ const Client = () => {
                     setRoomStatus(prevState => ({...prevState, afterCheckedout: res.data.object.afterCheckedout}))
                     setRoomStatus(prevState => ({...prevState, inCleaning: res.data.object.inCleaning}))
                     setRoomStatus(prevState => ({...prevState, afterCheckin: res.data.object.afterCheckin}))
-                    setRoomStatus(prevState => ({...prevState, afterCleaning: res.data.object.afterCleaned}))
+                    setRoomStatus(prevState => ({...prevState, afterCleaning: res.data.object.afterCleaned}));
+                    _linkVouchersWithLivixius(res.data.object.linkVouchersWithLivixius);
                 }
             })
        setLoading(false)
@@ -460,7 +473,8 @@ const Client = () => {
             afterCheckedout: roomStatus.afterCheckedout,
             inCleaning: roomStatus.inCleaning,
             afterCheckin: roomStatus.afterCheckin,
-            afterCleaning: roomStatus.afterCleaning
+            afterCleaning: roomStatus.afterCleaning,
+            linkVouchersWithLivixius: linkWithLivixius.isEnabled
         }
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
@@ -638,7 +652,8 @@ const Client = () => {
                                     handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
                                     extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
                                     extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
-                                    invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} refundTracker = {refundTracker} />
+                                    invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} refundTracker = {refundTracker}
+                                    linkVouchersWithLivixius = {linkWithLivixius} />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>

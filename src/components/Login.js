@@ -68,7 +68,8 @@ const Login = () => {
             "printManager": res.data.object.printManager,
             "validateInvoiceDetails": res.data.object.validateInvoiceDetails,
             "refundPercentage": res.data.object.refundPercentage,
-            "isRefundTrackerEnabled": res.data.object.refundTracker !== undefined ? res.data.object.refundTracker : false
+            "isRefundTrackerEnabled": res.data.object.refundTracker !== undefined ? res.data.object.refundTracker : false,
+            'is-linked-with-vouchers': res.data.object.linkVouchersWithLivixius
           }
 
           // Populate the modal into localstorage!

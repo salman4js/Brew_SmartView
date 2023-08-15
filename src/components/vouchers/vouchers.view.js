@@ -6,9 +6,12 @@ import {addValue, removeValue, getValue, removeAllValue} from '../../global.stat
 import ModalAssist from '../modal.assist/modal.assist.view';
 import CustomModal from '../CustomModal/custom.modal.view';
 import PanelItemView from '../SidePanelView/panel.item/panel.item.view';
+import CollectionView from '../SidePanelView/collection.view/collection.view'
 import VoucherContent from './vouchers.content.view';
+import NetProfitView from './net.profit.view';
 import MetadataFields from '../fields/metadata.fields.view';
-import { getVouchersList, addVouchersList, getVoucherModelList, addVoucherModelList, editVoucherModelList, deleteVoucherModelList, getPrevVoucherModel } from './vouchers.utils.js';
+import { getVouchersList, getNetProfitPreview, addVouchersList, getVoucherModelList, addVoucherModelList, editVoucherModelList, deleteVoucherModelList, getPrevVoucherModel } from './vouchers.utils.js';
+import { getAllPaymentTracker, getRoomList } from '../paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import { Link, useParams } from "react-router-dom";
 import {setStorage, getStorage, removeItemStorage} from '../../Controller/Storage/Storage'
 import { globalMessage, commonLabel, activityLoader } from '../common.functions/common.functions.view';
@@ -30,6 +33,18 @@ const VoucherView = () => {
   // History reference!
   const navigate = useNavigate();
   
+  // Link with vouchers!
+  const [linkWithVouchers, setLinkWithVouchers] = useState({
+    isLinkedWithVouchers: isLinkedWithVouchers,
+    parentData: [{
+      title: "Inflow",
+      loadData: 'paymentTracker'
+    },{
+      title: 'Outflow',
+      loadData: 'vouchers'
+    }]
+  })
+  
   // Modal assist state handler!
   const [modalAssist, setModalAssist] = useState({
     header: "Vouchers Content Assist",
@@ -38,7 +53,12 @@ const VoucherView = () => {
       fontWeight: "bold",
       overflow: "auto"
     }
-  })
+  });
+  
+  // Is livixius linked with vouchers!
+  function isLinkedWithVouchers(){
+    return JSON.parse(getStorage('is-linked-with-vouchers'));
+  }
   
   // Modal assist header child view!
   function _showHeaderChildView(){
@@ -270,13 +290,25 @@ const VoucherView = () => {
     setSidepanel(prevState => ({...prevState, height: value}));
   }
   
+  // Update the selected id list1
+  function updateSelectedIdList(selectedId){
+    setSidepanel(prevState => ({...prevState, selectedId: [...prevState.selectedId, selectedId]}))
+  };
+  
+  // Get the selected option!
+  function getSelectedOption(){
+    return sidepanel.selectedOption;
+  }
+  
   // Side panel state handler!
   const [sidepanel, setSidepanel] = useState({
     height: undefined,
     header: "Vouchers List",
     headerControl: true,
     headerControlEvent: _openCustomDialog,
+    headerInfoEvent: _openInfoDialog,
     eventTrigerred: false,
+    infoEventTriggered: false,
     enableLoader: true,
     data: undefined,
     inlineAction: false,
@@ -284,7 +316,26 @@ const VoucherView = () => {
     customModalButtonId: undefined,
     voucherId: undefined,
     voucherModelId: undefined,
+    selectedId: [],
+    showCheatCodeFilter: true
   });
+  
+  // Net profit preview state handler!
+  const [netProfit, setNetProfit] = useState({
+    isLinkedWithVouchers: isLinkedWithVouchers(),
+    isLoading: true,
+    paymentTrackerSum: undefined,
+    voucherPaymentSum: undefined,
+    vouchersReceiptSum: undefined,
+    paymentTrackerTaxableAmount: undefined,
+    netProfit: undefined,
+    netProfitWithoutLivixius: undefined
+  });
+  
+  // Room list state handler incase of vouchers linked with livixius!
+  const [roomList, setRoomList] = useState({
+    rooms: undefined
+  })
   
   // Global message state handler!
   const [acknowledger, setAcknowledger] = useState({
@@ -317,11 +368,28 @@ const VoucherView = () => {
   // trigger custom dialog!
   function _openCustomDialog(){
     setSidepanel(prevState => ({...prevState, eventTrigerred: true, inlineAction: false}))
+  };
+  
+  // Open info dialog!
+  async function _openInfoDialog(){
+    setSidepanel(prevState => ({...prevState, infoEventTriggered: true}))
+    const result = await getNetProfitPreview(splitedIds[0]);
+    if(result.data.success){
+      setNetProfit(prevState => ({...prevState, isLoading: false, 
+        paymentTrackerSum: result.data.data.paymentTrackerSum, voucherPaymentSum: result.data.data.vouchersPayment, 
+      voucherReceiptSum: result.data.data.vouchersReceipt, paymentTrackerTaxableAmount: result.data.data.paymentTrackerTotalTaxable,
+      netProfit: result.data.data.netProfit, netProfitWithoutLivixius: result.data.data.netProfitForVouchers}))
+    }
   }
   
   // Close custom dialog!
   function _closeCustomDialog(){
     setSidepanel(prevState => ({...prevState, eventTrigerred: false, inlineAction: false}))
+  };
+  
+  // Close info dialog!
+  function _closeInfoDialog(){
+    setSidepanel(prevState => ({...prevState, infoEventTriggered: false}))
   }
   
   // Close add voucher model dialog!
@@ -351,6 +419,23 @@ const VoucherView = () => {
     return(
       <CustomModal modalData = {data} showBodyItemView = {() => customModalChildView(val, setVal)}  />
     )
+  };
+  
+  // Open custom info dialog for header info event!
+  function _showInfoDialog(onCloseAction){
+    // Form modal data!
+    const data = {
+      show: true,
+      onHide: onCloseAction,
+      header: "Net profit preview",
+      centered: false,
+      modalSize: 'medium',
+      footerEnabled: false
+    }
+    
+    return (
+      <CustomModal modalData = {data} showBodyItemView = {() => customModalChildInfoView()} />
+    )
   }
   
   // Show custom modal child view!
@@ -360,6 +445,20 @@ const VoucherView = () => {
         <MetadataFields data = {val} updateData = {setVal}  />
       </div>
     )
+  };
+  
+  // Show custom modal child info view!
+  function customModalChildInfoView(){
+    var opts = {
+      message: "No vouchers has been added...",
+      color: "black",
+      textCenter: true
+    }
+    if(netProfit.isLoading){
+      return activityLoader(opts)
+    } else {
+      return <NetProfitView data = {netProfit} />
+    }
   }
   
   // On voucher create action!
@@ -447,18 +546,55 @@ const VoucherView = () => {
     if(sidepanel.data !== undefined && sidepanel.data.length !== 0){
       return childItemView();
     }
-    
   }
   
+  // Nested child side panel!
+  function nestedChildSidePanel(){
+    return(
+      linkWithVouchers.parentData.map((options) => {
+        return(
+          <CollectionView data = {options.title} 
+          showCollectionChildView = {() => getPanelCollectionView(options.loadData)} />
+        )
+      })
+    )
+  };
+  
+  // Choose the panel collection view!
+  function getPanelCollectionView(loadData){
+    return loadData === 'vouchers' ? renderVouchersList(true) : renderRoomLists(true)
+  }
+
   // Panel child item view!
   function childItemView(){
+    if(linkWithVouchers.isLinkedWithVouchers()){
+      return nestedChildSidePanel()
+    } else {
+      return renderVouchersList()
+    }
+  };
+  
+  // Render room list panel view!
+  function renderRoomLists(showIndentationArrow){
+    return(
+      roomList.rooms.map((options, index) => {
+        return(
+          <PanelItemView data = {options.roomno} _id = {options._id} showIndentationArrow = {showIndentationArrow}
+          onClick = {(id) => panelItemOnClick(id, 'paymentTracker')}/>
+        )
+      })
+    )
+  }
+  
+  // Vouchers list!
+  function renderVouchersList(showIndentationArrow){
     var inlineHeader = "Add new voucher model";
     var cutomModalButtonId = "Create"
-    return (
+    return(
       sidepanel.data.map((options, key) => {
         return(
-          <PanelItemView data = {options.voucherName} _id = {options._id} 
-          onClick = {(id) => panelItemOnClick(id)} showInlineMenu = {true}
+          <PanelItemView data = {options.voucherName} _id = {options._id} showIndentationArrow = {showIndentationArrow}
+          onClick = {(id) => panelItemOnClick(id, 'vouchers')} showInlineMenu = {true} selectedItem = {sidepanel.selectedId}
           inlineAction = {(voucherId) => _triggerAddVoucherModel(voucherId, inlineHeader, cutomModalButtonId)} />
         )
       })
@@ -494,19 +630,48 @@ const VoucherView = () => {
   }
   
   // Side panel item on click!
-  async function panelItemOnClick(voucherId){
+  async function panelItemOnClick(selectedId, currentOption){
     _triggerTableLoader(true);
+    updateSelectedIdList(selectedId);
     var data = {};
-    data['voucherId'] = voucherId;
-    const result = await getVoucherModelList(splitedIds[0], data);
-    updateTableCellData(result, voucherId)
+    if(currentOption === 'paymentTracker'){
+      shouldShowCheckbox(false);
+      updateTableCellWidth('350px');
+      shouldShowCheatCodeFilter(false);
+      data['lodgeId'] = splitedIds[0];
+      data['roomId'] = selectedId;
+      const result = await getAllPaymentTracker(data);
+      updateTableCellData(result); // Dont pass selectedId here, as it is being used for vouchers special case in voucher.content.view
+    } else {
+      shouldShowCheckbox(true);
+      updateTableCellWidth('290px');
+      shouldShowCheatCodeFilter(true);
+      data['voucherId'] = selectedId;
+      const result = await getVoucherModelList(splitedIds[0], data);
+      updateTableCellData(result, selectedId)
+    }
+  };
+  
+  // Show and unshow cheat code filter!
+  function shouldShowCheatCodeFilter(value){
+    setSidepanel(prevState => ({...prevState, showCheatCodeFilter: value}))
+  }
+  
+  // Show and Unshow checkbox on table view!
+  function shouldShowCheckbox(value){
+    setTableView(prevState => ({...prevState, enableCheckbox: value}))
+  };
+  
+  // update cell width on table view!
+  function updateTableCellWidth(width){
+    setTableView(prevState => ({...prevState, tableCellWidth: width}))
   }
   
   // Get the filtered model based on the filter query!
-  function updateTableCellData(result, voucherId){
+  function updateTableCellData(result, selectedId){
     if(result.data.success){
       _triggerTableLoader(false);  
-      setTableView(prevState => ({...prevState, cellValues: result.data.message, headerValue: result.data.tableHeaders, infoMessage: result.data.infoMessage, selectedVoucherId: voucherId}));
+      setTableView(prevState => ({...prevState, cellValues: result.data.message, headerValue: result.data.tableHeaders, infoMessage: result.data.infoMessage, selectedVoucherId: selectedId}));
     }
   }
   
@@ -534,9 +699,29 @@ const VoucherView = () => {
     }
   }
   
+  // Get payment tracker data based on the room no1
+  async function getPaymentTracker(roomId){
+    var data = {lodgeId: splitedIds[0], roomId: roomId};
+    const result = await getAllPaymentTracker(data);
+    if(result.data.success){
+      
+    }
+  };
+  
+  // Get all the room items!
+  async function getAllRoomList(){
+    var result = await getRoomList(splitedIds[0]);
+    if(result.data.success){
+      setRoomList(prevState => ({...prevState, rooms: result.data.message}))
+    } else {
+      changeScreen(); // Token must have been expired, navigate back to login screen!
+    }
+  }
+  
   // Call the functions on onRender!
   useEffect(() => {
     vouchersList();
+    getAllRoomList();
     setStorage("voucher-selected-count", 0);
     removeItemStorage("selectedItem"); // Remove any unused selection id's
   }, [])
@@ -546,6 +731,9 @@ const VoucherView = () => {
       <ModalAssist data = {modalAssist} height = {(value) => storeModalAssistHeight(value)} childView = {() => voucherContentView()} />
       {sidepanel.eventTrigerred && (
         _showCustomDialog(_closeCustomDialog, onVoucherCreate, inputField, setInputField)
+      )}
+      {sidepanel.infoEventTriggered && (
+        _showInfoDialog(_closeInfoDialog)
       )}
       {sidepanel.inlineAction && (
         _showAddVoucherModel(_closeVoucherModelDialog, onVoucherModelAction, voucherModel, setVoucherModel)

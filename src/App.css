@@ -847,7 +847,7 @@ td {
 }
 
 .files div:hover{
-    background-color: #ddd;
+  background-color: #ddd;
 }
 
 .sidepanel-header-control{
@@ -1029,6 +1029,20 @@ td {
 
 .highlight-uicore{
   background-color: #7ff587
+}
 
+.side-panel-collection-items{
+  padding: 3px;
+  cursor: pointer;
+}
+
+.collection-sub-child-view{
+  padding-left: 15px;
+  background-color: #f1f1f1 !important;
+  font-size: 15px;
+}
+
+.collection-sub-child-view div:hover{
+  background-color: #ddd !important;
 }
 

@@ -141,9 +141,12 @@ const VoucherContent = (props) => {
           )}
         </div>
         <div className = "cheat-code" ref = {cheatCodeRef}>
-          {_renderCheatCode()}
+          {props.data.showCheatCodeFilter && (
+            _renderCheatCode()
+          )}
         </div>
-        <div className = "metadata-table-view vouchers-content-table-view" style = {{height: props.data.height - props.tableData.tableHeight}}>
+        <div className = "metadata-table-view vouchers-content-table-view" 
+        style = {{height: props.data.height - props.tableData.tableHeight, paddingTop: props.data.showCheatCodeFilter ? '0px' : '26px'}}>
           {_renderTableView()}
         </div>
       </div>
