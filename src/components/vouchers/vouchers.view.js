@@ -204,18 +204,6 @@ const VoucherView = () => {
   // Custom modal input field state handler for voucher model!
   const [voucherModel, setVoucherModel] = useState([
     {
-      value: undefined,
-      placeholder: "Voucher no",
-      label: "Voucher No",
-      name: 'vNo',
-      attribute: 'textField',
-      isRequired: true,
-      inlineToast: {
-        isShow: false,
-        inlineMessage: 'Please provide a valid input.'
-      }
-    },
-    {
       value: new Date(),
       defaultValue: new Date(),
       placeholder: "Date",
