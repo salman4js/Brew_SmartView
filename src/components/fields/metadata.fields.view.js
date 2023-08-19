@@ -15,6 +15,22 @@ const MetadataFields = (props) => {
     } else {
       return event.target.value;
     }
+  };
+  
+  // Update the dependent value field!
+  function updateDependantValueField(dependentValueField) {
+    const fieldState = [...props.data];
+    // Loop through the array and find the dependent field name!
+    fieldState.forEach((options, index) => {
+      if (options.name === dependentValueField) {
+        fieldState[index].value = undefined;
+        fieldState[index].isChanged = false;
+        if (options.updateIsRequiredOnDependentValue) {
+          fieldState[index].isRequired = false;
+        }
+      }
+    });
+    props.updateData(fieldState);
   }
 
   // Handle input change!
@@ -24,6 +40,7 @@ const MetadataFields = (props) => {
     fieldState[index].isChanged = true; // Change the metafield value to true when the value changed!
     props.toggleButtonProp &&  props.toggleButtonProp("success", false); // Make buttons enable when the field value is changed!
     props.updateData(fieldState); // Update the state with the updated array
+    fieldState[index].dependentValue && updateDependantValueField(fieldState[index].dependentValue);
   };
   
   // Disable and enable custom modals footer buttons!

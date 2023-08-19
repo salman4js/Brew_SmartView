@@ -248,11 +248,13 @@ const VoucherView = () => {
       }
     },
     {
-      value: 0,
+      value: undefined,
       defaultValue: 0,
       placeholder: "Receipt",
       label: "Receipt",
       name: 'receipt',
+      dependentValue: 'payment',
+      updateIsRequiredOnDependentValue: true,
       attribute: 'textField',
       isRequired: true,
       inlineToast: {
@@ -261,11 +263,13 @@ const VoucherView = () => {
       }
     },
     {
-      value: 0,
+      value: undefined,
       defaultValue: 0,
       placeholder: "Payment",
       label: "Payment",
       name: 'payment',
+      dependentValue: 'receipt',
+      updateIsRequiredOnDependentValue: true,
       attribute: 'textField',
       isRequired: true,
       inlineToast: {
@@ -555,7 +559,7 @@ const VoucherView = () => {
   };
   
   // Trigger print for vouchers!
-  function _triggerPrint(){
+  function _triggerPrint(){ // Invoice view takes care of prints functionality!
     return <InvoiceView node = {{vouchersReport: true}} netProfit = {netProfit}
     tablePreviewViewForInflow = {tablePreviewViewForInflow} tablePreviewViewForOutflow = {tablePreviewViewForOutflow}
     onHide = {() => printVouchersReport(false)}/>
