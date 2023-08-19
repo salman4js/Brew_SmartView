@@ -43,6 +43,8 @@ const NetProfitView = (props) => {
           <p>
             Total Cash Inflow as per vouchers: {props.data.voucherReceiptSum}
           </p>
+        </div>
+        <div className = "col">
           <p style = {{color: "black", fontWeight: "bold", textDecoration: 'underline'}}>
             Cash Outflow
           </p>
@@ -54,7 +56,8 @@ const NetProfitView = (props) => {
                 Total Taxable Value: {props.data.paymentTrackerTaxableAmount}
               </p>
           )}
-          
+        </div>
+        <div className = "col">
           <p style = {{color: "black", fontWeight: "bold", textDecoration: 'underline'}}>
             Net Profit
           </p>
@@ -69,6 +72,9 @@ const NetProfitView = (props) => {
             </p>
           )}
         </div>
+      </div>
+      <div className = 'table-view-bill-line'></div>
+      <div className = "row">
         <div className = "col">
           {_renderTableViewForInflow()}
         </div>

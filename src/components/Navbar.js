@@ -28,6 +28,11 @@ const Navbar = (props) => {
     function isRefundTrackerEnabled(){
       return JSON.parse(getStorage("isRefundTrackerEnabled"));
     }
+    
+    // Check if livixius has been linked with vouchers!
+    function isLinkedWithVouchers(){
+      return JSON.parse(getStorage('is-linked-with-vouchers'));
+    }
 
     // config options handler!
     const [options, setOptions] = useState([]);
@@ -226,6 +231,9 @@ const Navbar = (props) => {
                                       </ul>
                                   </li>
                                   <Link className='nav-link dropdown-item' to={`/${props.id}/editroom`} style={{ color: "black" }}> Edit Customer Details </Link>
+                                  {isLinkedWithVouchers() && (
+                                    <Link className='nav-link dropdown-item' to={`/${props.id}/vouchers`} style={{ color: "black" }}> Vouchers Tracker </Link>
+                                  )}
                                   <Link className='nav-link dropdown-item' to={`/${props.id}/paymenttracker`} style={{ color: "black" }}> Payment Tracker </Link>
                                   {isRefundTrackerEnabled() && (
                                     <Link className='nav-link dropdown-item' to={`/${props.id}/refundtracker`} style={{ color: "black" }}> Refund Tracker </Link>
