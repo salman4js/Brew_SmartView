@@ -62,9 +62,14 @@ const NetProfitView = (props) => {
             Net Profit
           </p>
           {props.data.isLinkedWithVouchers && (
-            <p style = {{color: "green", fontWeight: "bold"}}>
-              Net Profit: {props.data.netProfit}
-            </p>
+            <>
+              <p style = {{color: "green", fontWeight: "bold"}}>
+                Net Profit: {props.data.netProfit}
+              </p>
+              <p style = {{color: "green", fontWeight: "bold"}}>
+                Net Profit Status: {props.data.netProfitStatus}
+              </p>
+            </>
           )}
           {!props.data.isLinkedWithVouchers && (
             <p style = {{color: "green", fontWeight: "bold"}}>
