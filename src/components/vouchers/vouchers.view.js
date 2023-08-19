@@ -338,7 +338,8 @@ const VoucherView = () => {
     vouchersReceiptSum: undefined,
     paymentTrackerTaxableAmount: undefined,
     netProfit: undefined,
-    netProfitWithoutLivixius: undefined
+    netProfitWithoutLivixius: undefined,
+    netProfitStatus: undefined
   });
   
   // Render control center for sidepanel header!
@@ -589,7 +590,7 @@ const VoucherView = () => {
         setNetProfit(prevState => ({...prevState, isLoading: false, 
           paymentTrackerSum: result.data.data.paymentTrackerSum, voucherPaymentSum: result.data.data.vouchersPayment, 
         voucherReceiptSum: result.data.data.vouchersReceipt, paymentTrackerTaxableAmount: result.data.data.paymentTrackerTotalTaxable,
-        netProfit: result.data.data.netProfit, netProfitWithoutLivixius: result.data.data.netProfitForVouchers}));
+        netProfit: result.data.data.netProfit, netProfitWithoutLivixius: result.data.data.netProfitForVouchers, netProfitStatus: result.data.data.netProfitStatus}));
         
         // Update tablePreview data for inflow
         setTablePreviewViewForInflow(prevState => ({...prevState, cellValues: result.data.data.individualVoucherReportForPayment, 
