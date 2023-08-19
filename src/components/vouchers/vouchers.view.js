@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 import {useCheckboxSelection} from '../global.state/global.state.manager'
 import {addValue, removeValue, getValue, removeAllValue} from '../../global.state/actions/index';
+import { _renderNavbar } from '../common.functions/common.functions.view';
 import ModalAssist from '../modal.assist/modal.assist.view';
 import CustomModal from '../CustomModal/custom.modal.view';
 import PanelItemView from '../SidePanelView/panel.item/panel.item.view';
@@ -24,7 +25,7 @@ import changeScreen from '../Action';
 const VoucherView = () => {
   
   //Check the ID and token of the application!
-  const { id } = useParams();
+  const { id, state } = useParams(); // This state is being a boolean value to indicate that the embedded mode has been enabled!
   const splitedIds = id.split(/[-]/);
   
   // Global state management - Checkbox selection!
@@ -52,7 +53,8 @@ const VoucherView = () => {
     _showHeaderChildView: _showHeaderChildView,
     style: {
       fontWeight: "bold",
-      overflow: "auto"
+      overflow: "auto",
+      marginTop: isLinkedWithVouchers() ? '60px' : '0px' // This state is being a boolean value to indicate that the embedded mode has been enabled!
     }
   });
   
@@ -63,11 +65,14 @@ const VoucherView = () => {
   
   // Modal assist header child view!
   function _showHeaderChildView(){
-    return(
-      <div className = "brew-cursor" onClick = {() => changeScreen()}>
-        LogOut
-      </div>
-    )
+    var isLinkedWithLivixius = isLinkedWithVouchers();
+    if(!isLinkedWithLivixius){
+      return(
+        <div className = "brew-cursor" onClick = {() => changeScreen()}>
+          LogOut
+        </div>
+      )
+    }
   }
   
   // Table view state handler!
@@ -865,6 +870,9 @@ const VoucherView = () => {
   
   return (
     <>
+      {isLinkedWithVouchers() && (
+        _renderNavbar(id, splitedIds)
+      )}
       <div>
         {!sidepanel.isPrintTriggered && (
           <ModalAssist
