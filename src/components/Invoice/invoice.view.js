@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import brewDate from 'brew-date';
 import TableHead from "../table.view/table.head.view";
 import TableCell from "../table.view/table.cell.view";
-import MetadataTable from '../metadata.table.view/metadata.table.view'
+import MetadataTable from '../metadata.table.view/metadata.table.view';
+import NetProfitView from '../vouchers/net.profit.view';
 import { getStorage } from "../../Controller/Storage/Storage";
 
 const Invoice = (props) => {
@@ -26,7 +27,7 @@ const Invoice = (props) => {
     function triggerPrint() {
         isPrint = true;
         window.print();
-        navigateBack()
+        navigateBack();
     }
     
     // Get invoice name!
@@ -197,7 +198,7 @@ const Invoice = (props) => {
     }, [])
 
         return (
-            <div>
+            <div className = "invoice">
               {/* Bill Generation */}
               {props.node.invoice && (
                 <div className="container invoice" style={{ height: window.innerHeight }}>
@@ -371,6 +372,13 @@ const Invoice = (props) => {
                 </div>
               )}
               
+              {/* Vouchers Report Generation */}
+              {props.node.vouchersReport && (
+                <div className = "container invoice" style = {{height: window.innerHeight}}>
+                  <NetProfitView data = {props.netProfit} tableDataForInflow = {props.tablePreviewViewForInflow} 
+                  tableDataForOutFlow = {props.tablePreviewViewForOutflow} />
+                </div>
+              )}
             </div>
         )
 }
