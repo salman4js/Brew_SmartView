@@ -774,6 +774,13 @@ td {
   overflow: auto;
 }
 
+.net-profit-preview-modal{
+  height: auto;
+  max-height: 650px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .custom-container{
   margin: 0 auto;
   max-width: 78rem;

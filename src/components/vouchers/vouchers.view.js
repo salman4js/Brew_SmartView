@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 import {useCheckboxSelection} from '../global.state/global.state.manager'
@@ -9,6 +9,7 @@ import PanelItemView from '../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../SidePanelView/collection.view/collection.view'
 import VoucherContent from './vouchers.content.view';
 import NetProfitView from './net.profit.view';
+import InvoiceView from '../Invoice/invoice.view';
 import MetadataFields from '../fields/metadata.fields.view';
 import { getVouchersList, getNetProfitPreview, addVouchersList, getVoucherModelList, addVoucherModelList, editVoucherModelList, deleteVoucherModelList, getPrevVoucherModel } from './vouchers.utils.js';
 import { getAllPaymentTracker, getRoomList } from '../paymentTracker/payment.tracker.utils/payment.tracker.utils';
@@ -304,11 +305,15 @@ const VoucherView = () => {
   const [sidepanel, setSidepanel] = useState({
     height: undefined,
     header: "Vouchers List",
+    controlCenter: controlCenter,
     headerControl: true,
     headerControlEvent: _openCustomDialog,
-    headerInfoEvent: _openInfoDialog,
+    headerInfoEvent: _openAndCloseInfoDialog,
     eventTrigerred: false,
     infoEventTriggered: false,
+    isPrintTriggered: false,
+    previewGenerationTriggered: false,
+    onPreviewGenerationClose: _onPreviewGenerationTriggered,
     enableLoader: true,
     data: undefined,
     inlineAction: false,
@@ -331,6 +336,70 @@ const VoucherView = () => {
     netProfit: undefined,
     netProfitWithoutLivixius: undefined
   });
+  
+  // Render control center for sidepanel header!
+  function controlCenter(){
+    return(
+      <>
+        <span className = "sidepanel-header-control brew-cursor" onClick = {() => _openCustomDialog()}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="22" fill="currentColor" class="bi bi-file-plus" viewBox="0 0 16 16">
+            <path d="M8.5 6a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V10a.5.5 0 0 0 1 0V8.5H10a.5.5 0 0 0 0-1H8.5V6z"/>
+            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+          </svg>
+        </span>
+        <span className = "sidepanel-header-control brew-cursor" onClick = {() => _openAndCloseInfoDialog(true)}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="22" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+          </svg>
+      </span>
+      </>
+    )
+  }
+  
+  // Table view state handler for inflow
+  const [tablePreviewViewForInflow, setTablePreviewViewForInflow] = useState({
+    cellValues: undefined,
+    headerValue: undefined,
+    infoMessage: "Fetching vouchers details",
+    tableLoader: true,
+    enableCheckbox: false,
+    commandHelper: false,
+    commandDisabled: undefined,
+    tableCellWidth : "290px"
+  })
+  
+  // Table view state handler for outflow
+  const [tablePreviewViewForOutflow, setTablePreviewViewForOutflow] = useState({
+    cellValues: undefined,
+    headerValue: undefined,
+    infoMessage: "Fetching vouchers details",
+    tableLoader: true,
+    enableCheckbox: false,
+    commandHelper: false,
+    commandDisabled: undefined,
+    tableCellWidth : "290px"
+  })
+  
+  // Choose date for net profit preview state handler!
+  const [netProfitPreviewDate, setNetProfitPreviewDate] = useState([
+    {
+      value: new Date(),
+      defaultValue: new Date(),
+      placeholder: "Generate Report by Date",
+      label: "Generate Report by Date",
+      name: 'date',
+      attribute: 'dateField',
+      showTimeSelect: false,
+      dateFormat: 'MMMM d, yyyy',
+      isChanged: false,
+      isRequired: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input.'
+      }
+    }    
+  ])
   
   // Room list state handler incase of vouchers linked with livixius!
   const [roomList, setRoomList] = useState({
@@ -371,25 +440,13 @@ const VoucherView = () => {
   };
   
   // Open info dialog!
-  async function _openInfoDialog(){
-    setSidepanel(prevState => ({...prevState, infoEventTriggered: true}))
-    const result = await getNetProfitPreview(splitedIds[0]);
-    if(result.data.success){
-      setNetProfit(prevState => ({...prevState, isLoading: false, 
-        paymentTrackerSum: result.data.data.paymentTrackerSum, voucherPaymentSum: result.data.data.vouchersPayment, 
-      voucherReceiptSum: result.data.data.vouchersReceipt, paymentTrackerTaxableAmount: result.data.data.paymentTrackerTotalTaxable,
-      netProfit: result.data.data.netProfit, netProfitWithoutLivixius: result.data.data.netProfitForVouchers}))
-    }
+  async function _openAndCloseInfoDialog(value){
+    setSidepanel(prevState => ({...prevState, infoEventTriggered: value}));
   }
   
   // Close custom dialog!
   function _closeCustomDialog(){
     setSidepanel(prevState => ({...prevState, eventTrigerred: false, inlineAction: false}))
-  };
-  
-  // Close info dialog!
-  function _closeInfoDialog(){
-    setSidepanel(prevState => ({...prevState, infoEventTriggered: false}))
   }
   
   // Close add voucher model dialog!
@@ -422,7 +479,7 @@ const VoucherView = () => {
   };
   
   // Open custom info dialog for header info event!
-  function _showInfoDialog(onCloseAction){
+  function _showInfoDialog(onCloseAction, onCreateAction, val, setVal){
     // Form modal data!
     const data = {
       show: true,
@@ -430,11 +487,18 @@ const VoucherView = () => {
       header: "Net profit preview",
       centered: false,
       modalSize: 'medium',
-      footerEnabled: false
+      footerEnabled: true,
+      footerButtons: [
+        {
+          btnId: "Search and Generate Preview",
+          variant: "success",
+          onClick: onCreateAction
+        }
+      ]
     }
     
     return (
-      <CustomModal modalData = {data} showBodyItemView = {() => customModalChildInfoView()} />
+      <CustomModal modalData = {data} showBodyItemView = {() => customModalChildView(val, setVal)} />
     )
   }
   
@@ -448,7 +512,8 @@ const VoucherView = () => {
   };
   
   // Show custom modal child info view!
-  function customModalChildInfoView(){
+  function _renderNetProfitPreview(){
+    // Activity loader options!
     var opts = {
       message: "No vouchers has been added...",
       color: "black",
@@ -457,8 +522,43 @@ const VoucherView = () => {
     if(netProfit.isLoading){
       return activityLoader(opts)
     } else {
-      return <NetProfitView data = {netProfit} />
+      return <NetProfitView data = {netProfit} tableDataForInflow = {tablePreviewViewForInflow} tableDataForOutFlow = {tablePreviewViewForOutflow} />
     }
+  };
+  
+  // Preview generation modal!
+  function _previewGenerationModel(onCloseAction){
+    // Preview generation modal data!
+    const data = {
+      show: true,
+      onHide: onCloseAction,
+      header: "Net profit preview",
+      centered: false,
+      modalSize: 'xl',
+      footerEnabled: true,
+      footerButtons: [
+        {
+          btnId: "Print Report",
+          variant: "secondary",
+          onClick: printVouchersReport
+        }
+      ]
+    }
+    return <CustomModal modalData = {data} showBodyItemView = {() => _renderNetProfitPreview()}  />
+  };
+  
+  // Print vouchers report!
+  function printVouchersReport(value){
+    var value = (value === undefined);
+    _onPreviewGenerationTriggered(false);
+    setSidepanel(prevState => ({...prevState, isPrintTriggered: value}))
+  };
+  
+  // Trigger print for vouchers!
+  function _triggerPrint(){
+    return <InvoiceView node = {{vouchersReport: true}} netProfit = {netProfit}
+    tablePreviewViewForInflow = {tablePreviewViewForInflow} tablePreviewViewForOutflow = {tablePreviewViewForOutflow}
+    onHide = {() => printVouchersReport(false)}/>
   }
   
   // On voucher create action!
@@ -469,6 +569,38 @@ const VoucherView = () => {
       const fieldData = getFieldData(inputField); // Convert the data into server based format!
       _saveVoucherCreation(splitedIds[0], fieldData);
     }
+  };
+  
+  // On preview generation search based on date!
+  async function onPreviewGeneration(){
+    const isValid = await validateFieldData(netProfitPreviewDate, setNetProfitPreviewDate);
+    if(isValid.length === 0){
+      _openAndCloseInfoDialog(false);
+      _onPreviewGenerationTriggered(true);
+      const fieldData = getFieldData(netProfitPreviewDate);
+      fieldData['lodgeId'] = splitedIds[0]
+      const result = await getNetProfitPreview(fieldData);
+      if(result.data.success){
+        // Update netprofit preview data!
+        setNetProfit(prevState => ({...prevState, isLoading: false, 
+          paymentTrackerSum: result.data.data.paymentTrackerSum, voucherPaymentSum: result.data.data.vouchersPayment, 
+        voucherReceiptSum: result.data.data.vouchersReceipt, paymentTrackerTaxableAmount: result.data.data.paymentTrackerTotalTaxable,
+        netProfit: result.data.data.netProfit, netProfitWithoutLivixius: result.data.data.netProfitForVouchers}));
+        
+        // Update tablePreview data for inflow
+        setTablePreviewViewForInflow(prevState => ({...prevState, cellValues: result.data.data.individualVoucherReportForPayment, 
+          headerValue: result.data.data.individualVoucherReportTableHeader, tableLoader: false}));
+        
+        // Update tablePreview data for outflow
+        setTablePreviewViewForOutflow(prevState => ({...prevState, cellValues: result.data.data.individualVoucherReportForReceipt, 
+          headerValue: result.data.data.individualVoucherReportTableHeader, tableLoader: false}));
+      }
+    }
+  };
+  
+  // On preview generation modal close!
+  function _onPreviewGenerationTriggered(value){
+    setSidepanel(prevState => ({...prevState, previewGenerationTriggered: value}))
   }
   
   // On voucher model create action!
@@ -726,23 +858,47 @@ const VoucherView = () => {
     removeItemStorage("selectedItem"); // Remove any unused selection id's
   }, [])
   
-  return(
-    <div>
-      <ModalAssist data = {modalAssist} height = {(value) => storeModalAssistHeight(value)} childView = {() => voucherContentView()} />
-      {sidepanel.eventTrigerred && (
-        _showCustomDialog(_closeCustomDialog, onVoucherCreate, inputField, setInputField)
+  return (
+    <>
+      <div>
+        {!sidepanel.isPrintTriggered && (
+          <ModalAssist
+            data={modalAssist}
+            height={(value) => storeModalAssistHeight(value)}
+            childView={() => voucherContentView()}
+          />
+        )}
+        {sidepanel.eventTrigerred && (
+          _showCustomDialog(_closeCustomDialog, onVoucherCreate, inputField, setInputField)
+        )}
+        {sidepanel.infoEventTriggered && (
+          _showInfoDialog(
+            _openAndCloseInfoDialog,
+            onPreviewGeneration,
+            netProfitPreviewDate,
+            setNetProfitPreviewDate
+          )
+        )}
+        {sidepanel.previewGenerationTriggered && (
+          _previewGenerationModel(_onPreviewGenerationTriggered)
+        )}
+        {sidepanel.inlineAction && (
+          _showAddVoucherModel(
+            _closeVoucherModelDialog,
+            onVoucherModelAction,
+            voucherModel,
+            setVoucherModel
+          )
+        )}
+        {acknowledger.show && (
+          _showGlobalMessage()
+        )}
+      </div>
+      {sidepanel.isPrintTriggered && (
+        _triggerPrint()
       )}
-      {sidepanel.infoEventTriggered && (
-        _showInfoDialog(_closeInfoDialog)
-      )}
-      {sidepanel.inlineAction && (
-        _showAddVoucherModel(_closeVoucherModelDialog, onVoucherModelAction, voucherModel, setVoucherModel)
-      )}
-      {acknowledger.show && (
-        _showGlobalMessage()
-      )}
-    </div>
-  )
+    </>
+  );
 }
 
 export default VoucherView;

@@ -51,8 +51,8 @@ export async function getFilteredModel(lodgeId, data){
 };
 
 // Get net profit preview!
-export async function getNetProfitPreview(lodgeId){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getnetprofitpreview`);
+export async function getNetProfitPreview(data){
+  const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/getnetprofitpreview`, data);
   return result;
 }
 
