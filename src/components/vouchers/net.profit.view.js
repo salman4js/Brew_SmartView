@@ -9,7 +9,7 @@ const NetProfitView = (props) => {
     return(
       <div>
         <p style = {{color: "black", fontWeight: "bold", textDecoration: 'underline'}}>
-          Cash Inflow Table View for Vouchers
+          Cash Outflow Table View for Vouchers
         </p>
         <MetadataTable data = {props.tableDataForInflow} height = {500} />
       </div>
@@ -21,7 +21,7 @@ const NetProfitView = (props) => {
     return(
       <div>
         <p style = {{color: "black", fontWeight: "bold", textDecoration: 'underline'}}>
-          Cash Outflow Table View for Vouchers
+          Cash Inflow Table View for Vouchers
         </p>
         <MetadataTable data = {props.tableDataForOutFlow} height = {500} />
       </div>

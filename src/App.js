@@ -30,6 +30,7 @@ import ChooseLogin from './components/LoginAs/choose.login';
 import ManageRecep from './components/ManageRecep/manage.recep';
 import PaymentTracker from './components/paymentTracker/payment.tracker';
 import RefundTracker from './components/refund.tracker/refund.tracker.view';
+import DashboardInitializer from './components/NewDashboard/dashboard.container.initializer';
 
 function App() {
   return (
@@ -66,6 +67,8 @@ function App() {
           <Route path = "/:id/managerecep" exact element = {<ManageRecep />} />
           <Route path = "/:id/paymenttracker" exact element = {<PaymentTracker />} />
           <Route path = "/:id/refundtracker" exact element = {<RefundTracker />} />
+          // New Dashboard Routes Starts from here!
+          <Route path = "/:id/dashboardcontainer" exact element = {<DashboardInitializer />} />
         </Routes>
       </Router>
     </div>
