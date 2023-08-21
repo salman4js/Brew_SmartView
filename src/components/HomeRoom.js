@@ -1010,6 +1010,8 @@ const HomeRoom = (props) => {
             isGst: isGst,
             foodGst: calcdishrate * 0.05,
             stayGst: determineGst(),
+            roomno: props.roomno,
+            dateTime: brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime())    
         }
 
         axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
