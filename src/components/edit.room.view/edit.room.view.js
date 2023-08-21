@@ -111,7 +111,7 @@ const EditRoom = () => {
                                             }
                                         }).map((item, key) => {
                                             return (
-                                                <HomeRoom edit={true} lodgeName={splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
+                                                <HomeRoom floorNo = {item.floorNo} edit={true} lodgeName={splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
                                                     roomid={item._id} id={id} lodgeid={splitedIds[0]} price={item.price} isPrebook = {false}
                                                     prebook={item.preBooked} prevalid={item.preValid} discount={item.discount} advance = {item.advancePrice}
                                                  />

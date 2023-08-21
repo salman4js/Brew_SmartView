@@ -312,7 +312,7 @@ const PrebookCheckin = () => {
                       room.allRooms.map((item,key) => {
                         if(!room.omitObjectId.includes(item.roomno)){
                           return(
-                            <HomeRoom edit = {false} lodgeName = {splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} 
+                            <HomeRoom floorNo = {item.floorNo} edit = {false} lodgeName = {splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} 
                             roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
                             roomid={item._id} id={id} lodgeid={splitedIds[0]} price={item.price}
                             prebook={item.preBooked} prevalid={item.preValid} isPrebook = {true} prebookconfig={true} discount={item.discount} 

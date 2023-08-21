@@ -359,7 +359,7 @@ const VoucherView = () => {
   const [tablePreviewViewForInflow, setTablePreviewViewForInflow] = useState({
     cellValues: undefined,
     headerValue: undefined,
-    infoMessage: "Fetching vouchers details",
+    infoMessage: "There is no payments to track today!",
     tableLoader: true,
     enableCheckbox: false,
     commandHelper: false,
@@ -371,7 +371,7 @@ const VoucherView = () => {
   const [tablePreviewViewForOutflow, setTablePreviewViewForOutflow] = useState({
     cellValues: undefined,
     headerValue: undefined,
-    infoMessage: "Fetching vouchers details",
+    infoMessage: "There is no payments to track today!",
     tableLoader: true,
     enableCheckbox: false,
     commandHelper: false,
