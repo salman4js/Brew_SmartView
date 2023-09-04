@@ -30,7 +30,7 @@ const PanelItemView = (props) => {
   }
 
   // On select item!
-  async function selectItem(value){
+  async function selectItem(){
     props.onClick(props._id);
   }
   
@@ -46,14 +46,14 @@ const PanelItemView = (props) => {
 
   
   return(
-    <div className = "file-items" onClick = {() => selectItem(!inlineAction.selectedId)} 
+    <div className = "file-items" onClick = {() => selectItem()} 
       onMouseOver = {() => _triggerMouseOver()} onMouseOut = {() => _triggerMouseOut()}
       style = {getStyle()}>
-       <span className = "brew-title-workspace side-align">
+       <span className = "brew-title-workspace side-align" style = {{color: props.colorCode || 'black'}}>
           {props.showIndentationArrow && '> '}{props.data}
        </span>
        {props.showInlineMenu && inlineAction.mouseOver && (
-         _inlineMenu()
+         props.customInlineMenu ? (props._renderCustomInlineMenu && props._renderCustomInlineMenu()) :  _inlineMenu()
        )}
     </div>
   )

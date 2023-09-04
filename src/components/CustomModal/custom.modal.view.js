@@ -32,7 +32,9 @@ const CustomModal = (props) => {
         <Modal.Header closeButton>
           {props.modalData?.header}
         </Modal.Header>
-        <CustomModalBody data = {() => props.showBodyItemView()} modalData = {props.modalData} />
+        {!props.modalData.restrictBody && (
+          <CustomModalBody data = {() => props.showBodyItemView()} modalData = {props.modalData} />
+        )}
         {props.modalData?.footerEnabled && (
             <Modal.Footer>
               {showCustomModalFooter()}

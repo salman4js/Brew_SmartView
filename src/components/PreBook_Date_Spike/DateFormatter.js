@@ -14,5 +14,3 @@ function formatDate(date) {
 
 export default formatDate;
  
-console.log(typeof(formatDate('Mon Nov 28 2022 02:34:52 GMT+0530 (India Standard Time)')));
-

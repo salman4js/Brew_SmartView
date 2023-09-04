@@ -50,7 +50,7 @@ const TextField = (props) => {
   
 
   return(
-    <div className="modal-gap">
+    <div className="modal-gap" style = {{width: props.data.width}}>
         <label style={{ color: "black" }}> {props.data.label} </label>
         <input type={getType()} className="form-control" aria-describedby="input-field" value = {getValue()}
         placeholder={getValueForPlaceholder()} onChange = {(event) => checkLimit(event)} />

@@ -4,7 +4,8 @@ import TextField from './textfield/textfield.view';
 import ListField from './listfield/listfield.view';
 import DataList from './dataListField/datalist.field.view';
 import CheckBox from './checkBoxField/checkbox.field.view';
-
+import ButtonField from './buttonField/button.field.view';
+import LabelField from './labelField/label.field.view';
 
 const MetadataFields = (props) => {
 
@@ -46,47 +47,59 @@ const MetadataFields = (props) => {
   // Disable and enable custom modals footer buttons!
   function toggleButtonValue(){
     props.toggleButtonProp && props.toggleButtonProp("success", true)
-  }
+  };
 
   return (
-    <>
-      {props.data.map((field, index) => {
-        if (field.attribute === 'dateField') {
-          return (
-            <DateField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
-          );
-        }
+      <>
+        {props.data.map((field, index) => {
+          if (field.attribute === 'dateField' && field.restrictShow !== true) {
+            return (
+              <DateField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
+            );
+          }
 
-        if (field.attribute === 'textField') {
-          return (
-            <TextField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}
-              toggleButtonValue = {() => toggleButtonValue()}
-             />
-          );
-        }
-        
-        if(field.attribute === 'listField') {
-          return(
-            <ListField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
-          )
-        }
-        
-        if(field.attribute === 'dataListField') {
-          return(
-            <DataList data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
-          )
-        }
-        
-        if(field.attribute === "checkBoxField"){
-          return(
-            <CheckBox data = {field} index = {index} checkboxIndex = {props.checkboxIndex} 
-            handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}  />
-          )
-        }
-
-        return null;
-      })}
-    </>
+          if (field.attribute === 'textField' && field.restrictShow !== true) {
+            return (
+              <TextField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}
+                toggleButtonValue = {() => toggleButtonValue()}
+               />
+            );
+          }
+          
+          if(field.attribute === 'listField' && field.restrictShow !== true) {
+            return(
+              <ListField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
+            )
+          }
+          
+          if(field.attribute === 'dataListField' && field.restrictShow !== true) {
+            return(
+              <DataList data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
+            )
+          }
+          
+          if(field.attribute === "checkBoxField" && field.restrictShow !== true){
+            return(
+              <CheckBox data = {field} index = {index} checkboxIndex = {props.checkboxIndex} 
+              handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}  />
+            )
+          }
+          
+          if(field.attribute === 'buttonField' && field.restrictShow !== true){
+            return(
+              <ButtonField data = {field} />
+            )
+          }
+          
+          if(field.attribute === 'labelFields' && field.restrictShow !== true){
+            return (
+              <LabelField data = {field} />
+            )
+          }
+          
+          return null;
+        })}
+      </>
   );
 }
 

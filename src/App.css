@@ -885,6 +885,7 @@ td {
 
 .inline-menu{
   float: right;
+  color: black;
 }
 
 .metadata-label{
@@ -895,7 +896,7 @@ td {
   position: absolute;
   background-color: white;
   box-shadow: 0 2px 0px 0px white, 0 -2px 0px 0px white, 2px 0 8px -4px rgb(0,0,0), -2px 0 8px -2px rgb(0,0,0);
-  z-index: 1
+  z-index: 1;
 }
 
 .metadata-dropdown-list:hover{
@@ -1051,5 +1052,55 @@ td {
 
 .collection-sub-child-view div:hover{
   background-color: #ddd !important;
+}
+
+.dashboard-container-fields-view{
+  padding-left: 50px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.dashboard-container-fields-header{
+  color: black;
+  font-weight: bold;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.metadata-datalistfield-control-center{
+  float: right;
+  color: black;
+}
+
+.metadata-button-field{
+  background-color:#0a0a23;
+  color: #fff;
+  border:none;
+  padding: 2px 5px 2px 5px;
+  border-radius:5px;
+  margin-right: 20px;
+}
+
+.property-error-container{
+  color: red;
+  font-weight: bold;
+  border: 1px solid red;
+  background-color: #ffb3b3;
+  padding-left: 10px;
+  margin-bottom: 5px;
+}
+
+.property-success-container{
+  color: green;
+  font-weight: bold;
+  border: 1px solid green;
+  background-color: #99ff99;
+  padding-left: 10px;
+  margin-bottom: 5px;
+}
+
+.property-alert-container-message{
+  padding-left: 10px;
 }
 

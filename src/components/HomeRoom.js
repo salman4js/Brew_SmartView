@@ -1069,7 +1069,7 @@ const HomeRoom = (props) => {
     // Get total amount with all the neccessary entities!
     function getTotalAmount(t_Amount){
       // Incase of channel manager, Inclusive calculation will be taken by default, Since the Guest
-      // Would have already for the tax in channel manager portal...
+      // Would have already paid for the tax in channel manager portal...
       if(channel.isChannel || !isExclusive){
           let totalPaidAmount = totalAmount !== undefined ? getTotalAmountForGst() : t_Amount
           if(Number(totalAmount) < 0){

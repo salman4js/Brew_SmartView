@@ -164,6 +164,38 @@ export function formatDateToCustomFormat(date){
 // Convert custom format into date format!
 export function formatCustomIntoDateFormat(date, time){
   return brewDate.formatCustomDateToDateFormat(date, time)
+};
+
+// Default constants of status color code!
+export function getStatusCodeColor(currentStatusCode){
+  var statusCode = {
+    'afterCheckedout' : 'red',
+    'inCleaning': 'blue',
+    'afterCleaned': 'black',
+    'afterCheckin': 'green'
+  };
+  
+  return statusCode[currentStatusCode];
+};
+
+// Format date!
+export function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + (d.getDate() + 1),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('/');
+};
+
+// Determine GST!
+export function determineGSTPercent(price){
+  return price > 7500 ? 0.18 : 0.12;
 }
 
 // Refresh the page!
