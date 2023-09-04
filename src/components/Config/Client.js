@@ -365,10 +365,8 @@ const Client = () => {
             .then(res => {
                 if (res.data.success) {
                     setLoader(false);
-                    console.log(res.data.message);
                 } else {
                     setLoader(false);
-                    console.log(res.data.message);
                 }
             })
             .catch(err => {
@@ -441,8 +439,8 @@ const Client = () => {
     }
 
     // Handle Extra bed state 
-    function handleExtra(){
-        setIsExtra(!isExtra);
+    function handleExtra(value){
+        setIsExtra(value);
     }
 
     // Change Matrix config data!
@@ -476,6 +474,7 @@ const Client = () => {
             afterCleaning: roomStatus.afterCleaning,
             linkVouchersWithLivixius: linkWithLivixius.isEnabled
         }
+
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
                 if (resp.data.success) {
@@ -649,7 +648,7 @@ const Client = () => {
                                 </div>
                                 <div class="card-body">
                                     <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
-                                    handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {() => handleExtra()}
+                                    handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {(value) => handleExtra(value)}
                                     extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
                                     extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
                                     invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} refundTracker = {refundTracker}

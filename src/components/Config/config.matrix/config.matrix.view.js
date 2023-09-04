@@ -31,7 +31,7 @@ const ConfigMatrix = (props) => {
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.isExtra} onChange = {() => props.handleExtra()} />
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked = {props.isExtra} onChange = {() => props.handleExtra(!props.isExtra)} />
                 <label class="form-check-label dashboard-input" for="flexCheckDefault" style={{ color: "black" }}>
                     Extra Bed
                 </label>

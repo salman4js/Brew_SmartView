@@ -20,7 +20,7 @@ const ListField = (props) => {
   }
   
   return(
-    <div className = "modal-gap text-center">
+    <div className = "modal-gap" style = {{width: props.data.width}}>
       <label className = "metadata-label" style = {getStyle(props.data.style)}> {props.data.label} </label>
       <select className = "form-control" onChange = {(event) => inputChange(event)}>
         <option value="" disabled selected>{getSelected()}</option>

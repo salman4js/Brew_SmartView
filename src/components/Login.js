@@ -49,7 +49,6 @@ const Login = () => {
           // Update the globalMessage status to FETCH since we have to fetch it for the first time when user logins!
           _updateGlobalMessageStatus();
           // Set isGst and isHourly basis in localstorage!
-          console.log(res.data.object)
           const data = {
             "isGst" : res.data.object.isGst,
             "isHourly" : res.data.object.isHourly,
