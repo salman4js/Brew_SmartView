@@ -55,7 +55,8 @@ const PropertyContainer = (props) => {
     }
     
     if(props.data.formMode === 'read'){
-      return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} />
+      return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
+      cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} afterCheckout = {(opts) => props.onCancel(opts)} />
     }
   };
   

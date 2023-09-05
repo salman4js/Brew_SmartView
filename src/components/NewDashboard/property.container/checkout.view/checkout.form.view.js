@@ -19,6 +19,7 @@ class CheckOutView extends React.Component {
         userModel: [],
         header: 'Check-Out Form',
         isFetched: false,
+        isLoading: false,
         height: props.height,
         matchCheckoutDate: "Provided checkout date is matching with today's date, Customer is good to checkout!",
         stayeddays: undefined,
@@ -30,13 +31,17 @@ class CheckOutView extends React.Component {
         },
         customModal: {
           show: false,
-          onHide: null,
+          onHide: this.onCloseCustomModal.bind(this),
           header: undefined,
           centered: true,
           restrictBody: true,
           modalSize: "medium",
           footerEnabled: false,
           footerButtons: undefined
+        },
+        propertyController: {
+          reloadSidepanel: false,
+          reloadPropertyContainer: false
         }
       };
       this.checkoutUtils = new CheckoutUtils({accId: props.params.accIdAndName[0]});
@@ -61,6 +66,10 @@ class CheckOutView extends React.Component {
       return JSON.parse(getStorage('isHourly'));
     };
     
+    getIsGSTEnabled(){
+      return JSON.parse(getStorage('isGst'));
+    };
+    
     getIsExtraCalcEnabled(){
       return JSON.parse(getStorage('extraCalc'));
     };
@@ -83,9 +92,25 @@ class CheckOutView extends React.Component {
       return (todayDate === providedCheckoutDate);
     };
     
+    getDateTime(){
+      return brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime());
+    };
+    
     // Render custom modal!
     _renderCustomModal(){
       return <CustomModal modalData = {this.state.customModal} />
+    };
+    
+    // Update property container controller!
+    _updatePropertyController(opts){
+      this.setState(prevState => ({
+        ...prevState,
+        propertyController: {
+          ...prevState.propertyController,
+          reloadSidepanel: opts.reloadSidepanel,
+          reloadPropertyContainer: opts.reloadPropertyContainer
+        }
+      }))
     };
     
     // Trigger custom modal!
@@ -99,7 +124,12 @@ class CheckOutView extends React.Component {
           centered: opts.centered,
           restrictBody: opts.restrictBody,
           footerEnabled: opts.footerEnabled,
-          footerButtons: opts.footerButtons
+          footerButtons: opts.footerButtons,
+          propertyController: {
+            ...prevState.propertyController,
+            reloadSidepanel: opts.reloadSidepanel,
+            reloadPropertyContainer: opts.reloadPropertyContainer
+          }
         }
       }))
     };
@@ -113,11 +143,20 @@ class CheckOutView extends React.Component {
           show: false
         }
       }));
+      // Update the selectedModel onCheckout value in dashboard wrapper!
+      this.props.cancelCheckoutPrompt(this.state.propertyController);
+    };
+    
+    _toggleLoader(value){
+      this.setState({isFetched: !value}); // As per the template helpers design, Toggle isFetched should 
+      // render the loader on the screen!
     };
     
     // When checkout has been confirmed!
-    handleCheckoutConfirmed(){
-      
+    async handleCheckoutConfirmed(){
+      this.onCloseCustomModal();
+      this._toggleLoader(true);
+      await this.performCheckout();
     };
     
     // Trigger success alert container!
@@ -247,26 +286,59 @@ class CheckOutView extends React.Component {
         roomid:this.state.data.roomModel._id,
         isHourly: this.getIsHourly(), extraCalc: this.getIsExtraCalcEnabled()}
       var result = await this.checkoutUtils.fetchBillingDetails(params);
-      this.setState({billingDetails: result.data, isFetched: true}, () => {
-        this.calculateGSTPrice();
-      }); 
+      if(result.data.success){
+        this.setState({billingDetails: result.data, isFetched: true}, () => {
+          this.calculateGSTPrice();
+        }); 
+      }
+    };
+    
+    // Perform checkout!
+    async performCheckout(){
+      // Form up the params!
+      var data = {userid: this.state.userModel._id, 
+        roomid: this.state.data.roomModel._id, stayeddays: this.state.stayeddays,
+        checkoutdate: this.getTodayDate(), checkoutTime: getTimeDate().getTime, roomtype: this.state.data.roomModel.suiteName,
+        prebook: this.state.data.roomModel.preBooked, amount: this.getTotalAmount(), refund: 0, 
+        totalDishAmount: 0, isGst: this.getIsGSTEnabled(), foodGst: 0, stayGst: this.state.billingInfo.gstPrice,
+        roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime()};
+      var result = await this.checkoutUtils.onCheckout(data);
+      if(result.data.success){
+        this._updatePropertyController({reloadSidepanel: true, reloadPropertyContainer: true});
+        var data = {header: result.data.message, isCentered: false, isRestrictBody: true, 
+        isFooterEnabled: false};
+        this._toggleLoader(false);
+        this.setCustomModal(data);
+      }
+    };
+    
+    onCheckout(){
+      var data = {
+        header: 'You are about to checkout this customer, Are you sure to checkout?',
+        isCentered: true,
+        isRestrictBody: true,
+        isFooterEnabled: true,
+        secondaryBtnId: 'Cancel',
+        primaryButtonId: 'Checkout'
+      };
+      this.setCustomModal(data);
     };
     
     // On checkout triggered!
-    onCheckout(){
+    setCustomModal(data){
       var customModalOpts = {
         show: true,
-        header: 'You are about to checkout this customer, Are you sure to checkout?',
-        centered: true,
-        restrictBody: true,
-        footerEnabled: true,
+        header: data.header,
+        centered: data.isCentered,
+        restrictBody: data.isRestrictBody,
+        footerEnabled: data.isFooterEnabled,
         footerButtons: [{
-          btnId: "Cancel",
+          btnId: data.secondaryBtnId,
           variant: "secondary",
           onClick: this.onCloseCustomModal.bind(this)
         },
         {
-          btnId: "Checkout",
+          btnId: data.primaryButtonId,
           variant: "success",
           onClick: this.handleCheckoutConfirmed.bind(this)
         }]
@@ -276,7 +348,6 @@ class CheckOutView extends React.Component {
     
     // On update lifecyle method!
     componentDidUpdate(prevProps, prevState){
-      console.log(prevState, this.props.data);
       if(this.props.data.onCheckout && !prevProps.data.onCheckout){
         this.onCheckout();
       }
