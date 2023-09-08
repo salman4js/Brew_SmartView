@@ -178,6 +178,11 @@ export function getStatusCodeColor(currentStatusCode){
   return statusCode[currentStatusCode];
 };
 
+// Default room status constants!
+export function getRoomStatusConstants(){
+  return ['afterCheckedout', 'inCleaning', 'afterCleaned', 'afterCheckin'];
+}
+
 // Format date!
 export function formatDate(date) {
     var d = new Date(date),
@@ -196,9 +201,9 @@ export function formatDate(date) {
 // Determine GST!
 export function determineGSTPercent(price){
   return price > 7500 ? 0.18 : 0.12;
-}
+};
 
 // Refresh the page!
 export function refreshPage(){
   window.location.reload();
-}
+};
