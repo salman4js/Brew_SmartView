@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import MetadataFields from '../../fields/metadata.fields.view';
 import CheckInForm from './checkin.view/checkin.form.view';
 import CheckOutView from './checkout.view/checkout.form.view';
-
+import RoomStatusView from './room.status.view/room.status.view';
 
 const PropertyContainer = (props) => {
 
@@ -52,12 +52,16 @@ const PropertyContainer = (props) => {
     if(props.data.formMode === 'edit'){
       return <CheckInForm height = {props.propertyContainerHeight} data = {props.data} params = {props.params} 
       afterFormSave = {(opts) => props.onCancel(opts)} />
-    }
+    };
     
     if(props.data.formMode === 'read'){
       return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
       cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} afterCheckout = {(opts) => props.onCancel(opts)} />
-    }
+    };
+    
+    if(props.data.formMode === 'dirty' || props.data.formMode === 'incleaning'){
+      return <RoomStatusView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} />
+    };
   };
   
   // Get panel field right side data!
@@ -77,11 +81,8 @@ const PropertyContainer = (props) => {
         btnValue: 'Cancel',
         onClick: onCancel,
         attribute: 'buttonField'
-      },{
-        btnValue: 'Edit Details',
-        onClick: null,
-        attribute: 'buttonField'
-      },{
+      },
+      {
         btnValue: 'Checkout Guest',
         onClick: onCheckout,
         attribute: 'buttonField'

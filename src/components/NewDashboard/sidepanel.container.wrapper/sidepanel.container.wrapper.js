@@ -58,9 +58,27 @@ const SidepanelWrapper = (props) => {
     )
   };
   
+  // Get form mode based on room status constant!
+  function getFormMode(model){
+    switch(model.roomStatusConstant){
+      case 'afterCheckin':
+        return 'read';
+        break;
+      case 'afterCleaned':
+        return 'edit';
+        break;
+      case 'afterCheckedout':
+        return 'dirty';
+        break;
+      case 'inCleaning':
+        return 'incleaning';
+        break;
+    };
+  };
+  
   // Item panel collection onClick!
   function panelItemOnClick(uId, model){
-    var formMode = (model.isOccupied !== "false") ? 'read' : 'edit';
+    var formMode = getFormMode(model);
     props.selectedModel(model, formMode);
   };
   
