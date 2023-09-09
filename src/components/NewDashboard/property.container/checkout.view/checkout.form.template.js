@@ -67,8 +67,16 @@ export function templateHelpers(userModel, billingInfo){
               <p style = {{color: 'black'}}> {billingInfo.gstPrice} </p>
             </div>
             <div className = 'modal-gap'>
+              <label style = {{color: 'black'}}> Given Advance Amount </label>
+              <p style = {{color: 'black'}}> {billingInfo.advanceAmount} </p>
+            </div>
+            <div className = 'modal-gap'>
+              <label style = {{color: 'black'}}> Given Discount Amount </label>
+              <p style = {{color: 'black'}}> {billingInfo.discountAmount} </p>
+            </div>
+            <div className = 'modal-gap'>
               <label style = {{color: 'black'}}> Balance without GST </label>
-              <p style = {{color: 'black'}}> {billingInfo.roomPrice} </p>
+              <p style = {{color: 'black'}}> {billingInfo.withoutGST} </p>
             </div>
             <div className = 'modal-gap'>
               <label style = {{color: 'black'}}> Balance with GST </label>

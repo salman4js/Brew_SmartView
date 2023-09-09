@@ -60,7 +60,8 @@ const PropertyContainer = (props) => {
     };
     
     if(props.data.formMode === 'dirty' || props.data.formMode === 'incleaning'){
-      return <RoomStatusView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} />
+      return <RoomStatusView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
+      dashboardController = {(opts) => props.dashboardController(opts)} />
     };
   };
   

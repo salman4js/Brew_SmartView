@@ -232,29 +232,46 @@ class CheckOutView extends React.Component {
         ...prevState,
         billingInfo: {
           ...prevState.billingInfo,
-          gstPrice: this.gstPrice + " Rs", 
-          roomPrice: this.getTotalAmount() + " Rs", 
-          totalPrice: this.getTotalAmount() + this.gstPrice + " Rs"
+          gstPrice: this.gstPrice + ' Rs', 
+          roomPrice: this.getRoomPrice() + " Rs", 
+          totalPrice: this.getTotalPayableAmount() + this.gstPrice + " Rs",
+          advanceAmount: this.state.billingDetails.advanceCheckin + ' Rs',
+          discountAmount: this.state.billingDetails.discountPrice + ' Rs',
+          withoutGST: this.getAmountWithoutGST() + ' Rs'
         }
       }));
     };
     
+    // Get total amount with advance and discount but without GST!
+    getAmountWithoutGST(){
+      return this.getRoomPrice() - this.state.billingDetails.advanceCheckin - this.state.billingDetails.discount;
+    };
+    
     // Calculate GST for inclusive calculation!
     getGSTForInclusive(){ 
-      var totalPayableAmount = this.getTotalAmount();
+      var totalPayableAmount = this.getTotalPayableAmount();
       var inclusiveGSTAmount = totalPayableAmount / (1 + determineGSTPercent(this.state.data.roomModel.price));
       this.gstPrice = inclusiveGSTAmount;
     };
     
     // Calculate GST for exclusive calculation!
     getGSTForExclusive(){
-      var exclusiveGSTAmount = Math.round(this.getTotalAmount() * determineGSTPercent(this.state.data.roomModel.price));
+      var exclusiveGSTAmount = Math.round(this.getTotalPayableAmount() * determineGSTPercent(this.state.data.roomModel.price));
       this.gstPrice = exclusiveGSTAmount;
     };
     
+    // Get room price only!
+    getRoomPrice(){
+      return Number(this.state.data.roomModel.price);
+    };
+    
     // Calculate total amount!
-    getTotalAmount(){
-      return Number(this.state.billingDetails.message) + Number(this.state.billingDetails.advanceCheckin) + this.getExtraBedPrice();
+    getTotalPayableAmount(){
+      var roomPrice = Number(this.state.billingDetails.message),
+        advanceAmount = Number(this.state.billingDetails.advanceCheckin),
+        discountAmount = Number(this.state.billingDetails.discount),
+        extraBedPrice = Number(this.getExtraBedPrice());
+      return roomPrice - advanceAmount - discountAmount + extraBedPrice;
     };
     
     // Get extra bed price!
@@ -299,7 +316,7 @@ class CheckOutView extends React.Component {
       var data = {userid: this.state.userModel._id, 
         roomid: this.state.data.roomModel._id, stayeddays: this.state.stayeddays,
         checkoutdate: this.getTodayDate(), checkoutTime: getTimeDate().getTime, roomtype: this.state.data.roomModel.suiteName,
-        prebook: this.state.data.roomModel.preBooked, amount: this.getTotalAmount(), refund: 0, 
+        prebook: this.state.data.roomModel.preBooked, amount: this.getTotalPayableAmount(), refund: 0, 
         totalDishAmount: 0, isGst: this.getIsGSTEnabled(), foodGst: 0, stayGst: this.state.billingInfo.gstPrice,
         roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime()};
       var result = await this.checkoutUtils.onCheckout(data);

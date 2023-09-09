@@ -30,6 +30,11 @@ class RoomStatusView extends React.Component {
     }
   };
   
+  // Loader controller!
+  _toggleLoader(value){
+    this.setState({isLoading: value});
+  };
+  
   // Get current status constant!
   getCurrentStatusConstant(){
     return this.state.data.roomModel.roomStatusConstant;
@@ -52,10 +57,15 @@ class RoomStatusView extends React.Component {
   };
   
   // Move the room to the next state!
-  moveToNextState(){
+  async moveToNextState(){
     var params = {lodgeId: this.state.data.roomModel.lodge, 
       roomId: this.state.data.roomModel._id};
-    this.setState({isLoading: true});
+    this._toggleLoader(true);
+    var result = await moveToNextState(params);
+    if(result.data.success){
+      this._toggleLoader(false);
+      this.props.dashboardController({reloadSidepanel: true, persistStatusView: true, updatedModel: result.data.data});
+    }
   };
   
   // Determine the state to get rendered!
@@ -64,6 +74,18 @@ class RoomStatusView extends React.Component {
       nextOfNextRoomStatus: this.getNextOfNextRoomStatus(), height: this.state.height,
       statusInfo: this.getStateInfo(), moveToNextState: this.moveToNextState.bind(this)};
     return roomStateOptions;
+  };
+  
+  // Update room model!
+  _updateRoomModel(model){
+    this.setState({data: model})
+  };
+  
+  // On update lifecyle method!
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.data !== this.props.data){
+      this._updateRoomModel(this.props.data);
+    }
   };
   
   render(){
