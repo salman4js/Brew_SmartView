@@ -44,6 +44,8 @@ const DashboardWrapper = (props) => {
   function _updateDashboardWrapper(opts){
     opts.reloadSidepanel && _reloadSidepanel();
     opts.reloadPropertyContainer && _reloadPropertyContainer();
+    opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need 
+    // updated room model to updated it to the latest value
   };
   
   // Reload sidepanel function!
@@ -56,6 +58,23 @@ const DashboardWrapper = (props) => {
   function _reloadPropertyContainer(){ // As of now, reload property container will 
     // redirect the dashboard to main container
     onFormCancel(); 
+  };
+  
+  // Get current form mode!
+  function getFormMode(roomStatusConstant){
+    if(roomStatusConstant === 'afterCleaned'){
+      return 'edit';
+    } else if(roomStatusConstant === 'afterCheckedout' || roomStatusConstant === 'inCleaning'){
+      return 'dirty';
+    } else {
+      return 'read';
+    }
+  };
+  
+  // Reload and persist room status view!
+  function _reloadAndPersistStatusView(updatedModel){
+    var formMode = getFormMode(updatedModel.roomStatusConstant);
+    setSelectedModel(prevState => ({...prevState, roomModel: updatedModel, formMode: formMode}));
   };
   
   // On cancel checkout prompt!
@@ -76,7 +95,7 @@ const DashboardWrapper = (props) => {
           {selectedModel.roomModel !== undefined && ( // Render the property container only when any room model is clicked
             <div className = "dashboard-property-container">
               <PropertyContainer data = {selectedModel} propertyContainerHeight = {props.modalAssistData.height} 
-              onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} 
+              onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
               onCheckout = {(value) => onCheckout(value)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
             </div>
           )}

@@ -32,6 +32,33 @@ const CheckinForm = (props) => {
   // Checkin form fields state handler!
   const [checkinFields, setCheckinFields] = useState([
     {
+      value: new Date(),
+      width: '500px',
+      placeholder: "Checkin Date",
+      label: "Date of Check-In",
+      name: 'checkin',
+      attribute: 'dateField',
+      isRequired: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input.'
+      }
+    },
+    {
+      value: new Date(),
+      width: '500px',
+      defaultValue: new Date(),
+      placeholder: "Checkout Date",
+      label: "Date of Check-Out",
+      name: 'checkout',
+      attribute: 'dateField',
+      isRequired: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input.'
+      }
+    },
+    {
       value: undefined,
       width: '500px',
       placeholder: "Customer Name",
@@ -78,6 +105,28 @@ const CheckinForm = (props) => {
         isShow: false,
         inlineMessage: 'Please provide a valid input.'
       }
+    }
+  ]);
+  
+  // Customizable fields state handler!
+  const [customizableFields, setCustomizableFields] = useState([
+    {
+      value: undefined,
+      width: '500px',
+      placeholder: "Advance Amount",
+      label: "Advance Amount",
+      name: 'advance',
+      attribute: 'textField',
+      isRequired: false
+    },
+    {
+      value: undefined,
+      width: '500px',
+      placeholder: "Discount Amount",
+      label: "Discount Amount",
+      name: 'discount',
+      attribute: 'textField',
+      isRequired: false
     },
     {
       value: undefined,
@@ -116,37 +165,6 @@ const CheckinForm = (props) => {
       }
     },
     {
-      value: new Date(),
-      width: '500px',
-      placeholder: "Checkin Date",
-      label: "Date of Check-In",
-      name: 'checkin',
-      attribute: 'dateField',
-      isRequired: true,
-      inlineToast: {
-        isShow: false,
-        inlineMessage: 'Please provide a valid input.'
-      }
-    },
-    {
-      value: new Date(),
-      width: '500px',
-      defaultValue: new Date(),
-      placeholder: "Checkout Date",
-      label: "Date of Check-Out",
-      name: 'checkout',
-      attribute: 'dateField',
-      isRequired: true,
-      inlineToast: {
-        isShow: false,
-        inlineMessage: 'Please provide a valid input.'
-      }
-    }
-  ]);
-  
-  // Customizable fields state handler!
-  const [customizableFields, setCustomizableFields] = useState([
-    {
       value: 'Walk-In',
       restrictShow: checkCustomizableFields('isChannel'),
       width: '500px',
@@ -181,16 +199,6 @@ const CheckinForm = (props) => {
       placeholder: "Update Room Price",
       label: "Update Room Price",
       name: 'updatePrice',
-      attribute: 'textField',
-      isRequired: false
-    },
-    {
-      value: undefined,
-      restrictShow: checkCustomizableFields('isExtra'),
-      width: '500px',
-      placeholder: "Extra Beds",
-      label: "Count of Extra Beds",
-      name: 'extraBeds',
       attribute: 'textField',
       isRequired: false
     }
