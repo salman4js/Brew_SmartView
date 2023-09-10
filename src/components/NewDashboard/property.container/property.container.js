@@ -107,7 +107,8 @@ const PropertyContainer = (props) => {
   
   // On Cancel!
   function onCancel(){
-    props.onCancel(); // this will trigger the cancel operation on checkin form...
+    var opts = {reloadSidepanel: {silent: true}};
+    props.onCancel(opts); // this will trigger the cancel operation on checkin form...
   };
   
   // On Save!

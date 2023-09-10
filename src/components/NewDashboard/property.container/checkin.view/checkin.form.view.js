@@ -319,7 +319,7 @@ const CheckinForm = (props) => {
   // After form has been saved!
   function onCloseCustomModal(){
     _triggerCustomModal(false);
-    props.afterFormSave({reloadSidepanel: true}); // Change the screen to property container dashboard
+    props.afterFormSave({reloadSidepanel: {silent: false}}); // Change the screen to property container dashboard
     // and pass the controller options!
   };
   

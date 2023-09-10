@@ -321,7 +321,7 @@ class CheckOutView extends React.Component {
         roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime()};
       var result = await this.checkoutUtils.onCheckout(data);
       if(result.data.success){
-        this._updatePropertyController({reloadSidepanel: true, reloadPropertyContainer: true});
+        this._updatePropertyController({reloadSidepanel: {silent: false}, reloadPropertyContainer: true});
         var data = {header: result.data.message, isCentered: false, isRestrictBody: true, 
         isFooterEnabled: false};
         this._toggleLoader(false);
