@@ -7,12 +7,12 @@ export function nodeConvertor(status){
     result[options.name] = options.value;
   })
   return result;
-}
+};
 
 // Get state data --> Use this when states are not updating in reusable components!
 export function getStateData(state){
   return state;
-}
+};
 
 // Validate field data for expected input!
 function _validateData(status, setStatus){
@@ -29,7 +29,7 @@ function _validateData(status, setStatus){
     }
     resolve(result, status, setStatus)
   })
-}
+};
 
 
 // Validate the field data...
@@ -58,7 +58,7 @@ export function validateFieldData(status, setStatus) {
       })
       .catch(reject);
   });
-}
+};
 
 // Check for valid field data...
 export function checkFieldValue(value, statusName){
@@ -67,7 +67,7 @@ export function checkFieldValue(value, statusName){
   } else {
     return {isValid: false, statusName: statusName}
   }
-}
+};
 
 // Enable inline toast message for input field!
 export function _enableInlineToast(nodeValue, nodeStatus, state, setState){
@@ -87,8 +87,44 @@ export function _enableInlineToast(nodeValue, nodeStatus, state, setState){
      setState(updatedInputField);
      resolve();
   })
-}
+};
 
+// Find and set the value for metadata fields!
+function findAndSet(obj, nodeValue) {
+    var nodeKey = Object.keys(nodeValue);
+    for (var key in obj) {
+      for(var i = 0; i <= nodeKey.length; i++){
+          if(key === nodeKey[i]){
+              obj[key] = nodeValue[nodeKey[i]];
+          }
+      }
+      if (typeof obj[key] === 'object') {
+        findAndSet(obj[key], nodeValue);
+      }
+    }
+    return obj;
+};
+
+// Update any metadata fields data!
+export function updateMetadataFields(nodeValue, nodeState, state, setState){
+  return new Promise((resolve, reject) => {
+    // Create a copy of metadata fields array!
+    const updatedMetadataField = [...state];
+    
+    // Find the object where the value has to be updated!
+    const targetObjectIndex = updatedMetadataField.findIndex(item => item.name === nodeValue);
+    
+    // When the object is found, update the state of the field to the provided value!
+    if(targetObjectIndex !== -1){
+      // Find the state value where the data has to be updated!
+      updatedMetadataField[targetObjectIndex] = findAndSet(updatedMetadataField[targetObjectIndex], nodeState);
+    };
+    
+    // Set the modified copy to the metadata fields!
+    setState(updatedMetadataField);
+    resolve();
+  })
+};
 
 // Clear out the field data value...
 export function _clearData(status){
@@ -103,7 +139,7 @@ export function _clearData(status){
   })
   
   return oldFieldData;
-}
+};
 
 // Convert objects into arrays!
 export function convertIntoArrays(value){
@@ -114,7 +150,7 @@ export function convertIntoArrays(value){
   })
   
   return arrValue;
-}
+};
 
 // Check if the object is empty of not!
 export function isEmpty(value){
@@ -123,7 +159,7 @@ export function isEmpty(value){
   } else {
     return true;
   }
-}
+};
 
 // Checkbox selection handler!
 export function checkboxSelection(value, setState, storageId){
@@ -139,7 +175,7 @@ export function checkboxSelection(value, setState, storageId){
         setState && setState(prevState => ({...prevState, commandHelper: value}))
       } 
   }
-}
+};
 
 // Handle enable / disable commands for command helper!
 export function handleCommands(commands, setState, enable){
@@ -161,9 +197,22 @@ export function handleCommands(commands, setState, enable){
       }
     })
   })
-}
+};
+
+// Check if any of the metadata fields has been updated or not!
+export function getFieldsData(field, name){
+  var result = {};
+  field.forEach((options) => {
+    if(options.name === name){
+      var isUpdated = (options.value !== undefined) ? true : false;
+      result['isFieldUpdated'] = isUpdated;
+      result['updatedValue'] = options.value;
+    }
+  });
+  return result;
+};
 
 // Refresh the entire page when needed!
 export function domRefresh(){
   window.location.reload();
-}
+};

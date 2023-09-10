@@ -241,7 +241,7 @@ class CheckOutView extends React.Component {
         }
       }));
     };
-    
+
     // Get total amount with advance and discount but without GST!
     getAmountWithoutGST(){
       return this.getRoomPrice() - this.state.billingDetails.advanceCheckin - this.state.billingDetails.discount;
