@@ -21,13 +21,13 @@ function _validateData(status, setStatus){
     var tempResult = [];
     if(Array.isArray(status)){
       status.map((options, index) => {
-        tempResult.push(options?.isRequired ? checkFieldValue(options.value, options.name) : {isValid: true})
+        tempResult.push((options?.isRequired || options?.validation) ? checkFieldValue(options.value, options.name, options.validationRegex) : {isValid: true})
       })
       result = tempResult;
     } else {
-      result = status?.isRequired ? checkFieldValue(status.value, status.name) : {isValid: true}
+      result = (status?.isRequired || status?.validation) ? checkFieldValue(status.value, status.name, status.validationRegex) : {isValid: true}
     }
-    resolve(result, status, setStatus)
+    resolve(result, status, setStatus);
   })
 };
 
@@ -61,9 +61,13 @@ export function validateFieldData(status, setStatus) {
 };
 
 // Check for valid field data...
-export function checkFieldValue(value, statusName){
+export function checkFieldValue(value, statusName, validation){
   if(value !== undefined && value !== ""){
-    return {isValid: true, statusName: statusName}
+    if(validation !== undefined){
+      return validation.test(value) ? {isValid: true, statusName: statusName} : {isValid: false, statusName: statusName}
+    } else {
+      return {isValid: true, statusName: statusName}
+    }
   } else {
     return {isValid: false, statusName: statusName}
   }
