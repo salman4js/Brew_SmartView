@@ -1082,6 +1082,15 @@ td {
   margin-right: 20px;
 }
 
+.metadata-button-field-disabled{
+  background-color: grey;
+  color: #fff;
+  border:none;
+  padding: 2px 5px 2px 5px;
+  border-radius:5px;
+  margin-right: 20px;
+}
+
 .property-error-container{
   color: red;
   font-weight: bold;

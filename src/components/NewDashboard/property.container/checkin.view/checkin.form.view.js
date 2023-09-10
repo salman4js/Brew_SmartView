@@ -133,6 +133,8 @@ const CheckinForm = (props) => {
       placeholder: "Advance Amount",
       label: "Advance Amount",
       name: 'advance',
+      validation: true,
+      validationRegex: /^(0|[1-9]\d*)$/,
       attribute: 'textField',
       isRequired: false,
       inlineToast: {
@@ -155,6 +157,8 @@ const CheckinForm = (props) => {
       placeholder: "Adults",
       label: "Adults Count",
       name: 'adults',
+      validation: true,
+      validationRegex: /^(0*[1-9][0-9]*(?:\.\d+)?|0+\.\d*[1-9][0-9]*)$/,
       attribute: 'textField',
       isRequired: true,
       inlineToast: {
@@ -281,7 +285,8 @@ const CheckinForm = (props) => {
   // On form save event!
   async function onFormSave(){
     const isFormValid = await validateFieldData(checkinFields, setCheckinFields);
-    if(isFormValid.length === 0){
+    const isCustomizableFieldValid = await validateFieldData(customizableFields, setCustomizableFields);
+    if(isFormValid.length === 0 && isCustomizableFieldValid.length === 0){
       _toggleLoader(true);
       const formValue = getFieldData(checkinFields); // Default input fields!
       const customizableFormValues = getFieldData(customizableFields); // Customizable form values!
