@@ -16,7 +16,7 @@ const SidepanelWrapper = (props) => {
     isLoading: true,
     paranetData: undefined,
     childData: undefined,
-    itemChildData: undefined
+    selectedId: []
   });
   
   // Update sidepanel height!
@@ -79,7 +79,13 @@ const SidepanelWrapper = (props) => {
   // Item panel collection onClick!
   function panelItemOnClick(uId, model){
     var formMode = getFormMode(model);
+    _updateSelectedIdList(uId);
     props.selectedModel(model, formMode);
+  };
+  
+  // Highlight selected ID!
+  function _updateSelectedIdList(id){
+    setSidepanel(prevState => ({...prevState, selectedId: [...prevState.selectedId, id]}));
   };
   
   // Render panel item view collection!
@@ -90,7 +96,7 @@ const SidepanelWrapper = (props) => {
         var statusColorCode = getStatusCodeColor(options.roomStatusConstant);
         return <PanelItemView data = {options.roomno} _id = {options._id} showIndentationArrow = {true}
         showInlineMenu = {true} customInlineMenu = {true} colorCode = {statusColorCode}
-        onClick = {(uId) => panelItemOnClick(uId, options)}
+        onClick = {(uId) => panelItemOnClick(uId, options)} selectedItem = {sidepanel.selectedId}
         _renderCustomInlineMenu = {() => _renderCustomInlineMenu(options.floorNo)} />
       }
     })
@@ -124,10 +130,18 @@ const SidepanelWrapper = (props) => {
     }
   };
   
+  // Reset client side data to its original data value!
+  function _resetClientData(){
+    setSidepanel(prevState => ({...prevState, height: undefined, selectedId: []}));
+  };
+  
   // Update the sidepanel height when props.data.height changes!
   useEffect(() => {
+    if(!props.controller.reloadSidepanel.silent){ 
+      fetchRoomsTypes();
+    };
+    _resetClientData();
     updateSidePanelHeight(props.data.height);
-    fetchRoomsTypes();
   }, [props.data.height, props.controller.reloadSidepanel]);
   
   // Panel View!

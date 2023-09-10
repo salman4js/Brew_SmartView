@@ -64,7 +64,7 @@ class RoomStatusView extends React.Component {
     var result = await moveToNextState(params);
     if(result.data.success){
       this._toggleLoader(false);
-      this.props.dashboardController({reloadSidepanel: true, persistStatusView: true, updatedModel: result.data.data});
+      this.props.dashboardController({reloadSidepanel: {silent: true}, persistStatusView: true, updatedModel: result.data.data});
     }
   };
   

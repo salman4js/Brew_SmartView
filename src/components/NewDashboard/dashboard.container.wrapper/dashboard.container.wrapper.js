@@ -16,7 +16,9 @@ const DashboardWrapper = (props) => {
   
   // Sidepanel controller throught props state handler!
   const [propertyController, setPropertyController] = useState({
-    reloadSidepanel: undefined
+    reloadSidepanel: {
+      silent: false
+    }
   });
 
   // Update the selected model from the side panel wrapper!
@@ -42,16 +44,16 @@ const DashboardWrapper = (props) => {
   
   // Update dashboard wrapper!
   function _updateDashboardWrapper(opts){
-    opts.reloadSidepanel && _reloadSidepanel();
+    opts.reloadSidepanel && _reloadSidepanel(opts);
     opts.reloadPropertyContainer && _reloadPropertyContainer();
     opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need 
     // updated room model to updated it to the latest value
   };
   
   // Reload sidepanel function!
-  function _reloadSidepanel(){
-    var value = propertyController.reloadSidepanel;
-    setPropertyController(prevState => ({...prevState, reloadSidepanel: !value}));
+  function _reloadSidepanel(opts){
+    var _reload = {...opts};
+    setPropertyController(prevState => ({...prevState, reloadSidepanel: _reload.reloadSidepanel}));
   };
   
   // Reload property container!
