@@ -4,8 +4,8 @@ import brewDate from 'brew-date';
 import MetadataFields from '../../../fields/metadata.fields.view';
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
-import { getTimeDate, formatDate } from '../../../common.functions/common.functions';
-import { nodeConvertor, validateFieldData, _clearData, _enableInlineToast } from '../../../common.functions/node.convertor';
+import { getTimeDate, formatDate, getStayedDays, determineGSTPercent } from '../../../common.functions/common.functions';
+import { nodeConvertor, validateFieldData, _clearData, _enableInlineToast, getFieldsData, updateMetadataFields } from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 
 
@@ -17,7 +17,7 @@ const CheckinForm = (props) => {
     customModal: false,
     navigateToProperty: false
   });
-  
+
   // Custom modal state handler!
   const [customModalState, setCustomModalState] = useState({
     show: false,
@@ -31,6 +31,44 @@ const CheckinForm = (props) => {
 
   // Checkin form fields state handler!
   const [checkinFields, setCheckinFields] = useState([
+    {
+      value: 'Walk-In',
+      restrictShow: checkCustomizableFields('isChannel'),
+      width: '500px',
+      placeholder: "Choose the preferred channel manager",
+      label: "Channel Manager",
+      name: 'channel',
+      attribute: 'listField',
+      isRequired: false,
+      options: [
+        {
+          value: "Make My Trip"
+        },
+        {
+          value: "Oyo"
+        },
+        {
+          value: 'Walk-In'
+        }
+      ],
+      style: {
+        color: "black",
+        fontSize: "15px",
+        paddingRight: "10px",
+        paddingLeft: "10px",
+        cursor: "pointer",
+      }
+    },
+    {
+      value: undefined,
+      restrictShow: checkCustomizableFields('updatePrice'),
+      width: '500px',
+      placeholder: "Update Room Price",
+      label: "Update Room Price",
+      name: 'updatePrice',
+      attribute: 'textField',
+      isRequired: false
+    },
     {
       value: new Date(),
       width: '500px',
@@ -56,7 +94,8 @@ const CheckinForm = (props) => {
       inlineToast: {
         isShow: false,
         inlineMessage: 'Please provide a valid input.'
-      }
+      },
+      callBackAfterUpdate: _restrictAdvanceAmount
     },
     {
       value: undefined,
@@ -83,28 +122,6 @@ const CheckinForm = (props) => {
         isShow: false,
         inlineMessage: 'Please provide a valid input.'
       }
-    },
-    {
-      value: undefined,
-      width: '500px',
-      placeholder: "Second Phone Number",
-      label: "Second Phone Number",
-      name: 'secondphonenumber',
-      attribute: 'textField',
-      isRequired: false
-    },
-    {
-      value: undefined,
-      width: '500px',
-      placeholder: "Address",
-      label: "Address",
-      name: 'address',
-      attribute: 'textField',
-      isRequired: true,
-      inlineToast: {
-        isShow: false,
-        inlineMessage: 'Please provide a valid input.'
-      }
     }
   ]);
   
@@ -117,7 +134,11 @@ const CheckinForm = (props) => {
       label: "Advance Amount",
       name: 'advance',
       attribute: 'textField',
-      isRequired: false
+      isRequired: false,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input!'
+      }
     },
     {
       value: undefined,
@@ -165,44 +186,43 @@ const CheckinForm = (props) => {
       }
     },
     {
-      value: 'Walk-In',
-      restrictShow: checkCustomizableFields('isChannel'),
-      width: '500px',
-      placeholder: "Choose the preferred channel manager",
-      label: "Channel Manager",
-      name: 'channel',
-      attribute: 'listField',
-      isRequired: false,
-      options: [
-        {
-          value: "Make My Trip"
-        },
-        {
-          value: "Oyo"
-        },
-        {
-          value: 'Walk-In'
-        }
-      ],
-      style: {
-        color: "black",
-        fontSize: "15px",
-        paddingRight: "10px",
-        paddingLeft: "10px",
-        cursor: "pointer",
-      }
-    },
-    {
       value: undefined,
-      restrictShow: checkCustomizableFields('updatePrice'),
       width: '500px',
-      placeholder: "Update Room Price",
-      label: "Update Room Price",
-      name: 'updatePrice',
+      placeholder: "Address",
+      label: "Address",
+      name: 'address',
       attribute: 'textField',
-      isRequired: false
+      isRequired: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input.'
+      }
     }
   ]);
+
+  // Get price amount for advance amount restriction!
+  function getPriceAmount(){
+    var priceAmount;
+    var result = getFieldsData(checkinFields, 'updatePrice');
+    if(result.isFieldUpdated){
+      priceAmount = result.updatedValue;
+    } else {
+      priceAmount = props.data.roomModel.price;
+    };
+    return priceAmount;
+  };
+  
+  // Get advance amount limit!
+  function _restrictAdvanceAmount(){
+    var priceAmount = getPriceAmount(),
+      currentDate = brewDate.getFullDate("yyyy/mm/dd"),
+      dateOfCheckout = getFieldsData(checkinFields, 'checkout').updatedValue,
+      stayedDays = getStayedDays(currentDate, dateOfCheckout),
+      gstPrice = props.data.roomModel.price * determineGSTPercent(props.data.roomModel.price),
+      totalAmount = (stayedDays * priceAmount) + (stayedDays * gstPrice);
+    var nodeValue = {isShow: true, inlineMessage: `Advance amount cannot be greater than ${totalAmount}`};
+    updateMetadataFields('advance', nodeValue, customizableFields, setCustomizableFields);
+  };
   
   // Check customizable fields!
   function checkCustomizableFields(field){

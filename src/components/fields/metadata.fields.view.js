@@ -41,6 +41,7 @@ const MetadataFields = (props) => {
     fieldState[index].isChanged = true; // Change the metafield value to true when the value changed!
     props.toggleButtonProp &&  props.toggleButtonProp("success", false); // Make buttons enable when the field value is changed!
     props.updateData(fieldState); // Update the state with the updated array
+    fieldState[index].callBackAfterUpdate && fieldState[index].callBackAfterUpdate();
     fieldState[index].dependentValue && updateDependantValueField(fieldState[index].dependentValue);
   };
   
