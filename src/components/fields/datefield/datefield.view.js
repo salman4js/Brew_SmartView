@@ -20,7 +20,8 @@ const DateField = (props) => {
     <div className = "modal-gap" style = {{width: props.data.width}}>
         <label style={{ color: "black" }}> {props.data.label} </label>
         <DatePicker style={{ color: "black" }} className="form-control" placeholderText={props.data.placeholder} 
-        selected = {getSelectedDate()} dateFormat={props.data.dateFormat} minDate={new Date()} maxDate= {getMaxDate()} showTimeSelect = {props.data.showTimeSelect}
+        selected = {getSelectedDate()} dateFormat={props.data.dateFormat} minDate={new Date()} maxDate= {getMaxDate()}
+         showTimeSelect = {props.data.showTimeSelect} excludeDates = {props.data.excludeDates}
         onChange={((e) => props.handleInputChange(props.index, e, props.data.attribute))} isClearable />
     </div>
   )

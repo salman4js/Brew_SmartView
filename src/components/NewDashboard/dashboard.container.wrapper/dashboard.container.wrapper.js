@@ -23,6 +23,7 @@ const DashboardWrapper = (props) => {
 
   // Update the selected model from the side panel wrapper!
   function updateSelectedModel(roomModel, formMode){
+    onFormCancel(); // this will clear out the form data, so that the newly selected roomModel will load.
     setSelectedModel(prevState => ({...prevState, roomModel: roomModel, formMode: formMode}));
   };
   
@@ -38,7 +39,7 @@ const DashboardWrapper = (props) => {
   
   // On form cancel operation!
   function onFormCancel(opts){
-    setSelectedModel(prevState => ({...prevState, roomModel: undefined}));
+    setSelectedModel(prevState => ({...prevState, roomModel: undefined, formMode: undefined}));
     opts && _updateDashboardWrapper(opts);
   };
   

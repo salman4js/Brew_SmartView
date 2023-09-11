@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { checkInFormValue } from './checkin.form.utils';
 import brewDate from 'brew-date';
+import { prebookExcludeDates } from '../../../ExcludeDates/excludesdates';
 import MetadataFields from '../../../fields/metadata.fields.view';
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
@@ -86,6 +87,7 @@ const CheckinForm = (props) => {
       value: new Date(),
       width: '500px',
       defaultValue: new Date(),
+      excludeDates: [],
       placeholder: "Checkout Date",
       label: "Date of Check-Out",
       name: 'checkout',
@@ -95,7 +97,7 @@ const CheckinForm = (props) => {
         isShow: false,
         inlineMessage: 'Please provide a valid input.'
       },
-      callBackAfterUpdate: _restrictAdvanceAmount
+      callBackAfterUpdate: _restrictAdvAndDiscount
     },
     {
       value: undefined,
@@ -148,8 +150,14 @@ const CheckinForm = (props) => {
       placeholder: "Discount Amount",
       label: "Discount Amount",
       name: 'discount',
+      validation: true,
+      validationRegex: /^(0|[1-9]\d*)$/,
       attribute: 'textField',
-      isRequired: false
+      isRequired: false,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input!'
+      }
     },
     {
       value: undefined,
@@ -216,16 +224,29 @@ const CheckinForm = (props) => {
     return priceAmount;
   };
   
-  // Get advance amount limit!
-  function _restrictAdvanceAmount(){
+  // Restrict advance and discount controller!
+  function _restrictAdvAndDiscount(){ // If any of these two restricted coming via config use that condition here!
     var priceAmount = getPriceAmount(),
       currentDate = brewDate.getFullDate("yyyy/mm/dd"),
       dateOfCheckout = getFieldsData(checkinFields, 'checkout').updatedValue,
       stayedDays = getStayedDays(currentDate, dateOfCheckout),
       gstPrice = props.data.roomModel.price * determineGSTPercent(props.data.roomModel.price),
       totalAmount = (stayedDays * priceAmount) + (stayedDays * gstPrice);
+    _restrictAdvanceAmount(totalAmount);
+    _restrictDiscountAmount(totalAmount); 
+  }; 
+  
+  // Get advance amount limit!
+  function _restrictAdvanceAmount(totalAmount){
     var nodeValue = {isShow: true, inlineMessage: `Advance amount cannot be greater than ${totalAmount}`};
     updateMetadataFields('advance', nodeValue, customizableFields, setCustomizableFields);
+  };
+  
+  // Get discount amount limit!
+  function _restrictDiscountAmount(totalAmount){
+    var restrictedDiscount = totalAmount * (3 / 4);
+    var nodeValue = {isShow: true, inlineMessage: `Discount amount cannot be greater than ${restrictedDiscount}`};
+    updateMetadataFields('discount', nodeValue, customizableFields, setCustomizableFields);
   };
   
   // Check customizable fields!
@@ -323,8 +344,24 @@ const CheckinForm = (props) => {
     // and pass the controller options!
   };
   
+  // Get exclude dates and append it on date of checkout!
+  async function _getExcludeDates(){
+    _toggleLoader(true);
+    var excludeDates = [];
+    var result = await prebookExcludeDates(props.data.roomModel._id);
+    if(result.success){
+        result.message.map((options) => {
+          excludeDates.push(new Date(options));
+        })
+    };
+    _toggleLoader(false);
+    var nodeValue = {excludeDates: excludeDates};
+    updateMetadataFields('checkout', nodeValue, checkinFields, setCheckinFields);
+  };
+  
   // Listeners!
   useEffect(() => {
+    _getExcludeDates();
     props.data.onFormSave && onFormSave(); // this method will get triggered by property container!
   }, [props.data])
   

@@ -281,6 +281,7 @@ class CheckOutView extends React.Component {
     
     // Fetch required details!
     async fetchDetails(){
+      this._toggleLoader(true);
       await this.fetchUserDetails();
     };
     
@@ -329,6 +330,7 @@ class CheckOutView extends React.Component {
       }
     };
     
+    // When checkout action triggered in property container!
     onCheckout(){
       var data = {
         header: 'You are about to checkout this customer, Are you sure to checkout?',
@@ -339,6 +341,13 @@ class CheckOutView extends React.Component {
         primaryButtonId: 'Checkout'
       };
       this.setCustomModal(data);
+    };
+    
+    // When the room model has been changed!
+    updateRoomModel(updatedData){
+      this.setState({data: updatedData}, () => {
+        this.fetchDetails();
+      })
     };
     
     // On checkout triggered!
@@ -364,10 +373,14 @@ class CheckOutView extends React.Component {
     };
     
     // On update lifecyle method!
-    componentDidUpdate(prevProps, prevState){
+    async componentDidUpdate(prevProps, prevState){
       if(this.props.data.onCheckout && !prevProps.data.onCheckout){
         this.onCheckout();
-      }
+      };
+      
+      if(this.props.data.roomModel._id !== prevProps.data.roomModel._id){
+        await this.updateRoomModel(this.props.data);
+      };
     };
     
     // On render lifecyle method!

@@ -119,7 +119,7 @@ const PropertyContainer = (props) => {
   // Force update when the props changes!
   useEffect(() => {
     setPanelField(getPanelFieldData); // Update the panel field data when the formMode changes!
-  }, [props.data.formMode])
+  }, [props.data])
   
   return(
     <>
