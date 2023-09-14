@@ -18,7 +18,7 @@ const DashboardInitializer = (props) => {
   
   // Model assist model data!
   var [modalAssistData, setModalAssistData] = useState({
-    header: "Dashboard",
+    header: 'Dashboard',
     _showHeaderChildView: null,
     height: undefined,
     style: {

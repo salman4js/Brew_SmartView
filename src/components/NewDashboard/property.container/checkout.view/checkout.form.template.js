@@ -101,4 +101,4 @@ export function templateHelpers(userModel, billingInfo){
         </div>
       </div>
   )
-}
+};

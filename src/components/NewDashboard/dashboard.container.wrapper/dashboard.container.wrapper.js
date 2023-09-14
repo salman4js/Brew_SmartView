@@ -9,10 +9,26 @@ const DashboardWrapper = (props) => {
   // Selected Model state handler!
   const [selectedModel, setSelectedModel] = useState({
     roomModel: undefined,
-    formMode: undefined,
+    formMode: 'default',
     onFormSave: false,
     onCheckout: false
   });
+  
+  // Default view room model details state handler!
+  const [propertyDetails, setPropertyDetails] = useState({
+    totalCount: undefined,
+    countAvailability: undefined,
+    reservedCount: undefined,
+    updatePropertyDetails: _updatePropertyDetails
+  });
+  
+  // Function to update property details!
+  function _updatePropertyDetails(totalCount, availability){
+    var totalCount = totalCount,
+      countAvailability = availability,
+      reservedCount = totalCount - availability;
+    setPropertyDetails(prevState => ({...prevState, totalCount: totalCount, countAvailability: countAvailability, reservedCount: reservedCount}));
+  };
   
   // Sidepanel controller throught props state handler!
   const [propertyController, setPropertyController] = useState({
@@ -39,7 +55,8 @@ const DashboardWrapper = (props) => {
   
   // On form cancel operation!
   function onFormCancel(opts){
-    setSelectedModel(prevState => ({...prevState, roomModel: undefined, formMode: undefined}));
+    setSelectedModel(prevState => ({...prevState, roomModel: undefined, formMode: 'default'})); // On form cancel, set the formMode
+    // to the default form mode widget-table!
     opts && _updateDashboardWrapper(opts);
   };
   
@@ -92,16 +109,15 @@ const DashboardWrapper = (props) => {
       <div className = "sidepanel-wrapper">
         <div className = "flex-1">
           <SidepanelWrapper controller = {propertyController} data = {props.modalAssistData} params = {props.params} selectedModelData = {selectedModel}
-          selectedModel = {(roomModel, formMode) => updateSelectedModel(roomModel, formMode)} />
+          selectedModel = {(roomModel, formMode) => updateSelectedModel(roomModel, formMode)} 
+          updatePropertyDetails = {(totalCount, availability) => _updatePropertyDetails(totalCount, availability)} />
         </div>
         <div className = "flex-2">
-          {selectedModel.roomModel !== undefined && ( // Render the property container only when any room model is clicked
-            <div className = "dashboard-property-container">
-              <PropertyContainer data = {selectedModel} propertyContainerHeight = {props.modalAssistData.height} 
-              onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
-              onCheckout = {(value) => onCheckout(value)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
-            </div>
-          )}
+          <div className = "dashboard-property-container">
+            <PropertyContainer data = {selectedModel} propertyContainerHeight = {props.modalAssistData.height} propertyDetails = {propertyDetails}
+            onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
+            onCheckout = {(value) => onCheckout(value)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
+          </div>
         </div>
       </div>
     )

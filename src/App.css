@@ -1123,3 +1123,9 @@ td {
   margin-left: 200px;
 }
 
+.default-widget-tile-view{
+  background: rgba(0, 0, 0, 0) linear-gradient(45deg, rgb(9, 14, 44) 0%, rgb(18, 44, 105) 58.93%, rgb(7, 141, 179) 100%) repeat scroll 0% 0%;
+  min-height: 100vh;
+  color: white;
+}
+
