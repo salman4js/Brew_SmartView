@@ -3,6 +3,7 @@ import MetadataFields from '../../fields/metadata.fields.view';
 import CheckInForm from './checkin.view/checkin.form.view';
 import CheckOutView from './checkout.view/checkout.form.view';
 import RoomStatusView from './room.status.view/room.status.view';
+import DefaultView from './default.view/default.view';
 
 const PropertyContainer = (props) => {
 
@@ -63,8 +64,12 @@ const PropertyContainer = (props) => {
       return <RoomStatusView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
       dashboardController = {(opts) => props.dashboardController(opts)} />
     };
+    
+    if(props.data.formMode === 'default'){
+      return <DefaultView data = {props.propertyDetails} params = {props.params} />
+    };
   };
-  
+
   // Get panel field right side data!
   function getPanelRightSideData(){
     var checkinFormModel = [{
@@ -123,7 +128,9 @@ const PropertyContainer = (props) => {
   
   return(
     <>
-      <MetadataFields data = {panelField} updateData = {setPanelField} />
+      {props.data.formMode !== 'default' && (
+        <MetadataFields data = {panelField} updateData = {setPanelField} />
+      )}
       {_renderPropertyModel()}
     </>
   )
