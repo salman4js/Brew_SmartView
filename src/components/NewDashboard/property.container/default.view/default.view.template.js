@@ -1,4 +1,5 @@
 export function templateHelpers(state){
+  console.log(state);
   return(
     <div>
       <div className="text-center">

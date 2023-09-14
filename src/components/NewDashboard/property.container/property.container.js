@@ -66,7 +66,7 @@ const PropertyContainer = (props) => {
     };
     
     if(props.data.formMode === 'default'){
-      return <DefaultView data = {props.propertyDetails} params = {props.params} />
+      return <DefaultView data = {props.propertyDetails} params = {props.params} height = {props.propertyContainerHeight} />
     };
   };
 

@@ -16,18 +16,21 @@ const DashboardWrapper = (props) => {
   
   // Default view room model details state handler!
   const [propertyDetails, setPropertyDetails] = useState({
+    roomCollection: undefined,
     totalCount: undefined,
     countAvailability: undefined,
     reservedCount: undefined,
+    isFetched: false,
     updatePropertyDetails: _updatePropertyDetails
   });
   
   // Function to update property details!
-  function _updatePropertyDetails(totalCount, availability){
-    var totalCount = totalCount,
+  function _updatePropertyDetails(roomCollection, availability){
+    var totalCount = roomCollection.length,
       countAvailability = availability,
       reservedCount = totalCount - availability;
-    setPropertyDetails(prevState => ({...prevState, totalCount: totalCount, countAvailability: countAvailability, reservedCount: reservedCount}));
+    setPropertyDetails(prevState => ({...prevState, roomCollection: roomCollection, totalCount: totalCount, 
+      countAvailability: countAvailability, reservedCount: reservedCount, isFetched: true}));
   };
   
   // Sidepanel controller throught props state handler!
@@ -110,7 +113,7 @@ const DashboardWrapper = (props) => {
         <div className = "flex-1">
           <SidepanelWrapper controller = {propertyController} data = {props.modalAssistData} params = {props.params} selectedModelData = {selectedModel}
           selectedModel = {(roomModel, formMode) => updateSelectedModel(roomModel, formMode)} 
-          updatePropertyDetails = {(totalCount, availability) => _updatePropertyDetails(totalCount, availability)} />
+          updatePropertyDetails = {(roomCollection, availability) => _updatePropertyDetails(roomCollection, availability)} />
         </div>
         <div className = "flex-2">
           <div className = "dashboard-property-container">
