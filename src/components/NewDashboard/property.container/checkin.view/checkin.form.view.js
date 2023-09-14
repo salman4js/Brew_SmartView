@@ -12,6 +12,11 @@ import { getStorage } from '../../../../Controller/Storage/Storage';
 
 const CheckinForm = (props) => {
   
+  // Advance restricted!
+  function _isAdvanceRestricted(){
+    return JSON.parse(getStorage('isAdvanceRestricted'));
+  };
+  
   // Property container state handler!
   const [propertyContainer, setPropertyContainer] = useState({
     isLoading: false,
@@ -131,11 +136,12 @@ const CheckinForm = (props) => {
   const [customizableFields, setCustomizableFields] = useState([
     {
       value: undefined,
+      defaultValue: 0,
       width: '500px',
-      placeholder: "Advance Amount",
-      label: "Advance Amount",
+      placeholder: _isAdvanceRestricted() ? 'Advance Amount' : 'Cash and Deposit',
+      label: _isAdvanceRestricted() ? 'Advance Amount' : 'Cash and Deposit',
       name: 'advance',
-      validation: true,
+      validation: _isAdvanceRestricted(),
       validationRegex: /^(0|[1-9]\d*)$/,
       attribute: 'textField',
       isRequired: false,
@@ -147,6 +153,7 @@ const CheckinForm = (props) => {
     {
       value: undefined,
       width: '500px',
+      defaultValue: 0,
       placeholder: "Discount Amount",
       label: "Discount Amount",
       name: 'discount',
@@ -305,10 +312,10 @@ const CheckinForm = (props) => {
 
   // On form save event!
   async function onFormSave(){
+    _toggleLoader(true);
     const isFormValid = await validateFieldData(checkinFields, setCheckinFields);
     const isCustomizableFieldValid = await validateFieldData(customizableFields, setCustomizableFields);
     if(isFormValid.length === 0 && isCustomizableFieldValid.length === 0){
-      _toggleLoader(true);
       const formValue = getFieldData(checkinFields); // Default input fields!
       const customizableFormValues = getFieldData(customizableFields); // Customizable form values!
       customizableFormValues['isChannel'] = customizableFormValues.channel !== 'Walk-In' ? true : false; // This params is needed when dealing with channel manager!

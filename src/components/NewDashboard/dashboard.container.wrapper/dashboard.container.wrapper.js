@@ -91,7 +91,7 @@ const DashboardWrapper = (props) => {
     return(
       <div className = "sidepanel-wrapper">
         <div className = "flex-1">
-          <SidepanelWrapper controller = {propertyController} data = {props.modalAssistData} params = {props.params} 
+          <SidepanelWrapper controller = {propertyController} data = {props.modalAssistData} params = {props.params} selectedModelData = {selectedModel}
           selectedModel = {(roomModel, formMode) => updateSelectedModel(roomModel, formMode)} />
         </div>
         <div className = "flex-2">

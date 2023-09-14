@@ -4,7 +4,11 @@ const storage = require("../../Controller/Storage/Storage")
 export function nodeConvertor(status){
   const result = {};
   status.map((options, index) => {
-    result[options.name] = options.value;
+    if(options.defaultValue && (options.value === undefined)){
+      result[options.name] = options.defaultValue;
+    } else {
+      result[options.name] = options.value;
+    }
   })
   return result;
 };
@@ -21,11 +25,11 @@ function _validateData(status, setStatus){
     var tempResult = [];
     if(Array.isArray(status)){
       status.map((options, index) => {
-        tempResult.push((options?.isRequired || options?.validation) ? checkFieldValue(options.value, options.name, options.validationRegex) : {isValid: true})
+        tempResult.push((options?.isRequired || options?.validation) ? checkFieldValue(options.value, options.defaultValue, options.name, options.validationRegex) : {isValid: true})
       })
       result = tempResult;
     } else {
-      result = (status?.isRequired || status?.validation) ? checkFieldValue(status.value, status.name, status.validationRegex) : {isValid: true}
+      result = (status?.isRequired || status?.validation) ? checkFieldValue(status.value, status.defaultValue, status.name, status.validationRegex) : {isValid: true}
     }
     resolve(result, status, setStatus);
   })
@@ -61,16 +65,18 @@ export function validateFieldData(status, setStatus) {
 };
 
 // Check for valid field data...
-export function checkFieldValue(value, statusName, validation){
+export function checkFieldValue(value, defaultValue, statusName, validationRegex){
+  var validationRequired = (validationRegex !== undefined);
   if(value !== undefined && value !== ""){
-    if(validation !== undefined){
-      return validation.test(value) ? {isValid: true, statusName: statusName} : {isValid: false, statusName: statusName}
-    } else {
-      return {isValid: true, statusName: statusName}
-    }
+    return validationRequired ? validateMetadataFields(value, statusName, validationRegex) : {isValid: true, statusName: statusName};
   } else {
-    return {isValid: false, statusName: statusName}
+    return validationRequired ? validateMetadataFields(defaultValue, statusName, validationRegex) : {isValid: false, statusName: statusName};
   }
+};
+
+// Validation for metadata fields!
+function validateMetadataFields(value, statusName, validationRegex){
+  return validationRegex.test(value) ? {isValid: true, statusName: statusName} : {isValid: false, statusName: statusName};
 };
 
 // Enable inline toast message for input field!

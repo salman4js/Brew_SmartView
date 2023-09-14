@@ -135,11 +135,32 @@ const SidepanelWrapper = (props) => {
     setSidepanel(prevState => ({...prevState, height: undefined, selectedId: []}));
   };
   
+  // Update the child model on every silent true state update!
+  function updateModel(){
+    if(props.selectedModelData.roomModel !== undefined){ // this condition is added here because when we click on cancel on the property container 
+      // The opts which gets send to the dashboardController function is reloadSidepanel silent: true to avoid making an api call for cancel operation!
+      // That time the props.selectedModelData.roomModel will be undefined.
+      var currentModelData = sidepanel.childData,
+        updatedModelId = props.selectedModelData.roomModel._id,
+        updatableIndex;
+      currentModelData.map((key,index) => {
+        if(key._id === updatedModelId){
+          updatableIndex = index;
+        };
+      });
+      // Update the data at the calculated index!
+      currentModelData[updatableIndex] = props.selectedModelData.roomModel;
+      setSidepanel(prevState => ({...prevState, childData: currentModelData})); // Update the child data!
+    };
+  };
+  
   // Update the sidepanel height when props.data.height changes!
   useEffect(() => {
     if(!props.controller.reloadSidepanel.silent){ 
       fetchRoomsTypes();
-    };
+    } else {
+      updateModel();
+    }
     _resetClientData();
     updateSidePanelHeight(props.data.height);
   }, [props.data.height, props.controller.reloadSidepanel]);
