@@ -18,7 +18,7 @@ const DashboardInitializer = (props) => {
   
   // Model assist model data!
   var [modalAssistData, setModalAssistData] = useState({
-    header: 'Dashboard',
+    header: `${paramsObj.accIdAndName[1]} -  Dashboard`,
     _showHeaderChildView: null,
     height: undefined,
     style: {
@@ -36,7 +36,7 @@ const DashboardInitializer = (props) => {
   // Dashboard wrapper view!
   function dashboardWrapperView(){
     return <DashboardWrapper modalAssistData = {modalAssistData} params = {paramsObj} />
-  }
+  };
   
   return(
     <>

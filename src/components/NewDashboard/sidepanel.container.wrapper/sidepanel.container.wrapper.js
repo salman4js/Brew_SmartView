@@ -126,7 +126,7 @@ const SidepanelWrapper = (props) => {
     const result = await getRoomList(props.params.accIdAndName[0]);
     if(result.data.success){
       setSidepanel(prevState => ({...prevState, childData: result.data.message}));
-      props.updatePropertyDetails(result.data.message.length, result.data.countAvailability); // Send the property details to the dashboard container!
+      props.updatePropertyDetails(result.data.message, result.data.countAvailability); // Send the property details to the dashboard container!
       _toggleLoader(false);
     }
   };

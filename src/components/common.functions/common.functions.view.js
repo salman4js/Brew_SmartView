@@ -17,7 +17,11 @@ function getStyle(options){
     marginTop: options.marginTop,
     color: options.color,
     textAlign: options.textCenter ? "center" : "none",
-    marginLeft: options.marginLeft
+    marginLeft: options.marginLeft,
+    paddingTop: options.paddingTop,
+    fontBold: options.fontBold,
+    fontWeight: options.fontWeight,
+    fontSize: options.fontSize
   }
 }
 
