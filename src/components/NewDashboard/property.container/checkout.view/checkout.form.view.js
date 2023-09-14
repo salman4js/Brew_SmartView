@@ -27,7 +27,8 @@ class CheckOutView extends React.Component {
         billingInfo: {
           gstPrice: undefined,
           roomPrice: undefined,
-          totalPrice: undefined
+          totalPrice: undefined,
+          isNegativeValue: false
         },
         customModal: {
           show: false,
@@ -197,18 +198,21 @@ class CheckOutView extends React.Component {
        checkOutDateTime = this.getTodayDate() + " " + getTimeDate().getTime;
       if(this.getIsHourly()){
         var difference = brewDate.diffHours(checkInDateTime, checkOutDateTime);
-        this.setState({stayedDays: difference});
+        return difference;
       } else {
         var checkinDate = new Date(this.state.userModel.dateofcheckin);
         var checkoutDate = new Date(this.getTodayDate());
         var diffTime = Math.abs(checkoutDate - checkinDate);
         var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        diffDays == 0 ? this.updateStayedDays(diffDays + 1 + " Days")  : this.updateStayedDays(diffDays + " Days");
+        // diffDays == 0 ? this.updateStayedDays(diffDays + 1 + " Days")  : this.updateStayedDays(diffDays + " Days");
+        return diffDays == 0 ? diffDays + 1 : diffDays;
       }
     };
     
     // Update stayed days and fetch billing details!
-    updateStayedDays(stayeddays){
+    updateStayedDays(){
+      var stayeddays = this.calculateStayedDays(),
+        stayedDays = stayeddays +" Days";
       this.setState({stayeddays}, async () => {
         await this.fetchBillingDetails();
       })
@@ -237,7 +241,8 @@ class CheckOutView extends React.Component {
           totalPrice: this.getTotalPayableAmount() + this.gstPrice + " Rs",
           advanceAmount: this.state.billingDetails.advanceCheckin + ' Rs',
           discountAmount: this.state.billingDetails.discountPrice + ' Rs',
-          withoutGST: this.getAmountWithoutGST() + ' Rs'
+          withoutGST: this.getAmountWithoutGST() + ' Rs',
+          isNegativeValue: this.getTotalPayableAmount() > 0 ? false : true
         }
       }));
     };
@@ -249,14 +254,14 @@ class CheckOutView extends React.Component {
     
     // Calculate GST for inclusive calculation!
     getGSTForInclusive(){ 
-      var totalPayableAmount = this.getTotalPayableAmount();
-      var inclusiveGSTAmount = totalPayableAmount / (1 + determineGSTPercent(this.state.data.roomModel.price));
+      var amountForStayedDays = this.getAmountForStayedDays();
+      var inclusiveGSTAmount = amountForStayedDays / (1 + determineGSTPercent(this.state.data.roomModel.price));
       this.gstPrice = inclusiveGSTAmount;
     };
     
     // Calculate GST for exclusive calculation!
     getGSTForExclusive(){
-      var exclusiveGSTAmount = Math.round(this.getTotalPayableAmount() * determineGSTPercent(this.state.data.roomModel.price));
+      var exclusiveGSTAmount = Math.round(this.getAmountForStayedDays() * determineGSTPercent(this.state.data.roomModel.price));
       this.gstPrice = exclusiveGSTAmount;
     };
     
@@ -265,15 +270,23 @@ class CheckOutView extends React.Component {
       return Number(this.state.data.roomModel.price);
     };
     
+    // Get amount for stayed days!
+    getAmountForStayedDays(){
+      var roomPrice = this.getRoomPrice(),
+        stayedDays = this.calculateStayedDays();
+      return Number(roomPrice) * Number(stayedDays);
+    };
+    
     // Calculate total amount!
     getTotalPayableAmount(){
       var roomPrice = Number(this.state.billingDetails.message),
         advanceAmount = Number(this.state.billingDetails.advanceCheckin),
         discountAmount = Number(this.state.billingDetails.discount),
-        extraBedPrice = Number(this.getExtraBedPrice());
-      return roomPrice - advanceAmount - discountAmount + extraBedPrice;
+        extraBedPrice = Number(this.getExtraBedPrice()),
+        totalPayableAmount = roomPrice - advanceAmount - discountAmount + extraBedPrice;
+      return totalPayableAmount;
     };
-    
+
     // Get extra bed price!
     getExtraBedPrice(){
       return Number(this.state.billingDetails.extraBedCount) * Number(this.state.billingDetails.extraBedPrice);
@@ -292,7 +305,7 @@ class CheckOutView extends React.Component {
       var result = await this.checkoutUtils.fetchUserDetails(params);
       if(result.data.success){
         this.setState({userModel: result.data.message[0]}, () => {
-          this.calculateStayedDays();
+          this.updateStayedDays();
         });
       };
     };
@@ -300,7 +313,7 @@ class CheckOutView extends React.Component {
     // Get billing details data!
     async fetchBillingDetails(){
       var params = {roomtype: this.state.data.roomModel.suiteName,
-        stayeddays: this.state.stayeddays,
+        stayeddays: this.state.stayeddays + ' Days',
         roomid:this.state.data.roomModel._id,
         isHourly: this.getIsHourly(), extraCalc: this.getIsExtraCalcEnabled()}
       var result = await this.checkoutUtils.fetchBillingDetails(params);

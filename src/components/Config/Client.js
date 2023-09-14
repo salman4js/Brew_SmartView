@@ -38,6 +38,18 @@ const Client = () => {
       isEnabled: false
     });
     
+    // Advance amount restriction state handler!
+    const [restrictAdvance, setRestrictAdvance] = useState({
+      label: 'Restrict advance amount',
+      onChange: _restrictAdvanceAmount,
+      isEnabled: false
+    });
+    
+    // Function to handle changing for restrict advance!
+    function _restrictAdvanceAmount(value){
+      setRestrictAdvance(prevState => ({...prevState, isEnabled: value}));
+    };
+    
     // Function to link vouchers with livixius!
     function _linkVouchersWithLivixius(value){
       setLinkWithLivixius(prevState => ({...prevState, isEnabled: value}))
@@ -349,6 +361,7 @@ const Client = () => {
                     setRoomStatus(prevState => ({...prevState, inCleaning: res.data.object.inCleaning}))
                     setRoomStatus(prevState => ({...prevState, afterCheckin: res.data.object.afterCheckin}))
                     setRoomStatus(prevState => ({...prevState, afterCleaning: res.data.object.afterCleaned}));
+                    setRestrictAdvance(prevState => ({...prevState, isEnabled: res.data.object.restrictAdvance}));
                     _linkVouchersWithLivixius(res.data.object.linkVouchersWithLivixius);
                 }
             })
@@ -472,7 +485,8 @@ const Client = () => {
             inCleaning: roomStatus.inCleaning,
             afterCheckin: roomStatus.afterCheckin,
             afterCleaning: roomStatus.afterCleaning,
-            linkVouchersWithLivixius: linkWithLivixius.isEnabled
+            linkVouchersWithLivixius: linkWithLivixius.isEnabled,
+            restrictAdvance: restrictAdvance.isEnabled
         }
 
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
@@ -652,7 +666,7 @@ const Client = () => {
                                     extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
                                     extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
                                     invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} refundTracker = {refundTracker}
-                                    linkVouchersWithLivixius = {linkWithLivixius} />
+                                    linkVouchersWithLivixius = {linkWithLivixius} restrictAdvance = {restrictAdvance} />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>

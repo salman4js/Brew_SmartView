@@ -74,18 +74,30 @@ export function templateHelpers(userModel, billingInfo){
               <label style = {{color: 'black'}}> Given Discount Amount </label>
               <p style = {{color: 'black'}}> {billingInfo.discountAmount} </p>
             </div>
-            <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Balance without GST </label>
-              <p style = {{color: 'black'}}> {billingInfo.withoutGST} </p>
-            </div>
-            <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Balance with GST </label>
-              <p style = {{color: 'black'}}> {billingInfo.totalPrice} </p>
-            </div>
-            <div className = 'modal-gap'>
-              <label style = {{color: 'green', fontWeight: 'bold'}}> Total Payabale Amount </label>
-              <p style = {{color: 'green', fontWeight: 'bold'}}> {billingInfo.totalPrice} </p>
-            </div>
+            {!billingInfo.isNegativeValue && (
+              <>
+                <div className = 'modal-gap'>
+                  <label style = {{color: 'black'}}> Balance without GST </label>
+                  <p style = {{color: 'black'}}> {billingInfo.withoutGST} </p>
+                </div>
+                <div className = 'modal-gap'>
+                  <label style = {{color: 'black'}}> Balance with GST </label>
+                  <p style = {{color: 'black'}}> {billingInfo.totalPrice} </p>
+                </div>
+                <div className = 'modal-gap'>
+                  <label style = {{color: 'green', fontWeight: 'bold'}}> Total Payabale Amount </label>
+                  <p style = {{color: 'green', fontWeight: 'bold'}}> {billingInfo.totalPrice} </p>
+                </div>
+              </>
+            )}
+            {billingInfo.isNegativeValue && (
+              <>
+                <div className = 'modal-gap'>
+                  <label style = {{color: 'black'}}> Amount has to be returned to the guest </label>
+                  <p style = {{color: 'black'}}> {billingInfo.totalPrice.slice(1)} </p>
+                </div>
+              </>
+            )}
         </div>
       </div>
   )
