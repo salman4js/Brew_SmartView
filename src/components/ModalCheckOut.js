@@ -11,7 +11,9 @@ const ModalCheckOut = (props) => {
     const [stay, setStay] = useState();
     const date = brewDate.getFullDate("yyyy/mm/dd");
     
+    // Configurations!
     var isExtra = JSON.parse(getStorage("isExtra"));
+    var isCheckinDateEditable = JSON.parse(getStorage('isCheckinDateEditable'));
         
     // Ensure Channel enabled or not!
     function ensureChannel(){
@@ -36,6 +38,7 @@ const ModalCheckOut = (props) => {
         aadharcard: props.aadharcard,
         adults: props.adults,
         childrens: props.childrens,
+        dateofcheckin: props.checkin === undefined ? null : new Date(props.checkin),
         dateofcheckout: props.tempData === undefined ? null : new Date(props.tempData),
         userId: props.user,
         timeofcheckin: props.checkInTime
@@ -209,6 +212,13 @@ const ModalCheckOut = (props) => {
                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="ID Number" name = {editDetails.aadharcard} value = {editDetails.aadharcard} 
                             onChange={(e) => setEditDetails(prevState => ({...prevState, aadharcard: e.target.value}))} />
                         </div>
+                        {isCheckinDateEditable && (
+                          <div className="modal-gap">
+                              <label style={{ color: "black" }}> Date of Checkin </label>
+                              <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Date of checkout' selected = {editDetails.dateofcheckin} dateFormat='y-MM-dd'
+                              onChange = {(e) => setEditDetails(prevState => ({...prevState, dateofcheckin: e}))} isClearable />
+                          </div>
+                        )}
                         <div className="modal-gap">
                             <label style={{ color: "black" }}> Date of Checkout </label>
                             <DatePicker style={{ color: "black" }} className="form-control" placeholderText='Date of checkout' selected = {editDetails.dateofcheckout} dateFormat='y-MM-dd' minDate={new Date()} 

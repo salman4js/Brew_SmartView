@@ -45,6 +45,18 @@ const Client = () => {
       isEnabled: false
     });
     
+    // Internal use config state handler!
+    const [editableOptions, setEditableOptions] = useState({
+      label: 'Make checkin date editable option',
+      onChange: _editableCheckinDate,
+      isEnabled: false
+    });
+    
+    // Function to handle internal use config handler!
+    function _editableCheckinDate(value){
+      setEditableOptions(prevState => ({...prevState, isEnabled: value}));
+    };
+    
     // Function to handle changing for restrict advance!
     function _restrictAdvanceAmount(value){
       setRestrictAdvance(prevState => ({...prevState, isEnabled: value}));
@@ -362,6 +374,7 @@ const Client = () => {
                     setRoomStatus(prevState => ({...prevState, afterCheckin: res.data.object.afterCheckin}))
                     setRoomStatus(prevState => ({...prevState, afterCleaning: res.data.object.afterCleaned}));
                     setRestrictAdvance(prevState => ({...prevState, isEnabled: res.data.object.restrictAdvance}));
+                    setEditableOptions(prevState => ({...prevState, isEnabled: res.data.object.checkinDateEditable}))
                     _linkVouchersWithLivixius(res.data.object.linkVouchersWithLivixius);
                 }
             })
@@ -486,7 +499,8 @@ const Client = () => {
             afterCheckin: roomStatus.afterCheckin,
             afterCleaning: roomStatus.afterCleaning,
             linkVouchersWithLivixius: linkWithLivixius.isEnabled,
-            restrictAdvance: restrictAdvance.isEnabled
+            restrictAdvance: restrictAdvance.isEnabled,
+            checkinDateEditable: editableOptions.isEnabled
         }
 
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
@@ -666,7 +680,7 @@ const Client = () => {
                                     extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
                                     extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
                                     invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} refundTracker = {refundTracker}
-                                    linkVouchersWithLivixius = {linkWithLivixius} restrictAdvance = {restrictAdvance} />
+                                    linkVouchersWithLivixius = {linkWithLivixius} restrictAdvance = {restrictAdvance} editableOptions = {editableOptions} />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>
