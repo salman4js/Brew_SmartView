@@ -38,7 +38,7 @@ const ModalCheckOut = (props) => {
         aadharcard: props.aadharcard,
         adults: props.adults,
         childrens: props.childrens,
-        dateofcheckin: props.tempData === undefined ? null : new Date(props.tempData),
+        dateofcheckin: props.checkin === undefined ? null : new Date(props.checkin),
         dateofcheckout: props.tempData === undefined ? null : new Date(props.tempData),
         userId: props.user,
         timeofcheckin: props.checkInTime
