@@ -969,6 +969,7 @@ const HomeRoom = (props) => {
             amountFor: universalLang.editCustomerDetailsAdvance,
             dateTime: brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime()),
             aadharcard: editDetails.aadharcard,
+            dateofcheckin: formatDate(editDetails.dateofcheckin),
             dateofcheckout: formatDate(editDetails.dateofcheckout),
             adults: editDetails.adults,
             childrens: editDetails.childrens,

@@ -69,6 +69,7 @@ const Login = () => {
             "refundPercentage": res.data.object.refundPercentage,
             "isRefundTrackerEnabled": res.data.object.refundTracker !== undefined ? res.data.object.refundTracker : false,
             'isAdvanceRestricted': res.data.object.restrictAdvance,
+            'isCheckinDateEditable': res.data.object.checkinDateEditable,
             'is-linked-with-vouchers': res.data.object.linkVouchersWithLivixius
           }
 
