@@ -1,5 +1,7 @@
+import CardView from '../../../CardView/card.view/card.view';
+
+// Default template helpers!
 export function templateHelpers(state){
-  console.log(state);
   return(
     <div>
       <div className="text-center">
@@ -23,6 +25,28 @@ export function templateHelpers(state){
               </div>
           </div>
       </div>
+      <div className = 'row widget-tile-container'>
+        {state.widgetTile()}
+      </div>
     </div>
   )
 };
+
+// Widget tile template helpers!
+export function widgetTileTemplateHelpers(widgetModel){
+  return(
+    <div className = 'col-4 widget-tile-listitem'>
+      <CardView data = {widgetModel} />
+    </div>
+  )
+};
+
+// Widget body child view templat helpers!
+export function widgetTileBodyTemplateHelpers(stateName, stateCount){
+  return(
+    <div>
+      {stateName} : {stateCount}
+    </div>
+  )
+};
+

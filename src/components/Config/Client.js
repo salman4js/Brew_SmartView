@@ -528,7 +528,7 @@ const Client = () => {
       await axios.get(`${Variables.hostId}/${splitedIds[0]}/getallroomstatus`)
         .then(res => {
           if(res.data.success){
-            setRoomStatus(prevState => ({...prevState, name: res.data.data}))
+            setRoomStatus(prevState => ({...prevState, name: res.data.infoMessage}))
           }
         })
         .catch(err => {
