@@ -1147,3 +1147,19 @@ td {
   animation: spin 2s linear infinite;
 }
 
+.widget-tile-container{
+  padding: 40px;
+}
+
+.widget-tile-listitem{
+  margin-bottom: 20px;
+}
+
+.widget-tile-listitem-body{
+  color: white;
+  font-weight: bold;
+  background-color: rgb(23, 120, 83);
+  height: 100%;
+  padding-top: 125px;
+}
+
