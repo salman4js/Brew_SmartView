@@ -38,6 +38,7 @@ const HomeRoom = (props) => {
     var isHourly = JSON.parse(getStorage("isHourly"));
     var extraCalc = JSON.parse(getStorage("extraCalc"));
     var isGrcPreview = JSON.parse(getStorage('isGrcPreview'));
+    var isAdvanceRestricted = JSON.parse(getStorage('isAdvanceRestricted'));
 
     // Exclude dates for prebook modals
     const [excludeDates, setExcludeDates] = useState([]);
@@ -690,7 +691,16 @@ const HomeRoom = (props) => {
       } else {
           setPrebookchildren(value)
       }
-    }
+    };
+    
+    // Should restrict advance amount!
+    function shouldRestrictAdvance(val, action){
+      if(isAdvanceRestricted){
+        restrictAdvance(val, action);
+      } else {
+        action === 'CHECK-IN' ? setAdvanceCheckin(val) : setPrebookadvance(val);
+      }
+    };
 
     // Restrict advance amount
     function restrictAdvance(val, action) {
@@ -716,8 +726,7 @@ const HomeRoom = (props) => {
        } else {
            action === "CHECK-IN" ? setAdvanceCheckin(val) : setPrebookadvance(val) // and then set the value!
        }
-
-    }
+    };
 
     function populateInlineModel(_model) {
         setInline({
@@ -991,14 +1000,24 @@ const HomeRoom = (props) => {
                     setSuccess(res.data.message)
                 }
             })
-    }
+    };
+    
+    // Get userName from the userdata state!
+    async function getUserName(){
+      var username;
+      userdata.map((item) => {
+        username = item.username;
+      });
+      return username;
+    };
 
     // Handle Checkout Customer!
     const checkedOut = async () => {
         handleCloseGeneratedBill();
-
+        var username = await getUserName();
         const credentials = {
             userid: userid,
+            username: username,
             roomid: props.roomid,
             stayeddays: stayeddays,
             checkoutdate: checkoutdate,
@@ -1398,8 +1417,8 @@ const HomeRoom = (props) => {
                             {!isChannel && (
                                 <div>
                                     <div className='modal-gap'>
-                                        <label style={{ color: "black" }}> Advance Amount(Optional) </label>
-                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='Advance Amount' name={advanceCheckin} value={advanceCheckin} onChange={(e) => restrictAdvance(e.target.value, "CHECK-IN")} />
+                                        <label style={{ color: "black" }}> {isAdvanceRestricted ? 'Advance Amount(Optional)' : 'Cash and Deposit'} </label>
+                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder={isAdvanceRestricted ? 'Advance Amount(Optional)' : 'Cash and Deposit'} name={advanceCheckin} value={advanceCheckin} onChange={(e) => shouldRestrictAdvance(e.target.value, "CHECK-IN")} />
                                         {
                                             inline.inlineErrorAdvance ? (
                                                 <InlineToast message={inline.inlineAdvanceText} />
