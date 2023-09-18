@@ -12,9 +12,13 @@ const PropertyContainer = (props) => {
   
   // Get panel field data!
   function getPanelFieldData(){
+    // Get panel field dropdown options!
+    var panelFieldDropdownOptions = getPanelFieldDropdown();
+    // Get panel field selected and default values!
+    var selectedValues = getPanelFieldsValues();
     return [
       {
-        value: (props.data.formMode === 'edit' ? 'checkin-form' : 'checkout-form'),
+        value: selectedValues,
         attribute: "dataListField",
         allowInputField: false,
         allowPanelField: true,
@@ -22,9 +26,9 @@ const PropertyContainer = (props) => {
         rightSideControl: _renderRightSideControl,
         height: 27,
         width: '200px',
-        selectedValue: (props.data.formMode === 'edit' ? 'checkin-form' : 'checkout-form'),
+        selectedValue: selectedValues,
         showListValue: function(){
-          return true;
+          return props.data.formMode !== 'roomStatus' ? true : false;
         },
         style: {
           width: "200",
@@ -36,7 +40,15 @@ const PropertyContainer = (props) => {
           paddingBottom: "10px",
           cursor: "pointer",
         },
-        options: [
+        options: panelFieldDropdownOptions
+      }
+    ]
+  };
+
+  // Get panel field dropdown values!
+  function getPanelFieldDropdown(){
+    if(props.data.formMode !== 'roomStatus'){
+       return [
           {
             value: (props.data.formMode === 'edit' ? 'checkin-form' : 'checkout-form')
           },
@@ -44,9 +56,17 @@ const PropertyContainer = (props) => {
             value: (props.data.formMode === 'edit' ? undefined : 'payment tracker')
           }
         ]
-      }
-    ]
-  }
+    } else {
+      return []; // Return empty array as per the design of the panel field!
+    }
+  };
+
+  // Get panel field dropdown selectedValues and values!
+  function getPanelFieldsValues(){
+    if(props.data.formMode !== 'roomStatus'){
+      return (props.data.formMode === 'edit' ? 'checkin-form' : 'checkout-form')
+    }
+  };
   
   // Render property model!
   function _renderPropertyModel(){
@@ -60,7 +80,7 @@ const PropertyContainer = (props) => {
       cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} afterCheckout = {(opts) => props.onCancel(opts)} />
     };
     
-    if(props.data.formMode === 'dirty' || props.data.formMode === 'incleaning'){
+    if(props.data.formMode === 'roomStatus'){
       return <RoomStatusView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
       dashboardController = {(opts) => props.dashboardController(opts)} />
     };
@@ -70,8 +90,8 @@ const PropertyContainer = (props) => {
     };
   };
 
-  // Get panel field right side data!
-  function getPanelRightSideData(){
+  // Get form models!
+  function getFormModels(){
     var checkinFormModel = [{
         btnValue: 'Cancel',
         onClick: onCancel,
@@ -93,10 +113,32 @@ const PropertyContainer = (props) => {
         onClick: onCheckout,
         attribute: 'buttonField'
       }
-      
     ];
-    
-    return props.data.formMode === 'edit' ? checkinFormModel : checkoutFormModel;
+
+    var roomStatusFormModel = [{
+        btnValue: 'Cancel',
+        onClick: onCancel,
+        attribute: 'buttonField'
+    }];
+
+    return {checkinFormModel, checkoutFormModel, roomStatusFormModel};
+  };
+
+  // Get panel field right side data!
+  function getPanelRightSideData(){
+    var formModels = getFormModels();
+    if(props.data.formMode === 'edit'){
+      return formModels.checkinFormModel;
+    };
+    if(props.data.formMode === 'read'){
+      return formModels.checkoutFormModel;
+    }
+    if(props.data.formMode === 'roomStatus'){
+      return formModels.roomStatusFormModel;
+    }
+    if(props.data.formMode === 'default'){
+      return formModels.checkinFormModel;
+    }
   };
   
   // Render right side control panel for datalist field!
@@ -124,7 +166,7 @@ const PropertyContainer = (props) => {
   // Force update when the props changes!
   useEffect(() => {
     setPanelField(getPanelFieldData); // Update the panel field data when the formMode changes!
-  }, [props.data])
+  }, [props.data.formMode])
   
   return(
     <>

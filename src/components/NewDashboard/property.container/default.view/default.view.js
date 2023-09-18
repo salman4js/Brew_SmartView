@@ -39,10 +39,12 @@ class DefaultView extends React.Component {
 
   // Toggle computed state!
   _toggleComputedState(value){
-    this.setState(prevState => ({
-      ...prevState,
-      isComputed: value
-    }))
+    return new Promise((resolve) => {
+      this.setState(prevState => ({
+        ...prevState,
+        isComputed: value
+      }), () => resolve());
+    });
   };
 
   // Get card view props!
@@ -105,7 +107,7 @@ class DefaultView extends React.Component {
 
   // Widget tile render functions!
   makeWidgetTile(){
-    if(this.state.data.isFetched){
+    if(this.state.data.isFetched && this.state.isComputed){
       var roomStatusConstants = getRoomStatusConstants(),
         cardViewCollectionProps = [],
         tempData = []; // This is to verify the non added room status constant, and add them to the card body view with the count 0!
@@ -141,7 +143,6 @@ class DefaultView extends React.Component {
       cardViewProps._showBodyChildView = () => this.cardBodyChildView(nonAddedStatusModel);
       cardViewCollectionProps.push(cardViewProps);
     };
-
     return cardViewCollectionProps;
   };
 
@@ -173,26 +174,40 @@ class DefaultView extends React.Component {
     var roomCollection = this.state.data.roomCollection;
     if(roomCollection !== undefined){
       for (const model of roomCollection) {
-        await this.updateStateCollection(model);
+        if(!this.state.isComputed){ // This is added here because when we swift back from the any other property container, due to the lifecycle methods,
+          // this method is being called multiple times hence the count is updating by double the original value!
+          await this.updateStateCollection(model);
+        }
       }
       await this.unMapRoomStatus();
-      this._toggleComputedState(true);
-    };
-  };
+      await this._toggleComputedState(true);
+    }
+  }; 
   
   // Update state data everytime when the props changes!
   _updateStateData() {
-    this.setState(prevState => ({
-      ...prevState,
-      data: this.props.data
-    }), () => {
-      this.computeCollectionStateDetails();
+    return new Promise((resolve) => {
+      this.setState(prevState => ({
+        ...prevState,
+        data: this.props.data
+      }), () => {
+        this.computeCollectionStateDetails().then(() => {
+          resolve();
+        })
+      });
     });
   };
   
   // On update component lifecycle method!
   componentDidUpdate(prevProps, prevState){
-    if(!_.isEqual(prevProps, this.props)){ // Using lodash here, because it is essential to do a deep comparision when the state has nested objects!
+    if(!this.state.isComputed && !_.isEqual(prevProps.data, this.state.data)){ // Using lodash here, because it is essential to do a deep comparision when the state has nested objects!
+      this._updateStateData();
+    };
+  };
+  
+  // On render component lifecyle method!
+  componentDidMount(){
+    if(!this.state.isComputed){
       this._updateStateData();
     };
   };

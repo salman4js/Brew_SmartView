@@ -42,7 +42,7 @@ class CheckOutView extends React.Component {
         },
         propertyController: {
           reloadSidepanel: false,
-          reloadPropertyContainer: false
+          navigateToPropertyContainer: false
         }
       };
       this.checkoutUtils = new CheckoutUtils({accId: props.params.accIdAndName[0]});
@@ -109,7 +109,7 @@ class CheckOutView extends React.Component {
         propertyController: {
           ...prevState.propertyController,
           reloadSidepanel: opts.reloadSidepanel,
-          reloadPropertyContainer: opts.reloadPropertyContainer
+          navigateToPropertyContainer: opts.navigateToPropertyContainer
         }
       }))
     };
@@ -129,7 +129,7 @@ class CheckOutView extends React.Component {
           propertyController: {
             ...prevState.propertyController,
             reloadSidepanel: opts.reloadSidepanel,
-            reloadPropertyContainer: opts.reloadPropertyContainer
+            navigateToPropertyContainer: opts.navigateToPropertyContainer
           }
         }
       }))
@@ -335,7 +335,7 @@ class CheckOutView extends React.Component {
         roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime()};
       var result = await this.checkoutUtils.onCheckout(data);
       if(result.data.success){
-        this._updatePropertyController({reloadSidepanel: {silent: false}, reloadPropertyContainer: true});
+        this._updatePropertyController({reloadSidepanel: {silent: false}, navigateToPropertyContainer: true});
         var data = {header: result.data.message, isCentered: false, isRestrictBody: true, 
         isFooterEnabled: false};
         this._toggleLoader(false);

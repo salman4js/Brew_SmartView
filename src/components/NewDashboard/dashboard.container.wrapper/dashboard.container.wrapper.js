@@ -21,8 +21,7 @@ const DashboardWrapper = (props) => {
     countAvailability: undefined,
     reservedCount: undefined,
     roomStatus: undefined,
-    isFetched: false,
-    updatePropertyDetails: _updatePropertyDetails
+    isFetched: false
   });
   
   // Function to update property details!
@@ -59,7 +58,7 @@ const DashboardWrapper = (props) => {
   
   // On form cancel operation!
   function onFormCancel(opts){
-    setSelectedModel(prevState => ({...prevState, roomModel: undefined, formMode: 'default'})); // On form cancel, set the formMode
+    setSelectedModel(prevState => ({...prevState, formMode: 'default'})); // On form cancel, set the formMode
     // to the default form mode widget-table!
     opts && _updateDashboardWrapper(opts);
   };
@@ -67,9 +66,9 @@ const DashboardWrapper = (props) => {
   // Update dashboard wrapper!
   function _updateDashboardWrapper(opts){
     opts.reloadSidepanel && _reloadSidepanel(opts);
-    opts.reloadPropertyContainer && _reloadPropertyContainer();
+    opts.navigateToPropertyContainer && _navigateToPropertyContainer();
     opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need 
-    // updated room model to updated it to the latest value
+    // updated room model to updated it to the latest value!
   };
   
   // Reload sidepanel function!
@@ -79,7 +78,7 @@ const DashboardWrapper = (props) => {
   };
   
   // Reload property container!
-  function _reloadPropertyContainer(){ // As of now, reload property container will 
+  function _navigateToPropertyContainer(){ // As of now, reload property container will 
     // redirect the dashboard to main container
     onFormCancel(); 
   };
@@ -88,10 +87,10 @@ const DashboardWrapper = (props) => {
   function getFormMode(roomStatusConstant){
     if(roomStatusConstant === 'afterCleaned'){
       return 'edit';
-    } else if(roomStatusConstant === 'afterCheckedout' || roomStatusConstant === 'inCleaning'){
-      return 'dirty';
+    } else if(roomStatusConstant === 'afterCheckin'){
+      return'read';
     } else {
-      return 'read';
+      return 'roomStatus';
     }
   };
   
