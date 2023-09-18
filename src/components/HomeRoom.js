@@ -1228,7 +1228,7 @@ const HomeRoom = (props) => {
       // function to get the button text!
       function getButtonText(){
         if(props.roomStatusConstant !== 'customState'){
-          return props.nextStatus !== "" && props.nextStatus !== undefined ? `${`(` + props.roomStatus + `)`} Move to Next State ${`(` + props.nextStatus + `)`}` : 'Check-In'
+          return props.roomStatusConstant !== "afterCleaned" && props.roomStatusConstant !== undefined ? `${`(` + props.roomStatus + `)`} Move to Next State ${`(` + props.nextStatus + `)`}` : 'Check-In'
         } else {
           return props.roomStatus
         }
@@ -1237,7 +1237,7 @@ const HomeRoom = (props) => {
       // Function to determine the goto function!
       function chooseGoTo(){
         if(props.roomStatusConstant !== 'customState'){
-          return props.nextStatus !== "" && props.nextStatus !== undefined ? changeState() : handleClose();
+          return props.roomStatusConstant !== "afterCleaned" && props.roomStatusConstant !== undefined ? changeState() : handleClose();
         } else {
           return;
         }
@@ -1252,7 +1252,7 @@ const HomeRoom = (props) => {
         )
       }
       return(
-        (props.engaged == "true" ? (
+        (props.roomStatusConstant === 'afterCheckin' ? (
             <div className="btn btn-dark" onClick={getUserData}>
                 Check-Out
             </div>
