@@ -61,7 +61,7 @@ const UpdateRooms = () => {
     async function getPredefinedStatus(){
       const result = await getRoomStatus(splitedIds[0])
       if(result.data.success){
-        setRoomStatus(result.data.data)
+        setRoomStatus(result.data.infoMessage)
       }
     }
 
