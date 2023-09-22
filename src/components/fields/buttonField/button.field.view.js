@@ -4,11 +4,11 @@ const ButtonField = (props) => {
 
   // Get className for the button field!
   function getClassName(){
-    if(!props.data.disabled){
-      return 'metadata-button-field brew-cursor';
-    } else {
-      return 'metadata-button-field-disabled brew-cursor'
-    }
+    var className = 'metadata-button-field text-center brew-cursor'
+    className = props.data.disabled ? className + ' disabled' : className;
+    className = props.data.occupyFullSpace ? className + ' occupyFullSpace' : className;
+    className = props.data.isDark ? className + ' btn btn-dark' : className;
+    return className;
   };
 
   // Render button field!

@@ -2,6 +2,7 @@ import React from 'react';
 import brewDate from 'brew-date';
 import CheckoutUtils from './checkout.form.utils';
 import CustomModal from '../../../CustomModal/custom.modal.view';
+import MetadataFields from '../../../fields/metadata.fields.view';
 import { templateHelpers } from './checkout.form.template';
 import PropertyAlertContainer from '../property.alert.container/property.alert.container.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
@@ -124,6 +125,7 @@ class CheckOutView extends React.Component {
           header: opts.header,
           centered: opts.centered,
           restrictBody: opts.restrictBody,
+          showBodyItemView: opts.showBodyItemView,
           footerEnabled: opts.footerEnabled,
           footerButtons: opts.footerButtons,
           propertyController: {
@@ -324,13 +326,25 @@ class CheckOutView extends React.Component {
       }
     };
     
+    // Calculate the refund amount and return!
+    getRefundAmount(){
+      var refundAmount;
+      if(typeof this.state.billingInfo.totalPrice === 'string'){
+        refundAmount = Number(this.state.billingInfo.totalPrice.slice(0, -3));
+      } else {
+        refundAmount = this.state.billingInfo.totalPrice < 0 ? this.state.billingInfo.totalPrice : 0;
+      };
+      
+      return Math.abs(refundAmount);
+    };
+    
     // Perform checkout!
     async performCheckout(){
       // Form up the params!
-      var data = {userid: this.state.userModel._id, 
+      var data = {userid: this.state.userModel._id, username: this.state.userModel.username,
         roomid: this.state.data.roomModel._id, stayeddays: this.state.stayeddays,
         checkoutdate: this.getTodayDate(), checkoutTime: getTimeDate().getTime, roomtype: this.state.data.roomModel.suiteName,
-        prebook: this.state.data.roomModel.preBooked, amount: this.getTotalPayableAmount(), refund: 0, 
+        prebook: this.state.data.roomModel.preBooked, amount: this.getTotalPayableAmount(), refund: this.getRefundAmount(), 
         totalDishAmount: 0, isGst: this.getIsGSTEnabled(), foodGst: 0, stayGst: this.state.billingInfo.gstPrice,
         roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime()};
       var result = await this.checkoutUtils.onCheckout(data);
@@ -343,6 +357,40 @@ class CheckOutView extends React.Component {
       }
     };
     
+    checkoutModalBodyItemView(){
+      var buttonFields = [{
+          btnValue: 'Get bill',
+          onClick: null,
+          isDark: true,
+          occupyFullSpace: true,
+          attribute: 'buttonField'
+      }, {
+          btnValue: 'Get Invoice',
+          onClick: null,
+          isDark: true,
+          occupyFullSpace: true,
+          attribute: 'buttonField'
+      }, {
+          btnValue: 'Checkout',
+          onClick: this.onCheckout.bind(this),
+          isDark: true,
+          occupyFullSpace: true,
+          attribute: 'buttonField'
+      }
+    ];
+      return <MetadataFields data = {buttonFields} />
+    };
+    
+    // On continue checkout, Prompt a modal for different checkout actions!
+    onContinueCheckout(){
+      var data = {
+        header: 'What action would you like to perform?',
+        isCentered: true,
+        bodyItemView: this.checkoutModalBodyItemView.bind(this)
+      };
+      this.setCustomModal(data);
+    };
+    
     // When checkout action triggered in property container!
     onCheckout(){
       var data = {
@@ -350,8 +398,16 @@ class CheckOutView extends React.Component {
         isCentered: true,
         isRestrictBody: true,
         isFooterEnabled: true,
-        secondaryBtnId: 'Cancel',
-        primaryButtonId: 'Checkout'
+        footerButtons: [{
+          btnId: 'Cancel',
+          variant: 'secondary',
+          onClick: this.onCloseCustomModal.bind(this)
+        },
+        {
+          btnId: 'Checkout',
+          variant: 'success',
+          onClick: this.handleCheckoutConfirmed.bind(this)
+        }]
       };
       this.setCustomModal(data);
     };
@@ -370,17 +426,9 @@ class CheckOutView extends React.Component {
         header: data.header,
         centered: data.isCentered,
         restrictBody: data.isRestrictBody,
+        showBodyItemView: data.bodyItemView,
         footerEnabled: data.isFooterEnabled,
-        footerButtons: [{
-          btnId: data.secondaryBtnId,
-          variant: "secondary",
-          onClick: this.onCloseCustomModal.bind(this)
-        },
-        {
-          btnId: data.primaryButtonId,
-          variant: "success",
-          onClick: this.handleCheckoutConfirmed.bind(this)
-        }]
+        footerButtons: data.footerButtons
       };
       this._triggerCustomModal(customModalOpts);
     };
@@ -388,7 +436,7 @@ class CheckOutView extends React.Component {
     // On update lifecyle method!
     async componentDidUpdate(prevProps, prevState){
       if(this.props.data.onCheckout && !prevProps.data.onCheckout){
-        this.onCheckout();
+        this.onContinueCheckout();
       };
       
       if(this.props.data.roomModel._id !== prevProps.data.roomModel._id){

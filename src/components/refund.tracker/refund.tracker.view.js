@@ -135,6 +135,7 @@ const RefundTracker = () => {
     cellValues: undefined,
     headerValue: undefined,
     infoMessage: "No refund tracker has been selected...",
+    tableHeight: undefined,
     tableLoader: false,
     selectedRoomId: undefined,
     isCheckboxSelected: false,

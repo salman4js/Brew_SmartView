@@ -5,7 +5,7 @@ import CommandHelper from '../../fields/commandField/command.helper.field';
 import MetadataFields from '../../fields/metadata.fields.view';
 
 const PaymentTrackerContent = (props) => {
-  
+
   // Render metadata table view!
   function _renderTableView(){
     return(
@@ -23,7 +23,6 @@ const PaymentTrackerContent = (props) => {
     return <MetadataFields data = {props.panelHelper} updateData = {(state) => props.updatePanelHelper(state)} />
   }
   
-  
   return(
     <div className = "sidepanel-wrapper">
       <div className = "flex-1">
@@ -38,7 +37,8 @@ const PaymentTrackerContent = (props) => {
             {commandHelper()}
           </div>
         )}
-        <div className = "metadata-table-view-payment-tracker">
+        <div className = "metadata-table-view-payment-tracker" 
+        style = {{height: props.data.height}}>
           {_renderTableView()}
         </div>
       </div>

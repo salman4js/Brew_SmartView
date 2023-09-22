@@ -35,17 +35,17 @@ export function templateHelpers(state){
 // Widget tile template helpers!
 export function widgetTileTemplateHelpers(widgetModel){
   return(
-    <div className = 'col-4 widget-tile-listitem'>
+    <div className = 'col-2 widget-tile-listitem'>
       <CardView data = {widgetModel} />
     </div>
   )
 };
 
 // Widget body child view templat helpers!
-export function widgetTileBodyTemplateHelpers(stateName, stateCount){
+export function widgetTileBodyTemplateHelpers(stateCount){
   return(
-    <div>
-      {stateName} : {stateCount}
+    <div className = 'widget-tile-body'>
+      {stateCount}
     </div>
   )
 };

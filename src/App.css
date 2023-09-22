@@ -1082,7 +1082,12 @@ td {
   margin-right: 20px;
 }
 
-.metadata-button-field-disabled{
+.metadata-button-field.occupyFullSpace {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.metadata-button-field.disabled{
   background-color: grey;
   color: #fff;
   border:none;
@@ -1158,8 +1163,18 @@ td {
 .widget-tile-listitem-body{
   color: white;
   font-weight: bold;
+  font-size: 100px;
   background-color: rgb(23, 120, 83);
-  height: 100%;
-  padding-top: 125px;
+}
+
+.widget-tile-body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.widget-tile-listitem-body:hover{
+  background-color: black;
+  cursor: pointer;
 }
 
