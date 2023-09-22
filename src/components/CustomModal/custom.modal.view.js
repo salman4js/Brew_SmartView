@@ -18,7 +18,16 @@ const CustomModal = (props) => {
         )
       })
     )
-  }
+  };
+  
+  // Render body item view!
+  function renderBodyItemView(){
+    if(props.showBodyItemView){
+      return props.showBodyItemView();
+    } else {
+      return props.modalData.showBodyItemView();
+    }
+  };
 
   return(
     <Modal
@@ -33,7 +42,7 @@ const CustomModal = (props) => {
           {props.modalData?.header}
         </Modal.Header>
         {!props.modalData.restrictBody && (
-          <CustomModalBody data = {() => props.showBodyItemView()} modalData = {props.modalData} />
+          <CustomModalBody data = {() => renderBodyItemView()} modalData = {props.modalData} />
         )}
         {props.modalData?.footerEnabled && (
             <Modal.Footer>

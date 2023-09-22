@@ -109,7 +109,7 @@ const PropertyContainer = (props) => {
         attribute: 'buttonField'
       },
       {
-        btnValue: 'Checkout Guest',
+        btnValue: 'Continue Checkout',
         onClick: onCheckout,
         attribute: 'buttonField'
       }
@@ -120,7 +120,6 @@ const PropertyContainer = (props) => {
         onClick: onCancel,
         attribute: 'buttonField'
     }];
-
     return {checkinFormModel, checkoutFormModel, roomStatusFormModel};
   };
 
@@ -146,7 +145,7 @@ const PropertyContainer = (props) => {
     var panelRightSideData = getPanelRightSideData();
     return <MetadataFields data = {panelRightSideData} />
   };
-  
+
   // On checkout!
   function onCheckout(){
     props.onCheckout(true);

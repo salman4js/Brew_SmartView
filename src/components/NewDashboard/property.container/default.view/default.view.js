@@ -52,7 +52,8 @@ class DefaultView extends React.Component {
     return {
        header: undefined,
        customData: [],
-       height: '250',
+       height: '200',
+       width: '200',
        childViewClass: 'text-center widget-tile-listitem-body',
       _showBodyChildView : function(){
         
@@ -76,10 +77,10 @@ class DefaultView extends React.Component {
   };
 
   // Card body child view list item function!
-  cardBodyChildView(roomStatus, roomStatusConstant){
+  cardBodyChildView(roomStatusConstant){
     // Get the count of the roomStatus from the state!
     var countOfTheState = roomStatusConstant !== undefined ? this.state.propertyStatusDetails[roomStatusConstant] : 0;
-    return widgetTileBodyTemplateHelpers(roomStatus, countOfTheState);
+    return widgetTileBodyTemplateHelpers(countOfTheState);
   };
 
   // UnMap room status from the state and add it as an array!
@@ -114,12 +115,13 @@ class DefaultView extends React.Component {
       this.state.data.roomCollection.map((model) => {
         var cardViewProps = this.getCardViewProps();
         roomStatusConstants.map((status) => {
-          if(model.roomStatusConstant === status){
+          if(model.roomStatusConstant === status && model.roomStatus !== undefined){
             // Check if the widgetTile has been already added to the cardViewCollectionProps!
             var isWidgetTileAdded = _.find(cardViewCollectionProps, {customData: [model.roomStatus]});
             if(!isWidgetTileAdded){
               cardViewProps.customData.push(model.roomStatus);
-              cardViewProps._showBodyChildView = () => this.cardBodyChildView(model.roomStatus, model.roomStatusConstant);
+              cardViewProps.header = model.roomStatus;
+              cardViewProps._showBodyChildView = () => this.cardBodyChildView(model.roomStatusConstant);
               cardViewCollectionProps.push(cardViewProps);
             };
           }
@@ -139,9 +141,12 @@ class DefaultView extends React.Component {
   // Add non added status constant to the cardViewCollectionProps!
   addNonAddedStatusConstant(cardViewCollectionProps, nonAddedStatusConstant){
     for (const nonAddedStatusModel of nonAddedStatusConstant){
-      var cardViewProps = this.getCardViewProps();
-      cardViewProps._showBodyChildView = () => this.cardBodyChildView(nonAddedStatusModel);
-      cardViewCollectionProps.push(cardViewProps);
+      if(nonAddedStatusModel !== undefined){
+        var cardViewProps = this.getCardViewProps();
+        cardViewProps.header = nonAddedStatusModel;
+        cardViewProps._showBodyChildView = () => this.cardBodyChildView();
+        cardViewCollectionProps.push(cardViewProps);
+      };
     };
     return cardViewCollectionProps;
   };
