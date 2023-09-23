@@ -1,4 +1,27 @@
-const storage = require("../../Controller/Storage/Storage")
+const storage = require("../../Controller/Storage/Storage");
+
+// Get the base url!
+export function getBaseUrl(){
+  var url = window.location.href;
+  const parsedUrl = new URL(url);
+  const baseUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+  return baseUrl;
+};
+
+// Form query params and return!
+export function formQueryParams(obj){
+  return new URLSearchParams(obj).toString();
+};
+
+// Extract object from the query params!
+export function extractQueryParams(){
+  const urlParams = new URLSearchParams(window.location.search);
+  const extractedParams = {};
+  for (const [key, value] of urlParams) {
+    extractedParams[key] = value;
+  }
+  return extractedParams;
+};
 
 // Convert the data into server understandable format!
 export function nodeConvertor(status){

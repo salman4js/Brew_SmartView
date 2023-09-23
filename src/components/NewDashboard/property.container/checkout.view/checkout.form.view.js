@@ -2,11 +2,13 @@ import React from 'react';
 import brewDate from 'brew-date';
 import CheckoutUtils from './checkout.form.utils';
 import CustomModal from '../../../CustomModal/custom.modal.view';
+import WindowPrint from '../../window.print/window.print';
 import MetadataFields from '../../../fields/metadata.fields.view';
 import { templateHelpers } from './checkout.form.template';
 import PropertyAlertContainer from '../property.alert.container/property.alert.container.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
 import { getTimeDate, determineGSTPercent } from '../../../common.functions/common.functions';
+import { getBaseUrl, formQueryParams } from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 
 
@@ -44,6 +46,13 @@ class CheckOutView extends React.Component {
         propertyController: {
           reloadSidepanel: false,
           navigateToPropertyContainer: false
+        },
+        printingDetails: {
+          invoice: true,
+          tInvoice: false,
+          igst: undefined,
+          cgst: true,
+          gstin: undefined
         }
       };
       this.checkoutUtils = new CheckoutUtils({accId: props.params.accIdAndName[0]});
@@ -357,16 +366,68 @@ class CheckOutView extends React.Component {
       }
     };
     
+    // Form the object to send it as the query params to window print handler!
+    formPrintDetailsObj(){
+      this.printDetails = {
+        customerName: this.state.userModel.username,
+        phoneNumber: this.state.userModel.phonenumber,
+        roomRent: this.state.billingInfo.roomPrice,
+        discount: this.state.userModel.discount,
+        advance: this.state.userModel.advance,
+        dateofCheckIn: this.state.userModel.dateofcheckin,
+        dateofCheckout: this.state.userModel.dateofcheckout,
+        receiptId: this.state.userModel.receiptId,
+        roomno: this.state.userModel.roomno,
+        checkinTime: this.state.userModel.checkinTime,
+        checkoutTime: this.state.userModel.checkoutTime,
+        extraBedAmount: this.state.userModel.extraBedPrice,
+        address: this.state.userModel.address,
+        stayedDays: this.state.stayeddays,
+        gstPercent: this.gstPercent,
+        gst: this.state.billingInfo.gstPrice,
+        extraBeds: this.state.userModel.extraBeds,
+        // amount: this.state.billingInfo.totalPrice,
+        cgst: this.state.printingDetails.cgst,
+        igst: this.state.printingDetails.igst,
+        invoice: this.state.printingDetails.invoice,
+        tInvoice: this.state.printingDetails.tInvoice,
+      };
+    };
+    
+    // Update printing details preference!
+    updatePrintingDetailsPref(pref){
+      this.setState(prevState => ({
+        ...prevState,
+        printingDetails: {
+          ...prevState.printingDetails,
+          invoice: pref.invoice,
+          tInvoice: pref.tInvoice
+        }
+      }), () => {
+        this.windowPrint()
+      })
+    };
+    
+    // Window print for invoice and bill!
+    windowPrint(){
+      this.formPrintDetailsObj(); // Form the printing details as an object
+      var baseUrl = getBaseUrl(),
+        queryParams = formQueryParams(this.printDetails);
+      window.open(baseUrl + '/windowprint' + "?" + queryParams); // This will open a new tab along with the all the datas
+      // neccessary for print the data in the url.
+    };
+    
+    // Checkout modal body item view!
     checkoutModalBodyItemView(){
       var buttonFields = [{
           btnValue: 'Get bill',
-          onClick: null,
+          onClick: this.updatePrintingDetailsPref.bind(this, {invoice: true, tInvoice: false}),
           isDark: true,
           occupyFullSpace: true,
           attribute: 'buttonField'
       }, {
           btnValue: 'Get Invoice',
-          onClick: null,
+          onClick: this.updatePrintingDetailsPref.bind(this, {invoice: false, tInvoice: true}),
           isDark: true,
           occupyFullSpace: true,
           attribute: 'buttonField'
