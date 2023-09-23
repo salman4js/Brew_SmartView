@@ -5,7 +5,7 @@ import ModalAssist from '../modal.assist/modal.assist.view';
 import DashboardWrapper from './dashboard.container.wrapper/dashboard.container.wrapper';
 
 const DashboardInitializer = (props) => {
-  
+
   // Get the ID params from the url!
   const { id } = useParams();
   const splitedIds = id.split(/[-]/);

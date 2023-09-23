@@ -20,8 +20,8 @@ const Invoice = (props) => {
     
     // navigate back to home page!
     function navigateBack() {
-        props.onHide()
-    }
+        props.onHide && props.onHide();
+    };
 
     // trigger print handler!
     function triggerPrint() {
@@ -124,7 +124,7 @@ const Invoice = (props) => {
                     Address: {props.node.address}
                 </div>
                 <div>
-                    GSTIN: {props.node.gstin}
+                    GSTIN: {getStorage("gstin")}
                 </div>
             </div>
         )
@@ -154,7 +154,21 @@ const Invoice = (props) => {
                 </div>
             </div>
         )
-    }
+    };
+    
+    // Is invoice propmpt triggered!
+    function isInvoice(){
+      if(props.node.invoice){
+        return typeof props.node.invoice !== 'string' ? props.node.invoice : JSON.parse(props.node.invoice)
+      };
+    };
+    
+    // Is tInvoice propmpt triggered!
+    function istInvoice(){
+      if(props.node.tInvoice){
+        return typeof props.node.tInvoice !== 'string' ? props.node.tInvoice : JSON.parse(props.node.tInvoice);
+      }
+    };
 
     // Amount renderer!
     function amountRenderer() {
@@ -164,7 +178,7 @@ const Invoice = (props) => {
                 <div className="table-view-bill-line"></div>                
                 <div className="invoice-total">
                     <p>
-                        Total Taxable Value: {props.node.taxableValue()}
+                        Total Taxable Value: {props.node.taxableValue && props.node.taxableValue()}
                     </p>
                     {props.node.igst && (
                         <p>
@@ -200,7 +214,7 @@ const Invoice = (props) => {
         return (
             <div className = "invoice">
               {/* Bill Generation */}
-              {props.node.invoice && (
+              {isInvoice() && (
                 <div className="container invoice" style={{ height: window.innerHeight }}>
                     <div id="invoice-view">
                         <div className="text-center invoice-header" id="invoice" style={{ color: "black", cursor: "pointer" }} onClick={() => navigateBack()}>
@@ -284,7 +298,7 @@ const Invoice = (props) => {
               )}
               
               {/* Tax invoice */}
-              {props.node.tInvoice && (
+              {istInvoice() && (
                 <div className="container invoice">
                     {renderInvoiceHeader()}
                     <div className=" text-center invoice-total main-invoice-header" style={{ fontWeight: "bold" }}>
