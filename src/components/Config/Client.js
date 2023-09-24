@@ -31,6 +31,18 @@ const Client = () => {
       afterCheckin: undefined
     });
     
+    // State handler for show full details!
+    const [showFullDetails, setShowFullDetails] = useState({
+      isEnabled: false,
+      label: 'Show full details in checkin card view',
+      onChange: _showFullDetailToggler
+    });
+    
+    // Show full details toggle function!
+    function _showFullDetailToggler(value){
+      setShowFullDetails(prevState => ({...prevState, isEnabled: value}));
+    };
+    
     // Link vouchers with livixius!
     const [linkWithLivixius, setLinkWithLivixius] = useState({
       label: "Link livixius with vouchers",
@@ -374,7 +386,8 @@ const Client = () => {
                     setRoomStatus(prevState => ({...prevState, afterCheckin: res.data.object.afterCheckin}))
                     setRoomStatus(prevState => ({...prevState, afterCleaning: res.data.object.afterCleaned}));
                     setRestrictAdvance(prevState => ({...prevState, isEnabled: res.data.object.restrictAdvance}));
-                    setEditableOptions(prevState => ({...prevState, isEnabled: res.data.object.checkinDateEditable}))
+                    setEditableOptions(prevState => ({...prevState, isEnabled: res.data.object.checkinDateEditable}));
+                    _showFullDetailToggler(res.data.object.showFullDetails);
                     _linkVouchersWithLivixius(res.data.object.linkVouchersWithLivixius);
                 }
             })
@@ -500,7 +513,8 @@ const Client = () => {
             afterCleaning: roomStatus.afterCleaning,
             linkVouchersWithLivixius: linkWithLivixius.isEnabled,
             restrictAdvance: restrictAdvance.isEnabled,
-            checkinDateEditable: editableOptions.isEnabled
+            checkinDateEditable: editableOptions.isEnabled,
+            showFullDetails: showFullDetails.isEnabled
         }
 
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
@@ -680,7 +694,7 @@ const Client = () => {
                                     extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
                                     extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
                                     invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} refundTracker = {refundTracker}
-                                    linkVouchersWithLivixius = {linkWithLivixius} restrictAdvance = {restrictAdvance} editableOptions = {editableOptions} />
+                                    linkVouchersWithLivixius = {linkWithLivixius} restrictAdvance = {restrictAdvance} editableOptions = {editableOptions} showFullDetails = {showFullDetails} />
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>

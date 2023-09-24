@@ -419,15 +419,16 @@ class CheckOutView extends React.Component {
     
     // Checkout modal body item view!
     checkoutModalBodyItemView(){
+      // this.updatePrintingDetailsPref.bind(this, {invoice: true, tInvoice: false})
       var buttonFields = [{
           btnValue: 'Get bill',
-          onClick: this.updatePrintingDetailsPref.bind(this, {invoice: true, tInvoice: false}),
+          onClick: null,
           isDark: true,
           occupyFullSpace: true,
           attribute: 'buttonField'
       }, {
           btnValue: 'Get Invoice',
-          onClick: this.updatePrintingDetailsPref.bind(this, {invoice: false, tInvoice: true}),
+          onClick: null,
           isDark: true,
           occupyFullSpace: true,
           attribute: 'buttonField'

@@ -24,6 +24,9 @@ const LandingPage = () => {
     const [room, setRoom] = useState([]);
 
     const [load, setLoad] = useState(false);
+    
+    // Should show full details in old dashboard card view
+    var showFullDetails = JSON.parse(getStorage('showFullDetails'));
 
     //Loader
     const [loading, setLoading] = useState(false);
@@ -243,7 +246,7 @@ const LandingPage = () => {
                                                     }
                                                 }).map((item, key) => {
                                                     return (
-                                                        <HomeRoom roomStatusConstant = {item.roomStatusConstant} floorNo = {item.floorNo} nextOfNextStatus = {item.nextOfNextRoomStatus} nextStatus = {item.nextRoomStatus} roomStatus = {item.roomStatus} edit = {false} lodgeName = {splitedIds[1]} node = {setNodeModel} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
+                                                        <HomeRoom showFullDetails = {showFullDetails} roomStatusConstant = {item.roomStatusConstant} floorNo = {item.floorNo} nextOfNextStatus = {item.nextOfNextRoomStatus} nextStatus = {item.nextRoomStatus} roomStatus = {item.roomStatus} edit = {false} lodgeName = {splitedIds[1]} node = {setNodeModel} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
                                                             roomid={item._id} id={id} setLoad={setLoad} lodgeid={splitedIds[0]} price={item.price}
                                                             prebook={item.preBooked} prevalid={item.preValid} isPrebook = {false} prebookconfig={false} discount={item.discount} isGstEnabled={isGstEnabled}
                                                             isHourly={isHourly} channel={channel} options={options} updatePriceWizard={updatePriceWizard} />
