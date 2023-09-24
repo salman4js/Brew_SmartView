@@ -1300,13 +1300,14 @@ const HomeRoom = (props) => {
                 <div class="card-header" style={{ color: "black" }}>
                     <strong>Room No : {props.roomno} ({props.floorNo+'F'})</strong>
                 </div>
-                <div class="card-body">
-                    <p style={{ color: "black" }}> Engaged : {props.engaged}</p>
-                    <p style={{ color: "black" }}> Bed Count : {(props.extraBeds !== "0" && props.extraBeds !== "" ? props.bedcount + "+" + props.extraBeds : props.bedcount)}</p>
-                    <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
-                    <p style={{ color: "black" }}> Price Per Day : {props.price}</p>
-                </div>
-
+                {props.showFullDetails && (
+                  <div class="card-body">
+                      <p style={{ color: "black" }}> Engaged : {props.engaged}</p>
+                      <p style={{ color: "black" }}> Bed Count : {(props.extraBeds !== "0" && props.extraBeds !== "" ? props.bedcount + "+" + props.extraBeds : props.bedcount)}</p>
+                      <p style={{ color: "black" }}> Room Type : {props.roomtype}</p>
+                      <p style={{ color: "black" }}> Price Per Day : {props.price}</p>
+                  </div>
+                )}
                 {/* // Check In Modal */}
                 {!props.isPrebook && (
                   <Modal

@@ -70,7 +70,8 @@ const Login = () => {
             "isRefundTrackerEnabled": res.data.object.refundTracker !== undefined ? res.data.object.refundTracker : false,
             'isAdvanceRestricted': res.data.object.restrictAdvance,
             'isCheckinDateEditable': res.data.object.checkinDateEditable,
-            'is-linked-with-vouchers': res.data.object.linkVouchersWithLivixius
+            'is-linked-with-vouchers': res.data.object.linkVouchersWithLivixius,
+            'showFullDetails': res.data.object.showFullDetails
           }
 
           // Populate the modal into localstorage!
