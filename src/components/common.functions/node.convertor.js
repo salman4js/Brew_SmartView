@@ -245,6 +245,35 @@ export function getFieldsData(field, name){
   return result;
 };
 
+// Remove unwanted data from the objects!
+export function removeKeysInObj(obj, unwantedData){
+  unwantedData.map((data) => {
+    delete obj[data];
+  });
+  return obj;
+};
+
+// Keep only the necessay data in objects and remove unwanted things!
+export function filterKeysInObj(obj, filterData){
+  for (const key in obj) {
+    if (!filterData.includes(key)) {
+        delete obj[key];
+    };
+  };
+  return obj;
+};
+
+// Arrange objects values in the provided order --> Takes one obj to arrange and an array of values for order reference!
+export function arrangeObj(obj, orderedArr){
+  var orderedObj = {};
+  orderedArr.forEach(key => {
+    if (obj.hasOwnProperty(key)) {
+      orderedObj[key] = obj[key];
+    };
+  });
+  return orderedObj;
+};
+
 // Refresh the entire page when needed!
 export function domRefresh(){
   window.location.reload();

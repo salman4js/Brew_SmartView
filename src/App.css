@@ -1178,3 +1178,8 @@ td {
   cursor: pointer;
 }
 
+.brew-statustableview-lefttoolbar-header{
+  padding-left: 600px;
+  font-weight: bold
+}
+

@@ -20,8 +20,7 @@ const CheckinForm = (props) => {
   // Property container state handler!
   const [propertyContainer, setPropertyContainer] = useState({
     isLoading: false,
-    customModal: false,
-    navigateToProperty: false
+    customModal: false
   });
 
   // Custom modal state handler!
@@ -33,6 +32,7 @@ const CheckinForm = (props) => {
     restrictBody: true,
     modalSize: "medium",
     footerEnabled: false,
+    customData: undefined
   });
 
   // Checkin form fields state handler!
@@ -272,9 +272,9 @@ const CheckinForm = (props) => {
   };
   
   // trigger custom modal!
-  function _triggerCustomModal(value){
-    setPropertyContainer(prevState => ({...prevState, customModal: value, navigateToProperty: true}));
-    setCustomModalState(prevState => ({...prevState, show: value}));
+  function _triggerCustomModal(value, customData){
+    setPropertyContainer(prevState => ({...prevState, customModal: value}));
+    setCustomModalState(prevState => ({...prevState, show: value, customData: customData}));
   }
   
   // Checkin form view!
@@ -324,7 +324,7 @@ const CheckinForm = (props) => {
       const serverResult = await checkInFormValue(finalFormValue);
       if(serverResult.data.success){
         _toggleLoader(false);
-        _triggerCustomModal(true);
+        _triggerCustomModal(true, {updatedRoomModel: serverResult.data.updatedModel, updatedUserModel: serverResult.data.updatedUserModel});
       }
     }
   };
@@ -340,15 +340,21 @@ const CheckinForm = (props) => {
     formValue['dateTime'] = brewDate.getFullDate("dd/mmm") +  " " + brewDate.timeFormat(brewDate.getTime());
     formValue['roomid'] = props.data.roomModel._id;
     formValue['roomno'] = props.data.roomModel.roomno;
+    formValue['floorNo'] = props.data.roomModel.floorNo;
     formValue['lodgeId'] = props.params.accIdAndName[0];
     return formValue;
   };
   
   // After form has been saved!
-  function onCloseCustomModal(){
+  function onCloseCustomModal(valueFromCustomModal){
     _triggerCustomModal(false);
-    props.afterFormSave({reloadSidepanel: {silent: false}}); // Change the screen to property container dashboard
-    // and pass the controller options!
+    _updateDashboardPropertyContainer(valueFromCustomModal);
+  };
+  
+  // Update dashboard property container!
+  function _updateDashboardPropertyContainer(customData){
+    props.afterFormSave({reloadSidepanel: {silent: true}, navigateToPropertyContainer: true, persistStatusView: false, 
+      updatedModel: customData.updatedRoomModel, updateUserCollection: {updatedUserModel: customData.updatedUserModel, action: 'CHECK-IN'}});
   };
   
   // Get exclude dates and append it on date of checkout!

@@ -8,7 +8,7 @@ import { commonLabel } from '../../../common.functions/common.functions.view';
 
 
 class DefaultView extends React.Component {
-  
+
   constructor(props){
     super(props);
     this.state = {
@@ -26,6 +26,9 @@ class DefaultView extends React.Component {
       userRoomStatus: [], // User preference room status!
       widgetTile: this.renderWidgetTile.bind(this)
     };
+    this.propertyDetailsModel = {}; // Keeping the propertyDetailsModel outside of the state to avoid triggering change event!
+    this.propertyStatusMap = {}; // this is to keep track of user defined room status mapping of room status constant.
+    // Later add this to global state if this data is further needed!
   };
   
   // Template helpers!
@@ -61,12 +64,14 @@ class DefaultView extends React.Component {
     }
   };
 
+  // Show widget view based on the cardCollectionProps data!
   showWidgetTiles(){
     return this.makeWidgetTile().map((state) => {
       return widgetTileTemplateHelpers(state);
     });
   };
 
+  // Render widget view after data fetched and the status count has been computed!
   renderWidgetTile(){
     // Check if the data is loaded!
     if(this.state.data.isFetched && this.state.isComputed){
@@ -74,6 +79,12 @@ class DefaultView extends React.Component {
     } else {
       return <BlockActions />
     }
+  };
+  
+  // On widget tile click handler!
+  onWidgetTileClick(value){
+    this.props.dashboardController({navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel, 
+      userStatusMap: this.propertyStatusMap, selectedRoomConstant: value});
   };
 
   // Card body child view list item function!
@@ -87,7 +98,7 @@ class DefaultView extends React.Component {
   unMapRoomStatus() {
     // Create a copy of the userRoomStatus array because of the asynchronous behaviour of states!
     let updatedUserRoomStatus = [...this.state.userRoomStatus];
-
+    
     this.state.data.roomStatus.forEach((statusModel) => {
       if (!updatedUserRoomStatus.includes(statusModel.statusName)) {
         updatedUserRoomStatus.push(statusModel.statusName);
@@ -105,6 +116,24 @@ class DefaultView extends React.Component {
       );
     });
   };
+  
+  // Track of property details model for table data!
+  _updatePropertyDetailsModel(roomModel){
+    if(this.propertyDetailsModel[roomModel.roomStatus] === undefined){
+      this.propertyDetailsModel[roomModel.roomStatus] = [];
+    } 
+    var isAddedToDetailsModel = _.find(this.propertyDetailsModel[roomModel.roomStatus], {_id: roomModel._id});
+    if(!isAddedToDetailsModel){      
+      this.propertyDetailsModel[roomModel.roomStatus].push(roomModel);
+    };
+  };
+  
+  // Track of user defined room status mapping of the room status constant!
+  _updatePropertyStatusMap(roomModel){
+    if(this.propertyStatusMap[roomModel.roomStatusConstant] === undefined){
+      this.propertyStatusMap[roomModel.roomStatusConstant] = roomModel.roomStatus; 
+    };
+  };
 
   // Widget tile render functions!
   makeWidgetTile(){
@@ -116,12 +145,15 @@ class DefaultView extends React.Component {
         var cardViewProps = this.getCardViewProps();
         roomStatusConstants.map((status) => {
           if(model.roomStatusConstant === status && model.roomStatus !== undefined){
+            this._updatePropertyDetailsModel(model);
+            this._updatePropertyStatusMap(model);
             // Check if the widgetTile has been already added to the cardViewCollectionProps!
             var isWidgetTileAdded = _.find(cardViewCollectionProps, {customData: [model.roomStatus]});
             if(!isWidgetTileAdded){
               cardViewProps.customData.push(model.roomStatus);
               cardViewProps.header = model.roomStatus;
               cardViewProps._showBodyChildView = () => this.cardBodyChildView(model.roomStatusConstant);
+              cardViewProps.onClick = (value) => this.onWidgetTileClick(value);
               cardViewCollectionProps.push(cardViewProps);
             };
           }
@@ -145,6 +177,7 @@ class DefaultView extends React.Component {
         var cardViewProps = this.getCardViewProps();
         cardViewProps.header = nonAddedStatusModel;
         cardViewProps._showBodyChildView = () => this.cardBodyChildView();
+        cardViewProps.onClick = (value) => this.onWidgetTileClick(value);
         cardViewCollectionProps.push(cardViewProps);
       };
     };

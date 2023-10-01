@@ -331,6 +331,7 @@ const HomeRoom = (props) => {
                 checkoutTime: handleCheckoutTime(getTime),
                 roomid: props.roomid,
                 roomno: props.roomno,
+                floorNo: props.floorNo,
                 discount: discount,
                 advance: advanceCheckin,
                 amountFor: universalLang.InitialPayment,
