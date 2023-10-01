@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { getAvailableRoomTypes } from './sidepanel.container.utils';
+import { getAvailableRoomTypes, getUserModel } from './sidepanel.container.utils';
 import { getRoomList } from '../../paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import { getStatusCodeColor } from '../../common.functions/common.functions';
 import { globalMessage, commonLabel, activityLoader } from '../../common.functions/common.functions.view';
@@ -14,7 +14,7 @@ const SidepanelWrapper = (props) => {
     height: undefined,
     header: "Rooms List",
     isLoading: true,
-    paranetData: undefined,
+    parentData: undefined,
     childData: undefined,
     selectedId: []
   });
@@ -72,9 +72,9 @@ const SidepanelWrapper = (props) => {
 
   // Item panel collection onClick!
   function panelItemOnClick(uId, model){
-    var formMode = getFormMode(model);
+    var dashboardMode = getFormMode(model);
     _updateSelectedIdList(uId);
-    props.selectedModel(model, formMode);
+    props.selectedModel(model, dashboardMode);
   };
   
   // Highlight selected ID!
@@ -114,13 +114,23 @@ const SidepanelWrapper = (props) => {
       fetchRoomsLists();
     }
   };
+
+  // Fetch user model!
+  async function fetchUserModel(){
+    var params = {lodgeId: props.params.accIdAndName[0]};
+    const result = await getUserModel(params);
+    if(result.data.success){
+      return result.data.message;
+    };
+  };
   
   // Fetch the available rooms list!
   async function fetchRoomsLists(){
     const result = await getRoomList(props.params.accIdAndName[0]);
     if(result.data.success){
       setSidepanel(prevState => ({...prevState, childData: result.data.message}));
-      props.updatePropertyDetails(result.data.message, result.data.countAvailability, result.data.roomStatus); // Send the property details to the dashboard container!
+      var userModel = await fetchUserModel();
+      props.updatePropertyDetails(result.data.message, result.data.countAvailability, result.data.roomStatus, userModel); // Send the property details to the dashboard container!
       _toggleLoader(false);
     }
   };
@@ -146,7 +156,7 @@ const SidepanelWrapper = (props) => {
       // Update the data at the calculated index!
       currentModelData[updatableIndex] = props.selectedModelData.roomModel;
       setSidepanel(prevState => ({...prevState, childData: currentModelData})); // Update the child data!
-    };
+    }
   };
   
   // Update the sidepanel height when props.data.height changes!

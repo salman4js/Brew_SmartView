@@ -65,7 +65,14 @@ const CardView = (props) => {
         <CustomModal modalData = {modelAndInvoiceData} showBodyItemView = {() => props.customModalBodyItem()}  />
       )
     )
-  }
+  };
+  
+  // On card body view click!
+  function onCardBodyViewClick(){
+    // Get the pass value declared in the caller component state!
+    var passer = props.data.passer !== undefined ? props.data.passer : props.data.header;
+    props.data.onClick(passer);
+  };
   
   return(
     <div className="card" style = {{height: props.data?.height + "px", width: props.data?.width + "px"}}>
@@ -77,7 +84,7 @@ const CardView = (props) => {
         {props.data?.commandHelper && (
           _showCommands()
         )}
-        <div className = {getChildViewStyle()}>
+        <div className = {getChildViewStyle()} onClick = {() => !props.data?.enableLoader && props.data?.onClick && onCardBodyViewClick()}>
           {props.data?.enableLoader ? _showActivityLoader() : props.data?._showBodyChildView()}
         </div>
         {props.data?.footerEnabled && (

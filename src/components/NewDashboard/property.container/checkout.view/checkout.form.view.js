@@ -43,10 +43,6 @@ class CheckOutView extends React.Component {
           footerEnabled: false,
           footerButtons: undefined
         },
-        propertyController: {
-          reloadSidepanel: false,
-          navigateToPropertyContainer: false
-        },
         printingDetails: {
           invoice: true,
           tInvoice: false,
@@ -54,6 +50,13 @@ class CheckOutView extends React.Component {
           cgst: true,
           gstin: undefined
         }
+      };
+      this.propertyController = {
+        reloadSidepanel: false,
+        navigateToPropertyContainer: false,
+        persistStatusView: false,
+        updatedModel: undefined,
+        updateUserCollection: undefined
       };
       this.checkoutUtils = new CheckoutUtils({accId: props.params.accIdAndName[0]});
     };
@@ -114,14 +117,11 @@ class CheckOutView extends React.Component {
     
     // Update property container controller!
     _updatePropertyController(opts){
-      this.setState(prevState => ({
-        ...prevState,
-        propertyController: {
-          ...prevState.propertyController,
-          reloadSidepanel: opts.reloadSidepanel,
-          navigateToPropertyContainer: opts.navigateToPropertyContainer
-        }
-      }))
+      this.propertyController.reloadSidepanel = opts.reloadSidepanel;
+      this.propertyController.navigateToPropertyContainer = opts.navigateToPropertyContainer;
+      this.propertyController.persistStatusView = opts.persistStatusView;
+      this.propertyController.updatedModel = opts.updatedModel;
+      this.propertyController.updateUserCollection = opts.updateUserCollection;
     };
     
     // Trigger custom modal!
@@ -136,12 +136,7 @@ class CheckOutView extends React.Component {
           restrictBody: opts.restrictBody,
           showBodyItemView: opts.showBodyItemView,
           footerEnabled: opts.footerEnabled,
-          footerButtons: opts.footerButtons,
-          propertyController: {
-            ...prevState.propertyController,
-            reloadSidepanel: opts.reloadSidepanel,
-            navigateToPropertyContainer: opts.navigateToPropertyContainer
-          }
+          footerButtons: opts.footerButtons
         }
       }))
     };
@@ -156,7 +151,7 @@ class CheckOutView extends React.Component {
         }
       }));
       // Update the selectedModel onCheckout value in dashboard wrapper!
-      this.props.cancelCheckoutPrompt(this.state.propertyController);
+      this.props.cancelCheckoutPrompt(this.propertyController);
     };
     
     _toggleLoader(value){
@@ -358,7 +353,8 @@ class CheckOutView extends React.Component {
         roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime()};
       var result = await this.checkoutUtils.onCheckout(data);
       if(result.data.success){
-        this._updatePropertyController({reloadSidepanel: {silent: false}, navigateToPropertyContainer: true});
+        this._updatePropertyController({reloadSidepanel: {silent: true}, persistStatusView: false, navigateToPropertyContainer: true, 
+          updateUserCollection: {id: result.data.updatedModel._id, action: 'CHECK-OUT'}, updatedModel: result.data.updatedModel});
         var data = {header: result.data.message, isCentered: false, isRestrictBody: true, 
         isFooterEnabled: false};
         this._toggleLoader(false);

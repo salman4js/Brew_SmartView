@@ -78,7 +78,19 @@ const DataList = (props) => {
           </span>
           {props.data.allowRightSideControl && (
             <span className = 'metadata-datalistfield-control-center'>
-              {props.data.rightSideControl()}
+              {props.data.rightSideControl && props.data.rightSideControl()}
+            </span>
+          )}
+        </div>
+      )}
+      {props.data.customPanelField && (
+        <div className = 'metadata-panel-helper' style = {{height: props.data?.height + "px"}}>
+          <span className = 'metadata-panel-helper-options brew-cursor' style = {{width: props.data?.width}}>
+            {props.data.renderCustomPanelField && props.data.renderCustomPanelField()}
+          </span>
+          {props.data.allowRightSideControl && (
+            <span className = 'metadata-datalistfield-control-center'>
+              {props.data.rightSideControl && props.data.rightSideControl()}
             </span>
           )}
         </div>

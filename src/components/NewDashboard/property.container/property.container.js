@@ -4,9 +4,9 @@ import CheckInForm from './checkin.view/checkin.form.view';
 import CheckOutView from './checkout.view/checkout.form.view';
 import RoomStatusView from './room.status.view/room.status.view';
 import DefaultView from './default.view/default.view';
+import StatusTableView from './table.view/table.view';
 
 const PropertyContainer = (props) => {
-
   // Panel fields state handler!
   const [panelField, setPanelField] = useState([]);
   
@@ -28,7 +28,7 @@ const PropertyContainer = (props) => {
         width: '200px',
         selectedValue: selectedValues,
         showListValue: function(){
-          return props.data.formMode !== 'roomStatus' ? true : false;
+          return props.data.dashboardMode !== 'roomStatus' ? true : false;
         },
         style: {
           width: "200",
@@ -47,13 +47,13 @@ const PropertyContainer = (props) => {
 
   // Get panel field dropdown values!
   function getPanelFieldDropdown(){
-    if(props.data.formMode !== 'roomStatus'){
+    if(props.data.dashboardMode !== 'roomStatus' && props.data.dashboardMode !== 'statusTableView'){
        return [
           {
-            value: (props.data.formMode === 'edit' ? 'checkin-form' : 'checkout-form')
+            value: (props.data.dashboardMode === 'edit' ? 'checkin-form' : 'checkout-form')
           },
           {
-            value: (props.data.formMode === 'edit' ? undefined : 'payment tracker')
+            value: (props.data.dashboardMode === 'edit' ? undefined : 'payment tracker')
           }
         ]
     } else {
@@ -63,35 +63,43 @@ const PropertyContainer = (props) => {
 
   // Get panel field dropdown selectedValues and values!
   function getPanelFieldsValues(){
-    if(props.data.formMode !== 'roomStatus'){
-      return (props.data.formMode === 'edit' ? 'checkin-form' : 'checkout-form')
+    if(props.data.dashboardMode !== 'roomStatus'){
+      return (props.data.dashboardMode === 'edit' ? 'checkin-form' : 'checkout-form')
     }
   };
-  
+
   // Render property model!
   function _renderPropertyModel(){
-    if(props.data.formMode === 'edit'){
+    if(props.data.dashboardMode === 'edit'){
       return <CheckInForm height = {props.propertyContainerHeight} data = {props.data} params = {props.params} 
       afterFormSave = {(opts) => props.onCancel(opts)} />
     };
     
-    if(props.data.formMode === 'read'){
+    if(props.data.dashboardMode === 'read'){
       return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
       cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} afterCheckout = {(opts) => props.onCancel(opts)} />
     };
     
-    if(props.data.formMode === 'roomStatus'){
+    if(props.data.dashboardMode === 'roomStatus'){
       return <RoomStatusView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
       dashboardController = {(opts) => props.dashboardController(opts)} />
     };
     
-    if(props.data.formMode === 'default'){
-      return <DefaultView data = {props.propertyDetails} params = {props.params} height = {props.propertyContainerHeight} />
+    if(props.data.dashboardMode === 'default'){
+      return <DefaultView data = {props.propertyDetails} params = {props.params} height = {props.propertyContainerHeight}
+      dashboardController = {(opts) => props.dashboardController(opts)} />
+    };
+    
+    if(props.data.dashboardMode === 'statusTableView'){
+      return <StatusTableView data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
+      onBack = {(opts) => props.dashboardController(opts)} />
     };
   };
 
   // Get form models!
   function getFormModels(){
+    var emptyFormModel = [];
+
     var checkinFormModel = [{
         btnValue: 'Cancel',
         onClick: onCancel,
@@ -120,23 +128,27 @@ const PropertyContainer = (props) => {
         onClick: onCancel,
         attribute: 'buttonField'
     }];
-    return {checkinFormModel, checkoutFormModel, roomStatusFormModel};
+    
+    return {checkinFormModel, checkoutFormModel, roomStatusFormModel, emptyFormModel};
   };
 
   // Get panel field right side data!
   function getPanelRightSideData(){
     var formModels = getFormModels();
-    if(props.data.formMode === 'edit'){
+    if(props.data.dashboardMode === 'edit'){
       return formModels.checkinFormModel;
     };
-    if(props.data.formMode === 'read'){
+    if(props.data.dashboardMode === 'read'){
       return formModels.checkoutFormModel;
     }
-    if(props.data.formMode === 'roomStatus'){
+    if(props.data.dashboardMode === 'roomStatus'){
       return formModels.roomStatusFormModel;
     }
-    if(props.data.formMode === 'default'){
+    if(props.data.dashboardMode === 'default'){
       return formModels.checkinFormModel;
+    }
+    if(props.data.dashboardMode === 'statusTableView'){
+      return formModels.emptyFormModel;
     }
   };
   
@@ -162,14 +174,20 @@ const PropertyContainer = (props) => {
     props.onSave(true); // this will trigger the onSave API call in checkin form view!
   };
   
+  // Should show panel field and for statusTableView we render panel field separately!
+  function shouldShowPanelField(){
+    return (props.data.dashboardMode !== 'default' && props.data.dashboardMode !== 'statusTableView');
+  };
+  
   // Force update when the props changes!
   useEffect(() => {
-    setPanelField(getPanelFieldData); // Update the panel field data when the formMode changes!
-  }, [props.data.formMode])
+    var panelFieldData = getPanelFieldData();
+    setPanelField(panelFieldData); // Update the panel field data when the dashboardMode changes!
+  }, [props.data.dashboardMode])
   
   return(
     <>
-      {props.data.formMode !== 'default' && (
+      {shouldShowPanelField() && (
         <MetadataFields data = {panelField} updateData = {setPanelField} />
       )}
       {_renderPropertyModel()}

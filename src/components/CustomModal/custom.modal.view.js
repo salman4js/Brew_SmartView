@@ -28,11 +28,18 @@ const CustomModal = (props) => {
       return props.modalData.showBodyItemView();
     }
   };
+  
+  // On hide triggered!
+  function onHideTriggered(){
+    // Check for if any customData is passed, If yes, pass that as the arguments in the onHide function or pass false!
+    var value = props.modalData.customData !== undefined ? props.modalData.customData : false;
+    props.modalData.onHide(value);
+  };
 
   return(
     <Modal
         show={props.modalData.show}
-        onHide={() => props.modalData.onHide(false)}
+        onHide={() => onHideTriggered()}
         backdrop="static"
         keyboard={false}
         centered= {props.modalData.centered}
