@@ -1183,3 +1183,7 @@ td {
   font-weight: bold
 }
 
+.metadata-table-view-dashboard-container{
+  overflow: auto;
+}
+

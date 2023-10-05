@@ -13,7 +13,7 @@ export async function fetchWidgetTilePref(lodgeId){
   var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');
   if(!widgetTileCollection){
     const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getwidgettilecol`, options);
-    CollectionInstance.setCollections('widgetTileCollections', result);
+    CollectionInstance.setCollections('widgetTileCollections', result.data.data);
   }
 };
 

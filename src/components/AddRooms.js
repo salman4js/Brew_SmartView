@@ -73,7 +73,7 @@ const AddRooms = () => {
         setLoading(true);
         const credentials = {
             floorNo: floorNo,
-            roomno: roomno,
+            roomno: roomno.replace(/ /g, ""), // Removing the extra spaces to prevent duplicate rooms from getting created!
             bedcount: bedcount,
             suitename: suitetype,
             price: price,

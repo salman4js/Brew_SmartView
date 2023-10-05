@@ -4,9 +4,8 @@ const changeScreen = (isTokenExpired) => { // Navigate back to the respective lo
     const loggedInID = storage.getStorage("loggedInID");
     const redirectTo = storage.getStorage("redirectTo");
     const multipleLogins = storage.getStorage("multipleLogin");
-    console.log(storage.getStorage('multipleLogin'));
     storage.clearStorage(); // Clearing out the local storage on every session expires!
-    if(redirectTo !== "vouchers" && multipleLogins !== 'true' && isTokenExpired === undefined){
+    if(redirectTo !== "vouchers" && multipleLogins !== 'false' && isTokenExpired === undefined){
       window.location.href = `/${loggedInID}/chooselogin`;
     } else {
       window.location.href = `/login`;

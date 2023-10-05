@@ -1,3 +1,5 @@
+import MetadataTable from '../../../metadata.table.view/metadata.table.view';
+
 class TableViewTemplateHelpers {
   
   constructor(state){
@@ -16,6 +18,15 @@ class TableViewTemplateHelpers {
         </span>
       </div>
     );
+  };
+  
+  // Table view template helpers!
+  tableViewTemplateHelper(tableData, widgetData){
+    return(
+      <div className = 'metadata-table-view-dashboard-container' style = {{height: widgetData.height}}>
+        <MetadataTable data = {tableData} height = {widgetData.height} />
+      </div>
+    )
   };
   
 };
