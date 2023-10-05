@@ -418,13 +418,13 @@ class CheckOutView extends React.Component {
       // this.updatePrintingDetailsPref.bind(this, {invoice: true, tInvoice: false})
       var buttonFields = [{
           btnValue: 'Get bill',
-          onClick: null,
+          onClick: this.updatePrintingDetailsPref.bind(this, {invoice: true, tInvoice: false}),
           isDark: true,
           occupyFullSpace: true,
           attribute: 'buttonField'
       }, {
           btnValue: 'Get Invoice',
-          onClick: null,
+          onClick: this.updatePrintingDetailsPref.bind(this, {invoice: false, tInvoice: true}),
           isDark: true,
           occupyFullSpace: true,
           attribute: 'buttonField'

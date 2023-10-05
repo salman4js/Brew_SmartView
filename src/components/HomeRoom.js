@@ -211,6 +211,7 @@ const HomeRoom = (props) => {
             prebookprice: getPrebookPrice(),
             suitetype: props.roomtype,
             roomid: props.roomid,
+            floorNo: props.floorNo,
             checkinTime: checkinTime,
             checkoutTime: checkoutTime,
             prebookChannelManager: prebookChannelManager,

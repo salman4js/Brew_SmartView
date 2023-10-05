@@ -24,6 +24,7 @@ const Prebook_component = (props) => {
   
   // Current Date
   const date = brewDate.getFullDate("yyyy/mm/dd");
+  console.log(date)
   var time = brewDate.getTime(); // Time in 24 hour format for easy comparison!
     
   // Time to handle channel manager, edit room price, and mismatching time booking price!
@@ -346,6 +347,7 @@ const Prebook_component = (props) => {
   // Check-In to the model
   const processData = () => {
     setLoading(true);
+    console.log(date, props.dateofcheckin);
     // Validating current date before booking
     if((date == props.dateofcheckin) === false){
       setLoading(false);
@@ -373,6 +375,7 @@ const Prebook_component = (props) => {
         checkout : props.dateofcheckout,
         roomid: props.roomid,
         roomno: props.roomno,
+        floorNo: props.floorNo,
         prebookprice : props.prebookprice,
         prebook : true,
         discount: props.discount, // Sending duplicate data to the server to prevent including more schema values
@@ -398,7 +401,7 @@ const Prebook_component = (props) => {
           } else {
             setLoading(false);
             setShowerror(true);
-            setSuccess(res.data.message)
+            setSuccess(res.data.message);
           }
         })
     }

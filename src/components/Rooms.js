@@ -7,6 +7,8 @@ import HomeRoom from './HomeRoom';
 import CustomError from './CustomError';
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+// Local Storage function!
+import { getStorage } from '../Controller/Storage/Storage';
 
 const Rooms = () => {
 
@@ -18,6 +20,9 @@ const Rooms = () => {
     const [room, setRoom] = useState([]);
 
     const [load, setLoad] = useState("");
+    
+    // Should show full details in old dashboard card view
+    var showFullDetails = JSON.parse(getStorage('showFullDetails'));
 
     //Loader
     const [loading, setLoading] = useState(false);
@@ -101,7 +106,9 @@ const Rooms = () => {
                                     {
                                         room.map((item, key) => {
                                             return (
-                                                <HomeRoom roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} price = {item.price} />
+                                                <HomeRoom showFullDetails = {showFullDetails} floorNo = {item.floorNo} roomno={item.roomno} engaged={item.isOccupied} 
+                                                roomtype={item.suiteName} bedcount={item.bedCount} roomid={item._id} id={id} setLoad={setLoad} lodgeid = {splitedIds[0]} 
+                                                price = {item.price} extraBeds={item.extraCount} />
                                             )
                                         })
                                     }
