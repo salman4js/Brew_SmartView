@@ -4,14 +4,16 @@ var tableViewConstants = Object.freeze({
     afterCheckedout: ['Floor No', 'Room No', 'Room type', 'Bed Count', 'Extra Bed Price Per Day', 'Price Per Day'],
     afterCleaned: ['Floor No', 'Room No', 'Room type', 'Bed Count', 'Extra Bed Price Per Day', 'Price Per Day'],
     inCleaning: ['Floor No', 'Room No', 'Room type', 'Bed Count', 'Extra Bed Price Per Day', 'Price Per Day'],
-    afterCheckin: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout']
+    afterCheckin: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
+    upcomingCheckout: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout']
   }),
   
   PropertyStatusRequiredKey: Object.freeze({
     afterCheckedout: ['_id','floorNo', 'roomno', 'suiteName', 'bedCount', 'extraBedPrice', 'price'],
     afterCleaned: ['_id','floorNo', 'roomno', 'suiteName', 'bedCount', 'extraBedPrice', 'price'],
     inCleaning: ['_id','floorNo', 'roomno', 'suiteName', 'bedCount', 'extraBedPrice', 'price'],
-    afterCheckin: ['_id','floorNo', 'roomno', 'username', 'phonenumber', 'dateofcheckin', 'dateofcheckout']
+    afterCheckin: ['_id','floorNo', 'roomno', 'username', 'phonenumber', 'dateofcheckin', 'dateofcheckout'],
+    upcomingCheckout: ['_id','floorNo', 'roomno', 'username', 'phonenumber', 'dateofcheckin', 'dateofcheckout']
   }),
   
   tableInfoMessage: Object.freeze({

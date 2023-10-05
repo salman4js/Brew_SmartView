@@ -1,7 +1,9 @@
 import React from 'react';
 import _ from 'lodash';
 import CardView from '../../../CardView/card.view/card.view';
+import defaultViewConstants from './default.view.constants';
 import { getRoomStatusConstants } from '../../../common.functions/common.functions';
+import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 import BlockActions from '../../../fields/block.actions.view/block.actions.view';
 import { templateHelpers, widgetTileTemplateHelpers, widgetTileBodyTemplateHelpers } from './default.view.template';
 import { commonLabel } from '../../../common.functions/common.functions.view';
@@ -26,6 +28,7 @@ class DefaultView extends React.Component {
       userRoomStatus: [], // User preference room status!
       widgetTile: this.renderWidgetTile.bind(this)
     };
+    this.configurableWidgetTiles = defaultViewConstants.CONFIGURABLE_WIDGET_TILE;
     this.propertyDetailsModel = {}; // Keeping the propertyDetailsModel outside of the state to avoid triggering change event!
     this.propertyStatusMap = {}; // this is to keep track of user defined room status mapping of room status constant.
     // Later add this to global state if this data is further needed!
@@ -134,10 +137,21 @@ class DefaultView extends React.Component {
       this.propertyStatusMap[roomModel.roomStatusConstant] = roomModel.roomStatus; 
     };
   };
+  
+  // Get configured widget tile collections!
+  getWidgetTileCollections(){ // This method takes care of configuration of widget tile based on the user preference!
+    var temp = ['upcomingCheckout'];
+    this.widgetTileCollection = {};
+    for (var collection of temp){
+      this.widgetTileCollection[collection] = CollectionInstance.getCollections(collection);
+    };
+  };
 
   // Widget tile render functions!
   makeWidgetTile(){
     if(this.state.data.isFetched && this.state.isComputed){
+      // Get widget tile collection from the global collections!
+      this.getWidgetTileCollections();
       var roomStatusConstants = getRoomStatusConstants(),
         cardViewCollectionProps = [],
         tempData = []; // This is to verify the non added room status constant, and add them to the card body view with the count 0!
@@ -150,11 +164,7 @@ class DefaultView extends React.Component {
             // Check if the widgetTile has been already added to the cardViewCollectionProps!
             var isWidgetTileAdded = _.find(cardViewCollectionProps, {customData: [model.roomStatus]});
             if(!isWidgetTileAdded){
-              cardViewProps.customData.push(model.roomStatus);
-              cardViewProps.header = model.roomStatus;
-              cardViewProps._showBodyChildView = () => this.cardBodyChildView(model.roomStatusConstant);
-              cardViewProps.onClick = (value) => this.onWidgetTileClick(value);
-              cardViewCollectionProps.push(cardViewProps);
+              this.prepareWidgetTile(model, cardViewProps, cardViewCollectionProps);
             };
           }
         });
@@ -166,16 +176,61 @@ class DefaultView extends React.Component {
       });
       var nonAddedStatusConstant = _.difference(this.state.userRoomStatus, tempData); // non added room status constant, manually add those to the cardViewCollection 
       // with the count 0!
+      // Add feature widget tile collection props!
+      this.addWidgetCollectionToPropertyDetails();
+      this.addFeatureWidgetCollection(cardViewCollectionProps);
       return this.addNonAddedStatusConstant(cardViewCollectionProps, nonAddedStatusConstant);
     }; 
   };
+  
+  // Prepare widget tile collections!
+  prepareWidgetTile(model, cardViewProps, cardViewCollectionProps){
+    cardViewProps.customData.push(model.roomStatus);
+    cardViewProps.header = model.roomStatus;
+    cardViewProps._showBodyChildView = () => this.cardBodyChildView(model.roomStatusConstant);
+    cardViewProps.onClick = (value) => this.onWidgetTileClick(value);
+    cardViewCollectionProps.push(cardViewProps);
+  };
+  
+  // Add feature widget collections!
+  addWidgetCollectionToPropertyDetails(){
+    var widgetTiles = Object.keys(this.widgetTileCollection);
+    for (var widgetTile of widgetTiles){
+      if(this.widgetTileCollection[widgetTile] !== undefined){
+        this.addPropertyStatusDetails(widgetTile);
+        var statusName = this.configurableWidgetTiles[widgetTile]; // Get the constant for the widgetCollection name!
+        this.propertyDetailsModel[statusName] = this.widgetTileCollection[widgetTile].data;
+      };
+    };
+  };
+  
+  // Add property status details with widget tile collection count!
+  addPropertyStatusDetails(propertyStatus){
+    if(this.state.propertyStatusDetails[propertyStatus] === undefined){
+      // Get the count.
+      this.state.propertyStatusDetails[propertyStatus] = this.widgetTileCollection[propertyStatus].data.length;
+    }
+  };
+  
+  // Add widget collection to the widget tiles!
+  addFeatureWidgetCollection(cardViewCollectionProps){
+    var cardViewProps = this.getCardViewProps(),
+    widgetTileCollectionsKey = Object.keys(this.widgetTileCollection);
+    for(const widgetTile of widgetTileCollectionsKey){
+      var model = {}; // Create an object with a key which is identical to prepareWidgetTile to reuse that function!
+      model.roomStatus = this.configurableWidgetTiles[widgetTile]; 
+      model.roomStatusConstant = widgetTile;
+      this._updatePropertyStatusMap(model); // Update property status map!
+      this.prepareWidgetTile(model, cardViewProps, cardViewCollectionProps);
+    }
+  };
 
   // Add non added status constant to the cardViewCollectionProps!
-  addNonAddedStatusConstant(cardViewCollectionProps, nonAddedStatusConstant){
-    for (const nonAddedStatusModel of nonAddedStatusConstant){
-      if(nonAddedStatusModel !== undefined){
+  addNonAddedStatusConstant(cardViewCollectionProps, widgetTileHeaders){
+    for (const widgetTileHeader of widgetTileHeaders){
+      if(widgetTileHeader !== undefined){
         var cardViewProps = this.getCardViewProps();
-        cardViewProps.header = nonAddedStatusModel;
+        cardViewProps.header = widgetTileHeader;
         cardViewProps._showBodyChildView = () => this.cardBodyChildView();
         cardViewProps.onClick = (value) => this.onWidgetTileClick(value);
         cardViewCollectionProps.push(cardViewProps);

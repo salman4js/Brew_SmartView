@@ -1,14 +1,24 @@
+import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
 const axios = require("axios");
+const brewDate = require('brew-date');
 const Variables = require("../../Variables");
 
-// Get rooms list1
-export async function getRoomList(lodgeId){
-  const roomsList = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/false/roomlodge`, {
-      headers: {
-          "x-access-token": localStorage.getItem("token"),
-      }
-  })
-  return roomsList;
+// Check if the widget tile collections are already fetched!
+export async function fetchWidgetTilePref(options){
+  
+};
+
+// Get rooms list!
+export async function getRoomList(lodgeId, options){
+  var fetchedCollection;
+  // Default access token params!
+  var params = {
+    headers: {
+        "x-access-token": localStorage.getItem("token"),
+    }
+  };
+  var resultData = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/false/roomlodge`, params);
+  return resultData;
 }
 
 // Get payment tracker details for specific rooms!
