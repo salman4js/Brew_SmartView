@@ -4,12 +4,21 @@ const brewDate = require('brew-date');
 const Variables = require("../../Variables");
 
 // Check if the widget tile collections are already fetched!
-export async function fetchWidgetTilePref(options){
-  
+export async function fetchWidgetTilePref(lodgeId){
+  // Get the options ready first!
+  var options = {
+    datesBetween: brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), brewDate.addDates(brewDate.getFullDate('yyyy/mm/dd'), 3))
+  };
+  // Check if the widget collection data already exists in collection instance!
+  var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');
+  if(!widgetTileCollection){
+    const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getwidgettilecol`, options);
+    CollectionInstance.setCollections('widgetTileCollections', result);
+  }
 };
 
 // Get rooms list!
-export async function getRoomList(lodgeId, options){
+export async function getRoomList(lodgeId){
   var fetchedCollection;
   // Default access token params!
   var params = {
@@ -17,6 +26,8 @@ export async function getRoomList(lodgeId, options){
         "x-access-token": localStorage.getItem("token"),
     }
   };
+  // Call the widget tile collection here!
+  await fetchWidgetTilePref(lodgeId);
   var resultData = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/false/roomlodge`, params);
   return resultData;
 }
