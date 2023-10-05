@@ -57,7 +57,8 @@ class TableView extends React.Component {
     this.setupEvents();
     this.prepareTemplateHelpersData();
     this.prepareTableData(); // When the table data is ready, Call the metadata table view!
-    return <MetadataTable data = {this.metadataTableState} height = {this.widgetTileModel.height} />
+    var tableViewTemplate = new TableViewTemplateHelpers();
+    return tableViewTemplate.tableViewTemplateHelper(this.metadataTableState, this.widgetTileModel);
   };
   
   // Set up events for any actions!

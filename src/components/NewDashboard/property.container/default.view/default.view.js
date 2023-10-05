@@ -140,10 +140,11 @@ class DefaultView extends React.Component {
   
   // Get configured widget tile collections!
   getWidgetTileCollections(){ // This method takes care of configuration of widget tile based on the user preference!
-    var temp = ['upcomingCheckout'];
+    var widgetTileCollections = CollectionInstance.getCollections('widgetTileCollections'), // Only the user selected preferences will be here!
+      preferences = Object.keys(widgetTileCollections.data);
     this.widgetTileCollection = {};
-    for (var collection of temp){
-      this.widgetTileCollection[collection] = CollectionInstance.getCollections(collection);
+    for (var preference of preferences){
+      this.widgetTileCollection[preference] = widgetTileCollections.data[preference];
     };
   };
 
@@ -164,7 +165,7 @@ class DefaultView extends React.Component {
             // Check if the widgetTile has been already added to the cardViewCollectionProps!
             var isWidgetTileAdded = _.find(cardViewCollectionProps, {customData: [model.roomStatus]});
             if(!isWidgetTileAdded){
-              this.prepareWidgetTile(model, cardViewProps, cardViewCollectionProps);
+              this.prepareWidgetTile(model, cardViewCollectionProps);
             };
           }
         });
@@ -184,7 +185,8 @@ class DefaultView extends React.Component {
   };
   
   // Prepare widget tile collections!
-  prepareWidgetTile(model, cardViewProps, cardViewCollectionProps){
+  prepareWidgetTile(model, cardViewCollectionProps){
+    var cardViewProps = this.getCardViewProps();
     cardViewProps.customData.push(model.roomStatus);
     cardViewProps.header = model.roomStatus;
     cardViewProps._showBodyChildView = () => this.cardBodyChildView(model.roomStatusConstant);
@@ -199,7 +201,7 @@ class DefaultView extends React.Component {
       if(this.widgetTileCollection[widgetTile] !== undefined){
         this.addPropertyStatusDetails(widgetTile);
         var statusName = this.configurableWidgetTiles[widgetTile]; // Get the constant for the widgetCollection name!
-        this.propertyDetailsModel[statusName] = this.widgetTileCollection[widgetTile].data;
+        this.propertyDetailsModel[statusName] = this.widgetTileCollection[widgetTile];
       };
     };
   };
@@ -208,7 +210,7 @@ class DefaultView extends React.Component {
   addPropertyStatusDetails(propertyStatus){
     if(this.state.propertyStatusDetails[propertyStatus] === undefined){
       // Get the count.
-      this.state.propertyStatusDetails[propertyStatus] = this.widgetTileCollection[propertyStatus].data.length;
+      this.state.propertyStatusDetails[propertyStatus] = this.widgetTileCollection[propertyStatus].length;
     }
   };
   
@@ -221,7 +223,7 @@ class DefaultView extends React.Component {
       model.roomStatus = this.configurableWidgetTiles[widgetTile]; 
       model.roomStatusConstant = widgetTile;
       this._updatePropertyStatusMap(model); // Update property status map!
-      this.prepareWidgetTile(model, cardViewProps, cardViewCollectionProps);
+      this.prepareWidgetTile(model, cardViewCollectionProps);
     }
   };
 
