@@ -9,11 +9,13 @@ import LogoTop from '../Assets/logo512.png';
 import { Link, useParams } from "react-router-dom";
 import { getStorage } from '../Controller/Storage/Storage';
 
+
 const Navbar = (props) => {
 
     //Check the ID and token of the application!
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
+    
     
     // Global Message handler!
     var globalMessage = useGlobalMessage();

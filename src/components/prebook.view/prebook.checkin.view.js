@@ -23,6 +23,9 @@ const PrebookCheckin = () => {
   // Messages for the loader!
   var roomFetchMessage = "Gathering available rooms...";
   var searchFetchMessage = "Fetching all the prebook available rooms...";
+  
+  // Should show full details in old dashboard card view
+  var showFullDetails = JSON.parse(getStorage('showFullDetails'));
     
   // Channel Manager Handler!
   const [channel, setChannel] = useState(JSON.parse(getStorage("isChannel")));
@@ -312,7 +315,7 @@ const PrebookCheckin = () => {
                       room.allRooms.map((item,key) => {
                         if(!room.omitObjectId.includes(item.roomno)){
                           return(
-                            <HomeRoom floorNo = {item.floorNo} edit = {false} lodgeName = {splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} 
+                            <HomeRoom showFullDetails = {showFullDetails} floorNo = {item.floorNo} edit = {false} lodgeName = {splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} 
                             roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
                             roomid={item._id} id={id} lodgeid={splitedIds[0]} price={item.price}
                             prebook={item.preBooked} prevalid={item.preValid} isPrebook = {true} prebookconfig={true} discount={item.discount} 

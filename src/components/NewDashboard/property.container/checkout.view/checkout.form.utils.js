@@ -1,5 +1,7 @@
+import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 const axios = require('axios');
 const Variables = require("../../../Variables");
+const _ = require('lodash');
 
 class CheckoutUtils {
     
@@ -26,10 +28,18 @@ class CheckoutUtils {
   
   // Checkout API!
   async onCheckout(data){
+    // First check if the data is in the collectionInstance of upcomingCheckout, If yes, remove the model!
+    var userModel = CollectionInstance.getCollections('widgetTileCollections');
+    var userModelExists = _.find(userModel.data.upcomingCheckout, function(obj){
+      return obj._id === data.userid;
+    });
+    if(userModelExists){
+      CollectionInstance.removeCollections('widgetTileCollections', userModelExists, 'upcomingCheckout');
+    }
     var result = await axios.post(`${this.baseUrl}/deleteuser`, data);
     return result;
   };
   
 }
 
-module.exports = CheckoutUtils;
+export default CheckoutUtils

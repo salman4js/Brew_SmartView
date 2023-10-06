@@ -115,10 +115,10 @@ const LandingPage = () => {
             setRoom(false)
         } else {
             axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge`, {
-                headers: {
-                    "x-access-token": localStorage.getItem("token"),
-                }
-            })
+                  headers: {
+                      "x-access-token": localStorage.getItem("token"),
+                  }
+              })
                 .then(res => {
                     if (res.data.success) {
                         setLoading(false);
