@@ -7,6 +7,7 @@ import Loading from "./Loading";
 import axios from 'axios';
 import Modals from "./Modals";
 import { defaultStorage, setStorage } from '../Controller/Storage/Storage';
+import CollectionInstance from '../global.collection/widgettile.collection/widgettile.collection';
 
 const Login = () => {
 
@@ -74,7 +75,9 @@ const Login = () => {
             'showFullDetails': res.data.object.showFullDetails
           }
 
-          // Populate the modal into localstorage!
+          // Populate the modal into sessionStorage!
+          CollectionInstance.setCollections('config', data);
+          
           defaultStorage(data);
           setMessage("Validating User Preference");
         } else {

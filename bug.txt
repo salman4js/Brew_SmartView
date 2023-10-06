@@ -2,6 +2,8 @@ Pending works to do.
 
  --> Prebook search doesn't consider room status hence dirty room is showing as available room.
  --> New and Old dashboard should let the user know if the guest has been prebooked or regular checkin customer.
- --> New dashboard widget tile should include Upcoming Checkout, Upcoming Booking, Fav customers.
+ --> New dashboard widget tile should include Upcoming Checkout, Upcoming Booking, Fav customers -- Done
  --> User should be able to switch between new and old dashboard effortless.
+ 
+ 
  

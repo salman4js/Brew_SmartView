@@ -21,6 +21,8 @@ import Modals from './Modals';
 import GuestRegistration from './GRC/grc.view';
 import {universalLang} from './universalLang/universalLang'
 import { handleTimeFormat, loadDate, getStayedDays, getExtraBedPrice, refreshPage } from './common.functions/common.functions';
+import { checkInFormValue, prebookFormValue } from './NewDashboard/property.container/checkin.view/checkin.form.utils';
+import CheckoutUtils from './NewDashboard/property.container/checkout.view/checkout.form.utils';
 
 
 const HomeRoom = (props) => {
@@ -191,7 +193,7 @@ const HomeRoom = (props) => {
     }
 
     // Add data to the prebook modal
-    const processDataPreBook = () => {
+    const processDataPreBook = async() => {
         const changedDate = formatDate(prebookdateofcheckin);
         const checkinTime = props.excludeTime.checkinTime // For prebook - time of checkin!
         const checkoutTime = props.excludeTime.checkoutTime // For prebook - time of checkout!
@@ -215,7 +217,8 @@ const HomeRoom = (props) => {
             checkinTime: checkinTime,
             checkoutTime: checkoutTime,
             prebookChannelManager: prebookChannelManager,
-            prebookChannel: prebookChannel
+            prebookChannel: prebookChannel,
+            lodgeId: props.lodgeid
         }
         
         // Adding payment tracker params into the credentials!
@@ -228,21 +231,19 @@ const HomeRoom = (props) => {
         credentials.paymentTracker['isPrebook'] = true 
         credentials.paymentTracker['lodge'] = props.lodgeid
         credentials.paymentTracker['dateTime'] = brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime())
-
-        axios.post(`${Variables.hostId}/${props.lodgeid}/addprebookuserrooms`, credentials)
-            .then(res => {
-                if (res.data.success) {
-                    setLoading(false);
-                    preBookModal();
-                    setShowerror(true);
-                    setSuccess(res.data.message);
-                    props.load(!props.reload);
-                } else {
-                    setLoading(false);
-                    setShowerror(true);
-                    setSuccess(res.data.message);
-                }
-            })
+        
+        const result = await prebookFormValue(credentials);
+        if(result.data.success){
+          setLoading(false);
+          preBookModal();
+          setShowerror(true);
+          setSuccess(result.data.message);
+          props.load(!props.reload);
+        } else {
+          setLoading(false);
+          setShowerror(true);
+          setSuccess(result.data.message);
+        }
     }
 
     // Reload the page 
@@ -294,7 +295,7 @@ const HomeRoom = (props) => {
     }
 
     // Add Data to the model
-    const processData = () => {
+    const processData = async () => {
         
         setLoading(true);
         // Keeping the checkout date optional as per the design!
@@ -342,22 +343,22 @@ const HomeRoom = (props) => {
                 isChannel: isChannel,
                 updatePrice: updatePrice,
                 extraBeds: extraCount,
-                extraBedPrice: props.extraBedPrice
+                extraBedPrice: props.extraBedPrice,
+                lodgeId: props.lodgeid
+            };
+            
+            const res = await checkInFormValue(credentials);
+            if(res.data.success){
+              setLoading(false);
+              handleClose();
+              setShowerror(true);
+              setSuccess(res.data.message);
+              updateGrcPreview(true, true);
+            } else {
+              setLoading(false);
+              setShowerror(true);
+              setSuccess(res.data.message)
             }
-            axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
-                .then(res => {
-                    if (res.data.success) {
-                        setLoading(false);
-                        handleClose();
-                        setShowerror(true);
-                        setSuccess(res.data.message);
-                        updateGrcPreview(true, true);
-                    } else {
-                        setLoading(false);
-                        setShowerror(true);
-                        setSuccess(res.data.message)
-                    }
-                })
         }
     };
     
@@ -1034,20 +1035,19 @@ const HomeRoom = (props) => {
             stayGst: determineGst(),
             roomno: props.roomno,
             dateTime: brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime())    
+        };
+        
+        var checkoutUtils = new CheckoutUtils({accId: props.lodgeid});
+        var result = await checkoutUtils.onCheckout(credentials);
+        if(result.data.success){
+          handleModal();
+          setShowerror(true);
+          setSuccess(result.data.message)
+          refresh();
+        } else {
+          setShowerror(true);
+          setSuccess(result.data.message)
         }
-
-        axios.post(`${Variables.hostId}/${props.lodgeid}/deleteuser`, credentials)
-            .then(res => {
-                if (res.data.success) {
-                    handleModal();
-                    setShowerror(true);
-                    setSuccess(res.data.message)
-                    refresh();
-                } else {
-                    setShowerror(true);
-                    setSuccess(res.data.message)
-                }
-            })
     }
     
 

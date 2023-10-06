@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import retrieveDate from '../../PreBook_Date_Spike/DateCorrector';
 import EditPrebookRoomItem from '../../edit.room.view/edit.prebook.room.view/edit.prebook.room.item.view';
-import { addRefundTracker } from './prebook.components.utils/prebook.components.utils';
+import { addRefundTracker, checkinPrebookGuest } from './prebook.components.utils/prebook.components.utils';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import GuestRegistration from '../../GRC/grc.view';
 import axios from "axios";
@@ -24,7 +24,6 @@ const Prebook_component = (props) => {
   
   // Current Date
   const date = brewDate.getFullDate("yyyy/mm/dd");
-  console.log(date)
   var time = brewDate.getTime(); // Time in 24 hour format for easy comparison!
     
   // Time to handle channel manager, edit room price, and mismatching time booking price!
@@ -345,9 +344,8 @@ const Prebook_component = (props) => {
   }
 
   // Check-In to the model
-  const processData = () => {
+  const processData = async () => {
     setLoading(true);
-    console.log(date, props.dateofcheckin);
     // Validating current date before booking
     if((date == props.dateofcheckin) === false){
       setLoading(false);
@@ -383,27 +381,27 @@ const Prebook_component = (props) => {
         advanceDiscount: props.discount,
         channel: props.channel,
         userId: props.prebookuser,
+        lodgeId: props.lodgeid,
         dateTime: brewDate.getFullDate("dd/mmm") + " " + brewDate.getTime()
+      };
+      
+      const result = await checkinPrebookGuest(credentials);
+      if(result){
+        setLoading(false);
+        handleCheckinModal();
+        handleClose();
+        setShowerror(true);
+        setSuccess(result.data.message);
+        if(isGrcPreview){ // Call the grc preview only if its enabled!
+          toggleGrcView(true);
+        } else {
+          deletePrebook();
+        }
+      } else {
+        setLoading(false);
+        setShowerror(true);
+        setSuccess(result.data.message);
       }
-      axios.post(`${Variables.hostId}/${props.lodgeid}/adduserrooms`, credentials)
-        .then(res => {
-          if (res.data.success) {
-            setLoading(false);
-            handleCheckinModal();
-            handleClose();
-            setShowerror(true);
-            setSuccess(res.data.message);
-            if(isGrcPreview){ // Call the grc preview only if its enabled!
-              toggleGrcView(true);
-            } else {
-              deletePrebook();
-            }
-          } else {
-            setLoading(false);
-            setShowerror(true);
-            setSuccess(res.data.message);
-          }
-        })
     }
   }
 

@@ -6,7 +6,8 @@ const changeScreen = (isTokenExpired) => { // Navigate back to the respective lo
     const multipleLogins = storage.getStorage("multipleLogin");
     storage.clearStorage(); // Clearing out the local storage on every session expires!
     if(redirectTo !== "vouchers" && multipleLogins !== 'false' && isTokenExpired === undefined){
-      window.location.href = `/${loggedInID}/chooselogin`;
+      window.location.href = `/login`; // TODO: Change this to choose login route.
+      // 1, Can make the REST to send only the token and set it again in the local storage instead of clearing out the session storage!
     } else {
       window.location.href = `/login`;
     }

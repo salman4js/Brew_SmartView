@@ -11,7 +11,8 @@ import CheckinModal from '../CheckinModal/checkin.modal';
 import Card from './Cabinets/Cards/Card';
 import bwt from 'brew-date';
 import formatDate from '../PreBook/Date_Format/DateFormatter';
-
+import { getRoomList } from '../paymentTracker/payment.tracker.utils/payment.tracker.utils';
+import CollectionInstance from '../../global.collection/widgettile.collection/widgettile.collection';
 // Importing Link react module
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import changeScreen from '../Action';
@@ -30,16 +31,16 @@ const Dashboard = () => {
     const [free, setFree] = useState();
 
     // Upcoming checkout state handler!
-    const [data, setData] = useState([]);
+    const [data, setData] = useState();
 
     // Recentlt checkout data handler!
     const [check, setCheck] = useState([]);
 
     // State handler for prebook data
-    const [prebook, setPrebook] = useState([]);
+    const [prebook, setPrebook] = useState();
 
     // State handler for favourites data!
-    const [favcustomer, setFavcustomer] = useState([]);
+    const [favcustomer, setFavcustomer] = useState();
 
     // Modal state handler!
     const [modal, setModal] = useState(false);
@@ -102,28 +103,20 @@ const Dashboard = () => {
         }
 
         setLoader(true);
-        const average = await axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge`, {
-            headers: {
-                "x-access-token" : localStorage.getItem("token")
-            }
-        }) 
-        const upcomingCheckout = await axios.post(`${Variables.hostId}/${splitedIds[0]}/upcomingcheckout`, data);
-        const upcomingPrebook = await axios.post(`${Variables.hostId}/${splitedIds[0]}/prebookupcoming`, data);
-        const favCustomers = await axios.post(`${Variables.hostId}/${splitedIds[0]}/favcustomer`);
+        const average = await getRoomList(splitedIds[0]);
+        const upcomingCheckout = CollectionInstance.getCollections('widgetTileCollections')?.data?.upcomingCheckout;
+        const upcomingPrebook = CollectionInstance.getCollections('widgetTileCollections')?.data?.upcomingPrebook;
+        const favorites = CollectionInstance.getCollections('widgetTileCollections')?.data.favorites;
         const availability = await axios.post(`${Variables.hostId}/${splitedIds[0]}/availability`);
         const checkoutData = await axios.post(`${Variables.hostId}/${splitedIds[0]}/userdb1`);
         const revpar = await axios.post(`${Variables.hostId}/${splitedIds[0]}/totalratecalculator`, revpar_model);
         
-        axios.all([average, upcomingCheckout, upcomingPrebook, favCustomers, availability, checkoutData, revpar])
+        axios.all([average, availability, checkoutData, revpar])
             .then(axios.spread((...responses) => {
                 const average1 = responses[0];
-                const upcoming = responses[1];
-                const prebook = responses[2];
-                const favourites = responses[3];
-                const available = responses[4];
-                const checkoutData = responses[5];
-                const revpar = responses[6];
-
+                const available = responses[1];
+                const checkoutData = responses[2];
+                const revpar = responses[3];
                 if (average1.data.success) {
                     setRoom(average1.data.message.length);
                     setFree(average1.data.countAvailability);
@@ -134,25 +127,19 @@ const Dashboard = () => {
                 }
 
                 // Upcoming-Checkout call response
-                if (upcoming.data.success) {
-                    setData(upcoming.data.message);
-                } else {
-                    sessionExpired();
-                }
+                if (upcomingCheckout) {
+                    setData(upcomingCheckout);
+                };
 
                 // Upcoming Prebook call response!
-                if (prebook.data.success) {
-                    setPrebook(prebook.data.message);
-                } else {
-                    sessionExpired();
-                }
+                if (upcomingPrebook) {
+                    setPrebook(upcomingPrebook);
+                };
 
                 // Favourites call response!
-                if (favourites.data.success) {
-                    setFavcustomer(favourites.data.message);
-                } else {
-                    sessionExpired();
-                }
+                if (favorites) {
+                    setFavcustomer(favorites);
+                };
 
                 // Available checking call response!
                 if (available.data.success) {
@@ -476,11 +463,17 @@ const Dashboard = () => {
                                 <Average average={Number(booked) / Number(room) * 100} />
                                 <div className="row">
                                     <Card navigate={() => navigateDash()} message = {"Check-In Rooms"} _node = {"doclist"} />
-                                    <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid={splitedIds[0]} />
-                                    <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid={splitedIds[0]} />
-                                    <Cabinets data={favcustomer} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"FAV CUSTOMERS"} methodCall={"favourites"} lodgeid={splitedIds[0]} />
-                                    <Cabinets data={check} helperPanel = {(data,id) => helperPanel(data,id)} cabinetHeader={"RECENTLY CHECKEDOUT"} methodCall = {"recent"} lodgeid={splitedIds[0]} />
+                                    {data && (
+                                      <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid={splitedIds[0]} />
+                                    )}
+                                    {prebook && (
+                                      <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid={splitedIds[0]} />
+                                    )}
+                                    {favcustomer && (
+                                      <Cabinets data={favcustomer} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"FAV CUSTOMERS"} methodCall={"favourites"} lodgeid={splitedIds[0]} />
+                                    )}
                                     <Card navigate = {() => idleHelper()} _node = {"revenue"} revpar = {revpar} adr = {adr} />
+                                    <Cabinets data={check} helperPanel = {(data,id) => helperPanel(data,id)} cabinetHeader={"RECENTLY CHECKEDOUT"} methodCall = {"recent"} lodgeid={splitedIds[0]} />
                                 </div>
                             </div>
                         )
