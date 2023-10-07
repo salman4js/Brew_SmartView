@@ -65,7 +65,7 @@ class CheckOutView extends React.Component {
       if(this.state.isFetched){
         // Add current time to the userModel!
         this.state.userModel['currentTime'] = getTimeDate().getTime;
-        return templateHelpers(this.state.userModel, this.state.billingInfo);
+        return templateHelpers(this.state);
       } else {
         var opts = {
           color: "black",
@@ -248,6 +248,7 @@ class CheckOutView extends React.Component {
           advanceAmount: this.state.billingDetails.advanceCheckin + ' Rs',
           discountAmount: this.state.billingDetails.discountPrice + ' Rs',
           withoutGST: this.getAmountWithoutGST() + ' Rs',
+          roomPricePerStays: this.getAmountForStayedDays(),
           isNegativeValue: this.getTotalPayableAmount() > 0 ? false : true
         }
       }));
@@ -255,19 +256,20 @@ class CheckOutView extends React.Component {
 
     // Get total amount with advance and discount but without GST!
     getAmountWithoutGST(){
-      return this.getRoomPrice() - this.state.billingDetails.advanceCheckin - this.state.billingDetails.discount;
+      var extraBedPrice = Number(this.getExtraBedPrice());
+      return ((this.getRoomPrice() * this.state.stayeddays) - this.state.billingDetails.advanceCheckin - this.state.billingDetails.discount) + extraBedPrice;
     };
     
     // Calculate GST for inclusive calculation!
     getGSTForInclusive(){ 
-      var amountForStayedDays = this.getAmountForStayedDays();
+      var amountForStayedDays = this.getAmountForStayedDays() + Number(this.getExtraBedPrice());
       var inclusiveGSTAmount = amountForStayedDays / (1 + determineGSTPercent(this.state.data.roomModel.price));
       this.gstPrice = inclusiveGSTAmount;
     };
     
     // Calculate GST for exclusive calculation!
     getGSTForExclusive(){
-      var exclusiveGSTAmount = Math.round(this.getAmountForStayedDays() * determineGSTPercent(this.state.data.roomModel.price));
+      var exclusiveGSTAmount = Math.round((this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) * determineGSTPercent(this.state.data.roomModel.price));
       this.gstPrice = exclusiveGSTAmount;
     };
     
@@ -289,7 +291,7 @@ class CheckOutView extends React.Component {
         advanceAmount = Number(this.state.billingDetails.advanceCheckin),
         discountAmount = Number(this.state.billingDetails.discount),
         extraBedPrice = Number(this.getExtraBedPrice()),
-        totalPayableAmount = roomPrice - advanceAmount - discountAmount + extraBedPrice;
+        totalPayableAmount = (roomPrice - advanceAmount - discountAmount) + extraBedPrice;
       return totalPayableAmount;
     };
 
