@@ -30,7 +30,7 @@ export function nodeConvertor(status){
     if(options.defaultValue && (options.value === undefined)){
       result[options.name] = options.defaultValue;
     } else {
-      result[options.name] = options.value;
+      result[options.name] = options.value !== undefined ? options.value : options.defaultValue;
     }
   })
   return result;

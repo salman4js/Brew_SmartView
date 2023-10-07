@@ -1,4 +1,6 @@
-export function templateHelpers(userModel, billingInfo){
+export function templateHelpers(state){
+  var userModel = state.userModel,
+    billingInfo = state.billingInfo
   return(
       <div className = 'row'>
       {/* Customer Details */}
@@ -52,6 +54,10 @@ export function templateHelpers(userModel, billingInfo){
               <label style = {{color: 'black'}}> Check-Out Time </label>
               <p style = {{color: 'black'}}> {userModel.currentTime} </p>
             </div>
+            <div className = 'modal-gap'>
+              <label style = {{color: 'black'}}> Number of Stayed Days </label>
+              <p style = {{color: 'black'}}> {state.stayeddays} </p>
+            </div>
         </div>
         {/* Bill Details */}
         <div className = 'col'>
@@ -59,8 +65,12 @@ export function templateHelpers(userModel, billingInfo){
             Bill Details
           </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Room Price </label>
+              <label style = {{color: 'black'}}> Room Price Per Day </label>
               <p style = {{color: 'black'}}> {billingInfo.roomPrice} </p>
+            </div>
+            <div className = 'modal-gap'>
+              <label style = {{color: 'black'}}> Room Price Per Stay Days </label>
+              <p style = {{color: 'black'}}> {billingInfo.roomPricePerStays} </p>
             </div>
             <div className = 'modal-gap'>
               <label style = {{color: 'black'}}> GST Deduction </label>
