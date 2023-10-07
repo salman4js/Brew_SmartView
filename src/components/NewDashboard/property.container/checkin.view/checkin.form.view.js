@@ -152,6 +152,22 @@ const CheckinForm = (props) => {
     },
     {
       value: undefined,
+      defaultValue: 0,
+      width: '500px',
+      placeholder: 'Extra Beds Count',
+      label: 'Extra Beds',
+      name: 'extraBeds',
+      validation: false,
+      validationRegex: /^(0|[1-9]\d*)$/,
+      attribute: 'textField',
+      isRequired: false,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input!'
+      }
+    },
+    {
+      value: undefined,
       width: '500px',
       defaultValue: 0,
       placeholder: "Discount Amount",
