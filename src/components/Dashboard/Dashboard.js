@@ -29,6 +29,11 @@ const Dashboard = () => {
     const [room, setRoom] = useState();
     const [booked, setBooked] = useState();
     const [free, setFree] = useState();
+    
+    // Refresh state handler!
+    const [refresh, setRefresh] = useState({
+      shouldRefresh: false
+    });
 
     // Upcoming checkout state handler!
     const [data, setData] = useState();
@@ -84,7 +89,12 @@ const Dashboard = () => {
     // RevPAR and ADR state handler!
     const [revpar, setRevpar] = useState();
     const [adr, setAdr] = useState();
-
+    
+    // Refresh current state!
+    function refreshState(){
+      var currentState = refresh.shouldRefresh;
+      setRefresh(prevState => ({...prevState, refresh: !currentState}));
+    };
 
     // Batches API call
     async function batchesApi() {
@@ -103,10 +113,8 @@ const Dashboard = () => {
         }
 
         setLoader(true);
-        const average = await getRoomList(splitedIds[0]);
-        const upcomingCheckout = CollectionInstance.getCollections('widgetTileCollections')?.data?.upcomingCheckout;
-        const upcomingPrebook = CollectionInstance.getCollections('widgetTileCollections')?.data?.upcomingPrebook;
-        const favorites = CollectionInstance.getCollections('widgetTileCollections')?.data.favorites;
+        const average = await getRoomList(splitedIds[0], true); // true here indicates that the preferences has be fetched.
+        // even though we fetch the preference in navbar, Since navbar and dashboard are not sync, data mispopulation could happen in some case!
         const availability = await axios.post(`${Variables.hostId}/${splitedIds[0]}/availability`);
         const checkoutData = await axios.post(`${Variables.hostId}/${splitedIds[0]}/userdb1`);
         const revpar = await axios.post(`${Variables.hostId}/${splitedIds[0]}/totalratecalculator`, revpar_model);
@@ -125,21 +133,6 @@ const Dashboard = () => {
                 } else {
                     sessionExpired();
                 }
-
-                // Upcoming-Checkout call response
-                if (upcomingCheckout) {
-                    setData(upcomingCheckout);
-                };
-
-                // Upcoming Prebook call response!
-                if (upcomingPrebook) {
-                    setPrebook(upcomingPrebook);
-                };
-
-                // Favourites call response!
-                if (favorites) {
-                    setFavcustomer(favorites);
-                };
 
                 // Available checking call response!
                 if (available.data.success) {
@@ -408,7 +401,30 @@ const Dashboard = () => {
               changeScreen();
             }
           }
-    }
+    };
+    
+    // Render widget tile!
+    function _renderWidgetTile(){
+      const upcomingCheckout = CollectionInstance.getCollections('widgetTileCollections')?.data?.upcomingCheckout;
+      const upcomingPrebook = CollectionInstance.getCollections('widgetTileCollections')?.data?.upcomingPrebook;
+      const favorites = CollectionInstance.getCollections('widgetTileCollections')?.data.favorites;
+      return(
+        <>
+          <Card navigate={() => navigateDash()} message = {"Check-In Rooms"} _node = {"doclist"} />
+          {upcomingCheckout && (
+            <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid={splitedIds[0]} />
+          )}
+          {upcomingPrebook && (
+            <Cabinets data={upcomingPrebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid={splitedIds[0]} />
+          )}
+          {favorites && (
+            <Cabinets data={favorites} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"FAV CUSTOMERS"} methodCall={"favourites"} lodgeid={splitedIds[0]} />
+          )}
+          <Card navigate = {() => idleHelper()} _node = {"revenue"} revpar = {revpar} adr = {adr} />
+          <Cabinets data={check} helperPanel = {(data,id) => helperPanel(data,id)} cabinetHeader={"RECENTLY CHECKEDOUT"} methodCall = {"recent"} lodgeid={splitedIds[0]} />
+        </>
+      )
+    };
 
 
     useEffect(() => {
@@ -424,11 +440,11 @@ const Dashboard = () => {
         setLoader(true); // Setting the loader here to prevent the clitches in the UI
         setMessage("Preparing your dashboard...")
         batchesApi();
-    }, [])
+    }, [refresh])
 
     return (
         <div>
-            <Navbar id={id} name={splitedIds[1]} className="sticky" />
+            <Navbar id={id} name={splitedIds[1]} className="sticky" refreshState = {() => refreshState()} />
             {
                 loader ? (
                     <Loading message = {message} />
@@ -462,18 +478,7 @@ const Dashboard = () => {
                             <div className="container">
                                 <Average average={Number(booked) / Number(room) * 100} />
                                 <div className="row">
-                                    <Card navigate={() => navigateDash()} message = {"Check-In Rooms"} _node = {"doclist"} />
-                                    {data && (
-                                      <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid={splitedIds[0]} />
-                                    )}
-                                    {prebook && (
-                                      <Cabinets data={prebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid={splitedIds[0]} />
-                                    )}
-                                    {favcustomer && (
-                                      <Cabinets data={favcustomer} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"FAV CUSTOMERS"} methodCall={"favourites"} lodgeid={splitedIds[0]} />
-                                    )}
-                                    <Card navigate = {() => idleHelper()} _node = {"revenue"} revpar = {revpar} adr = {adr} />
-                                    <Cabinets data={check} helperPanel = {(data,id) => helperPanel(data,id)} cabinetHeader={"RECENTLY CHECKEDOUT"} methodCall = {"recent"} lodgeid={splitedIds[0]} />
+                                  {_renderWidgetTile()}
                                 </div>
                             </div>
                         )

@@ -18,8 +18,7 @@ export async function fetchWidgetTilePref(lodgeId){
 };
 
 // Get rooms list!
-export async function getRoomList(lodgeId){
-  var fetchedCollection;
+export async function getRoomList(lodgeId, fetchPref){
   // Default access token params!
   var params = {
     headers: {
@@ -27,7 +26,7 @@ export async function getRoomList(lodgeId){
     }
   };
   // Call the widget tile collection here!
-  await fetchWidgetTilePref(lodgeId);
+  fetchPref && await fetchWidgetTilePref(lodgeId);
   var resultData = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/false/roomlodge`, params);
   return resultData;
 }

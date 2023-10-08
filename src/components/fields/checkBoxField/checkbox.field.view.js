@@ -27,13 +27,27 @@ const CheckBox = (props) => {
     }, [props.data])
   
   return(
-    <div className = "metadata-field-checkbox">
-      <input class="text-center" style = {{marginTop: "6px"}} type="checkbox" value="" checked={checkbox.isChecked} 
-      onChange = {() => _toggleCheckbox(!checkbox.isChecked)} />
-      {props.data.label && (
-        <label className = "form-check-label metadata-checkbox-label" style = {{color: props.data.labelColor}}>
-          {props.data.label}
-        </label>
+    <div className = "metadata-field-checkbox" style = {props.data.customStyle}>
+      {props.data.isLabelFirst ? (
+        <>
+          {props.data.label && (
+            <label className = "form-check-label metadata-checkbox-label" style = {{color: props.data.labelColor}}>
+              {props.data.label}
+            </label>
+          )}
+          <input class="text-center" style = {{marginTop: "6px", float: 'right'}} type="checkbox" value="" checked={checkbox.isChecked} 
+          onChange = {() => _toggleCheckbox(!checkbox.isChecked)} />
+        </>
+      ) : (
+        <>
+          <input class="text-center" style = {{marginTop: "6px"}} type="checkbox" value="" checked={checkbox.isChecked} 
+          onChange = {() => _toggleCheckbox(!checkbox.isChecked)} />
+          {props.data.label && (
+            <label className = "form-check-label metadata-checkbox-label" style = {{color: props.data.labelColor}}>
+              {props.data.label}
+            </label>
+          )}
+        </>
       )}
     </div>
   )

@@ -88,6 +88,16 @@ class Collections {
     }
   };
   
+  // Remove model from the collections!
+  removeModel(collectionName, modelName){
+    if(!modelName){
+      throw new Error('Model name is not valid');
+    } else {
+      var model = widgetTileModelSchema.collections[collectionName].data;
+      delete model[modelName];
+    };
+  };
+  
   // Check if the collections are already created!
   isCollectionsCreated(propertyName){
     return widgetTileModelSchema.collections[propertyName];
