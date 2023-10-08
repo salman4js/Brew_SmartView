@@ -24,10 +24,10 @@ function addToCollections(modelName, updatedModel){
 // remove model from collections
 function removeModelsFromCollections(modelName, data){
   var collections = CollectionInstance.getCollections('widgetTileCollections');
-  var prebookUserModel = _.find(collections.data[modelName], function(obj){
+  var prebookUserModel = _.find(collections?.data[modelName], function(obj){ // When the user refreshes the page, the collectionInstance data will be lost.
+    // So added a null check to prevent the code from breaking.
     return obj._id === data.userId;
   });
-  console.log(prebookUserModel);
   if(prebookUserModel){
     CollectionInstance.removeCollections('widgetTileCollections', prebookUserModel, modelName);
   };

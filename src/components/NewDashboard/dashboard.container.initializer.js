@@ -21,6 +21,7 @@ const DashboardInitializer = (props) => {
     header: `${paramsObj.accIdAndName[1]} -  Dashboard`,
     _showHeaderChildView: null,
     height: undefined,
+    refreshState: false,
     style: {
       fontWeight: "bold",
       marginTop: '60px'
@@ -33,6 +34,13 @@ const DashboardInitializer = (props) => {
     setModalAssistData(prevState => ({...prevState, height: value}));
   };
   
+  // Refresh the state only if navbar triggered refresh!
+  function refreshState(){
+    // Get the current state of the refreshState from the modalAssistData!
+    var refreshState = modalAssistData.refreshState;
+    setModalAssistData(prevState => ({...prevState, refreshState: !refreshState}));
+  };
+  
   // Dashboard wrapper view!
   function dashboardWrapperView(){
     return <DashboardWrapper modalAssistData = {modalAssistData} params = {paramsObj} />
@@ -40,7 +48,7 @@ const DashboardInitializer = (props) => {
   
   return(
     <>
-      <NavbarWrapper params = {paramsObj} />
+      <NavbarWrapper params = {paramsObj} refreshState = {() => refreshState()} />
       <ModalAssist data = {modalAssistData} height={(value) => storeModalAssistHeight(value)}
       childView={() => dashboardWrapperView()} />
     </>

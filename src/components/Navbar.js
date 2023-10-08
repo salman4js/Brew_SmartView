@@ -1,21 +1,90 @@
 import React, { useState, useEffect } from 'react';
+import brewDate from 'brew-date';
 import Variables from './Variables';
 import {useDispatch} from 'react-redux';
+import { nodeConvertor, updateMetadataFields } from './common.functions/node.convertor';
+import { activityLoader } from './common.functions/common.functions.view';
 import {useGlobalMessage} from './global.state/global.state.manager';
 import {createGlobalMessage, killGlobalMessage} from '../global.state/actions/index';
 import ProgressPanel from './progresspanel/progresspanel.view/progresspanel.view';
+import CustomModal from './CustomModal/custom.modal.view';
+import MetadataFields from './fields/metadata.fields.view'
 import axios from 'axios';
 import LogoTop from '../Assets/logo512.png';
 import { Link, useParams } from "react-router-dom";
 import { getStorage } from '../Controller/Storage/Storage';
-
+import CollectionInstance from '../global.collection/widgettile.collection/widgettile.collection';
 
 const Navbar = (props) => {
-
+  
     //Check the ID and token of the application!
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
     
+    // Custom styles for checkbox field!
+    const customCheckboxStyle = {
+      color: 'black',
+      border: '1px solid grey',
+      backgroundColor: '#EDEADE',
+      padding: '5px 5px 5px 5px',
+      borderRadius: '5px',
+      marginBottom: '20px'
+    };
+    
+    // Custom modal state handler!
+    const [customModalState, setCustomModalState] = useState({
+      show: false,
+      onHide: _toggleUserPreferenceModal,
+      header: 'Livixius Customization Settings',
+      centered: true,
+      enableLoader: false,
+      restrictBody: false,
+      modalSize: "medium",
+      footerEnabled: true,
+      footerButtons: [{
+        btnId: 'Apply and Save',
+        variant: 'success',
+        onClick: _updatePreferences
+      },{
+        btnId: 'Cancel',
+        variant: 'dark',
+        onClick: _toggleUserPreferenceModal
+      }]
+    });
+    
+    // Customizable checkbox field state handler!
+    const [checkboxField, setCheckboxField] = useState([
+      {
+        select: null,
+        value: undefined,
+        name: 'upcomingCheckout',
+        attribute: 'checkBoxField',
+        updateValue: true,
+        label: 'Enable Upcoming Checkout',
+        isLabelFirst: true,
+        customStyle: customCheckboxStyle
+      },
+      {
+        select: null,
+        value: undefined,
+        name: 'upcomingPrebook',
+        attribute: 'checkBoxField',
+        updateValue: true,
+        label: 'Enable Upcoming Prebook',
+        isLabelFirst: true,
+        customStyle: customCheckboxStyle
+      },
+      {
+        select: null,
+        value: undefined,
+        name: 'favorites',
+        attribute: 'checkBoxField',
+        updateValue: true,
+        label: 'Enable Favorites Guest',
+        isLabelFirst: true,
+        customStyle: customCheckboxStyle
+      }
+    ]);
     
     // Global Message handler!
     var globalMessage = useGlobalMessage();
@@ -78,7 +147,31 @@ const Navbar = (props) => {
     // Should render universal message!
     function shouldRenderUniversalMessage(){
       return globalMessage.status === 'SHOW' ? true : false
-    }
+    };
+    
+    // Fetch preference and update global collection instance!
+    async function fetchPreferences(){
+      // Get the options ready first!
+      var options = {
+        datesBetween: brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), brewDate.addDates(brewDate.getFullDate('yyyy/mm/dd'), 3))
+      };
+      // Check if the widget collection data already exists in collection instance!
+      var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');
+      if(!widgetTileCollection){
+        const result = await axios.post(`${Variables.hostId}/${splitedIds[0]}/getwidgettilecol`, options);
+        CollectionInstance.setCollections('widgetTileCollections', result.data.data);
+      };
+      setCheckboxValueWithPref();
+    };
+    
+    // Set and update the checkbox state with preferences!
+    function setCheckboxValueWithPref(){
+      var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');
+      var collection = Object.keys(widgetTileCollection.data);
+      for (var model of collection){
+        updateMetadataFields(model, {value: true}, checkboxField, setCheckboxField);
+      };
+    };
     
     // Fetch and show universal message!
     async function fetchUniversalMessage(){
@@ -93,7 +186,7 @@ const Navbar = (props) => {
       } else if(fetch.status === "SHOW") {
         _triggerGlobalMessage(fetch.message)
       }
-    }
+    };
     
     // Kill the universal message and never show it again untill the admin triggers!
     async function killGlobalMessageInServer(){
@@ -103,11 +196,58 @@ const Navbar = (props) => {
         }).catch(err => {
           // Problem while killing the universal message!
         })
-    }
+    };
+    
+    // Custom modal body item view!
+    function customModalBodyItem(){
+      if(customModalState.enableLoader){
+        // Options!
+        var opts = {
+          color: "black",
+          marginTop: '25px',
+          textCenter: true
+        }
+        
+        return activityLoader(opts)
+      } else {
+        return <MetadataFields data = {checkboxField} updateData = {setCheckboxField} />
+      }
+    };
+    
+    // Render custom modal!
+    function _renderCustomModal(){
+      return <CustomModal modalData = {customModalState} showBodyItemView = {() => customModalBodyItem()} />
+    };
+    
+    // Trigger user preference modal!
+    function _toggleUserPreferenceModal(value){
+      setCustomModalState(prevState => ({...prevState, show: value}));
+    };
+    
+    // Custom modal loader!
+    function _enableCustomModalLoader(value){
+      setCustomModalState(prevState => ({...prevState, enableLoader: value}));
+    };
+    
+    // Update preferences!
+    async function _updatePreferences(){
+      _enableCustomModalLoader(true);
+      const fieldValue = nodeConvertor(checkboxField);
+      fieldValue.datesBetween = brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), brewDate.addDates(brewDate.getFullDate('yyyy/mm/dd'), 3));
+      const result = await axios.post(`${Variables.hostId}/${splitedIds[0]}/updatepref`, fieldValue); 
+      if(result.data.success){
+        CollectionInstance.removeCollections('widgetTileCollections'); // WHen the preference updated, Remove the existing collection!
+        CollectionInstance.setCollections('widgetTileCollections', result.data.data); // And then update with the new preference collections!
+        _enableCustomModalLoader(false);
+        _toggleUserPreferenceModal(false); // After updating the state with new value, close the update preference model!
+      };
+      props.refreshState && props.refreshState();
+    };
 
     useEffect(() => {
         setOptions(JSON.parse(getStorage("config-value")));
         fetchUniversalMessage();
+        fetchPreferences();
     }, [])
 
 
@@ -230,6 +370,9 @@ const Navbar = (props) => {
                                           }
                                           {isInsights && <Link className="nav-link dropdown-item" to={`/${props.id}/chart-dashboard`} style={{ color: "black" }}>Insights</Link>}
                                           <Link className='nav-link dropdown-item' to={`/${props.id}/contentnative`} style={{ color: "black" }}> Generate Reports </Link>
+                                          <div className = 'nav-link dropdown-item' style = {{color: 'black'}} onClick = {() => _toggleUserPreferenceModal(true)}>
+                                            User Preferences
+                                          </div>
                                       </ul>
                                   </li>
                                   <Link className='nav-link dropdown-item' to={`/${props.id}/editroom`} style={{ color: "black" }}> Edit Customer Details </Link>
@@ -248,6 +391,9 @@ const Navbar = (props) => {
                   </div>
                 </div>
             </div>
+            {customModalState.show && (
+              _renderCustomModal()
+            )}
         </nav>
     )
 }

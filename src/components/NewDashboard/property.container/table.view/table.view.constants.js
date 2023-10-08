@@ -7,7 +7,7 @@ var tableViewConstants = Object.freeze({
     afterCheckin: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
     upcomingCheckout: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
     upcomingPrebook: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
-    favCustomers: ['Guest Name', "Phone Number", 'Guest Identification Number']
+    favorites: ['Guest Name', "Phone Number", 'Guest Identification Number']
   }),
   
   PropertyStatusRequiredKey: Object.freeze({
@@ -17,7 +17,7 @@ var tableViewConstants = Object.freeze({
     afterCheckin: ['_id','floorNo', 'roomno', 'username', 'phonenumber', 'dateofcheckin', 'dateofcheckout'],
     upcomingCheckout: ['_id','floorNo', 'roomno', 'username', 'phonenumber', 'dateofcheckin', 'dateofcheckout'],
     upcomingPrebook: ['_id', 'floorNo', 'roomno', 'prebookUsername', 'prebookPhoneNumber', 'prebookDateofCheckin', 'prebookDateofCheckout'],
-    favCustomers: ['_id', 'username', 'phonenumber', 'aadharcard']
+    favorites: ['_id', 'username', 'phonenumber', 'aadharcard']
   }),
   
   tableInfoMessage: Object.freeze({
