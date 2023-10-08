@@ -57,7 +57,7 @@ const Cabinets = (props) => {
                                 loader ? (
                                     <Spinner width = {'120px'} height = {'120px'} />
                                 ) : (
-                                    props.data.map((options, key) => {
+                                    props.data?.map((options, key) => {
                                         if (options.roomno !== undefined) {
                                             return (
                                                 <Values roomno={options.roomno} data={options} helperPanel={(data, id) => props.helperPanel(data, id)} id={props.methodCall} loaderState={(data) => changeLoader(data)} loader={loader} />
@@ -74,7 +74,7 @@ const Cabinets = (props) => {
                         }
                         {
                             props.methodCall === "prebook" && (
-                                props.data.map((options, key) => {
+                                props.data?.map((options, key) => {
                                     return (
                                         <Values roomno={options.roomno} data={options} helperPanel={(data, id) => props.helperPanel(data, id)} id={props.methodCall} loaderState={(data) => changeLoader(data)} loader={loader} />
                                     )
@@ -83,7 +83,7 @@ const Cabinets = (props) => {
                         }
                         {
                             props.methodCall === "favourites" && (
-                               props.data.filter((options) => {
+                               props.data?.filter((options) => {
                                     return filterFavCustomer(options);
                                }).map((item,key) => {
                                     return (
@@ -94,7 +94,7 @@ const Cabinets = (props) => {
                         }
                         {
                             props.methodCall === "recent" && (
-                                props.data.map((item,key) => {
+                                props.data?.map((item,key) => {
                                    if(item.dateofcheckout !== ""){ // Takes only when the user has been checked out!
                                     return(
                                         <Values roomno={item.roomno} data={item} helperPanel={(data, id) => props.helperPanel(data, id)} id={props.methodCall} loaderState={(data) => changeLoader(data)} loader={loader} />
