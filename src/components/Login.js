@@ -111,9 +111,11 @@ const Login = () => {
   }
 
   // Navigate user to the dashboard!
-  function navigateUser(id, lodgeName, redirect, hasMultipleLogins, isMultipleLogins){
+  function navigateUser(id, lodgeName, redirect, hasMultipleLogins, isMultipleLogins, userPreferences){
     // If account is not locked, allow the user to the base!
-    const chooseRoute = (hasMultipleLogins && isMultipleLogins) ? "chooselogin" : "dashboard"; // Navigate to chooselogin if multiple login is enabled!
+    var dashboardRoutes = ['dashboard', 'dashboardcontainer'],
+      dashboardRoute = userPreferences.dashboardVersion ? dashboardRoutes[1] : dashboardRoutes[0];
+    const chooseRoute = (hasMultipleLogins && isMultipleLogins) ? "chooselogin" : dashboardRoute; // Navigate to chooselogin if multiple login is enabled!
     if(redirect === "livixius"){
       navigate(`/${id}-${lodgeName}/${chooseRoute}`, { replace: true })
     } else {
@@ -170,10 +172,11 @@ const Login = () => {
               }
               
               defaultStorage(defaultData);
-              
+              // Set the preferences in global collection, Incase of any refresh happens, the widgettile collection will be fetched from roomslist or from navbar!
+              CollectionInstance.setCollections('widgetTileCollections', res.data.preferences);
               await checkConfig(res.data.hostId, res.data.lodgename); // Check for config matrix
               await checkOptions(res.data.hostId, res.data.lodgename); // Check for the config cabinets!
-              navigateUser(res.data.hostId, res.data.lodgename, res.data.redirect, res.data.hasMultipleLogins, res.data.multipleLogins); // Navigate to the dashboard
+              navigateUser(res.data.hostId, res.data.lodgename, res.data.redirect, res.data.hasMultipleLogins, res.data.multipleLogins, res.data.preferences); // Navigate to the dashboard
             }
           } else {
             setLoading(false);

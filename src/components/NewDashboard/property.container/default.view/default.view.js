@@ -144,7 +144,9 @@ class DefaultView extends React.Component {
       preferences = Object.keys(widgetTileCollections.data);
     this.widgetTileCollection = {};
     for (var preference of preferences){
-      this.widgetTileCollection[preference] = widgetTileCollections.data[preference];
+      if(widgetTileCollections.data[preference] !== undefined && typeof widgetTileCollections.data[preference] === 'object'){
+        this.widgetTileCollection[preference] = widgetTileCollections.data[preference];
+      }
     };
   };
 

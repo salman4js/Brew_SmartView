@@ -11,7 +11,7 @@ import CustomModal from './CustomModal/custom.modal.view';
 import MetadataFields from './fields/metadata.fields.view'
 import axios from 'axios';
 import LogoTop from '../Assets/logo512.png';
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { getStorage } from '../Controller/Storage/Storage';
 import CollectionInstance from '../global.collection/widgettile.collection/widgettile.collection';
 
@@ -20,6 +20,11 @@ const Navbar = (props) => {
     //Check the ID and token of the application!
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
+    
+    let navigate = useNavigate();
+    
+    // Get dashboard version and store it in the global variable!
+    var dashboardVersion = CollectionInstance.getModel('widgetTileCollections', 'dashboardVersion');
     
     // Custom styles for checkbox field!
     const customCheckboxStyle = {
@@ -57,6 +62,16 @@ const Navbar = (props) => {
       {
         select: null,
         value: undefined,
+        name: 'dashboardVersion',
+        attribute: 'checkBoxField',
+        updateValue: true,
+        label: 'Enable Dashboard Version 2.o',
+        isLabelFirst: true,
+        customStyle: customCheckboxStyle
+      },
+      {
+        select: null,
+        value: undefined,
         name: 'upcomingCheckout',
         attribute: 'checkBoxField',
         updateValue: true,
@@ -83,6 +98,13 @@ const Navbar = (props) => {
         label: 'Enable Favorites Guest',
         isLabelFirst: true,
         customStyle: customCheckboxStyle
+      },
+      {
+        value: 0,
+        name: 'datesBetweenCount',
+        attribute: 'stepperButtonField',
+        customStyle: customCheckboxStyle,
+        label: 'Select dates between for widget tile data'
       }
     ]);
     
@@ -152,8 +174,9 @@ const Navbar = (props) => {
     // Fetch preference and update global collection instance!
     async function fetchPreferences(){
       // Get the options ready first!
+      var datesBetweenCount = CollectionInstance.getModel('widgetTileCollections', 'datesBetweenCount');
       var options = {
-        datesBetween: brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), brewDate.addDates(brewDate.getFullDate('yyyy/mm/dd'), 3))
+        datesBetween: brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), brewDate.addDates(brewDate.getFullDate('yyyy/mm/dd'), datesBetweenCount))
       };
       // Check if the widget collection data already exists in collection instance!
       var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');
@@ -168,8 +191,12 @@ const Navbar = (props) => {
     function setCheckboxValueWithPref(){
       var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');
       var collection = Object.keys(widgetTileCollection.data);
-      for (var model of collection){
-        updateMetadataFields(model, {value: true}, checkboxField, setCheckboxField);
+      for (var [index, model] of collection.entries()){
+        if(typeof widgetTileCollection.data[model] === 'object'){
+          updateMetadataFields(model, {value: true}, checkboxField, setCheckboxField)
+        } else {
+          updateMetadataFields(model, {value: widgetTileCollection.data[model]}, checkboxField, setCheckboxField);
+        }
       };
     };
     
@@ -233,7 +260,8 @@ const Navbar = (props) => {
     async function _updatePreferences(){
       _enableCustomModalLoader(true);
       const fieldValue = nodeConvertor(checkboxField);
-      fieldValue.datesBetween = brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), brewDate.addDates(brewDate.getFullDate('yyyy/mm/dd'), 3));
+      var datesBetweenPref = fieldValue.datesBetweenCount || 3; // 3 being the default value of the datesBetween pref.
+      fieldValue.datesBetween = brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), brewDate.addDates(brewDate.getFullDate('yyyy/mm/dd'), datesBetweenPref));
       const result = await axios.post(`${Variables.hostId}/${splitedIds[0]}/updatepref`, fieldValue); 
       if(result.data.success){
         CollectionInstance.removeCollections('widgetTileCollections'); // WHen the preference updated, Remove the existing collection!
@@ -241,6 +269,9 @@ const Navbar = (props) => {
         _enableCustomModalLoader(false);
         _toggleUserPreferenceModal(false); // After updating the state with new value, close the update preference model!
       };
+      var dashboardVersion = CollectionInstance.getModel('widgetTileCollections', 'dashboardVersion');
+      var chooseRoute = dashboardVersion ? 'dashboardcontainer' : 'dashboard';
+      navigate(`/${splitedIds[0]}-${splitedIds[1]}/${chooseRoute}`, { replace: true });
       props.refreshState && props.refreshState();
     };
 
@@ -274,15 +305,19 @@ const Navbar = (props) => {
                   <div className="collapse navbar-collapse" id="navbarSupportedContent">
                       <ul className="navbar-nav ml-auto"  >
                           <li className="nav-item active">
-                              <Link className="nav-link" to={`/${props.id}/dashboard`} style={{ color: "white" }} > Home </Link>
+                              <Link className="nav-link" to={dashboardVersion ? `/${props.id}/dashboardcontainer` : `/${props.id}/dashboard`} style={{ color: "white" }} > Home </Link>
                           </li>
                           <li class="nav-item dropdown">
                               <Link class="nav-link dropdown-toggle" to={`/${props.id}/rooms`} id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                   Rooms
                               </Link>
                               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                  <Link className="nav-link dropdown-item" to={`/${props.id}/landingpage`} style={{ color: "black" }}> Check-In Rooms </Link>
-                                  <Link className='nav-link dropdown-item' to={`/${props.id}/rooms`} style={{ color: "black" }}> Available Rooms</Link>
+                                  {!dashboardVersion && (
+                                    <>
+                                      <Link className="nav-link dropdown-item" to={`/${props.id}/landingpage`} style={{ color: "black" }}> Check-In Rooms </Link>
+                                      <Link className='nav-link dropdown-item' to={`/${props.id}/rooms`} style={{ color: "black" }}> Available Rooms</Link>
+                                    </>
+                                  )}
                                   {
                                       options.map((item, key) => {
                                           if (item.config === 'PreBook') {
