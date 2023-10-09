@@ -7,7 +7,8 @@ const _ = require('lodash');
 // Function to check if we need to add the usermodel to the collection instance!
 function shouldAddToCollections(data, action){
   var date = action !== 'check-in' ? data.prebookdateofcheckin : data.checkout,
-    updatedDateWithUserPref = brewDate.addDates(date, 3);
+    datesBetweenCount = CollectionInstance.getModel('widgetTileCollections', 'datesBetweenCount'),
+    updatedDateWithUserPref = brewDate.addDates(date, datesBetweenCount);
   return new Date(updatedDateWithUserPref) > new Date(date);
 };
 

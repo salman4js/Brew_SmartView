@@ -6,12 +6,13 @@ import DataList from './dataListField/datalist.field.view';
 import CheckBox from './checkBoxField/checkbox.field.view';
 import ButtonField from './buttonField/button.field.view';
 import LabelField from './labelField/label.field.view';
+import StepperField from './stepperField/stepper.field.view';
 
 const MetadataFields = (props) => {
 
   // Get input value!
   function getInputValue(event, attribute){
-    if(attribute === 'dateField' || attribute === "dataListField" || attribute === "checkBoxField"){
+    if(attribute === 'dateField' || attribute === "dataListField" || attribute === "checkBoxField" || attribute === 'stepperButtonField'){
       return event;
     } else {
       return event.target.value;
@@ -95,6 +96,12 @@ const MetadataFields = (props) => {
           if(field.attribute === 'labelFields' && field.restrictShow !== true){
             return (
               <LabelField data = {field} />
+            )
+          }
+          
+          if(field.attribute === 'stepperButtonField' && field.restrictShow !== true){
+            return(
+              <StepperField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
             )
           }
           

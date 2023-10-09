@@ -6,8 +6,9 @@ const Variables = require("../../Variables");
 // Check if the widget tile collections are already fetched!
 export async function fetchWidgetTilePref(lodgeId){
   // Get the options ready first!
+  var datesBetweenCount = CollectionInstance.getModel('widgetTileCollections', 'datesBetweenCount');
   var options = {
-    datesBetween: brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), brewDate.addDates(brewDate.getFullDate('yyyy/mm/dd'), 3))
+    datesBetween: brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), brewDate.addDates(brewDate.getFullDate('yyyy/mm/dd'), datesBetweenCount))
   };
   // Check if the widget collection data already exists in collection instance!
   var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');

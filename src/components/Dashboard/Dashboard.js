@@ -100,7 +100,8 @@ const Dashboard = () => {
     async function batchesApi() {
         // Calculate the dates between using brew-date package, Later initializa the number of days in config for the users!
         const date = bwt.getFullDate('yyyy/mm/dd');
-        const datesBetween = bwt.getBetween(date, bwt.addDates(date, 3));
+        var datesBetweenCount = CollectionInstance.getModel('widgetTileCollections', 'datesBetweenCount');
+        const datesBetween = bwt.getBetween(date, bwt.addDates(date, datesBetweenCount));
         const data = {
             days: 3,
             datesBetween: datesBetween
@@ -412,7 +413,7 @@ const Dashboard = () => {
         <>
           <Card navigate={() => navigateDash()} message = {"Check-In Rooms"} _node = {"doclist"} />
           {upcomingCheckout && (
-            <Cabinets data={data} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid={splitedIds[0]} />
+            <Cabinets data={upcomingCheckout} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING CHECK OUT"} methodCall={"checkout"} lodgeid={splitedIds[0]} />
           )}
           {upcomingPrebook && (
             <Cabinets data={upcomingPrebook} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"UPCOMING PREBOOK"} methodCall={"prebook"} lodgeid={splitedIds[0]} />

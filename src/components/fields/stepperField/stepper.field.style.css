@@ -1,0 +1,11 @@
+.stepper-buttons{
+  float: right;
+}
+
+.metadata-stepper-buttons{
+  margin-right: 10px;
+  margin-left: 10px;
+  background-color: black;
+  padding-bottom: 1px;
+  padding-top: 0.5px;
+}

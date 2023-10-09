@@ -88,13 +88,21 @@ class Collections {
     }
   };
   
+  // Get particular model from the collection set.
+  getModel(collectionName, modelName){
+    if(!modelName){
+      throw new Error('Model name is not valid');
+    } else {
+      return widgetTileModelSchema.collections[collectionName]?.data[modelName];
+    }
+  };
+  
   // Remove model from the collections!
   removeModel(collectionName, modelName){
     if(!modelName){
       throw new Error('Model name is not valid');
     } else {
-      var model = widgetTileModelSchema.collections[collectionName].data;
-      delete model[modelName];
+      delete widgetTileModelSchema.collections[collectionName].data[modelName]; 
     };
   };
   
