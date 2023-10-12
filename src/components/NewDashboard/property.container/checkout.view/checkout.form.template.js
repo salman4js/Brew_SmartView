@@ -74,7 +74,7 @@ export function templateHelpers(state){
             </div>
             <div className = 'modal-gap'>
               <label style = {{color: 'black'}}> GST Deduction </label>
-              <p style = {{color: 'black'}}> {billingInfo.gstPrice} </p>
+              <p style = {{color: 'black'}}> {billingInfo.gstPrice + ' Rs'} </p>
             </div>
             <div className = 'modal-gap'>
               <label style = {{color: 'black'}}> Given Advance Amount </label>
