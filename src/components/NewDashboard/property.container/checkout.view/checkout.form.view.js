@@ -242,7 +242,7 @@ class CheckOutView extends React.Component {
         ...prevState,
         billingInfo: {
           ...prevState.billingInfo,
-          gstPrice: this.gstPrice + ' Rs', 
+          gstPrice: this.gstPrice, 
           roomPrice: this.getRoomPrice() + " Rs", 
           totalPrice: this.getTotalPayableAmount() + this.gstPrice + " Rs",
           advanceAmount: this.state.billingDetails.advanceCheckin + ' Rs',
@@ -369,19 +369,20 @@ class CheckOutView extends React.Component {
       this.printDetails = {
         customerName: this.state.userModel.username,
         phoneNumber: this.state.userModel.phonenumber,
-        roomRent: this.state.billingInfo.roomPrice,
+        roomRent: this.state.billingDetails.message,
         discount: this.state.userModel.discount,
         advance: this.state.userModel.advance,
         dateofCheckIn: this.state.userModel.dateofcheckin,
         dateofCheckout: this.state.userModel.dateofcheckout,
         receiptId: this.state.userModel.receiptId,
         roomno: this.state.userModel.roomno,
-        checkinTime: this.state.userModel.checkinTime,
-        checkoutTime: this.state.userModel.checkoutTime,
+        checkinTime: brewDate.timeFormat(this.state.userModel.checkinTime),
+        checkoutTime: this.state.userModel.currentTime,
         extraBedAmount: this.state.userModel.extraBedPrice,
         address: this.state.userModel.address,
         stayedDays: this.state.stayeddays,
         gstPercent: this.gstPercent,
+        isGst: true, // Force set the GST enabled flag to true as per business requirement.
         gst: this.state.billingInfo.gstPrice,
         extraBeds: this.state.userModel.extraBeds,
         // amount: this.state.billingInfo.totalPrice,
@@ -389,6 +390,8 @@ class CheckOutView extends React.Component {
         igst: this.state.printingDetails.igst,
         invoice: this.state.printingDetails.invoice,
         tInvoice: this.state.printingDetails.tInvoice,
+        totalAmount: this.state.billingInfo.totalPrice,
+        totalTaxableValue: this.state.billingInfo.withoutGST
       };
     };
     
@@ -402,7 +405,7 @@ class CheckOutView extends React.Component {
           tInvoice: pref.tInvoice
         }
       }), () => {
-        this.windowPrint()
+        this.windowPrint();
       })
     };
     

@@ -178,9 +178,9 @@ const Invoice = (props) => {
                 <div className="table-view-bill-line"></div>                
                 <div className="invoice-total">
                     <p>
-                        Total Taxable Value: {props.node.taxableValue && props.node.taxableValue()}
+                        Total Taxable Value: {props.node.taxableValue ? props.node.taxableValue() : props.node.totalTaxableValue}
                     </p>
-                    {props.node.igst && (
+                    {props.node.igst && props.node.igst !== 'undefined' && (
                         <p>
                             IGST {props.node.gstPercent * 100 + "%"} : {props.node.gst} 
                         </p>
@@ -188,16 +188,16 @@ const Invoice = (props) => {
                     {props.node.cgst && (
                         <div>
                             <p>
-                                CGST {(props.node.gstPercent * 100 / 2) + "%"} : {+props.node.gst / 2}
+                                CGST {(+props.node.gstPercent * 100 / 2) + "%"} : {+props.node.gst / 2}
                             </p>
                             <p>
-                                SGST {(props.node.gstPercent * 100 / 2) + "%"} : {+props.node.gst / 2}
+                                SGST {(+props.node.gstPercent * 100 / 2) + "%"} : {+props.node.gst / 2}
                             </p>
                         </div>
                     )}
                     <div className="table-view-bill-line"></div>                
                     <p>
-                        Grand Total: {props.node.amount && props.node.amount()}
+                        Grand Total: {props.node.amount ? props.node.amount() : props.node.totalAmount}
                     </p>
                 </div>
             </div>
@@ -291,7 +291,7 @@ const Invoice = (props) => {
                             </div>
                         )}
                         <div className="invoice-total-amount">
-                            Total Amount: {props.node.amount && props.node.amount()}
+                            Total Amount: {props.node.amount ? props.node.amount() : props.node.totalAmount}
                         </div>
                     </div>
                 </div>
