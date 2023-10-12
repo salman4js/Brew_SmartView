@@ -1187,3 +1187,14 @@ td {
   overflow: auto;
 }
 
+.brew-greetings{
+  padding-left: 45px;
+  padding-top: 25px;
+}
+
+.brew-greetings-message{
+  color: white;
+  font-weight: bold;
+  font-size: 50px;
+}
+

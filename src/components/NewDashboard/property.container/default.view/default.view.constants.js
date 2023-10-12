@@ -3,7 +3,7 @@ var defaultViewConstants = Object.freeze({
     upcomingCheckout: 'Upcoming Checkout',
     upcomingPrebook: 'Upcoming Prebook',
     favorites: 'Favorite Customers'
-   })
+  })
 });
 
 export default defaultViewConstants;

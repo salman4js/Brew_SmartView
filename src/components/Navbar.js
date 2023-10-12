@@ -23,8 +23,8 @@ const Navbar = (props) => {
     
     let navigate = useNavigate();
     
-    // Get dashboard version and store it in the global variable!
-    var dashboardVersion = CollectionInstance.getModel('widgetTileCollections', 'dashboardVersion');
+    // Get dashboard version from the storage!
+    var dashboardVersion =  CollectionInstance.getModel('widgetTileCollections', 'dashboardVersion');
     
     // Custom styles for checkbox field!
     const customCheckboxStyle = {

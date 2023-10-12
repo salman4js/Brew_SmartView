@@ -6,6 +6,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import ModalAssist from '../modal.assist/modal.assist.view';
 import { activityLoader } from '../common.functions/common.functions.view';
 import { validateFieldData, nodeConvertor } from '../common.functions/node.convertor';
+import CollectionInstance from '../../global.collection/widgettile.collection/widgettile.collection';
 import {getStorage, setStorage, defaultStorage} from '../../Controller/Storage/Storage'
 
 const ChooseLogin = () => {
@@ -150,8 +151,10 @@ const ChooseLogin = () => {
         const storageData = {
           "loggedInUser": result.data.loggedInUser,
           "loggedInAsRecep": result.data.loggedInAsRecep
-        }
-        const loginRoute = result.data.loggedInAsRecep ? "landingpage" : "dashboard"
+        };
+        // User preference to determine the navigation route!
+        var userPreferenceDashboard = CollectionInstance.getModel('widgetTileCollections', 'dashboardVersion');
+        const loginRoute = userPreferenceDashboard ? 'dashboardcontainer' : "dashboard"
         defaultStorage(storageData);
         navigateUser(loginRoute);
       } else {
