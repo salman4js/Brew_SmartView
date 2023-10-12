@@ -3,6 +3,8 @@ import { getAvailableRoomTypes, getUserModel } from './sidepanel.container.utils
 import { getRoomList } from '../../paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import { getStatusCodeColor } from '../../common.functions/common.functions';
 import { globalMessage, commonLabel, activityLoader } from '../../common.functions/common.functions.view';
+import CustomModal from '../../CustomModal/custom.modal.view';
+import MetadataTableView from '../../metadata.table.view/metadata.table.view';
 import PanelView from '../../SidePanelView/panel.view';
 import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view'
@@ -17,6 +19,16 @@ const SidepanelWrapper = (props) => {
     parentData: undefined,
     childData: undefined,
     selectedId: []
+  });
+  
+  // Custom modal state handler!
+  const [customModal, setCustomModal] = useState({
+    show: false,
+    onHide: _toggleCustomModal,
+    customData: undefined,
+    header: 'Room details',
+    centered: true,
+    modalSize: 'medium'
   });
   
   // Update sidepanel height!
@@ -49,10 +61,12 @@ const SidepanelWrapper = (props) => {
   // Render custom inline menu for item panel collection!
   function _renderCustomInlineMenu(data){
     return(
-      <span style = {{marginBottom: '2px'}}>
+      <span style = {{marginBottom: '2px'}} onClick = {(e) => _toggleCustomModal(data, e, true)}>
         <span className = "inline-menu" style = {{border: '2px solid black', 
           backgroundColor: "lightblue", color: 'black', padding: '0px 2px 0px 2px'}}>
-          {data + ' F'}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+          </svg>
         </span>
       </span>
     )
@@ -91,7 +105,7 @@ const SidepanelWrapper = (props) => {
         return <PanelItemView data = {options.roomno} _id = {options._id} showIndentationArrow = {true}
         showInlineMenu = {true} customInlineMenu = {true} colorCode = {statusColorCode}
         onClick = {(uId) => panelItemOnClick(uId, options)} selectedItem = {sidepanel.selectedId}
-        _renderCustomInlineMenu = {() => _renderCustomInlineMenu(options.floorNo)} />
+        _renderCustomInlineMenu = {() => _renderCustomInlineMenu(options)} />
       }
     })
   };
@@ -103,6 +117,26 @@ const SidepanelWrapper = (props) => {
       marginTop: (sidepanel.height) / 2.2 + "px",
       textCenter: true
     }
+  };
+  
+  // Side panel custom modal body item view!
+  function customModalBodyItemView(){
+    var data = customModal.customData,
+      headerValue = ['Floor No', 'Bed Count', 'Ext Bed Rate', 'Room Price'],
+      cellValues = [{_id: 'dummyInstance', floorNo: data.floorNo, bedCount: data.bedCount, extraBedPrice: data.extraBedPrice, roomPrice: data.price}],
+      tableData = {headerValue, cellValues, tableCellWidth: "180px"};
+    return <MetadataTableView data = {tableData} /> 
+  };
+  
+  // Trigger custom modal!
+  function _toggleCustomModal(data, e, value){
+    e && e.stopPropagation();
+    setCustomModal(prevState => ({...prevState, show: value, customData: data}));
+  };
+  
+  // Render custom modal!
+  function _renderCustomModal(){
+    return <CustomModal modalData = {customModal} showBodyItemView = {customModalBodyItemView} />
   };
   
   // Fetch the available room types!
@@ -173,7 +207,12 @@ const SidepanelWrapper = (props) => {
   
   // Panel View!
   function _renderPanelView(){
-    return <PanelView data = {sidepanel} childView = {() => sidepanelChildView()} />
+    return(
+      <>
+        {customModal.show && _renderCustomModal()}
+        <PanelView data = {sidepanel} childView = {() => sidepanelChildView()} />
+      </>
+    )
   }
   
   return _renderPanelView();

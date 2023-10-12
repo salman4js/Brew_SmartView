@@ -57,7 +57,7 @@ const MetadataTable = (props) => {
         delete options[idInstance];
       }
       delete options.__v;
-    })
+    });
     return result;
   }
   
