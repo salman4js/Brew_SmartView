@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import { excludeDatesCheckin, prebookExcludeDates } from './ExcludeDates/excludesdates';
 import { moveToNextState } from './room.status.utils/room.status.utils';
 import CustomModal from './CustomModal/custom.modal.view';
+import MetadataTableView from './metadata.table.view/metadata.table.view';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
@@ -76,6 +77,14 @@ const HomeRoom = (props) => {
         isChannel: false,
         channelName: undefined
     });
+    
+    // Custom modal state handler!
+    const [customModal, setCustomModal] = useState({
+      show: false,
+      onHide: _toggleCustomModal,
+      header: 'Room details',
+      footerEnabled: false
+    })
 
     //Loader--Modal
     const [loading, setLoading] = useState(false);
@@ -1284,7 +1293,42 @@ const HomeRoom = (props) => {
         )
         )
       )
-    }
+    };
+    
+    // On click info details!
+    function _onClickInfoDetails(){
+      _toggleCustomModal(true);
+    };
+    
+    // Toggle on and off custom modal!
+    function _toggleCustomModal(value){
+      setCustomModal(prevState => ({...prevState, show: value}));
+    };
+    
+    // Render info details icons when showFullDetails were disabled!
+    function _renderInfoDetails(){
+      return(
+        <span className = "inline-menu brew-cursor" style = {{padding: '0px 2px 0px 2px'}} onClick = {() => _onClickInfoDetails()}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+          </svg>
+        </span>
+      )
+    };
+    
+    // Function to render custom modal!
+    function _renderCustomModal(){
+      return <CustomModal modalData = {customModal} showBodyItemView = {() => _customModalBodyView()}/>
+    };
+    
+    // Custom model body item view!
+    function _customModalBodyView(){
+      // Prepare table data!
+      var headerValue = ['Floor No', 'Bed count', 'Ext Bed Rate', 'Room Price'],
+        cellValues = [{_id: 'dummyInstance', floorNo: props.floorNo, bedCount: props.bedcount, extraBedPrice: props.extraBedPrice, roomPrice: props.price}],
+        tableData = {headerValue, cellValues, tableCellWidth: '180px'};
+      return <MetadataTableView data = {tableData} />
+    };
     
     // Listen to the video ref and if it changes, get the access to the video camera!
     useEffect(() => {
@@ -1293,7 +1337,7 @@ const HomeRoom = (props) => {
             getUserCamera()
         }
       } 
-    }, [show])
+    }, [show]);
 
 
     return (
@@ -1301,6 +1345,9 @@ const HomeRoom = (props) => {
             <div class="card text-center">
                 <div class="card-header" style={{ color: "black" }}>
                     <strong>Room No : {props.roomno} ({props.floorNo+'F'})</strong>
+                    {!props.showFullDetails && (
+                      _renderInfoDetails()
+                    )}
                 </div>
                 {props.showFullDetails && (
                   <div class="card-body">
@@ -1896,6 +1943,7 @@ const HomeRoom = (props) => {
                     </div>
                 }
             </div>
+            {customModal.show && _renderCustomModal()}
         </div>
     )
 }
