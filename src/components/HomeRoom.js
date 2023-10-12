@@ -817,7 +817,6 @@ const HomeRoom = (props) => {
                 phoneNumber: options.phonenumber,
                 igst: value.igst,
                 cgst: value.cgst,
-                extraBeds: options.extraBeds,
                 dateofCheckIn: options.dateofcheckin,
                 gstPercent: determinGstPercent(),
                 isGst: isGst,

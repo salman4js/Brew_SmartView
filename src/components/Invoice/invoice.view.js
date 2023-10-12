@@ -277,6 +277,9 @@ const Invoice = (props) => {
                             Sub Total: {props.node.roomRent}
                         </div>
                         <div className="invoice-total">
+                            Extra bed count: {props.node.extraBeds}
+                        </div>
+                        <div className="invoice-total">
                             Extra Bed Amount: {props.node.extraBedAmount}
                         </div>
                         <div className="invoice-total">
