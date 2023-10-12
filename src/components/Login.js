@@ -73,10 +73,7 @@ const Login = () => {
             'isCheckinDateEditable': res.data.object.checkinDateEditable,
             'is-linked-with-vouchers': res.data.object.linkVouchersWithLivixius,
             'showFullDetails': res.data.object.showFullDetails
-          }
-
-          // Populate the modal into sessionStorage!
-          CollectionInstance.setCollections('config', data);
+          };
           
           defaultStorage(data);
           setMessage("Validating User Preference");

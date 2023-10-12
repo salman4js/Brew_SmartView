@@ -2,7 +2,8 @@ import React from 'react';
 import _ from 'lodash';
 import CardView from '../../../CardView/card.view/card.view';
 import defaultViewConstants from './default.view.constants';
-import { getRoomStatusConstants } from '../../../common.functions/common.functions';
+import { getStorage } from '../../../../Controller/Storage/Storage';
+import { getRoomStatusConstants, getGreetings } from '../../../common.functions/common.functions';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 import BlockActions from '../../../fields/block.actions.view/block.actions.view';
 import { templateHelpers, widgetTileTemplateHelpers, widgetTileBodyTemplateHelpers } from './default.view.template';
@@ -37,10 +38,17 @@ class DefaultView extends React.Component {
   // Template helpers!
   templateHelpers(){
     if(this.state.data.isFetched && this.state.isComputed){
-      return templateHelpers(this.state);
+      return templateHelpers(this);
     } else {
       return <BlockActions />
     }
+  };
+  
+  // Set the greetings message!
+  setGreetings(){
+    var greetings = getGreetings(),
+      loggedInUser = getStorage('loggedInUser');
+    this.greetingMessage = greetings + ', ' + loggedInUser + '!';
   };
 
   // Toggle computed state!
@@ -78,6 +86,8 @@ class DefaultView extends React.Component {
   renderWidgetTile(){
     // Check if the data is loaded!
     if(this.state.data.isFetched && this.state.isComputed){
+      // Before render the widgetTiles, Set the greetins message!
+      this.setGreetings();
       return this.showWidgetTiles();
     } else {
       return <BlockActions />
