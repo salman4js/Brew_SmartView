@@ -38,34 +38,6 @@ const CheckinForm = (props) => {
   // Checkin form fields state handler!
   const [checkinFields, setCheckinFields] = useState([
     {
-      value: 'Walk-In',
-      restrictShow: checkCustomizableFields('isChannel'),
-      width: '500px',
-      placeholder: "Choose the preferred channel manager",
-      label: "Channel Manager",
-      name: 'channel',
-      attribute: 'listField',
-      isRequired: false,
-      options: [
-        {
-          value: "Make My Trip"
-        },
-        {
-          value: "Oyo"
-        },
-        {
-          value: 'Walk-In'
-        }
-      ],
-      style: {
-        color: "black",
-        fontSize: "15px",
-        paddingRight: "10px",
-        paddingLeft: "10px",
-        cursor: "pointer",
-      }
-    },
-    {
       value: undefined,
       restrictShow: checkCustomizableFields('updatePrice'),
       width: '500px',
@@ -129,25 +101,66 @@ const CheckinForm = (props) => {
         isShow: false,
         inlineMessage: 'Please provide a valid input.'
       }
+    },
+    {
+      value: undefined,
+      width: '500px',
+      placeholder: "Aadhar Number",
+      label: "Aadhar Number",
+      name: 'aadhar',
+      attribute: 'textField',
+      isRequired: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input.'
+      }
+    },
+    {
+      value: undefined,
+      width: '500px',
+      placeholder: "Address",
+      label: "Address",
+      name: 'address',
+      attribute: 'textField',
+      isRequired: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input.'
+      }
     }
   ]);
   
   // Customizable fields state handler!
   const [customizableFields, setCustomizableFields] = useState([
     {
-      value: undefined,
-      defaultValue: 0,
+      value: 'Walk-In',
+      defaultValue: 'Walk-In',
+      restrictShow: checkCustomizableFields('isChannel'),
       width: '500px',
-      placeholder: _isAdvanceRestricted() ? 'Advance Amount' : 'Cash and Deposit',
-      label: _isAdvanceRestricted() ? 'Advance Amount' : 'Cash and Deposit',
-      name: 'advance',
-      validation: _isAdvanceRestricted(),
-      validationRegex: /^(0|[1-9]\d*)$/,
-      attribute: 'textField',
+      placeholder: "Choose the preferred channel manager",
+      label: "Channel Manager",
+      name: 'channel',
+      attribute: 'listField',
       isRequired: false,
-      inlineToast: {
-        isShow: false,
-        inlineMessage: 'Please provide a valid input!'
+      dependentValue: ['advance', 'discount'],
+      dependentValueUpdateWithNoCondition: false,
+      options: [
+        {
+          value: "Make My Trip"
+        },
+        {
+          value: "Oyo"
+        },
+        {
+          value: 'Walk-In'
+        }
+      ],
+      style: {
+        color: "black",
+        fontSize: "15px",
+        paddingRight: "10px",
+        paddingLeft: "10px",
+        cursor: "pointer",
       }
     },
     {
@@ -168,6 +181,25 @@ const CheckinForm = (props) => {
     },
     {
       value: undefined,
+      defaultValue: 0,
+      width: '500px',
+      placeholder: _isAdvanceRestricted() ? 'Advance Amount' : 'Cash and Deposit',
+      label: _isAdvanceRestricted() ? 'Advance Amount' : 'Cash and Deposit',
+      name: 'advance',
+      validation: _isAdvanceRestricted(),
+      validationRegex: /^(0|[1-9]\d*)$/,
+      attribute: 'textField',
+      restrictShow: false,
+      isRequired: false,
+      fieldShouldVanish: true,
+      updateIsRequiredOnDependentValue: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input!'
+      }
+    },
+    {
+      value: undefined,
       width: '500px',
       defaultValue: 0,
       placeholder: "Discount Amount",
@@ -176,7 +208,10 @@ const CheckinForm = (props) => {
       validation: true,
       validationRegex: /^(0|[1-9]\d*)$/,
       attribute: 'textField',
+      restrictShow: false,
       isRequired: false,
+      fieldShouldVanish: true,
+      updateIsRequiredOnDependentValue: true,
       inlineToast: {
         isShow: false,
         inlineMessage: 'Please provide a valid input!'
@@ -206,32 +241,6 @@ const CheckinForm = (props) => {
       name: 'childrens',
       attribute: 'textField',
       isRequired: false
-    },
-    {
-      value: undefined,
-      width: '500px',
-      placeholder: "Aadhar Number",
-      label: "Aadhar Number",
-      name: 'aadhar',
-      attribute: 'textField',
-      isRequired: true,
-      inlineToast: {
-        isShow: false,
-        inlineMessage: 'Please provide a valid input.'
-      }
-    },
-    {
-      value: undefined,
-      width: '500px',
-      placeholder: "Address",
-      label: "Address",
-      name: 'address',
-      attribute: 'textField',
-      isRequired: true,
-      inlineToast: {
-        isShow: false,
-        inlineMessage: 'Please provide a valid input.'
-      }
     }
   ]);
 
@@ -335,6 +344,8 @@ const CheckinForm = (props) => {
       const formValue = getFieldData(checkinFields); // Default input fields!
       const customizableFormValues = getFieldData(customizableFields); // Customizable form values!
       customizableFormValues['isChannel'] = customizableFormValues.channel !== 'Walk-In' ? true : false; // This params is needed when dealing with channel manager!
+      // Delete advance and discount from the fieldValue if the channel manager is true!
+      customizableFormValues.isChannel && delete customizableFormValues.advance && delete customizableFormValues.discount;
       const updatedFormValue = updateDefaultFormValue(formValue);
       const finalFormValue = Object.assign(formValue, customizableFormValues); // Final form value ready to be sent to the server!
       const serverResult = await checkInFormValue(finalFormValue);

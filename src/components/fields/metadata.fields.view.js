@@ -19,18 +19,52 @@ const MetadataFields = (props) => {
     }
   };
   
+  // Update field should vanish field state! // TODO: Change this function later to work on all the variety scenarios!
+  function _updateFieldShouldVanish(fieldState, index, dependentValueField, currentFieldIndex){
+    if(fieldState[index].fieldShouldVanish){ 
+        if(!fieldState[currentFieldIndex].dependentValueUpdateWithNoCondition && fieldState[currentFieldIndex].value !== fieldState[currentFieldIndex].defaultValue){ // Here, we restrict the value only
+            // if the changed value is not as same as Default value
+          fieldState[index].restrictShow = true;
+        } else {
+          fieldState[index].restrictShow = false;
+        };
+    };
+  };
+  
+  // Prepare dependent value field only on the supported format!
+  function prepareDependentValueField(dependentValueField){
+    var dependentValue = [];
+    if(Array.isArray(dependentValueField)){
+      for (var dependentVal of dependentValueField){
+        dependentValue.push(dependentVal);
+      };
+      return dependentValue;
+    } else if(typeof dependentValueField === 'string'){
+      return [dependentValueField]; // in case of string, convert the string into array then return it.
+    } else {
+      throw new Error('dependentvalue is not in supported format')
+    }
+  };
+
+  // NOTE: dependentValueField --> Takes array or string, if string passed, it will be converted into an array!
   // Update the dependent value field!
-  function updateDependantValueField(dependentValueField) {
-    const fieldState = [...props.data];
+  function updateDependantValueField(dependentValueField, currentFieldIndex) {
+    // DependentValudField could be array if multiple fields value should be changes, therefore, changing the dependentValue to array values eventhough its an string!
+    // First, check for the dependentValueField type and throw error if not in supported type!
+    var dependentValues = prepareDependentValueField(dependentValueField);
+    console.log(dependentValues)
+    const fieldState = [...props.data];    
     // Loop through the array and find the dependent field name!
     fieldState.forEach((options, index) => {
-      if (options.name === dependentValueField) {
+      if (dependentValues.includes(options.name)) {
         fieldState[index].value = undefined;
         fieldState[index].isChanged = false;
         if (options.updateIsRequiredOnDependentValue) {
           fieldState[index].isRequired = false;
-        }
-      }
+          // Check if the dependent value should vanish!
+          fieldState[index].fieldShouldVanish && _updateFieldShouldVanish(fieldState, index, dependentValueField, currentFieldIndex);
+        };
+      };
     });
     props.updateData(fieldState);
   }
@@ -43,7 +77,7 @@ const MetadataFields = (props) => {
     props.toggleButtonProp &&  props.toggleButtonProp("success", false); // Make buttons enable when the field value is changed!
     props.updateData(fieldState); // Update the state with the updated array
     fieldState[index].callBackAfterUpdate && fieldState[index].callBackAfterUpdate();
-    fieldState[index].dependentValue && updateDependantValueField(fieldState[index].dependentValue);
+    fieldState[index].dependentValue && updateDependantValueField(fieldState[index].dependentValue, index);
   };
   
   // Disable and enable custom modals footer buttons!
