@@ -257,39 +257,40 @@ class CheckOutView extends React.Component {
     // Get total amount with advance and discount but without GST!
     getAmountWithoutGST(){
       var extraBedPrice = Number(this.getExtraBedPrice());
-      return ((this.getRoomPrice() * this.state.stayeddays) - this.state.billingDetails.advanceCheckin - this.state.billingDetails.discount) + extraBedPrice;
+      return ((this.getRoomPrice() * this.state.stayeddays) - this.state.billingDetails.advanceCheckin - this.state.billingDetails.discountPrice) + extraBedPrice;
     };
-    
+
     // Calculate GST for inclusive calculation!
-    getGSTForInclusive(){ 
-      var amountForStayedDays = this.getAmountForStayedDays() + Number(this.getExtraBedPrice());
+    getGSTForInclusive(){
+      var amountForStayedDays = (this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) - this.state.billingDetails.discountPrice;
       var inclusiveGSTAmount = amountForStayedDays / (1 + determineGSTPercent(this.state.data.roomModel.price));
       this.gstPrice = inclusiveGSTAmount;
     };
-    
+
     // Calculate GST for exclusive calculation!
     getGSTForExclusive(){
-      var exclusiveGSTAmount = Math.round((this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) * determineGSTPercent(this.state.data.roomModel.price));
+      var amountForStayedDays = (this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) - this.state.billingDetails.discountPrice;
+      var exclusiveGSTAmount = Math.round(amountForStayedDays * determineGSTPercent(this.state.data.roomModel.price));
       this.gstPrice = exclusiveGSTAmount;
     };
-    
+
     // Get room price only!
     getRoomPrice(){
       return Number(this.state.data.roomModel.price);
     };
-    
+
     // Get amount for stayed days!
     getAmountForStayedDays(){
       var roomPrice = this.getRoomPrice(),
         stayedDays = this.calculateStayedDays();
       return Number(roomPrice) * Number(stayedDays);
     };
-    
+
     // Calculate total amount!
     getTotalPayableAmount(){
       var roomPrice = Number(this.state.billingDetails.message),
         advanceAmount = Number(this.state.billingDetails.advanceCheckin),
-        discountAmount = Number(this.state.billingDetails.discount),
+        discountAmount = Number(this.state.billingDetails.discountPrice),
         extraBedPrice = Number(this.getExtraBedPrice()),
         totalPayableAmount = (roomPrice - advanceAmount - discountAmount) + extraBedPrice;
       return totalPayableAmount;

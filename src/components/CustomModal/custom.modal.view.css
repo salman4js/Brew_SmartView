@@ -1,0 +1,14 @@
+.right-modal {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 800px !important; /* Adjust the width as needed */
+  margin: 0;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-out;
+}
+
+.right-modal.show {
+  transform: translateX(0);
+}

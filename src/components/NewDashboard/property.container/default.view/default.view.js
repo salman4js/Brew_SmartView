@@ -43,11 +43,11 @@ class DefaultView extends React.Component {
       return <BlockActions />
     }
   };
-  
+
   // Set the greetings message!
   setGreetings(){
     var greetings = getGreetings(),
-      loggedInUser = getStorage('loggedInUser');
+      loggedInUser = getStorage('loggedInUser') || 'Manager'; // LoggedInUser will be null when multipleLogin is not set.
     this.greetingMessage = greetings + ', ' + loggedInUser + '!';
   };
 

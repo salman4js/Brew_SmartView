@@ -8,6 +8,9 @@ export function templateHelpers(data){
           <div className = "brew-greetings-message">
               {data.greetingMessage}
           </div>
+          <div className = 'brew-greetings-breif-message'>
+            Here's the breif idea of what's going on in your property!
+          </div>
       </div>
       <div className = 'row widget-tile-container'>
         {data.state.widgetTile()}
