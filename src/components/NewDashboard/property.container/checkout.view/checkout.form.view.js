@@ -276,7 +276,8 @@ class CheckOutView extends React.Component {
 
     // Get room price only!
     getRoomPrice(){
-      return Number(this.state.data.roomModel.price);
+      return Number(this.state.billingDetails.totalAmount) || Number(this.state.data.roomModel.price); // Total amount being the updatePrice amount, If the price has been updated.
+      // Use the room price amount!
     };
 
     // Get amount for stayed days!
@@ -288,7 +289,8 @@ class CheckOutView extends React.Component {
 
     // Calculate total amount!
     getTotalPayableAmount(){
-      var roomPrice = Number(this.state.billingDetails.message),
+      var roomPrice = Number(this.state.billingDetails.totalAmount) || Number(this.state.billingDetails.message), // Total amount being the updatePrice amount, If the price has been updated.
+      // Use the room price amount!
         advanceAmount = Number(this.state.billingDetails.advanceCheckin),
         discountAmount = Number(this.state.billingDetails.discountPrice),
         extraBedPrice = Number(this.getExtraBedPrice()),
