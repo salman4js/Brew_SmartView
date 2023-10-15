@@ -8,6 +8,7 @@ import {useGlobalMessage} from './global.state/global.state.manager';
 import {createGlobalMessage, killGlobalMessage} from '../global.state/actions/index';
 import ProgressPanel from './progresspanel/progresspanel.view/progresspanel.view';
 import CustomModal from './CustomModal/custom.modal.view';
+import StepperWizard from './stepper.wizard/stepper.wizard.view';
 import MetadataFields from './fields/metadata.fields.view'
 import axios from 'axios';
 import LogoTop from '../Assets/logo512.png';
@@ -56,6 +57,29 @@ const Navbar = (props) => {
         onClick: _toggleUserPreferenceModal
       }]
     });
+    
+    // Stepper Wizard state handler!
+    const [stepperWizard, setStepperWizard] = useState({
+      show: false,
+      header: 'Ask Livixius',
+      enableFooter: true,
+      footerView: _renderStepperWizardFooter,
+      onHide: _toggleStepperWizard
+    });
+    
+    // Stepper wizard input field state handler!
+    const [stepperWizardInput, setStepperWizardInput] = useState([{
+      value: undefined,
+      width: '460px',
+      placeholder: "Enter Any Room No",
+      name: 'askQa',
+      attribute: 'textField',
+      isRequired: true,
+      inlineToast: {
+        isShow: false,
+        inlineMessage: 'Please provide a valid input.'
+      }
+    }]);
     
     // Customizable checkbox field state handler!
     const [checkboxField, setCheckboxField] = useState([
@@ -246,9 +270,24 @@ const Navbar = (props) => {
       return <CustomModal modalData = {customModalState} showBodyItemView = {() => customModalBodyItem()} />
     };
     
+    // Render stepper wizard footer!
+    function _renderStepperWizardFooter(){
+      return <MetadataFields data = {stepperWizardInput} />
+    };
+    
+    // Render stepper wizard!
+    function _renderStepperWizard(){
+      return <StepperWizard data = {stepperWizard} />
+    };
+    
     // Trigger user preference modal!
     function _toggleUserPreferenceModal(value){
       setCustomModalState(prevState => ({...prevState, show: value}));
+    };
+    
+    // Trigger stepper wizard!
+    function _toggleStepperWizard(value){
+      setStepperWizard(prevState => ({...prevState, show: value}));
     };
     
     // Custom modal loader!
@@ -428,6 +467,9 @@ const Navbar = (props) => {
             </div>
             {customModalState.show && (
               _renderCustomModal()
+            )}
+            {stepperWizard.show && (
+              _renderStepperWizard()
             )}
         </nav>
     )

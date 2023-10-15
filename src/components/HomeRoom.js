@@ -355,7 +355,8 @@ const HomeRoom = (props) => {
                 extraBedPrice: props.extraBedPrice,
                 lodgeId: props.lodgeid
             };
-            
+            // Delete advance and discount fieldData when the channel manager is enabled!
+            credentials.isChannel && delete credentials.advance && delete credentials.discount;
             const res = await checkInFormValue(credentials);
             if(res.data.success){
               setLoading(false);

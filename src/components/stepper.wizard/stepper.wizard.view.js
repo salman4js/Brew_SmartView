@@ -1,31 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { templateHelpers } from './stepper.wizard.template';
 import './stepper.wizard.view.css';
 
-function StepperWizard() {
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const openModal = () => {
-    setModalOpen(true);
+class StepperWizard extends React.Component {
+  
+  constructor(props){
+    super(props);
+    this.state = {
+      data: props.data
+    };
   };
-
-  const closeModal = () => {
-    setModalOpen(false);
+  
+  // Template helpers!
+  templateHelpers(){
+    this.prepareTemplateHelperOptions();
+    return templateHelpers(this.templateHelpersOptions);
   };
-
-  return (
-    <div className="stepper-wizard">
-      <button onClick={openModal}>Open Modal</button>
-      {modalOpen && (
-        <div className="overlay">
-          <div className="stepper-wizard-content">
-            <span className="close">&times;</span>
-            <h2>Modal Content</h2>
-            <p>This is the content of the modal.</p>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+  
+  // Prepare template helpers options!
+  prepareTemplateHelperOptions(){
+    this.templateHelpersOptions = {
+      propsData: this.state.data,
+      closeWizard: this.closeWizardOnClick.bind(this),
+      callFooter: this.renderPassedFooter.bind(this)
+    };
+  };
+  
+  // Onclick close stepper wizard!
+  closeWizardOnClick(){
+    this.state.data.onHide();
+  };
+  
+  // Render passed footer view!
+  renderPassedFooter(){
+    return this.state.data.footerView()
+  };
+  
+  render(){
+    return this.templateHelpers();
+  };
+};
 
 export default StepperWizard;
