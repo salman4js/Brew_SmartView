@@ -306,9 +306,10 @@ class CheckOutView extends React.Component {
 
     // Get extra bed price!
     getExtraBedPrice(){
-      var extraBedPricePerDay = Number(this.state.billingDetails.extraBedCount) * Number(this.state.billingDetails.extraBedPrice),
+      var isExtraCalcEnabled = this.getExtraBedCalcConfig(),
+        extraBedPricePerDay = Number(this.state.billingDetails.extraBedCount) * Number(this.state.billingDetails.extraBedPrice),
         extraBedPriceForStayedDays = this.state.stayeddays * extraBedPricePerDay;
-      return this.state.billingDetails.isExtraCalc ? extraBedPriceForStayedDays : extraBedPricePerDay; // Here we are honoring the config for extra bed calculation!
+      return isExtraCalcEnabled ? extraBedPriceForStayedDays : extraBedPricePerDay; // Here we are honoring the config for extra bed calculation!
       // Based on days or based on count only!
     };
     
