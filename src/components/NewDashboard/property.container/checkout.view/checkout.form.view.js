@@ -1,6 +1,7 @@
 import React from 'react';
 import brewDate from 'brew-date';
 import CheckoutUtils from './checkout.form.utils';
+import checkoutViewConstants from './checkout.form.constants';
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import WindowPrint from '../../window.print/window.print';
 import MetadataFields from '../../../fields/metadata.fields.view';
@@ -49,7 +50,8 @@ class CheckOutView extends React.Component {
           igst: undefined,
           cgst: true,
           gstin: undefined
-        }
+        },
+        templateConstants: checkoutViewConstants
       };
       this.propertyController = {
         reloadSidepanel: false,
@@ -90,6 +92,10 @@ class CheckOutView extends React.Component {
     
     getIsExclusive(){
       return JSON.parse(getStorage('isExclusive'));
+    };
+    
+    getExtraBedCalcConfig(){
+      return JSON.parse(getStorage('extraCalc')); // This indicates if we have to calculate extra bed based on stayed days or not!
     };
     
     getProvidedCheckoutDate(){
@@ -264,7 +270,7 @@ class CheckOutView extends React.Component {
     getGSTForInclusive(){
       var amountForStayedDays = (this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) - this.state.billingDetails.discountPrice;
       var inclusiveGSTAmount = amountForStayedDays / (1 + determineGSTPercent(this.state.data.roomModel.price));
-      this.gstPrice = inclusiveGSTAmount;
+      this.gstPrice = this.getAmountForStayedDays() - inclusiveGSTAmount;
     };
 
     // Calculate GST for exclusive calculation!
@@ -290,17 +296,20 @@ class CheckOutView extends React.Component {
 
     // Calculate total amount!
     getTotalPayableAmount(){
-      var roomPrice = this.getRoomPrice(),
+      var amountForStayedDays = this.getAmountForStayedDays(),
         advanceAmount = Number(this.state.billingDetails.advanceCheckin),
         discountAmount = Number(this.state.billingDetails.discountPrice),
         extraBedPrice = Number(this.getExtraBedPrice()),
-        totalPayableAmount = (roomPrice - advanceAmount - discountAmount) + extraBedPrice;
+        totalPayableAmount = (amountForStayedDays - advanceAmount - discountAmount) + extraBedPrice;
       return totalPayableAmount;
     };
 
     // Get extra bed price!
     getExtraBedPrice(){
-      return Number(this.state.billingDetails.extraBedCount) * Number(this.state.billingDetails.extraBedPrice);
+      var extraBedPricePerDay = Number(this.state.billingDetails.extraBedCount) * Number(this.state.billingDetails.extraBedPrice),
+        extraBedPriceForStayedDays = this.state.stayeddays * extraBedPricePerDay;
+      return this.state.billingDetails.isExtraCalc ? extraBedPriceForStayedDays : extraBedPricePerDay; // Here we are honoring the config for extra bed calculation!
+      // Based on days or based on count only!
     };
     
     // Fetch required details!

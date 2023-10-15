@@ -1,101 +1,111 @@
 export function templateHelpers(state){
   var userModel = state.userModel,
-    billingInfo = state.billingInfo
+    billingInfo = state.billingInfo,
+    billingDetails = state.billingDetails,
+    templateHelperLabel = state.templateConstants;
   return(
       <div className = 'row'>
       {/* Customer Details */}
         <div className = 'col'>
           <div className = 'dashboard-container-fields-header'>
-            Customer Details
+            {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerDetailsHeaders}
           </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Customer Name </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerNameLabel} </label>
               <p style = {{color: 'black'}}> {userModel.username} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Customer Phone Number </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerPhoneNumberLabel} </label>
               <p style = {{color: 'black'}}> {userModel.phonenumber} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Customer Second Number </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerSecondNumberLabel} </label>
               <p style = {{color: 'black'}}> {userModel.secondphonenumber} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> ID Number </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerIdNumber} </label>
               <p style = {{color: 'black'}}> {userModel.aadharcard} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Adults Head Count </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.adultsHeadCount} </label>
               <p style = {{color: 'black'}}> {userModel.adults} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Childrens Head Count </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.childrensHeadCount} </label>
               <p style = {{color: 'black'}}> {userModel.childrens} </p>
             </div>
         </div>
         {/* Stayed Details */}
         <div className = 'col'>
           <div className = 'dashboard-container-fields-header'>
-            Stayed Details
+            {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.stayedDetailsHeader}
           </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Check-In Date </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.dateOfCheckinHeader} </label>
               <p style = {{color: 'black'}}> {userModel.dateofcheckin} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Check-In Time </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.timeOfCheckinHeader} </label>
               <p style = {{color: 'black'}}> {userModel.checkinTime} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Check-Out Date </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.dateOfCheckoutHeader} </label>
               <p style = {{color: 'black'}}> {userModel.dateofcheckout} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Check-Out Time </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.timeOfCheckoutHeader} </label>
               <p style = {{color: 'black'}}> {userModel.currentTime} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Number of Stayed Days </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedCountHeader} </label>
+              <p style = {{color: 'black'}}> {billingDetails.extraBedCount} </p>
+            </div>
+            <div className = 'modal-gap'>
+              <label style = {{color: 'black'}}> {billingDetails.isExtraCalc ? templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedPriceHeaderWithExtraCalc : templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedPriceHeaderWithoutExtraCalc} </label>
+              <p style = {{color: 'black'}}> {billingDetails.extraBedCollection} </p>
+            </div>
+            <div className = 'modal-gap'>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.stayedDaysHeader} </label>
               <p style = {{color: 'black'}}> {state.stayeddays} </p>
             </div>
         </div>
         {/* Bill Details */}
         <div className = 'col'>
           <div className = 'dashboard-container-fields-header'>
-            Bill Details
+            {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.billDetailsHeader}
           </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Room Price Per Day </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.roomPriceHeader} </label>
               <p style = {{color: 'black'}}> {billingInfo.roomPrice} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Room Price Per Stay Days </label>
-              <p style = {{color: 'black'}}> {billingInfo.roomPricePerStays} </p>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.roomPricePerStays} </label>
+              <p style = {{color: 'black'}}> {billingInfo.roomPricePerStays + ' Rs'} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> GST Deduction </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.gstDedeuction} </label>
               <p style = {{color: 'black'}}> {billingInfo.gstPrice + ' Rs'} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Given Advance Amount </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.advanceAmount} </label>
               <p style = {{color: 'black'}}> {billingInfo.advanceAmount} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> Given Discount Amount </label>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.discountAmount} </label>
               <p style = {{color: 'black'}}> {billingInfo.discountAmount} </p>
             </div>
             {!billingInfo.isNegativeValue && (
               <>
                 <div className = 'modal-gap'>
-                  <label style = {{color: 'black'}}> Balance without GST </label>
+                  <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.balWithoutGST} </label>
                   <p style = {{color: 'black'}}> {billingInfo.withoutGST} </p>
                 </div>
                 <div className = 'modal-gap'>
-                  <label style = {{color: 'black'}}> Balance with GST </label>
+                  <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.balWithGST} </label>
                   <p style = {{color: 'black'}}> {billingInfo.totalPrice} </p>
                 </div>
                 <div className = 'modal-gap'>
-                  <label style = {{color: 'green', fontWeight: 'bold'}}> Total Payabale Amount </label>
+                  <label style = {{color: 'green', fontWeight: 'bold'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.totalPayableAmount} </label>
                   <p style = {{color: 'green', fontWeight: 'bold'}}> {billingInfo.totalPrice} </p>
                 </div>
               </>
@@ -103,7 +113,7 @@ export function templateHelpers(state){
             {billingInfo.isNegativeValue && (
               <>
                 <div className = 'modal-gap'>
-                  <label style = {{color: 'red', fontWeight: 'bold'}}> Amount has to be returned to the guest </label>
+                  <label style = {{color: 'red', fontWeight: 'bold'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.refundAmount} </label>
                   <p style = {{color: 'red', fontWeight: 'bold'}}> {billingInfo.totalPrice.slice(1)} </p>
                 </div>
               </>
