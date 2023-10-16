@@ -65,9 +65,11 @@ class CheckOutView extends React.Component {
     
     templateHelpers(){
       if(this.state.isFetched){
+        // Prepare config options which are applicable for template helpers label!
+        this.prepareConfigOptions();
         // Add current time to the userModel!
         this.state.userModel['currentTime'] = getTimeDate().getTime;
-        return templateHelpers(this.state);
+        return templateHelpers(this.state, this.configOptions);
       } else {
         var opts = {
           color: "black",
@@ -88,6 +90,10 @@ class CheckOutView extends React.Component {
     
     getIsExtraCalcEnabled(){
       return JSON.parse(getStorage('extraCalc'));
+    };
+    
+    getIsAdvanceRestricted(){
+      return JSON.parse(getStorage('isAdvanceRestricted'));
     };
     
     getIsExclusive(){
@@ -114,6 +120,14 @@ class CheckOutView extends React.Component {
     
     getDateTime(){
       return brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime());
+    };
+    
+    // Prepare config options which are applicable for template helpers label!
+    prepareConfigOptions(){
+      this.configOptions = {
+        isExtraCalc: this.getExtraBedCalcConfig(),
+        isAdvanceRestricted: this.getIsAdvanceRestricted()
+      };
     };
     
     // Render custom modal!

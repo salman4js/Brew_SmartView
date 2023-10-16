@@ -52,14 +52,12 @@ const MetadataFields = (props) => {
     // DependentValudField could be array if multiple fields value should be changes, therefore, changing the dependentValue to array values eventhough its an string!
     // First, check for the dependentValueField type and throw error if not in supported type!
     var dependentValues = prepareDependentValueField(dependentValueField);
-    console.log(dependentValues)
     const fieldState = [...props.data];    
     // Loop through the array and find the dependent field name!
     fieldState.forEach((options, index) => {
       if (dependentValues.includes(options.name)) {
         fieldState[index].value = undefined;
-        fieldState[index].isChanged = false;
-        if (options.updateIsRequiredOnDependentValue) {
+        fieldState[index].isChanged = false;        if (options.updateIsRequiredOnDependentValue) {
           fieldState[index].isRequired = false;
           // Check if the dependent value should vanish!
           fieldState[index].fieldShouldVanish && _updateFieldShouldVanish(fieldState, index, dependentValueField, currentFieldIndex);
@@ -74,6 +72,10 @@ const MetadataFields = (props) => {
     const fieldState = [...props.data]; // Create a copy of the state array
     fieldState[index].value = getInputValue(event, attribute) // Update the value at the specified index
     fieldState[index].isChanged = true; // Change the metafield value to true when the value changed!
+    if(fieldState[index].eventKeyRequired && event.key){ // If event key is required, and if the event key is not undefined.
+      // Send the key back to the respective component!
+      fieldState[index].eventKey = event.key;
+    };
     props.toggleButtonProp &&  props.toggleButtonProp("success", false); // Make buttons enable when the field value is changed!
     props.updateData(fieldState); // Update the state with the updated array
     fieldState[index].callBackAfterUpdate && fieldState[index].callBackAfterUpdate();

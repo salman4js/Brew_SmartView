@@ -24,7 +24,9 @@ export function extractQueryParams(){
 };
 
 // Convert the data into server understandable format!
-export function nodeConvertor(status){
+export function nodeConvertor(status, fieldProp){ // fieldProp will take array as an input,
+  // whatever values are there in the fieldProp will returned in the result object.
+  var valuesArr = fieldProp !== undefined ? fieldProp : [];
   const result = {};
   status.map((options, index) => {
     if(options.defaultValue && (options.value === undefined)){
@@ -32,6 +34,12 @@ export function nodeConvertor(status){
     } else {
       result[options.name] = options.value !== undefined ? options.value : options.defaultValue;
     }
+    
+    // Send any required field value other the 'name' if asked!
+    for(var value of valuesArr){
+      var fieldValue = options[value];
+      result[value] = fieldValue;
+    };
   })
   return result;
 };

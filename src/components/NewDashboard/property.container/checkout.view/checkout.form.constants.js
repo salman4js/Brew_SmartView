@@ -25,6 +25,7 @@ var checkoutViewConstants = Object.freeze({
     roomPricePerStays: 'Room Price Per Stay Days',
     gstDedeuction: 'GST Deduction',
     advanceAmount: 'Advance Amount',
+    cashAndDeposit: 'Cash and Deposit',
     discountAmount: 'Discount Amount',
     balWithoutGST: 'Balance Without GST',
     balWithGST: 'Balance With GST',

@@ -2,7 +2,7 @@
 import widgetTileModelSchema from './widgettile.schema';
 import _ from 'lodash';
 
-class Collections {
+class Collections { // Design pattern --> Singleton class!
   constructor(){
     if(widgetTileModelSchema.instance){
       throw new Error('Widget tile collection is already initiated.');
@@ -37,7 +37,7 @@ class Collections {
   addToCollections(propertyName, data, modelName){
     var collectionData = widgetTileModelSchema.collections[propertyName].data;
     var {isDataAdded, isArray} = this.checkForDuplicateCollectionData(collectionData, modelName, data);
-    if(isArray){
+    if(!isDataAdded && isArray){
       collectionData.push(data);
       return;
     }
@@ -51,7 +51,8 @@ class Collections {
     var isArray;
     if(Array.isArray(collectionData)){
       isArray = true;
-      isDataAdded = _.find(collectionData, function(obj){
+      if(Array.isArray(data)) isDataAdded = _.isEqual(collectionData, data);
+      if(!Array.isArray(data)) isDataAdded = _.find(collectionData, function(obj){
         return obj === data;
       });
     } else {
