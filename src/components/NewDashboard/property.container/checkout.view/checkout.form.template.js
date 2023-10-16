@@ -1,4 +1,4 @@
-export function templateHelpers(state){
+export function templateHelpers(state, configOptions){
   var userModel = state.userModel,
     billingInfo = state.billingInfo,
     billingDetails = state.billingDetails,
@@ -61,7 +61,7 @@ export function templateHelpers(state){
               <p style = {{color: 'black'}}> {billingDetails.extraBedCount} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> {billingDetails.isExtraCalc ? templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedPriceHeaderWithExtraCalc : templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedPriceHeaderWithoutExtraCalc} </label>
+              <label style = {{color: 'black'}}> {configOptions.isExtraCalc ? templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedPriceHeaderWithExtraCalc : templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedPriceHeaderWithoutExtraCalc} </label>
               <p style = {{color: 'black'}}> {billingDetails.extraBedCollection} </p>
             </div>
             <div className = 'modal-gap'>
@@ -87,7 +87,7 @@ export function templateHelpers(state){
               <p style = {{color: 'black'}}> {billingInfo.gstPrice + ' Rs'} </p>
             </div>
             <div className = 'modal-gap'>
-              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.advanceAmount} </label>
+              <label style = {{color: 'black'}}> {configOptions.isAdvanceRestricted ? templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.advanceAmount : templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.cashAndDeposit} </label>
               <p style = {{color: 'black'}}> {billingInfo.advanceAmount} </p>
             </div>
             <div className = 'modal-gap'>

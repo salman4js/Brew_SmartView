@@ -2,6 +2,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Navbar from './Navbar';
 import CustomError from './CustomError';
 import changeScreen from './Action';
+import { getRoomList } from './paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Variables from './Variables';
 import Loading from './Loading';
@@ -107,31 +108,25 @@ const LandingPage = () => {
         setIsHourly(JSON.parse(isHourly));
     }
 
-    const getData = () => {
+    const getData = async() => {
         setLoading(true);
         setMessage("Gathering customers details...")
         const token = localStorage.getItem("token");
         if (!token) {
             setRoom(false)
         } else {
-            axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge`, {
-                  headers: {
-                      "x-access-token": localStorage.getItem("token"),
-                  }
-              })
-                .then(res => {
-                    if (res.data.success) {
-                        setLoading(false);
-                        setRoom(res.data.message)
-                        setFreecounter(res.data.countAvailability);
-                        setReservedcounter(res.data.message.length - res.data.countAvailability);
-                        setOptions(res.data.channels);
-                    } else {
-                        setLoading(false);
-                        localStorage.clear();
-                        changeScreen(false);
-                    }
-                })
+            var result = await getRoomList(splitedIds[0], true);
+            if(result.data.success){
+              setLoading(false);
+              setRoom(result.data.message)
+              setFreecounter(result.data.countAvailability);
+              setReservedcounter(result.data.message.length - result.data.countAvailability);
+              setOptions(result.data.channels);
+            } else {
+              setLoading(false);
+              localStorage.clear();
+              changeScreen(false);
+            }
         }
         setLoad(false);
     }

@@ -29,6 +29,13 @@ export async function getRoomList(lodgeId, fetchPref){
   // Call the widget tile collection here!
   fetchPref && await fetchWidgetTilePref(lodgeId);
   var resultData = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/false/roomlodge`, params);
+  // Add the rooms list to the global collections!
+  if(resultData.data.success){
+    var roomListCollections = CollectionInstance.getCollections('roomsListCollection');
+    if(!roomListCollections){
+      CollectionInstance.setCollections('roomsListCollection', resultData.data.message);
+    };
+  };
   return resultData;
 }
 

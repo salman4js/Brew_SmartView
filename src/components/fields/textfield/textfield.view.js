@@ -13,7 +13,12 @@ const TextField = (props) => {
     } else {
       props.handleInputChange(props.index, event, props.data.attribute)
     }
-  }
+  };
+  
+  // Handle input event separately!
+  function handleEvents(event){
+    props.data.eventKeyRequired && props.handleInputChange(props.index, event, props.data.attribute);
+  };
   
   // Handle limit value from the field data!
   function handleLimit(isGreater, event){
@@ -22,7 +27,7 @@ const TextField = (props) => {
     } else {
       props.toggleButtonValue()
     }
-  }
+  };
   
   // Text Field inline toast message!
   function _showInlineToast(){
@@ -31,7 +36,7 @@ const TextField = (props) => {
         <InlineToast message = {props.data.inlineToast.inlineMessage} />
       )
     )
-  }
+  };
   
   // Get value for the input field!
   function getValue(){
@@ -41,25 +46,24 @@ const TextField = (props) => {
   // Get value for the placeholder!
   function getValueForPlaceholder(){
     return props.data.placeholder;
-  }
+  };
   
   // Get type of the input fields based on the data!
   function getType(){
     return props.data.type !== undefined ? props.data.type : "text"; // Setting the default type as 'text'
-  }
+  };
   
 
   return(
     <div className="modal-gap" style = {{width: props.data.width}}>
         <label style={{ color: "black" }}> {props.data.label} </label>
         <input type={getType()} className="form-control" aria-describedby="input-field" value = {getValue()}
-        placeholder={getValueForPlaceholder()} onChange = {(event) => checkLimit(event)} />
+        placeholder={getValueForPlaceholder()} onKeyDown = {(event) => handleEvents(event)} onChange = {(event) => checkLimit(event)} />
         {props.data?.inlineToast !== undefined && (
           _showInlineToast()
         )}
     </div>
-  )
-  
+  )  
 }
 
 export default TextField;

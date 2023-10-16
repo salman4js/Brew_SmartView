@@ -73,12 +73,15 @@ const Navbar = (props) => {
       width: '460px',
       placeholder: "Enter Any Room No",
       name: 'askQa',
+      eventKeyRequired: true,
+      eventKey: undefined,
       attribute: 'textField',
       isRequired: true,
       inlineToast: {
         isShow: false,
         inlineMessage: 'Please provide a valid input.'
-      }
+      },
+      callBackAfterUpdate: _performActionForText
     }]);
     
     // Customizable checkbox field state handler!
@@ -131,6 +134,15 @@ const Navbar = (props) => {
         label: 'Select dates between for widget tile data'
       }
     ]);
+    
+    // Perform action for user text input!
+    function _performActionForText(){
+      var requiredFieldValues = ['eventKey'];
+      var textInput = nodeConvertor(stepperWizardInput, requiredFieldValues);
+      if(textInput.eventKey === 'Enter'){
+        
+      };
+    };
     
     // Global Message handler!
     var globalMessage = useGlobalMessage();
@@ -272,7 +284,7 @@ const Navbar = (props) => {
     
     // Render stepper wizard footer!
     function _renderStepperWizardFooter(){
-      return <MetadataFields data = {stepperWizardInput} />
+      return <MetadataFields data = {stepperWizardInput} updateData = {setStepperWizardInput} />
     };
     
     // Render stepper wizard!
@@ -376,6 +388,9 @@ const Navbar = (props) => {
                                   {!loggedInAsRecep && <Link className='nav-link dropdown-item' to={`/${props.id}/updaterooms`} style={{ color: "black" }}> Update Rooms </Link>}
                               </div>
                           </li>
+                          <div className = "nav-link dropdown brew-cursor" onClick = {() => _toggleStepperWizard(true)}>
+                            Ask Livixius
+                          </div>
                           {
                               options.map((item, key) => {
                                   if (item.config === 'Dish') {
