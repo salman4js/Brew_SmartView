@@ -5,5 +5,6 @@ Pending works to do.
  --> New dashboard widget tile should include Upcoming Checkout, Upcoming Booking, Fav customers -- Done
  --> User should be able to switch between new and old dashboard effortless -- Done.
  
- 
+ --> userModel and roomListsModel should not get fetched everytime, rather it should first check if the data is there in the models, 
+    and if yes proceed with the fetching or else update the models with the newly added models into the respective models.
  

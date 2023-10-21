@@ -1,6 +1,5 @@
-.sepper-wizard {
-  text-align: center;
-  padding: 20px;
+.stepper-wizard {
+
 }
 
 .overlay {
@@ -39,4 +38,10 @@
   padding: 20px;
   position: absolute;
   bottom: 0;
+}
+
+.stepper-wizard-body{
+  margin: 0 auto;
+  padding: 10px;
+  overflow-y: auto; /* Enable vertical scrolling */
 }

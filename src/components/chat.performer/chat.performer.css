@@ -1,0 +1,16 @@
+.chat-bot-message{
+  background-color: #F0F0F0;
+  color: black;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.user-input-message{
+  background: rgba(0, 0, 0, 0) linear-gradient(45deg, rgb(9, 14, 44) 0%, rgb(18, 44, 105) 58.93%, rgb(7, 141, 179) 100%) repeat scroll 0% 0%;
+  color: #fff;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: right;
+}

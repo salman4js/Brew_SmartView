@@ -23,6 +23,12 @@ export function extractQueryParams(){
   return extractedParams;
 };
 
+// Extract data from the state handlers. This is usefull when states are holding their view's sub view function.
+// In that case, sub view state will always hold the initial data.
+export function extractStateValue(){
+  return;
+};
+
 // Convert the data into server understandable format!
 export function nodeConvertor(status, fieldProp){ // fieldProp will take array as an input,
   // whatever values are there in the fieldProp will returned in the result object.

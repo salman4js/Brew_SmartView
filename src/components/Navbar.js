@@ -15,6 +15,8 @@ import LogoTop from '../Assets/logo512.png';
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { getStorage } from '../Controller/Storage/Storage';
 import CollectionInstance from '../global.collection/widgettile.collection/widgettile.collection';
+import ChatPerformer from './chat.performer/chat.performer.view';
+import InputAnalyser from './chat.performer/chat.input.analyzer';
 
 const Navbar = (props) => {
   
@@ -62,6 +64,8 @@ const Navbar = (props) => {
     const [stepperWizard, setStepperWizard] = useState({
       show: false,
       header: 'Ask Livixius',
+      messages: [],
+      passingProps: 'messages',
       enableFooter: true,
       footerView: _renderStepperWizardFooter,
       onHide: _toggleStepperWizard
@@ -135,12 +139,25 @@ const Navbar = (props) => {
       }
     ]);
     
+    // Update Stepper wizard chat details!
+    function _updateStepperWizardChats(content, initiator, generateAns){
+      const newMessage = {
+        content: content,
+        sender: initiator,
+      };
+      CollectionInstance.setCollections('chat-collections', newMessage);
+      setStepperWizard(prevState => ({...prevState, messages: [...prevState.messages, newMessage]}));
+    };
+
     // Perform action for user text input!
     function _performActionForText(){
       var requiredFieldValues = ['eventKey'];
       var textInput = nodeConvertor(stepperWizardInput, requiredFieldValues);
       if(textInput.eventKey === 'Enter'){
-        
+        _updateStepperWizardChats(textInput.askQa, 'user', true);
+        var chatPerfomer = new InputAnalyser(textInput.askQa);
+        var chatPerformerOutput = chatPerfomer.analyzeInput();
+        chatPerformerOutput && _updateStepperWizardChats(chatPerformerOutput, 'chat-bot', true);
       };
     };
     
@@ -287,9 +304,14 @@ const Navbar = (props) => {
       return <MetadataFields data = {stepperWizardInput} updateData = {setStepperWizardInput} />
     };
     
+    // Render body view for stepper wizard!
+    function _renderBodyView(data){
+      return <ChatPerformer data = {data} />
+    };
+    
     // Render stepper wizard!
     function _renderStepperWizard(){
-      return <StepperWizard data = {stepperWizard} />
+      return <StepperWizard data = {stepperWizard} bodyView = {(data) => _renderBodyView(data)} />
     };
     
     // Trigger user preference modal!
@@ -297,8 +319,19 @@ const Navbar = (props) => {
       setCustomModalState(prevState => ({...prevState, show: value}));
     };
     
+    // Set default greetings to the chat.performer!
+    function _setDefaultGreetings(){
+      // Check if default greetings has already been added!
+      var chatCollections = CollectionInstance.getCollections('chat-collections');
+      if(!chatCollections){
+        var defaultGreetings = [{content: 'Hey there, Give me any room no to get details', sender: 'chat-bot'}];
+        CollectionInstance.setCollections('chat-collections', defaultGreetings);
+      };
+    };
+    
     // Trigger stepper wizard!
     function _toggleStepperWizard(value){
+      _setDefaultGreetings();
       setStepperWizard(prevState => ({...prevState, show: value}));
     };
     
@@ -330,8 +363,7 @@ const Navbar = (props) => {
         setOptions(JSON.parse(getStorage("config-value")));
         fetchUniversalMessage();
         fetchPreferences();
-    }, [])
-
+    }, []);
 
     return (
         <nav className="navbar sticky-top navbar-expand-lg navbar-dark navbar-bg">

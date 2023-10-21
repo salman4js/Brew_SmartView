@@ -114,7 +114,7 @@ class Collections { // Design pattern --> Singleton class!
   
   // Get collections by property name!
   getCollections(propertyName){
-    return widgetTileModelSchema.collections[propertyName];
+    return widgetTileModelSchema.collections[propertyName];;
   };
   
   // Is collections fetched!
@@ -129,12 +129,50 @@ class Collections { // Design pattern --> Singleton class!
       throw new Error('Collections are already created!')
     } else {
       widgetTileModelSchema.collections[propertyName] = {};
-      widgetTileModelSchema.collections[propertyName].data = [];
+      widgetTileModelSchema.collections[propertyName].data = undefined;
       widgetTileModelSchema.collections[propertyName].isFetched = false; 
       widgetTileModelSchema.collections[propertyName].name = undefined;
     }
   };
-}
+  
+  // Get the type of collection by passing the collection.
+  // -1 being the array type, 1 being the object type.
+  getTypeOfCollection(collection){
+    if(Array.isArray(collection.data)) return -1;
+    if(typeof collection.data === 'object') return 1;
+  };
+  
+  // Ensure collection is created and fetched, if checkForAttr is true,
+  // Check for the collection type to make sure attributes can be retrieved.
+  _ensureCollection(collectionName, checkForAttr){
+    var collection = this.getCollections(collectionName);
+    if(!collection){
+      throw new Error('Collection does not exists');
+    } else {
+      var validCol = checkForAttr ? this.getTypeOfCollection(collection) : collection,
+        result = checkForAttr ? {validCol, collection} : collection;
+      return result;
+    }
+  };
+  
+  // Get arribute from the models!
+  getAttribute(collectionName, attributeName){
+    var coll = this._ensureCollection(collectionName, true);
+    if(!coll.validCol){
+      throw new Error('Cannot retrieve attributes from this collection');
+    } else {
+      var attrArr = []; // When the collection's data is in array format,
+      // then attrArr will return all the attribute value of the requested attribute.
+      if(coll.validCol === 1) return coll.collection.data[attributeName];
+      if(coll.validCol === -1) {
+        _.forEach(coll.collection.data, function(value, key){
+          attrArr.push(value[attributeName]);
+        });
+      };
+      return attrArr
+    };
+  };
+};
 
 let CollectionInstance = Object.freeze(new Collections());
 
