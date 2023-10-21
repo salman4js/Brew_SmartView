@@ -1,4 +1,3 @@
-
 // Stepper wizard template helpers
 export function templateHelpers(options){
   return(
@@ -10,6 +9,9 @@ export function templateHelpers(options){
               {options.propsData.header}
             </span>
             <span className="stepper-wizard-close" onClick = {() => options.closeWizard()}>&times;</span>
+          </div>
+          <div className = 'stepper-wizard-body' style = {{height: options.bodyViewHeight - 100}}>
+            {options.callBodyView()}
           </div>
           <div className = 'stepper-wizard-footer'>
             {options.callFooter()}
