@@ -16,7 +16,11 @@ const defaultChatConstants = {
       textFormer: (details) => `This room is currently in ${details.roomStatus} state,\nprice of this room is ${details.price} and is on ${details.floorNo} floor\nwith ${details.suiteName} room type.\nGuest Details:\nGuest Name: ${details.username}\nGuest Phone number: ${details.phonenumber}\nDate of checkin: ${details.dateofcheckin}\nDate of checkout: ${details.dateofcheckout}`
     }
   },
-  OCCUPIED_STATUS_CONSTANT: 'afterCheckin'
+  OCCUPIED_STATUS_CONSTANT: 'afterCheckin',
+  DETAILS_MESSAGE: {
+    available: 'Go to room state',
+    occupied: 'Go to bill preview' 
+  }
 };
 
 export default defaultChatConstants;

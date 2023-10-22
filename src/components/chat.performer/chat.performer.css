@@ -14,3 +14,9 @@
   border-radius: 10px;
   text-align: right;
 }
+
+.chat-performer-more-details{
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer
+}
