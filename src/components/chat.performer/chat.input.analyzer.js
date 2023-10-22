@@ -24,7 +24,6 @@ class InputAnalyser {
     var objectDetails = defaultChatConstants.OBJECT_DETAILS,
       extractedDetails = {};
     var {requiredDetails, textFormer} = isUserModelReq ? objectDetails.occupied_obj_details : objectDetails.available_obj_details;
-    console.log(this.userModel);
     for (var details of requiredDetails){
       if(this.roomModel[details] || this.userModel[details]){
         extractedDetails[details] = this.roomModel[details] || this.userModel[details];

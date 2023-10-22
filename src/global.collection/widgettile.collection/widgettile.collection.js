@@ -25,6 +25,11 @@ class Collections { // Design pattern --> Singleton class!
       this.setCollections(propertyName, data);
     }
   };
+  
+  // Update the existing collection data!
+  updateCollections(propertyName, data){
+    widgetTileModelSchema.collections[propertyName].data = data;
+  };
 
   // Add new collections!
   addCollections(propertyName, data){
