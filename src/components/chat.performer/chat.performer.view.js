@@ -17,6 +17,12 @@ class ChatPerformer extends React.Component {
     this.messages = [];
   };
   
+  prepareTemplateHelperEvents(){
+    this.events = {
+      
+    };
+  };
+
   // Prepare the messages for the chat.performer.view
   prepareMessages() {
     this.messages = []; // Clear out the data to avoid duplicating the data!
@@ -24,7 +30,8 @@ class ChatPerformer extends React.Component {
     chatCollections.data.forEach((options) => {
       let messageData = {
         message: options.content,
-        className: options.sender === 'user' ? this.classNames.userInputMessage : this.classNames.chatBotMessage
+        className: options.sender === 'user' ? this.classNames.userInputMessage : this.classNames.chatBotMessage,
+        details: options.details ? options.detailsMsg : undefined
       };
       this.messages.push(messageData);
     });

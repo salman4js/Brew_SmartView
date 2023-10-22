@@ -140,10 +140,12 @@ const Navbar = (props) => {
     ]);
     
     // Update Stepper wizard chat details!
-    function _updateStepperWizardChats(content, initiator, generateAns){
+    function _updateStepperWizardChats(content, initiator, detailsMsg){
       const newMessage = {
         content: content,
         sender: initiator,
+        details: initiator === 'chat-bot' ? true : false,
+        detailsMsg: detailsMsg
       };
       CollectionInstance.setCollections('chat-collections', newMessage);
       setStepperWizard(prevState => ({...prevState, messages: [...prevState.messages, newMessage]}));
@@ -154,10 +156,10 @@ const Navbar = (props) => {
       var requiredFieldValues = ['eventKey'];
       var textInput = nodeConvertor(stepperWizardInput, requiredFieldValues);
       if(textInput.eventKey === 'Enter'){
-        _updateStepperWizardChats(textInput.askQa, 'user', true);
+        _updateStepperWizardChats(textInput.askQa, 'user');
         var chatPerfomer = new InputAnalyser(textInput.askQa);
-        var chatPerformerOutput = chatPerfomer.analyzeInput();
-        chatPerformerOutput && _updateStepperWizardChats(chatPerformerOutput, 'chat-bot', true);
+        var responseData = chatPerfomer.analyzeInput();
+        responseData.response && _updateStepperWizardChats(responseData.response, 'chat-bot', responseData.detailsMessage);
       };
     };
     

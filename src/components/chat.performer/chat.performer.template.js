@@ -3,9 +3,14 @@
 export function templateHelpers(messageContent){
   return messageContent.map((options) => {
     return(
-      <pre className = {options.className} style = {{overflow: 'hidden'}}>
-        {options.message}
-      </pre>
+        <pre className = {options.className} style = {{overflow: 'hidden'}}>
+          {options.message}
+          {options.details && (
+            <div className = 'chat-performer-more-details'>
+              {options.details}
+            </div>
+          )}
+        </pre>
     );
   });
 };

@@ -29,7 +29,9 @@ class InputAnalyser {
         extractedDetails[details] = this.roomModel[details] || this.userModel[details];
       };
     };
-    return textFormer(extractedDetails);
+    var detailsMsgConstants = defaultChatConstants.DETAILS_MESSAGE,
+        detailsMessage = isUserModelReq ? detailsMsgConstants.occupied : detailsMsgConstants.available;
+    return {response: textFormer(extractedDetails), detailsMessage: detailsMessage };
   };
   
   // Check for the occupied status and extract data based on the occupied status!
