@@ -3,6 +3,7 @@ import _ from 'lodash';
 import SidepanelWrapper from '../sidepanel.container.wrapper/sidepanel.container.wrapper';
 import PropertyContainer from '../property.container/property.container';
 import CustomModal from '../../CustomModal/custom.modal.view';
+import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
 
 
 const DashboardWrapper = (props) => {
@@ -53,6 +54,7 @@ const DashboardWrapper = (props) => {
       });
     }
     setPropertyDetails(prevState => ({...prevState, userCollection: userCollection}));
+    CollectionInstance.updateCollections('userCollections', userCollection);
   };
   
   // Sidepanel controller throught props state handler!
@@ -128,6 +130,13 @@ const DashboardWrapper = (props) => {
   // Update the room model with new data!
   function _updateRoomModel(opts){
     setSelectedModel(prevState => ({...prevState, roomModel: opts.updatedModel}));
+    var roomCollections = CollectionInstance.getCollections('roomsListCollection').data,
+        indexToUpdate = _.findIndex(roomCollections, {_id: opts.updatedModel._id});
+    // Check if the indexToUpdate is in the global collections!
+    if(indexToUpdate !== -1){
+      _.assign(roomCollections[indexToUpdate], opts.updatedModel);
+    };
+    CollectionInstance.updateCollections('roomsListCollection', roomCollections);
   };
   
   // Reload and persist room status view!
