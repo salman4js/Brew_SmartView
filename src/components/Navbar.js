@@ -144,7 +144,6 @@ const Navbar = (props) => {
       const newMessage = {
         content: content,
         sender: initiator,
-        details: initiator === 'chat-bot' ? true : false,
         detailsMsg: detailsMsg,
         roomModel: roomModelId
       };

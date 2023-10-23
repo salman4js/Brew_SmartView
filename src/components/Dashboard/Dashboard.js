@@ -114,8 +114,9 @@ const Dashboard = () => {
         }
 
         setLoader(true);
-        const average = await getRoomList(splitedIds[0], true); // true here indicates that the preferences has be fetched.
+        const average = await getRoomList(splitedIds[0], true, true); // true here indicates that the preferences has be fetched.
         // even though we fetch the preference in navbar, Since navbar and dashboard are not sync, data mispopulation could happen in some case!
+        // and second true indicates if we need to fetch userCollection or not.
         const availability = await axios.post(`${Variables.hostId}/${splitedIds[0]}/availability`);
         const checkoutData = await axios.post(`${Variables.hostId}/${splitedIds[0]}/userdb1`);
         const revpar = await axios.post(`${Variables.hostId}/${splitedIds[0]}/totalratecalculator`, revpar_model);

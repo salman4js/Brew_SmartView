@@ -1,4 +1,5 @@
 import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
+const sidepanelContainerUtils = require('../../NewDashboard/sidepanel.container.wrapper/sidepanel.container.utils');
 const axios = require("axios");
 const brewDate = require('brew-date');
 const Variables = require("../../Variables");
@@ -19,7 +20,7 @@ export async function fetchWidgetTilePref(lodgeId){
 };
 
 // Get rooms list!
-export async function getRoomList(lodgeId, fetchPref){
+export async function getRoomList(lodgeId, fetchPref, fetchUserColl){
   // Default access token params!
   var params = {
     headers: {
@@ -28,6 +29,7 @@ export async function getRoomList(lodgeId, fetchPref){
   };
   // Call the widget tile collection here!
   fetchPref && await fetchWidgetTilePref(lodgeId);
+  fetchUserColl && await sidepanelContainerUtils.getUserModel({lodgeId: lodgeId})
   var resultData = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/false/roomlodge`, params);
   // Add the rooms list to the global collections!
   if(resultData.data.success){

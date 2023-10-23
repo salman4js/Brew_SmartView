@@ -1,6 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
 import CollectionInstance from '../../global.collection/widgettile.collection/widgettile.collection';
+import { getCurrentRoute } from '../common.functions/node.convertor';
+import defaultChatConstants from './chat.default.constants';
 import './chat.performer.css';
 import { templateHelpers } from './chat.performer.template';
 
@@ -21,6 +23,14 @@ class ChatPerformer extends React.Component {
   prepareTemplateHelperEvents(){
     this.events = {
       moreDetails: this.moreDetails.bind(this)
+    };
+  };
+  
+  // Should show details!
+  shouldShowDetails(){
+    var currentRoute = getCurrentRoute();
+    if(defaultChatConstants.DETAILS_MESSAGE.enabledRoute.includes(currentRoute)){
+      return true;
     };
   };
   
@@ -50,7 +60,7 @@ class ChatPerformer extends React.Component {
       let messageData = {
         message: options.content,
         className: options.sender === 'user' ? this.classNames.userInputMessage : this.classNames.chatBotMessage,
-        details: options.details ? options.detailsMsg : undefined
+        details: this.shouldShowDetails() && options.detailsMsg
       };
       this.messages.push(messageData);
     });

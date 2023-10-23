@@ -36,7 +36,7 @@ class InputAnalyser {
   
   // Check for the occupied status and extract data based on the occupied status!
   checkAndFormData(){
-    var isRoomOccupied = (this.roomModel.roomStatusConstant === defaultChatConstants.OCCUPIED_STATUS_CONSTANT); // isRoomOccupied represents here if we need userModel also
+   var isRoomOccupied = (this.roomModel.roomStatusConstant === defaultChatConstants.OCCUPIED_STATUS_CONSTANT); // isRoomOccupied represents here if we need userModel also
     // to be populated in the response or not.
     return isRoomOccupied ? this.getResponse(true, true) : this.getResponse(true, false); // first parameter represents the roomColl required
     // and the second represents the userColl required.

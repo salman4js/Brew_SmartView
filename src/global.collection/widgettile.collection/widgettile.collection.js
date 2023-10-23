@@ -119,7 +119,7 @@ class Collections { // Design pattern --> Singleton class!
   
   // Get collections by property name!
   getCollections(propertyName){
-    return widgetTileModelSchema.collections[propertyName];;
+    return widgetTileModelSchema.collections[propertyName];
   };
   
   // Is collections fetched!
