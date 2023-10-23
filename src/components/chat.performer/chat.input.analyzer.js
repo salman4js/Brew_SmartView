@@ -16,7 +16,7 @@ class InputAnalyser {
   
   // No idea response generator!
   noIdeaResponse(constant){
-    return defaultChatConstants.OUTPUT_CONSTANTS[constant];
+    return {response: defaultChatConstants.OUTPUT_CONSTANTS[constant]};
   };
   
   // Get response based on the status!
@@ -31,7 +31,7 @@ class InputAnalyser {
     };
     var detailsMsgConstants = defaultChatConstants.DETAILS_MESSAGE,
         detailsMessage = isUserModelReq ? detailsMsgConstants.occupied : detailsMsgConstants.available;
-    return {response: textFormer(extractedDetails), detailsMessage: detailsMessage };
+    return {response: textFormer(extractedDetails), detailsMessage: detailsMessage, roomModelId: this.roomModel._id };
   };
   
   // Check for the occupied status and extract data based on the occupied status!

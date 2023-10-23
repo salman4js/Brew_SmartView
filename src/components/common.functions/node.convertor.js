@@ -166,7 +166,7 @@ export function updateMetadataFields(nodeValue, nodeState, state, setState){
       // Find the state value where the data has to be updated!
       updatedMetadataField[targetObjectIndex] = findAndSet(updatedMetadataField[targetObjectIndex], nodeState);
     };
-    
+
     // Set the modified copy to the metadata fields!
     setState(updatedMetadataField);
     resolve();
