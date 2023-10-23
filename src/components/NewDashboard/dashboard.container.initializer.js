@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import { useParams } from 'react-router-dom';
 import NavbarWrapper from './navbar.container.wrapper/navbar.container.wrapper';
 import ModalAssist from '../modal.assist/modal.assist.view';
@@ -9,6 +9,9 @@ const DashboardInitializer = (props) => {
   // Get the ID params from the url!
   const { id } = useParams();
   const splitedIds = id.split(/[-]/);
+  
+  // Child component references!
+  var dashboardWrapperRef = useRef(null);
   
   // Club the params into a single object!
   var paramsObj = {
@@ -41,14 +44,19 @@ const DashboardInitializer = (props) => {
     setModalAssistData(prevState => ({...prevState, refreshState: !refreshState}));
   };
   
+  // Go to location of that particular room model!
+  function goToLocation(options){
+    dashboardWrapperRef.current.updateSelectedModel(options.model);
+  };
+  
   // Dashboard wrapper view!
   function dashboardWrapperView(){
-    return <DashboardWrapper modalAssistData = {modalAssistData} params = {paramsObj} />
+    return <DashboardWrapper ref = {dashboardWrapperRef} modalAssistData = {modalAssistData} params = {paramsObj} />
   };
   
   return(
     <>
-      <NavbarWrapper params = {paramsObj} refreshState = {() => refreshState()} />
+      <NavbarWrapper params = {paramsObj} refreshState = {() => refreshState()} goToLocation = {(options) => goToLocation(options)} />
       <ModalAssist data = {modalAssistData} height={(value) => storeModalAssistHeight(value)}
       childView={() => dashboardWrapperView()} />
     </>

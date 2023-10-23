@@ -3,10 +3,10 @@ import Navbar from '../Navbar';
 import Modal from 'react-bootstrap/Modal';
 
 // Navbar view for throughout the application!
-export function _renderNavbar(id, splitedIds, refreshState){
+export function _renderNavbar(id, splitedIds, refreshState, goToLocation){
   return(
     <div>
-      <Navbar id={id} name={splitedIds[1]} refreshState = {() => refreshState && refreshState()} />
+      <Navbar id={id} name={splitedIds[1]} refreshState = {() => refreshState && refreshState()} goToLocation = {(options) => goToLocation && goToLocation(options)} />
     </div>
   )
 }

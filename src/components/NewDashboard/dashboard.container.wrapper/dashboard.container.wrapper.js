@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import _ from 'lodash';
 import SidepanelWrapper from '../sidepanel.container.wrapper/sidepanel.container.wrapper';
 import PropertyContainer from '../property.container/property.container';
@@ -6,7 +6,9 @@ import CustomModal from '../../CustomModal/custom.modal.view';
 import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
 
 
-const DashboardWrapper = (props) => {
+const DashboardWrapper = (props, ref) => {
+  
+  var sidePanelRef = useRef(null);
   
   // Selected Model state handler!
   const [selectedModel, setSelectedModel] = useState({
@@ -67,6 +69,8 @@ const DashboardWrapper = (props) => {
   // Update the selected model from the side panel wrapper!
   function updateSelectedModel(roomModel, dashboardMode){
     onFormCancel(); // this will clear out the form data, so that the newly selected roomModel will load.
+    // When dashboardMode is undefined, get the dashboardMode from the roomModel data.
+    dashboardMode = !dashboardMode ? getFormMode(roomModel.roomStatusConstant) : dashboardMode;
     setSelectedModel(prevState => ({...prevState, roomModel: roomModel, dashboardMode: dashboardMode}));
   };
   
@@ -151,12 +155,17 @@ const DashboardWrapper = (props) => {
     opts && _updateDashboardWrapper(opts);
   };
   
+  // Expose child component function to the parent component ie DashboardWrapper!
+  React.useImperativeHandle(ref, () => ({
+    updateSelectedModel
+  }));
+  
   //  Whole dashboard wrapper!
   function _dashboardWrapper(){
     return(
       <div className = "sidepanel-wrapper">
         <div className = "flex-1">
-          <SidepanelWrapper controller = {propertyController} data = {props.modalAssistData} params = {props.params} selectedModelData = {selectedModel}
+          <SidepanelWrapper ref = {sidePanelRef} controller = {propertyController} data = {props.modalAssistData} params = {props.params} selectedModelData = {selectedModel}
           selectedModel = {(roomModel, dashboardMode) => updateSelectedModel(roomModel, dashboardMode)} 
           updatePropertyDetails = {(roomCollection, availability, roomStatus, userCollection) => _updatePropertyDetails(roomCollection, availability, roomStatus, userCollection)} />
         </div>
@@ -174,4 +183,4 @@ const DashboardWrapper = (props) => {
   return _dashboardWrapper();
 }
 
-export default DashboardWrapper;
+export default React.forwardRef(DashboardWrapper);

@@ -193,7 +193,7 @@ const SidepanelWrapper = (props) => {
       setSidepanel(prevState => ({...prevState, childData: currentModelData})); // Update the child data!
     }
   };
-  
+
   // Update the sidepanel height when props.data.height changes!
   useEffect(() => {
     if(!props.controller.reloadSidepanel.silent){ 

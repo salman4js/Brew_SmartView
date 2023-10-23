@@ -140,12 +140,13 @@ const Navbar = (props) => {
     ]);
     
     // Update Stepper wizard chat details!
-    function _updateStepperWizardChats(content, initiator, detailsMsg){
+    function _updateStepperWizardChats(content, initiator, detailsMsg, roomModelId){
       const newMessage = {
         content: content,
         sender: initiator,
         details: initiator === 'chat-bot' ? true : false,
-        detailsMsg: detailsMsg
+        detailsMsg: detailsMsg,
+        roomModel: roomModelId
       };
       CollectionInstance.setCollections('chat-collections', newMessage);
       setStepperWizard(prevState => ({...prevState, messages: [...prevState.messages, newMessage]}));
@@ -159,7 +160,8 @@ const Navbar = (props) => {
         _updateStepperWizardChats(textInput.askQa, 'user');
         var chatPerfomer = new InputAnalyser(textInput.askQa);
         var responseData = chatPerfomer.analyzeInput();
-        responseData.response && _updateStepperWizardChats(responseData.response, 'chat-bot', responseData.detailsMessage);
+        responseData.response && _updateStepperWizardChats(responseData.response, 'chat-bot', responseData.detailsMessage, responseData.roomModelId);
+        updateMetadataFields('askQa', {value: undefined}, stepperWizardInput, setStepperWizardInput); // When enter key is pressed, clear out the stepper wizard input value.
       };
     };
     
@@ -306,9 +308,15 @@ const Navbar = (props) => {
       return <MetadataFields data = {stepperWizardInput} updateData = {setStepperWizardInput} />
     };
     
+    // Trigger go to location, this only supports in dashboard version 2.o.
+    function _triggerGoToLocation(model){
+      var options = {model: model}; // If need to pass any more params, use this object.
+      props.goToLocation && props.goToLocation(options);
+    };
+    
     // Render body view for stepper wizard!
     function _renderBodyView(data){
-      return <ChatPerformer data = {data} />
+      return <ChatPerformer data = {data} goToLocation = {(model) => _triggerGoToLocation(model)} />
     };
     
     // Render stepper wizard!
