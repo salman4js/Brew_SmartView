@@ -19,7 +19,8 @@ const defaultChatConstants = {
   OCCUPIED_STATUS_CONSTANT: 'afterCheckin',
   DETAILS_MESSAGE: {
     available: 'Go to room state',
-    occupied: 'Go to bill preview' 
+    occupied: 'Go to bill preview',
+    enabledRoute: ['dashboardcontainer']
   }
 };
 

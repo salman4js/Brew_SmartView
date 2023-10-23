@@ -1,11 +1,25 @@
 const storage = require("../../Controller/Storage/Storage");
 
-// Get the base url!
-export function getBaseUrl(){
+// Get parsed url!
+export function getParsedUrl(){
   var url = window.location.href;
   const parsedUrl = new URL(url);
+  return parsedUrl;
+};
+
+// Ge the base url!
+export function getBaseUrl(){
+  var parsedUrl = getParsedUrl();
   const baseUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
   return baseUrl;
+};
+
+// Get the current route!
+export function getCurrentRoute(){
+  var parsedUrl = getParsedUrl(),
+    pathName = parsedUrl.pathname,
+    route = pathName.split('/');
+  return route[route.length - 1];
 };
 
 // Form query params and return!
