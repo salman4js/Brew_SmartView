@@ -21,7 +21,8 @@ var tableViewConstants = Object.freeze({
   }),
   
   tableInfoMessage: Object.freeze({
-    ZERO_STATE_MESSAGE: 'You have no records for this table!'
+    ZERO_STATE_MESSAGE: 'You have no records for this table!',
+    ZERO_FILTER_MESSAGE: 'You have no filters applied to provide data!'
   }),
   
 });

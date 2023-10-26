@@ -140,6 +140,17 @@ class Collections { // Design pattern --> Singleton class!
     }
   };
   
+  // Filter any collections based on the data provided for filter!
+  filterCollections(propertyName, filterData){
+    var collections = this.getCollections(propertyName);
+    if(collections.data.length === 0){
+      throw new Error('Collection data is not yet fetched or its empty!');
+    } else {
+      // Perform filtering!
+      console.log(collections);
+    }
+  };
+  
   // Get the type of collection by passing the collection.
   // -1 being the array type, 1 being the object type.
   getTypeOfCollection(collection){

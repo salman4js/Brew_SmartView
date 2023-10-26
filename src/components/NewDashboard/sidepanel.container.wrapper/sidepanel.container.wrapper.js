@@ -2,14 +2,16 @@ import React, {useState, useEffect} from 'react';
 import { getAvailableRoomTypes, getUserModel } from './sidepanel.container.utils';
 import { getRoomList } from '../../paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import { getStatusCodeColor } from '../../common.functions/common.functions';
+import { updateMetadataFields, nodeConvertor } from '../../common.functions/node.convertor';
 import { globalMessage, commonLabel, activityLoader } from '../../common.functions/common.functions.view';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import MetadataTableView from '../../metadata.table.view/metadata.table.view';
+import MetadataFields from '../../fields/metadata.fields.view';
 import PanelView from '../../SidePanelView/panel.view';
 import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
-import CollectionView from '../../SidePanelView/collection.view/collection.view'
+import CollectionView from '../../SidePanelView/collection.view/collection.view';
 
-const SidepanelWrapper = (props) => {
+const SidepanelWrapper = (props, ref) => {
 
   // Sidepanel state handler!
   const [sidepanel, setSidepanel] = useState({
@@ -20,6 +22,46 @@ const SidepanelWrapper = (props) => {
     childData: undefined,
     selectedId: []
   });
+  
+  // Sidepanel view state handler!
+  const [sidepanelView, setSidepanelView] = useState({
+    roomListTreePanel: true, // By default roomListTreePanel is true!
+    filterRoomPanel: false
+  });
+  
+  // Filter input metadata fields!
+  const [filterState, setFilterState] = useState([{
+    value: undefined,
+    width: '300px',
+    padding: '0px 5px 5px 5px',
+    placeholder: "Filter by type",
+    name: 'suiteType',
+    attribute: 'listField',
+    noneValue: "None",
+    options: undefined,
+    style: {
+      color: "black",
+      fontSize: "15px",
+      paddingRight: "10px",
+      paddingLeft: "10px",
+      cursor: "pointer",
+    },
+    callBackAfterUpdate: _applyFilter
+  }, {
+    value: new Date(),
+    placeholder: "Date of Checkout",
+    name: 'checkin',
+    attribute: 'dateField',
+    isRequired: true,
+    style: {
+      color: "black",
+      fontSize: "15px",
+      paddingRight: "10px",
+      paddingLeft: "10px",
+      cursor: "pointer",
+    },
+    callBackAfterUpdate: _applyFilter
+  }]);
   
   // Custom modal state handler!
   const [customModal, setCustomModal] = useState({
@@ -52,6 +94,20 @@ const SidepanelWrapper = (props) => {
   
   // Sidepanel chid view main content!
   function childViewMainContent(){
+    if(sidepanelView.roomListTreePanel){
+      return roomListTreeView();
+    } else {
+      return filterPanelView();
+    }
+  };
+  
+  // Sidepanel filter state view!
+  function filterPanelView(){
+    return <MetadataFields data = {filterState} updateData = {setFilterState}/>
+  };
+  
+  // Sidepanel room list tree view!
+  function roomListTreeView(){
     return sidepanel.parentData.map((options) => {
       return <CollectionView data = {options.suiteType} 
       showCollectionChildView = {() => _renderPanelItemViewCollection(options.suiteType)}/>
@@ -82,6 +138,32 @@ const SidepanelWrapper = (props) => {
     } else {
       return 'roomStatus';
     }
+  };  
+  // Enabled filter panel!
+  function _setFilterPanel(value){
+    // Generate options and update filterpanel data.
+    var filterPanelDropdownOptions = prepareFilterPanelOptions(sidepanel.parentData);
+    updateMetadataFields('suiteType', {options: filterPanelDropdownOptions}, filterState, setFilterState);
+    _toggleSidepanelView(!value, value);
+  };
+  
+  // Enable tree panel!
+  function _setTreePanel(value){
+    _toggleSidepanelView(value, !value);
+  };
+  
+  // Apply filter for the user filtered data!
+  function _applyFilter(){
+    var filterData = nodeConvertor(filterState);
+    props.updateFilterData(filterData);
+  };
+  
+  // Toggle between sidepanel view!
+  function _toggleSidepanelView(roomListTree, filterPanel){
+    // Choose header and change panel state!
+    var panelHeader = roomListTree ? 'Rooms List' : 'Filter Panel';
+    setSidepanel(prevState => ({...prevState, header: panelHeader}));
+    setSidepanelView(prevState => ({roomListTreePanel: roomListTree, filterRoomPanel: filterPanel}));
   };
 
   // Item panel collection onClick!
@@ -139,6 +221,18 @@ const SidepanelWrapper = (props) => {
     return <CustomModal modalData = {customModal} showBodyItemView = {customModalBodyItemView} />
   };
   
+  // Prepare filter panel options!
+  function prepareFilterPanelOptions(parentData){
+    var result = [];
+    for (var data of parentData){
+      var options = {};
+      options.value = data.suiteType;
+      options.actualValue = data.suiteType;
+      result.push(options);
+    };
+    return result;
+  };
+  
   // Fetch the available room types!
   async function fetchRoomsTypes(){
     _toggleLoader(true);
@@ -193,6 +287,11 @@ const SidepanelWrapper = (props) => {
       setSidepanel(prevState => ({...prevState, childData: currentModelData})); // Update the child data!
     }
   };
+  
+  // Expose child function to the parent component!
+  React.useImperativeHandle(ref, () => ({
+    _setFilterPanel, _setTreePanel
+  }));
 
   // Update the sidepanel height when props.data.height changes!
   useEffect(() => {
@@ -218,4 +317,4 @@ const SidepanelWrapper = (props) => {
   return _renderPanelView();
 }
 
-export default SidepanelWrapper;
+export default React.forwardRef(SidepanelWrapper);

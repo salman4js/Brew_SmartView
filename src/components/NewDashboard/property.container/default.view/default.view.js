@@ -72,7 +72,7 @@ class DefaultView extends React.Component {
       _showBodyChildView : function(){
         
       }
-    }
+    };
   };
 
   // Show widget view based on the cardCollectionProps data!
@@ -97,7 +97,7 @@ class DefaultView extends React.Component {
   // On widget tile click handler!
   onWidgetTileClick(value){
     this.props.dashboardController({navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel, 
-      userStatusMap: this.propertyStatusMap, selectedRoomConstant: value});
+      dashboardMode: 'statusTableView', userStatusMap: this.propertyStatusMap, selectedRoomConstant: value});
   };
 
   // Card body child view list item function!
@@ -158,6 +158,12 @@ class DefaultView extends React.Component {
         this.widgetTileCollection[preference] = widgetTileCollections.data[preference];
       }
     };
+    this.prepareUpcomingNotifications();
+  };
+  
+  // Prepare notifications for 'upcoming' enabled preferences!
+  prepareUpcomingNotifications(){
+      
   };
 
   // Widget tile render functions!
@@ -192,6 +198,9 @@ class DefaultView extends React.Component {
       // Add feature widget tile collection props!
       this.addWidgetCollectionToPropertyDetails();
       this.addFeatureWidgetCollection(cardViewCollectionProps);
+      if(!CollectionInstance.getCollections('userStatusMap')){
+        CollectionInstance.setCollections('userStatusMap', this.propertyStatusMap); // Adding this into global collection because user map can be used anywhere!
+      };
       return this.addNonAddedStatusConstant(cardViewCollectionProps, nonAddedStatusConstant);
     }; 
   };

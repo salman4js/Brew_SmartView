@@ -1,4 +1,5 @@
 const storage = require("../../Controller/Storage/Storage");
+const _ = require('lodash');
 
 // Get parsed url!
 export function getParsedUrl(){
@@ -39,7 +40,7 @@ export function extractQueryParams(){
 
 // Extract data from the state handlers. This is usefull when states are holding their view's sub view function.
 // In that case, sub view state will always hold the initial data.
-export function extractStateValue(){
+export function extractStateValue(state, values){
   return;
 };
 

@@ -55,8 +55,10 @@ const TextField = (props) => {
   
 
   return(
-    <div className="modal-gap" style = {{width: props.data.width}}>
-        <label style={{ color: "black" }}> {props.data.label} </label>
+    <div className="modal-gap" style = {{width: props.data.width, padding: props.data.padding}}>
+        {props.data.label && (
+          <label style={{ color: "black" }}> {props.data.label} </label>
+        )}
         <input type={getType()} className="form-control" aria-describedby="input-field" value = {getValue()}
         placeholder={getValueForPlaceholder()} onKeyDown = {(event) => handleEvents(event)} onChange = {(event) => checkLimit(event)} />
         {props.data?.inlineToast !== undefined && (

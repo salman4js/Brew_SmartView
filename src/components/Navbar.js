@@ -262,9 +262,9 @@ const Navbar = (props) => {
       if(fetch.status === "FETCH"){
         const result = await axios.get(`${Variables.hostId}/${splitedIds[0]}/getuniversalmessage`);
         if(result.data.state){
-          _triggerGlobalMessage(result.data.message)
+          _triggerGlobalMessage(result.data.message);
         } else { // Which means universal message has been died!
-          _neverTriggerUniversalMessage(result.data.message)
+          _neverTriggerUniversalMessage(result.data.message);
         }
       } else if(fetch.status === "SHOW") {
         _triggerGlobalMessage(fetch.message)
@@ -388,7 +388,7 @@ const Navbar = (props) => {
                     </div>
                 </a>
                 {shouldRenderUniversalMessage() && (
-                  <ProgressPanel message = {globalMessage.value} toolTip = {"Mark as read"} onClose = {() => killGlobalMessageInServer()} renderIcon = {() => renderProgressPanelIcon()} />
+                  <ProgressPanel data = {globalMessage.value} toolTip = {"Mark as read"} onClose = {() => killGlobalMessageInServer()} renderIcon = {() => renderProgressPanelIcon()} />
                 )}
                 <div className = "metadata-navbar-rightside">
                   <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

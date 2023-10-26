@@ -74,7 +74,6 @@ class TableView extends React.Component {
   // Organize and prepare the required table data!
   prepareTableData(){
     if(this.widgetTileModel.data !== undefined){
-      this.getTableHeaders(); // Get the table headers!
       var convertedCollection = this.getWidgetTileCollectionData(); // Get the widget tile collection data for the table cell values!
       this.metadataTableState.cellValues = convertedCollection;
     };
@@ -85,10 +84,17 @@ class TableView extends React.Component {
     this.templateHelpersData.selectedRoomConstant = this.widgetTileModel.data.selectedRoomConstant;
   };
   
+  // Set filter table view!
+  setFilterTableView(){
+    this.metadataTableState.infoMessage = tableViewConstants.tableInfoMessage.ZERO_FILTER_MESSAGE;
+    this.getFilteredData(); // Get the filtered data based on the filter applied by the user!
+    return this.filteredModel[this.roomConstant];
+  };
+  
   // Get room constant collection!
   getRoomConstantCollection(){
     if(this.roomConstant !== 'afterCheckin'){
-      return this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant]
+      return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant] || this.setFilterTableView();
     } else {
       return this.widgetTileModel.propertyDetails.userCollection;
     }
@@ -98,6 +104,7 @@ class TableView extends React.Component {
   getWidgetTileCollectionData(){
     var convertedCollection = [],
       rawRoomModel = this.getRoomConstantCollection();
+    this.getTableHeaders(); // Get the table headers!
     if(rawRoomModel){
       rawRoomModel.map((data) => {
         // Clone the data before filtering the keys as it would change the original data which would cause some trouble in the roomCollection!
@@ -112,10 +119,14 @@ class TableView extends React.Component {
   
   // Get the table headers for the selected widget tile!
   getTableHeaders(){
-    this.roomConstant = _.findKey(this.widgetTileModel.data.userStatusMap, function(value) { // Using lodash function here to get the key by its value!
-        return value === this.widgetTileModel.data.selectedRoomConstant;
-    }.bind(this));
-    this.metadataTableState.headerValue = this.propertyStatusTableHeader[this.roomConstant];
+    if(this.widgetTileModel.data.userStatusMap !== undefined){
+      this.roomConstant = _.findKey(this.widgetTileModel.data.userStatusMap, function(value) { // Using lodash function here to get the key by its value!
+          return value === this.widgetTileModel.data.selectedRoomConstant;
+      }.bind(this));
+      this.metadataTableState.headerValue = this.propertyStatusTableHeader[this.roomConstant];
+    } else {
+      this.metadataTableState.headerValue = this.propertyStatusTableHeader[this.roomConstant];
+    }
   };
   
   // Left side controller and header!

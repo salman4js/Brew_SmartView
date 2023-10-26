@@ -14,9 +14,18 @@ const CollectionView = (props) => {
     setUserPreference(props.data, !isExpanded);
   };
   
+  // Get user preference for expansion!
+  function getUserPreference(){
+    if(props.ignoreTreePref){ // By default ignoreTreePref flag will be false!
+      return isExpanded;
+    } else {
+      return JSON.parse(getStorage(props.data))
+    }
+  };
+  
   // Enable sub child view!
   function _showSubChildView(){
-    var userPreference = JSON.parse(getStorage(props.data)); // User preference for expansion!
+    var userPreference = getUserPreference(); // User preference for expansion!
     return(
       userPreference && (
         <CollectionPanelView showCollectionChildView = {() => props.showCollectionChildView()}  />

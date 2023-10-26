@@ -18,7 +18,8 @@ const DashboardWrapper = (props, ref) => {
     onCheckout: false,
     widgetTileModel: undefined, // This two states used for widget tile for statusTableView
     userStatusMap: undefined,
-    selectedRoomConstant: undefined
+    selectedRoomConstant: undefined,
+    filteredData: undefined
   });
 
   // Default view room model details state handler!
@@ -84,6 +85,12 @@ const DashboardWrapper = (props, ref) => {
     setSelectedModel(prevState => ({...prevState, onCheckout: value}));
   };
   
+  // On room transfer!
+  function onRoomTransfer(opts){
+    sidePanelRef.current._setFilterPanel(true);
+    _updateDashboardWrapper(opts);
+  };
+  
   // On form cancel operation!
   function onFormCancel(opts){
     setSelectedModel(prevState => ({...prevState, dashboardMode: 'default'})); // On form cancel, set the dashboardMode
@@ -104,12 +111,13 @@ const DashboardWrapper = (props, ref) => {
   
   // Navigate to status table view!
   function _navigateToStatusTableView(opts){
-    setSelectedModel(prevState => ({...prevState, dashboardMode: 'statusTableView', 
+    setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode, 
     widgetTileModel: opts.widgetTileModel, userStatusMap: opts.userStatusMap, selectedRoomConstant: opts.selectedRoomConstant}));
   };
 
   // Reload sidepanel function!
   function _reloadSidepanel(opts){
+    sidePanelRef.current._setTreePanel(true); // When reloading the sidepanel, keep the left panel as roomListTreeView!
     var _reload = {...opts};
     setPropertyController(prevState => ({...prevState, reloadSidepanel: _reload.reloadSidepanel}));
   };
@@ -129,6 +137,11 @@ const DashboardWrapper = (props, ref) => {
     } else {
       return 'roomStatus';
     }
+  };
+  
+  // Update user filtered data!
+  function _updateFilterData(value){
+    setSelectedModel(prevState => ({...prevState, filteredData: value}));
   };
   
   // Update the room model with new data!
@@ -166,14 +179,14 @@ const DashboardWrapper = (props, ref) => {
       <div className = "sidepanel-wrapper">
         <div className = "flex-1">
           <SidepanelWrapper ref = {sidePanelRef} controller = {propertyController} data = {props.modalAssistData} params = {props.params} selectedModelData = {selectedModel}
-          selectedModel = {(roomModel, dashboardMode) => updateSelectedModel(roomModel, dashboardMode)} 
+          selectedModel = {(roomModel, dashboardMode) => updateSelectedModel(roomModel, dashboardMode)} updateFilterData = {(value) => _updateFilterData(value)} 
           updatePropertyDetails = {(roomCollection, availability, roomStatus, userCollection) => _updatePropertyDetails(roomCollection, availability, roomStatus, userCollection)} />
         </div>
         <div className = "flex-2">
           <div className = "dashboard-property-container">
             <PropertyContainer data = {selectedModel} propertyContainerHeight = {props.modalAssistData.height} propertyDetails = {propertyDetails}
             onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
-            onCheckout = {(value) => onCheckout(value)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
+            onCheckout = {(value) => onCheckout(value)} onRoomTransfer = {(opts) => onRoomTransfer(opts)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
           </div>
         </div>
       </div>

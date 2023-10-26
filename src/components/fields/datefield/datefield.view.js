@@ -1,6 +1,7 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { getStyle } from '../../common.functions/common.functions'
 import {formatCustomIntoDateFormat, convertFormat} from '../../common.functions/common.functions'
 
 const DateField = (props) => {
@@ -17,7 +18,7 @@ const DateField = (props) => {
   
 
   return(
-    <div className = "modal-gap" style = {{width: props.data.width}}>
+    <div className = "modal-gap" style = {getStyle(props.data.style)}>
         <label style={{ color: "black" }}> {props.data.label} </label>
         <DatePicker style={{ color: "black" }} className="form-control" placeholderText={props.data.placeholder} 
         selected = {getSelectedDate()} dateFormat={props.data.dateFormat} minDate={new Date()} maxDate= {getMaxDate()}
