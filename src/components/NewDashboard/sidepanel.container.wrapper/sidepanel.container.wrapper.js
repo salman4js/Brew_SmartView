@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { getAvailableRoomTypes, getUserModel } from './sidepanel.container.utils';
 import { getRoomList } from '../../paymentTracker/payment.tracker.utils/payment.tracker.utils';
-import { getStatusCodeColor } from '../../common.functions/common.functions';
+import { getStatusCodeColor, formatDate } from '../../common.functions/common.functions';
 import { updateMetadataFields, nodeConvertor } from '../../common.functions/node.convertor';
 import { globalMessage, commonLabel, activityLoader } from '../../common.functions/common.functions.view';
 import CustomModal from '../../CustomModal/custom.modal.view';
@@ -50,7 +50,7 @@ const SidepanelWrapper = (props, ref) => {
   }, {
     value: new Date(),
     placeholder: "Date of Checkout",
-    name: 'checkin',
+    name: 'checkinDate',
     attribute: 'dateField',
     isRequired: true,
     style: {
@@ -155,6 +155,7 @@ const SidepanelWrapper = (props, ref) => {
   // Apply filter for the user filtered data!
   function _applyFilter(){
     var filterData = nodeConvertor(filterState);
+    filterData.checkinDate = formatDate(filterData.checkinDate);
     props.updateFilterData(filterData);
   };
   
