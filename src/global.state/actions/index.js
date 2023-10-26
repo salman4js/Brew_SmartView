@@ -33,7 +33,7 @@ export const getValue = () => {
 export const createGlobalMessage = (value) => {
   return{
     type: "SHOW",
-    value: value.message,
+    value: value,
     status: "SHOW"
   }
 }

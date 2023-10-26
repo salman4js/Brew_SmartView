@@ -683,7 +683,7 @@ const VoucherView = () => {
     return(
       linkWithVouchers.parentData.map((options) => {
         return(
-          <CollectionView data = {options.title} 
+          <CollectionView data = {options.title} ignoreTreePref = {true}
           showCollectionChildView = {() => getPanelCollectionView(options.loadData)} />
         )
       })
@@ -714,7 +714,7 @@ const VoucherView = () => {
         )
       })
     )
-  }
+  };
   
   // Vouchers list!
   function renderVouchersList(showIndentationArrow){

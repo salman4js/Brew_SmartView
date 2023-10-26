@@ -5,6 +5,8 @@ import CheckOutView from './checkout.view/checkout.form.view';
 import RoomStatusView from './room.status.view/room.status.view';
 import DefaultView from './default.view/default.view';
 import StatusTableView from './table.view/table.view';
+import FilterTable from './filter.table.wrapper/filter.table.wrapper';
+import propertyContainerConstants from './property.container.constants';
 
 const PropertyContainer = (props) => {
   // Panel fields state handler!
@@ -28,7 +30,7 @@ const PropertyContainer = (props) => {
         width: '200px',
         selectedValue: selectedValues,
         showListValue: function(){
-          return props.data.dashboardMode !== 'roomStatus' ? true : false;
+          return props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.roomStatus ? true : false;
         },
         style: {
           width: "200",
@@ -47,13 +49,13 @@ const PropertyContainer = (props) => {
 
   // Get panel field dropdown values!
   function getPanelFieldDropdown(){
-    if(props.data.dashboardMode !== 'roomStatus' && props.data.dashboardMode !== 'statusTableView'){
+    if(props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.roomStatus && props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.statusTableView){
        return [
           {
-            value: (props.data.dashboardMode === 'edit' ? 'checkin-form' : 'checkout-form')
+            value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? propertyContainerConstants.FORM_MODE.checkinForm : propertyContainerConstants.FORM_MODE.checkoutForm)
           },
           {
-            value: (props.data.dashboardMode === 'edit' ? undefined : 'payment tracker')
+            value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : 'payment tracker')
           }
         ]
     } else {
@@ -63,35 +65,40 @@ const PropertyContainer = (props) => {
 
   // Get panel field dropdown selectedValues and values!
   function getPanelFieldsValues(){
-    if(props.data.dashboardMode !== 'roomStatus'){
-      return (props.data.dashboardMode === 'edit' ? 'checkin-form' : 'checkout-form')
+    if(props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.roomStatus){
+      return (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? propertyContainerConstants.FORM_MODE.checkinForm : propertyContainerConstants.FORM_MODE.checkoutForm);
     }
   };
 
   // Render property model!
   function _renderPropertyModel(){
-    if(props.data.dashboardMode === 'edit'){
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit){
       return <CheckInForm height = {props.propertyContainerHeight} data = {props.data} params = {props.params} 
       afterFormSave = {(opts) => props.onCancel(opts)} />
     };
     
-    if(props.data.dashboardMode === 'read'){
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.read){
       return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
       cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} afterCheckout = {(opts) => props.onCancel(opts)} />
     };
     
-    if(props.data.dashboardMode === 'roomStatus'){
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.roomStatus){
       return <RoomStatusView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
       dashboardController = {(opts) => props.dashboardController(opts)} />
     };
     
-    if(props.data.dashboardMode === 'default'){
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.default){
       return <DefaultView data = {props.propertyDetails} params = {props.params} height = {props.propertyContainerHeight}
       dashboardController = {(opts) => props.dashboardController(opts)} />
     };
     
-    if(props.data.dashboardMode === 'statusTableView'){
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView){
       return <StatusTableView data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
+      onBack = {(opts) => props.dashboardController(opts)} />
+    };
+    
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
+      return <FilterTable data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
       onBack = {(opts) => props.dashboardController(opts)} />
     };
   };
@@ -117,6 +124,11 @@ const PropertyContainer = (props) => {
         attribute: 'buttonField'
       },
       {
+        btnValue: 'Transer Room',
+        onClick: _triggerRoomTransfer,
+        attribute: 'buttonField'
+      },
+      {
         btnValue: 'Continue Checkout',
         onClick: onCheckout,
         attribute: 'buttonField'
@@ -135,19 +147,19 @@ const PropertyContainer = (props) => {
   // Get panel field right side data!
   function getPanelRightSideData(){
     var formModels = getFormModels();
-    if(props.data.dashboardMode === 'edit'){
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit){
       return formModels.checkinFormModel;
     };
-    if(props.data.dashboardMode === 'read'){
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.read){
       return formModels.checkoutFormModel;
     }
-    if(props.data.dashboardMode === 'roomStatus'){
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.roomStatus){
       return formModels.roomStatusFormModel;
     }
-    if(props.data.dashboardMode === 'default'){
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.default){
       return formModels.checkinFormModel;
     }
-    if(props.data.dashboardMode === 'statusTableView'){
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView || props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
       return formModels.emptyFormModel;
     }
   };
@@ -163,6 +175,17 @@ const PropertyContainer = (props) => {
     props.onCheckout(true);
   };
   
+  // Trigger room transfer!
+  function _triggerRoomTransfer(){
+    // Options to handle locate table view!
+    var options = {
+      navigateToStatusTableView: true,
+      selectedRoomConstant: propertyContainerConstants.FILTERED_ROOM_STATUS_CONSTANT,
+      dashboardMode: propertyContainerConstants.DASHBOARD_MODE.filterTableView
+    };
+    props.onRoomTransfer(options);
+  };
+  
   // On Cancel!
   function onCancel(){
     var opts = {reloadSidepanel: {silent: true}};
@@ -176,7 +199,7 @@ const PropertyContainer = (props) => {
   
   // Should show panel field and for statusTableView we render panel field separately!
   function shouldShowPanelField(){
-    return (props.data.dashboardMode !== 'default' && props.data.dashboardMode !== 'statusTableView');
+    return !propertyContainerConstants.IGNORE_PANEL_FIELD.includes(props.data.dashboardMode);
   };
   
   // Force update when the props changes!

@@ -1,17 +1,30 @@
 import React from 'react';
+import progressPanelConstants from './progresspanel.view.constants';
 import Tippy from '@tippy.js/react';
 import 'tippy.js/dist/tippy.css';
 
-
 const ProgressPanel = (props) => {
-  return(
-    <div className = "progresspanel-view">
-      <span className = "progresspanel-icon">
-        {props.renderIcon()}
-      </span>
-      <span className = "progresspanel-message">
-        {props.message}
-      </span>
+
+  // Render progresspanel body view!
+  function _renderProgressPanelBody(){
+    if(Array.isArray(props.data)){
+      return(
+        <span className = "progresspanel-message brew-cursor">
+          {progressPanelConstants.MULTIPLE_MESSAGES({count: props.data.length})}
+        </span>
+      )
+    } else {
+      return(
+        <span className = "progresspanel-message brew-cursor">
+          {props.data.message}
+        </span>
+      );
+    }
+  };
+  
+  // Render tool tip item!
+  function _renderToolTipItem(){
+    return(
       <span className = "progresspanel-message close-progresspanel-message" onClick = {() => props.onClose()}>
         <Tippy content = {props.toolTip}>
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" fill="currentColor" class="bi bi-check2-all" viewBox="0 0 16 16">
@@ -20,8 +33,27 @@ const ProgressPanel = (props) => {
           </svg>
         </Tippy>
       </span>
-    </div>
-  )
-}
+    );
+  };
+  
+  // Render progresspanel right side view controller!
+  function _renderRightSideController(){
+    return _renderToolTipItem();
+  };
+  
+  function _renderProgressPanel(){
+    return(
+      <div className = "progresspanel-view">
+        <span className = "progresspanel-icon">
+          {props.renderIcon()}
+        </span>
+        {_renderProgressPanelBody()}
+        {_renderRightSideController()}
+      </div>
+    );
+  };
+  
+  return _renderProgressPanel();
+};
 
 export default ProgressPanel;
