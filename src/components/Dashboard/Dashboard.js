@@ -423,7 +423,7 @@ const Dashboard = () => {
             <Cabinets data={favorites} helperPanel={(data, id) => helperPanel(data, id)} cabinetHeader={"FAV CUSTOMERS"} methodCall={"favourites"} lodgeid={splitedIds[0]} />
           )}
           <Card navigate = {() => idleHelper()} _node = {"revenue"} revpar = {revpar} adr = {adr} />
-          <Cabinets data={upcomingCheckout} helperPanel = {(data,id) => helperPanel(data,id)} cabinetHeader={"RECENTLY CHECKEDOUT"} methodCall = {"recent"} lodgeid={splitedIds[0]} />
+          <Cabinets data={check} helperPanel = {(data,id) => helperPanel(data,id)} cabinetHeader={"RECENTLY CHECKEDOUT"} methodCall = {"recent"} lodgeid={splitedIds[0]} />
         </>
       )
     };

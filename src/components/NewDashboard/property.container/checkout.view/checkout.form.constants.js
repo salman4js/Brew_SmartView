@@ -30,7 +30,18 @@ var checkoutViewConstants = Object.freeze({
     balWithoutGST: 'Balance Without GST',
     balWithGST: 'Balance With GST',
     totalPayableAmount: 'Total Payable Amount',
+    totalPayableAmountWithRoomTransfer: 'Total Payable Amount with Last Room',
     refundAmount: 'Amount has to be returned to the customer'
+  }),
+  TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS: Object.freeze({
+    roomTransferDetailsHeader: 'Room Transfer Details',
+    oldRoomNo: 'Previous Room No',
+    oldRoomPrice: 'Previous Room Price',
+    oldRoomStayDays: 'Previous Room Stayed Days',
+    alertMessage: {
+      status: 'error',
+      message: 'This guest has room transfer history, verify before checkout.'
+    }
   })
 });
 

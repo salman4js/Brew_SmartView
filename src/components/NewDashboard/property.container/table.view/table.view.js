@@ -38,27 +38,44 @@ class TableView extends React.Component {
         }
       }
     ];
-    this.metadataTableState = {
-      cellValues: undefined,
-      headerValue: undefined,
-      infoMessage: tableViewConstants.tableInfoMessage.ZERO_STATE_MESSAGE,
-      tableLoader: false,
-      selectedRoomId: undefined,
-      isCheckboxSelected: false,
-      enableCheckbox: false,
-      tableCellWidth : "590px",
-      showPanelField: false,
+    this.state = {
+      metadataTableState: {
+        cellValues: undefined,
+        headerValue: undefined,
+        infoMessage: tableViewConstants.tableInfoMessage.ZERO_STATE_MESSAGE,
+        tableLoader: false,
+        selectedRoomId: undefined,
+        isCheckboxSelected: false,
+        enableCheckbox: false,
+        tableCellWidth : "590px",
+        showPanelField: false,
+      },
+      customModal: {
+        show: false,
+        onHide: this.onCloseCustomModal.bind(this),
+        header: undefined,
+        centered: true,
+        restrictBody: true,
+        modalSize: "medium",
+        footerEnabled: false,
+        footerButtons: undefined
+      }
     };
     this.propertyStatusTableHeader = tableViewConstants.PropertyStatusTableHeader;
     this.propertyStatusRequiredKey = tableViewConstants.PropertyStatusRequiredKey;
+    this.tableViewTemplate = new TableViewTemplateHelpers();
   };
   
   templateHelpers(){
     this.setupEvents();
     this.prepareTemplateHelpersData();
     this.prepareTableData(); // When the table data is ready, Call the metadata table view!
-    var tableViewTemplate = new TableViewTemplateHelpers();
-    return tableViewTemplate.tableViewTemplateHelper(this.metadataTableState, this.widgetTileModel);
+    return this.tableViewTemplate.tableViewTemplateHelper(this.state.metadataTableState, this.widgetTileModel);
+  };
+  
+  // Render custom modal!
+  _renderCustomModal(){
+    return this.tableViewTemplate._renderCustomModal(this.state.customModal);
   };
   
   // Set up events for any actions!
@@ -68,15 +85,24 @@ class TableView extends React.Component {
   
   // Handle back action triggered on left side controller!
   onBackClick(){
-    this.props.onBack({reloadSidepanel: {silent: true}, navigateToPropertyContainer:true});
+    this.props.dashboardController({reloadSidepanel: {silent: true}, navigateToPropertyContainer:true});
   };
   
   // Organize and prepare the required table data!
   prepareTableData(){
     if(this.widgetTileModel.data !== undefined){
-      var convertedCollection = this.getWidgetTileCollectionData(); // Get the widget tile collection data for the table cell values!
-      this.metadataTableState.cellValues = convertedCollection;
+      var convertedCollection = this.getWidgetTileTableCollectionData(); // Get the widget tile collection data for the table cell values!
     };
+  };
+  
+  // Update metadata table state!
+  _updateMetadataTableState(){
+    this.setState({metadataTableState: this.state.metadataTableState});
+  };
+  
+  _toggleTableLoader(value){
+    this.state.metadataTableState.tableLoader = value;
+    this._updateMetadataTableState();
   };
   
   // Template helpers data!
@@ -86,7 +112,7 @@ class TableView extends React.Component {
   
   // Set filter table view!
   setFilterTableView(){
-    this.metadataTableState.infoMessage = tableViewConstants.tableInfoMessage.ZERO_FILTER_MESSAGE;
+    this.state.metadataTableState.infoMessage = tableViewConstants.tableInfoMessage.ZERO_FILTER_MESSAGE;
     this.getFilteredData(); // Get the filtered data based on the filter applied by the user!
     return this.filteredModel[this.roomConstant];
   };
@@ -101,7 +127,8 @@ class TableView extends React.Component {
   };
   
   // Get the widget tile model data for the table!
-  getWidgetTileCollectionData(){
+  getWidgetTileTableCollectionData(){
+    this.filterEnabled = false;
     var convertedCollection = [],
       rawRoomModel = this.getRoomConstantCollection();
     this.getTableHeaders(); // Get the table headers!
@@ -114,19 +141,46 @@ class TableView extends React.Component {
         convertedCollection.push(arrangedObj);
       });  
     };
-    return convertedCollection;
+    this.state.metadataTableState.cellValues = convertedCollection;
+    this.filterEnabled && this._setFilterTableState();
   };
   
   // Get the table headers for the selected widget tile!
   getTableHeaders(){
+    this.state.metadataTableState.headerValue = undefined; // Set the initial value
     if(this.widgetTileModel.data.userStatusMap !== undefined){
       this.roomConstant = _.findKey(this.widgetTileModel.data.userStatusMap, function(value) { // Using lodash function here to get the key by its value!
           return value === this.widgetTileModel.data.selectedRoomConstant;
       }.bind(this));
-      this.metadataTableState.headerValue = this.propertyStatusTableHeader[this.roomConstant];
+      this.state.metadataTableState.headerValue = this.propertyStatusTableHeader[this.roomConstant];
     } else {
-      this.metadataTableState.headerValue = this.propertyStatusTableHeader[this.roomConstant];
-    }
+      this.state.metadataTableState.headerValue = this.propertyStatusTableHeader[this.roomConstant];
+    };
+  };
+  
+  // Prepare custom modal state data!
+  _prepareCustomModal(options){
+    this.state.customModal.show = true;
+    this.state.customModal.centered = options.centered !== undefined ? options.centered : true;
+    this.state.customModal.onHide = options.onHide !== undefined ? options.onHide : this.state.customModal.onHide;
+    this.state.customModal.header = options.header;
+    this.state.customModal.footerEnabled = options.footerEnabled;
+    this.state.customModal.footerButtons = options.footerButtons;
+    this._toggleCustomModal();
+  };
+  
+  // trigger custom modal!
+  _toggleCustomModal(){
+    this.setState({customModal: this.state.customModal});
+  };
+  
+  // On close custom modal dialog!
+  onCloseCustomModal(){
+    this.state.customModal.show = false;
+    this.state.customModal.header = undefined;
+    this.state.customModal.footerEnabled = false;
+    this.state.customModal.footerButtons = undefined;
+    this._toggleCustomModal();
   };
   
   // Left side controller and header!
@@ -141,6 +195,7 @@ class TableView extends React.Component {
       <>
         <MetadataFields data = {this.panelFieldState} />
         {this.templateHelpers()}
+        {this.state.customModal.show && this._renderCustomModal()}
       </>
     )
   };

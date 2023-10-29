@@ -102,6 +102,7 @@ class DefaultView extends React.Component {
 
   // Card body child view list item function!
   cardBodyChildView(roomStatusConstant){
+    var dummyValue = this.state.propertyStatusDetails;
     // Get the count of the roomStatus from the state!
     var countOfTheState = roomStatusConstant !== undefined ? this.state.propertyStatusDetails[roomStatusConstant] : 0;
     return widgetTileBodyTemplateHelpers(countOfTheState);
@@ -285,11 +286,25 @@ class DefaultView extends React.Component {
     await this._updatePropertyStateCount(model.roomStatusConstant, currentStateValue + 1);
   };
   
+  // Set the initial state for the property status details!
+  _setInitialPropertyStatusDetails(){
+    this.state.propertyStatusDetails = {
+      afterCheckedout: 0,
+      afterCleaned: 0,
+      inCleaning: 0,
+      afterCheckin: 0,
+      others: 0
+    };
+    this.setState({propertyStatusDetails: this.state.propertyStatusDetails});
+  };
+  
   // Compute collection state details!
   async computeCollectionStateDetails(){
     var roomCollection = this.state.data.roomCollection;
     if(roomCollection !== undefined){
       for (const model of roomCollection) {
+        this.isComputing = true; // this flag is added because when we perform transfer room, two times the props of this component gets updated.
+        // which leads to some misleading calculations!
         if(!this.state.isComputed){ // This is added here because when we swift back from the any other property container, due to the lifecycle methods,
           // this method is being called multiple times hence the count is updating by double the original value!
           await this.updateStateCollection(model);

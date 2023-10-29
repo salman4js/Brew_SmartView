@@ -1198,3 +1198,8 @@ td {
   font-size: 50px;
 }
 
+.files div:hover > .sidepanel-filter-panel div:hover {
+  background-color: transparent;
+}
+
+

@@ -131,20 +131,20 @@ export function getClassName(variant){
 // Get custom style based on the state value!
 export function getStyle(status){
   return{
-    width: status.width,
-    marginBottom: status.marginBottom,
-    marginRight: status.marginRight,
-    paddingRight: status.paddingRight,
-    paddingLeft: status.paddingLeft,
-    paddingTop: status.paddingTop,
-    paddingBottom: status.paddingBottom,
-    color: status.color,
-    fontSize: status.fontSize,
-    border: status.border,
-    backgroundColor: status.backgroundColor,
-    cursor: status.cursor,
-    float: status.float,
-    zIndex: status.zIndex
+    width: status?.width,
+    marginBottom: status?.marginBottom,
+    marginRight: status?.marginRight,
+    paddingRight: status?.paddingRight,
+    paddingLeft: status?.paddingLeft,
+    paddingTop: status?.paddingTop,
+    paddingBottom: status?.paddingBottom,
+    color: status?.color,
+    fontSize: status?.fontSize,
+    border: status?.border,
+    backgroundColor: status?.backgroundColor,
+    cursor: status?.cursor,
+    float: status?.float,
+    zIndex: status?.zIndex
   }
 }
 
