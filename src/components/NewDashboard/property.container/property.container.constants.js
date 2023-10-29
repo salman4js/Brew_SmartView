@@ -15,7 +15,8 @@ var propertyContainerConstants = Object.freeze({
   BUTTON_FIELDS: Object.freeze({
     cancelButton: 'Cancel',
     checkinButton: 'Check-In',
-    checkoutButton: 'Continue Checkout'
+    checkoutButton: 'Continue Checkout',
+    transferButton: 'Transfer Room'
   }),
   // Panel field not required dashboardMode constants array!
   IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView']

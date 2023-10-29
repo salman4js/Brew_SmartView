@@ -69,6 +69,7 @@ class CheckOutView extends React.Component {
         this.prepareConfigOptions();
         // Add current time to the userModel!
         this.state.userModel['currentTime'] = getTimeDate().getTime;
+        this.state.userModel['currentCheckoutDate'] = this.getTodayDate(); // Have this to update checkout date in bill preview, currently it shows user model date of checkout!
         return templateHelpers(this.state, this.configOptions);
       } else {
         var opts = {
@@ -189,6 +190,7 @@ class CheckOutView extends React.Component {
     // Trigger success alert container!
     successAlertContainerData(){
       var data = [{status: 'success', message: this.state.matchCheckoutDate}];
+      this.checkForRoomTransferAlert(data);
       return data;
     };
     
@@ -196,7 +198,15 @@ class CheckOutView extends React.Component {
     errorAlertContainerData(){
       var misMatchCheckoutDate = `Provided checkout date ${this.getProvidedCheckoutDate()} is not matching with the today's date ${this.getTodayDate()}!`
       var data = [{status: 'error', message: misMatchCheckoutDate}, {status: 'error', message: "Please verify customer details before checkout."}];
+      this.checkForRoomTransferAlert(data);
       return data;
+    };
+    
+    // Check for room transfer alert message!
+    checkForRoomTransferAlert(data){
+      if(this.state.userModel.isRoomTransfered){
+        data.push(checkoutViewConstants.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.alertMessage);
+      };
     };
     
     // Alert container language pack!
@@ -264,14 +274,16 @@ class CheckOutView extends React.Component {
           ...prevState.billingInfo,
           gstPrice: this.gstPrice, 
           roomPrice: this.getRoomPrice() + " Rs", 
-          totalPrice: this.getTotalPayableAmount() + this.gstPrice + " Rs",
+          totalPrice: this.getTotalPayableAmount() + this.gstPrice,
           advanceAmount: this.state.billingDetails.advanceCheckin + ' Rs',
           discountAmount: this.state.billingDetails.discountPrice + ' Rs',
           withoutGST: this.getAmountWithoutGST() + ' Rs',
           roomPricePerStays: this.getAmountForStayedDays(),
           isNegativeValue: this.getTotalPayableAmount() > 0 ? false : true
         }
-      }));
+      }), () => {
+        this.prepareUserCheckoutDetails();
+      });
     };
 
     // Get total amount with advance and discount but without GST!
@@ -371,15 +383,21 @@ class CheckOutView extends React.Component {
       return Math.abs(refundAmount);
     };
     
-    // Perform checkout!
-    async performCheckout(){
-      // Form up the params!
-      var data = {userid: this.state.userModel._id, username: this.state.userModel.username,
+    // Prepare user checkout details!
+    prepareUserCheckoutDetails(){
+      this.checkoutDetails = {userid: this.state.userModel._id, username: this.state.userModel.username,
         roomid: this.state.data.roomModel._id, stayeddays: this.state.stayeddays,
         checkoutdate: this.getTodayDate(), checkoutTime: getTimeDate().getTime, roomtype: this.state.data.roomModel.suiteName,
         prebook: this.state.data.roomModel.preBooked, amount: this.getTotalPayableAmount(), refund: this.getRefundAmount(), 
         totalDishAmount: 0, isGst: this.getIsGSTEnabled(), foodGst: 0, stayGst: this.state.billingInfo.gstPrice,
         roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime()};
+      this.props.updateSelectedModel(this.state.data.roomModel, undefined, this.checkoutDetails);
+    };
+    
+    // Perform checkout!
+    async performCheckout(){
+      // Form up the params!
+      var data = this.checkoutDetails;
       var result = await this.checkoutUtils.onCheckout(data);
       if(result.data.success){
         this._updatePropertyController({reloadSidepanel: {silent: true}, persistStatusView: false, navigateToPropertyContainer: true, 

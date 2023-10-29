@@ -1,4 +1,6 @@
 import MetadataTable from '../../../metadata.table.view/metadata.table.view';
+import CustomModal from '../../../CustomModal/custom.modal.view';
+import { activityLoader } from '../../../common.functions/common.functions.view';
 
 class TableViewTemplateHelpers {
   
@@ -27,6 +29,11 @@ class TableViewTemplateHelpers {
         <MetadataTable data = {tableData} height = {widgetData.height} />
       </div>
     )
+  };
+  
+  // Render custom modal!
+  _renderCustomModal(customModalOptions){
+    return <CustomModal modalData = {customModalOptions} />
   };
   
 };

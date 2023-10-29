@@ -103,7 +103,11 @@ const SidepanelWrapper = (props, ref) => {
   
   // Sidepanel filter state view!
   function filterPanelView(){
-    return <MetadataFields data = {filterState} updateData = {setFilterState}/>
+    return(
+      <div className = 'sidepanel-filter-panel'>
+        <MetadataFields data = {filterState} updateData = {setFilterState}/>
+      </div>
+    )
   };
   
   // Sidepanel room list tree view!

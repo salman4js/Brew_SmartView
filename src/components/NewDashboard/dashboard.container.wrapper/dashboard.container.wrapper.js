@@ -13,6 +13,7 @@ const DashboardWrapper = (props, ref) => {
   // Selected Model state handler!
   const [selectedModel, setSelectedModel] = useState({
     roomModel: undefined,
+    userModel: undefined,
     dashboardMode: 'default',
     onFormSave: false,
     onCheckout: false,
@@ -43,19 +44,19 @@ const DashboardWrapper = (props, ref) => {
   };
   
   // Update property details user collection on Checkout and Checkin operation to keep the data on sync!
-  function _updateUserCollection(options){
+  function _updateUserCollection(options, ignoreUpdateOfDefaultView){
     // Make the copy of the userCollection!
     var userCollection = [...propertyDetails.userCollection];
-    // By using the roomId, Delete the particular user reference from the userCollection on Checkout operation!
+    // By using the roomId, Add the particular user reference to the userCollection on Checkin operation!
     if(options.action === 'CHECK-IN'){
       userCollection.push(options.updatedUserModel);
-    } 
-    // By using the roomId, Add the particular user reference to the userCollection on Checkin operation!
+    } ;
+    // By using the roomId, Delete the particular user reference from the userCollection on Checkout operation!
     if(options.action === 'CHECK-OUT'){
       _.remove(userCollection, function(obj){
         return obj.room === options.id; // Comparing obj room id because in updatedRoomModel user reference will be null after checkout!
       });
-    }
+    };
     setPropertyDetails(prevState => ({...prevState, userCollection: userCollection}));
     CollectionInstance.updateCollections('userCollections', userCollection);
   };
@@ -68,11 +69,11 @@ const DashboardWrapper = (props, ref) => {
   });
 
   // Update the selected model from the side panel wrapper!
-  function updateSelectedModel(roomModel, dashboardMode){
+  function updateSelectedModel(roomModel, dashboardMode, userModel){
     onFormCancel(); // this will clear out the form data, so that the newly selected roomModel will load.
     // When dashboardMode is undefined, get the dashboardMode from the roomModel data.
     dashboardMode = !dashboardMode ? getFormMode(roomModel.roomStatusConstant) : dashboardMode;
-    setSelectedModel(prevState => ({...prevState, roomModel: roomModel, dashboardMode: dashboardMode}));
+    setSelectedModel(prevState => ({...prevState, roomModel: roomModel, dashboardMode: dashboardMode, userModel: userModel}));
   };
   
   // Onform save triggered!
@@ -104,9 +105,9 @@ const DashboardWrapper = (props, ref) => {
     opts.navigateToStatusTableView && _navigateToStatusTableView(opts);
     opts.navigateToPropertyContainer && _navigateToPropertyContainer();
     opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need 
-    // updated room model to updated it to the latest value!
+    // updated room model to updated it to the latest value
     opts.updatedModel && _updateRoomModel(opts);
-    opts.updateUserCollection && _updateUserCollection(opts.updateUserCollection);
+    opts.updateUserCollection && _updateUserCollection(opts.updateUserCollection, opts.ignoreUpdateOfDefaultView);
   };
   
   // Navigate to status table view!
@@ -186,6 +187,7 @@ const DashboardWrapper = (props, ref) => {
           <div className = "dashboard-property-container">
             <PropertyContainer data = {selectedModel} propertyContainerHeight = {props.modalAssistData.height} propertyDetails = {propertyDetails}
             onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
+            updateSelectedModel = {(roomModel, dashboardMode, userModel) => updateSelectedModel(roomModel, dashboardMode, userModel)}
             onCheckout = {(value) => onCheckout(value)} onRoomTransfer = {(opts) => onRoomTransfer(opts)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
           </div>
         </div>

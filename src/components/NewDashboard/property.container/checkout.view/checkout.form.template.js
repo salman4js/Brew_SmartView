@@ -50,7 +50,7 @@ export function templateHelpers(state, configOptions){
             </div>
             <div className = 'modal-gap'>
               <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.dateOfCheckoutHeader} </label>
-              <p style = {{color: 'black'}}> {userModel.dateofcheckout} </p>
+              <p style = {{color: 'black'}}> {userModel.currentCheckoutDate} </p>
             </div>
             <div className = 'modal-gap'>
               <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.timeOfCheckoutHeader} </label>
@@ -69,6 +69,26 @@ export function templateHelpers(state, configOptions){
               <p style = {{color: 'black'}}> {state.stayeddays} </p>
             </div>
         </div>
+        {/* Room Transfer Details */}
+        {userModel.isRoomTransfered && (
+          <div className = 'col'>
+            <div className = 'dashboard-container-fields-header'>
+              {templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.roomTransferDetailsHeader}
+            </div>
+            <div className = 'modal-gap'>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.oldRoomNo} </label>
+              <p style = {{color: 'black'}}> {userModel.oldRoomNo} </p>
+            </div>
+            <div className = 'modal-gap'>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.oldRoomStayDays} </label>
+              <p style = {{color: 'black'}}> {userModel.oldRoomStayDays} </p>
+            </div>
+            <div className = 'modal-gap'>
+              <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.oldRoomPrice} </label>
+              <p style = {{color: 'black'}}> {userModel.oldRoomPrice + ' Rs'} </p>
+            </div>
+          </div>
+        )}
         {/* Bill Details */}
         <div className = 'col'>
           <div className = 'dashboard-container-fields-header'>
@@ -104,10 +124,18 @@ export function templateHelpers(state, configOptions){
                   <label style = {{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.balWithGST} </label>
                   <p style = {{color: 'black'}}> {billingInfo.totalPrice} </p>
                 </div>
-                <div className = 'modal-gap'>
-                  <label style = {{color: 'green', fontWeight: 'bold'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.totalPayableAmount} </label>
-                  <p style = {{color: 'green', fontWeight: 'bold'}}> {billingInfo.totalPrice} </p>
-                </div>
+                {userModel.isRoomTransfered && (
+                  <div className = 'modal-gap'>
+                    <label style = {{color: 'green', fontWeight: 'bold'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.totalPayableAmountWithRoomTransfer} </label>
+                    <p style = {{color: 'green', fontWeight: 'bold'}}> {billingInfo.totalPrice + userModel.oldRoomPrice + ' Rs'} </p>
+                  </div>
+                )}
+                {!userModel.isRoomTransfered && (
+                  <div className = 'modal-gap'>
+                    <label style = {{color: 'green', fontWeight: 'bold'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.totalPayableAmount} </label>
+                    <p style = {{color: 'green', fontWeight: 'bold'}}> {billingInfo.totalPrice + ' Rs'} </p>
+                  </div>
+                )}
               </>
             )}
             {billingInfo.isNegativeValue && (

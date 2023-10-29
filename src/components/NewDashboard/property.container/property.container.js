@@ -78,7 +78,8 @@ const PropertyContainer = (props) => {
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.read){
-      return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
+      return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} 
+      updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)}
       cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} afterCheckout = {(opts) => props.onCancel(opts)} />
     };
     
@@ -94,12 +95,12 @@ const PropertyContainer = (props) => {
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView){
       return <StatusTableView data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
-      onBack = {(opts) => props.dashboardController(opts)} />
+      dashboardController = {(opts) => props.dashboardController(opts)} />
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
       return <FilterTable data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
-      onBack = {(opts) => props.dashboardController(opts)} />
+      dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
   };
 
@@ -108,35 +109,36 @@ const PropertyContainer = (props) => {
     var emptyFormModel = [];
 
     var checkinFormModel = [{
-        btnValue: 'Cancel',
+        btnValue: propertyContainerConstants.BUTTON_FIELDS.cancelButton,
         onClick: onCancel,
         attribute: 'buttonField'
       },{
-        btnValue: 'Check-In',
+        btnValue: propertyContainerConstants.BUTTON_FIELDS.checkinButton,
         onClick: onCheckIn,
         attribute: 'buttonField'
       }
     ];
     
     var checkoutFormModel = [{
-        btnValue: 'Cancel',
+        btnValue: propertyContainerConstants.BUTTON_FIELDS.cancelButton,
         onClick: onCancel,
         attribute: 'buttonField'
       },
       {
-        btnValue: 'Transer Room',
+        btnValue: propertyContainerConstants.BUTTON_FIELDS.transferButton,
         onClick: _triggerRoomTransfer,
+        restrictShow: false,
         attribute: 'buttonField'
       },
       {
-        btnValue: 'Continue Checkout',
+        btnValue: propertyContainerConstants.BUTTON_FIELDS.checkoutButton,
         onClick: onCheckout,
         attribute: 'buttonField'
       }
     ];
 
     var roomStatusFormModel = [{
-        btnValue: 'Cancel',
+        btnValue: propertyContainerConstants.BUTTON_FIELDS.cancelButton,
         onClick: onCancel,
         attribute: 'buttonField'
     }];
