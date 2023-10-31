@@ -78,7 +78,7 @@ const PropertyContainer = (props) => {
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.read){
-      return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} 
+      return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} onRoomTransfer = {(opts) => props.onRoomTransfer(opts)}
       updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)}
       cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} afterCheckout = {(opts) => props.onCancel(opts)} />
     };
@@ -122,12 +122,6 @@ const PropertyContainer = (props) => {
     var checkoutFormModel = [{
         btnValue: propertyContainerConstants.BUTTON_FIELDS.cancelButton,
         onClick: onCancel,
-        attribute: 'buttonField'
-      },
-      {
-        btnValue: propertyContainerConstants.BUTTON_FIELDS.transferButton,
-        onClick: _triggerRoomTransfer,
-        restrictShow: false,
         attribute: 'buttonField'
       },
       {
@@ -175,17 +169,6 @@ const PropertyContainer = (props) => {
   // On checkout!
   function onCheckout(){
     props.onCheckout(true);
-  };
-  
-  // Trigger room transfer!
-  function _triggerRoomTransfer(){
-    // Options to handle locate table view!
-    var options = {
-      navigateToStatusTableView: true,
-      selectedRoomConstant: propertyContainerConstants.FILTERED_ROOM_STATUS_CONSTANT,
-      dashboardMode: propertyContainerConstants.DASHBOARD_MODE.filterTableView
-    };
-    props.onRoomTransfer(options);
   };
   
   // On Cancel!

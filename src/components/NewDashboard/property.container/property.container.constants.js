@@ -11,11 +11,10 @@ var propertyContainerConstants = Object.freeze({
     checkinForm: 'checkin-form',
     checkoutForm: 'checkout-form'
   }),
-  FILTERED_ROOM_STATUS_CONSTANT: 'afterCleaned',
   BUTTON_FIELDS: Object.freeze({
     cancelButton: 'Cancel',
     checkinButton: 'Check-In',
-    checkoutButton: 'Continue Checkout',
+    checkoutButton: 'Other Options',
     transferButton: 'Transfer Room'
   }),
   // Panel field not required dashboardMode constants array!

@@ -287,6 +287,15 @@ export function filterKeysInObj(obj, filterData){
   return obj;
 };
 
+// Keep only the necessay data in arrays and remove unwanted things!
+export function filterKeysInArr(arr, filterData){
+  var resultArr = [];
+  for(var i = 0; i <= arr.length - 1; i++){
+    resultArr.push(filterKeysInObj(arr[i], filterData));
+  };
+  return resultArr;
+};
+
 // Arrange objects values in the provided order --> Takes one obj to arrange and an array of values for order reference!
 export function arrangeObj(obj, orderedArr){
   var orderedObj = {};

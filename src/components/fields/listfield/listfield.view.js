@@ -22,7 +22,9 @@ const ListField = (props) => {
   
   return(
     <div className = "modal-gap" style = {{width: props.data.width, padding: props.data.padding}}>
-      <label className = "metadata-label" style = {getStyle(props.data.style)}> {props.data.label} </label>
+      {props.data.label && (
+        <label className = "metadata-label" style = {getStyle(props.data.style)}> {props.data.label} </label>
+      )}
       <select className = "form-control" onChange = {(event) => inputChange(event)}>
         <option value="" disabled selected>{getSelected()}</option>
         {props.data?.options?.map((opts, key) => {

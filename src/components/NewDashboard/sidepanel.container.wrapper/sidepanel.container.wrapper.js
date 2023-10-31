@@ -33,7 +33,7 @@ const SidepanelWrapper = (props, ref) => {
   const [filterState, setFilterState] = useState([{
     value: undefined,
     width: '300px',
-    padding: '0px 5px 5px 5px',
+    padding: '10px 5px 5px 5px',
     placeholder: "Filter by type",
     name: 'suiteType',
     attribute: 'listField',

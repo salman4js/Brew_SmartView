@@ -49,7 +49,6 @@ const CheckinForm = (props) => {
     },
     {
       value: new Date(),
-      width: '500px',
       placeholder: "Checkin Date",
       label: "Date of Check-In",
       name: 'checkin',
@@ -58,11 +57,13 @@ const CheckinForm = (props) => {
       inlineToast: {
         isShow: false,
         inlineMessage: 'Please provide a valid input.'
+      },
+      style: {
+        width: '500px'
       }
     },
     {
       value: new Date(),
-      width: '500px',
       defaultValue: new Date(),
       excludeDates: [],
       placeholder: "Checkout Date",
@@ -73,6 +74,9 @@ const CheckinForm = (props) => {
       inlineToast: {
         isShow: false,
         inlineMessage: 'Please provide a valid input.'
+      },
+      style: {
+        width: '500px'
       },
       callBackAfterUpdate: _restrictAdvAndDiscount
     },
