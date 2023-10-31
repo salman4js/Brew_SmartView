@@ -42,6 +42,22 @@ var checkoutViewConstants = Object.freeze({
       status: 'error',
       message: 'This guest has room transfer history, verify before checkout.'
     }
+  }),
+  ROOM_TRANSFER: Object.freeze({
+    filteredRoomStatusConstant: 'afterCleaned',
+    dashboardMode: 'filterTableView'
+  }),
+  BUTTON_FIELDS: Object.freeze({
+    getBill: 'Get Bill',
+    getInvoice: 'Get Invoice',
+    maintainanceLog: 'Add Maintainance Log',
+    roomTransfer: 'Tranfer Room',
+    checkout: 'Checkout',
+    addLog: 'Add Log',
+    cancel: 'Cancel'
+  }),
+  MAINTAINANCE_LOG: Object.freeze({
+    logDialogHeader: 'Add New Maintainance Log'
   })
 });
 

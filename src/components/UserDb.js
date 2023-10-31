@@ -157,7 +157,7 @@ const UserDb = () => {
                                                     try{
                                                         return value.stayedDays.toLowerCase().includes(search.toLowerCase());
                                                     } catch(err){
-                                                        console.log("Some customer haven't checkout yet --> undefined")
+                                                        console.warn("Some customer haven't checkout yet --> undefined")
                                                     }
                                                 } else if(sort == "Checked In Date"){
                                                     return value.dateofcheckin.toLowerCase().includes(search.toLowerCase());
@@ -168,7 +168,8 @@ const UserDb = () => {
                                                 }
                                             }).map((item,key) => {
                                                 return(
-                                                    <UserDbComp roomno={item.roomno} username={item.username} phonenumber={item.phonenumber} 
+                                                    <UserDbComp roomno={item.roomno} isRoomTransfered = {item.isRoomTransfered} oldRoomNo = {item.oldRoomNo} 
+                                                    oldRoomPrice = {item.oldRoomPrice} oldRoomStayDays = {item.oldRoomStayDays} username={item.username} phonenumber={item.phonenumber} 
                                                     secphone={item.secondphonenumber} adults={item.adults} childrens={item.childrens} address = {item.address}
                                                     checkin={item.dateofcheckin} aadharcard={item.aadharcard} checkout={item.dateofcheckout} 
                                                     stayeddays={item.stayedDays} prebooked = {item.prebooked} discount = {item.discount} 

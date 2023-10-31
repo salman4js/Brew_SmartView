@@ -35,7 +35,7 @@ const UserDbComp = (props) => {
         return time;
       }
     } catch(err){
-      console.error("Time format has been introduced in recent builds")
+      console.warn("Time format has been introduced in recent builds")
     }
   }
 
@@ -60,6 +60,19 @@ const UserDbComp = (props) => {
               <p className = "font-big">
                 Receipt Id: {props.receiptId}
               </p>
+              {props.isRoomTransfered && (
+                <>
+                  <p className="font-big" style = {{color: 'green', fontWeight: 'bold'}}>
+                    Previous Room No: {props.oldRoomNo}
+                  </p>
+                  <p className="font-big" style = {{color: 'green', fontWeight: 'bold'}}>
+                    Previous Room Price: {props.oldRoomPrice}
+                  </p>
+                  <p className = "font-big" style = {{color: 'green', fontWeight: 'bold'}}>
+                    Previous Room Stay Days: {props.oldRoomStayDays}
+                  </p>
+                </>
+              )}
               <p className="font-big">
                 Customer Name: {props.username}
               </p>
@@ -163,9 +176,16 @@ const UserDbComp = (props) => {
                     <p className = 'font-big'>
                       Stay GST Amount: {props.stayGst}
                     </p>
-                    <p className='font-big'>
-                      Total Paid Amount: {props.totalAmount}
-                    </p>
+                    {!props.isRoomTransfered && (
+                      <p className='font-big'>
+                        Total Paid Amount: {props.totalAmount}
+                      </p>
+                    )}
+                    {props.isRoomTransfered && (
+                      <p className='font-big'>
+                        Total Paid Amount: {props.totalAmount + props.oldRoomPrice}
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <div>

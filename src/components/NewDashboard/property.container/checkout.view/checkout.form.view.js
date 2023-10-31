@@ -2,14 +2,16 @@ import React from 'react';
 import brewDate from 'brew-date';
 import CheckoutUtils from './checkout.form.utils';
 import checkoutViewConstants from './checkout.form.constants';
+import MetadataModelState from './metadata.model.state/maintainance.log.model.state';
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import WindowPrint from '../../window.print/window.print';
 import MetadataFields from '../../../fields/metadata.fields.view';
+import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 import { templateHelpers } from './checkout.form.template';
 import PropertyAlertContainer from '../property.alert.container/property.alert.container.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
 import { getTimeDate, determineGSTPercent } from '../../../common.functions/common.functions';
-import { getBaseUrl, formQueryParams } from '../../../common.functions/node.convertor';
+import { getBaseUrl, formQueryParams, nodeConvertor, validateFieldData, updateMetadataFields } from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 
 
@@ -51,7 +53,8 @@ class CheckOutView extends React.Component {
           cgst: true,
           gstin: undefined
         },
-        templateConstants: checkoutViewConstants
+        templateConstants: checkoutViewConstants,
+        maintainanceLog: MetadataModelState.maintainanceLogInput,
       };
       this.propertyController = {
         reloadSidepanel: false,
@@ -61,6 +64,21 @@ class CheckOutView extends React.Component {
         updateUserCollection: undefined
       };
       this.checkoutUtils = new CheckoutUtils({accId: props.params.accIdAndName[0]});
+    };
+    
+    // Update state with state name!
+    _updateState(data, modelName){
+      this.setState({[modelName]: data});
+    };
+    
+    // Trigger alert message! --> Alert message will always be centered false, no custom body, only header!
+    _triggerAlertMessage(options){
+      var alertMessageOptions = {
+        isCentered: false,
+        isRestrictBody: true,
+        header: options.message
+      };
+      this.setCustomModal(alertMessageOptions);
     };
     
     templateHelpers(){
@@ -76,9 +94,14 @@ class CheckOutView extends React.Component {
           color: "black",
           marginTop: (this.state.height / 2.5) + "px",
           textCenter: true
-        }
-        return activityLoader(opts);
+        };
+        return this._triggerActivityLoader(opts);
       }
+    };
+    
+    // Put a activity loader on any view!
+    _triggerActivityLoader(opts){
+      return activityLoader(opts);
     };
     
     getIsHourly(){
@@ -442,6 +465,7 @@ class CheckOutView extends React.Component {
     
     // Update printing details preference!
     updatePrintingDetailsPref(pref){
+      this.onCloseCustomModal();
       this.setState(prevState => ({
         ...prevState,
         printingDetails: {
@@ -454,6 +478,18 @@ class CheckOutView extends React.Component {
       })
     };
     
+    // Trigger room transfer!
+    _triggerRoomTransfer(){
+      this.onCloseCustomModal();
+      // Options to handle locate table view!
+      var options = {
+        navigateToStatusTableView: true,
+        selectedRoomConstant: checkoutViewConstants.ROOM_TRANSFER.filteredRoomStatusConstant,
+        dashboardMode: checkoutViewConstants.ROOM_TRANSFER.dashboardMode
+      };
+      this.props.onRoomTransfer(options);
+    };
+    
     // Window print for invoice and bill!
     windowPrint(){
       this.formPrintDetailsObj(); // Form the printing details as an object
@@ -463,23 +499,95 @@ class CheckOutView extends React.Component {
       // neccessary for print the data in the url.
     };
     
+    // Prompt maintainance log dialog!
+    _promptMaintainanceLogDialog(){
+      this.onCloseCustomModal(); // First close the existing modal.
+      var logDialogModalOptions = {
+        header: checkoutViewConstants.MAINTAINANCE_LOG.logDialogHeader,
+        isCentered: true,
+        bodyItemView: this.logDialogBodyItemView.bind(this),
+        isFooterEnabled: true,
+        footerButtons: [{
+          btnId: checkoutViewConstants.BUTTON_FIELDS.cancel,
+          variant: 'secondary',
+          onClick: this.onCloseCustomModal.bind(this)
+        }, {
+          btnId: checkoutViewConstants.BUTTON_FIELDS.addLog,
+          variant: 'primary',
+          onClick: this.addNewLog.bind(this)
+        }]
+      };
+      this.setCustomModal(logDialogModalOptions);
+    };
+    
+    // Add new log!
+    async addNewLog(){
+      var isDataValid = await validateFieldData(this.state.maintainanceLog, (updatedData) => this._updateState(updatedData, this.state.maintainanceLog));
+      if(isDataValid.length === 0){
+        this.onCloseCustomModal();
+        this._toggleLoader(true);
+        var fieldData = nodeConvertor(this.state.maintainanceLog);
+        // Add userId, that is mandatory for the REST to store the log!
+        fieldData['userId'] = this.state.userModel._id;
+        fieldData['dateTime'] = brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime());
+        var result = await this.checkoutUtils.addNewLog(fieldData);
+        this._toggleLoader(false);
+        this._triggerAlertMessage(result.data);
+      };
+    };
+    
+    // Fetch maintainance log type!
+    async fetchMaintainanceLogType(){
+      var result = await this.checkoutUtils.fetchMaintainanceLogType();
+      updateMetadataFields('priceType', {options: result}, this.state.maintainanceLog, (updatedData) => this._updateState(updatedData, this.state.maintainanceLog));
+      this.setState({maintainanceLog: this.state.maintainanceLog});
+    };
+    
+    // Log dialog body item view!
+    logDialogBodyItemView(){
+      var maintainanceLogType = CollectionInstance.getCollections('maintainanceLogType');
+      if(maintainanceLogType?.data){
+        return <MetadataFields data = {this.state.maintainanceLog} updateData = {(updatedData) => this._updateState(updatedData, this.state.maintainanceLog)}/>
+      } else {
+        this.fetchMaintainanceLogType();
+        var opts = {
+          color: "black",
+          textCenter: true
+        };
+        return this._triggerActivityLoader(opts);
+      }
+    };
+    
     // Checkout modal body item view!
     checkoutModalBodyItemView(){
       // this.updatePrintingDetailsPref.bind(this, {invoice: true, tInvoice: false})
       var buttonFields = [{
-          btnValue: 'Get bill',
+          btnValue: checkoutViewConstants.BUTTON_FIELDS.getBill,
           onClick: this.updatePrintingDetailsPref.bind(this, {invoice: true, tInvoice: false}),
           isDark: true,
           occupyFullSpace: true,
           attribute: 'buttonField'
       }, {
-          btnValue: 'Get Invoice',
+          btnValue: checkoutViewConstants.BUTTON_FIELDS.getInvoice,
           onClick: this.updatePrintingDetailsPref.bind(this, {invoice: false, tInvoice: true}),
           isDark: true,
           occupyFullSpace: true,
           attribute: 'buttonField'
       }, {
-          btnValue: 'Checkout',
+        btnValue: checkoutViewConstants.BUTTON_FIELDS.maintainanceLog,
+        onClick: this._promptMaintainanceLogDialog.bind(this),
+        isDark: true,
+        occupyFullSpace: true,
+        attribute: 'buttonField'
+      }, {
+        btnValue: checkoutViewConstants.BUTTON_FIELDS.roomTransfer,
+        onClick: this._triggerRoomTransfer.bind(this),
+        restrictShow: false,
+        isDark: true,
+        occupyFullSpace: true,
+        attribute: 'buttonField'
+      }, {
+          btnValue: checkoutViewConstants.BUTTON_FIELDS.checkout,
           onClick: this.onCheckout.bind(this),
           isDark: true,
           occupyFullSpace: true,
