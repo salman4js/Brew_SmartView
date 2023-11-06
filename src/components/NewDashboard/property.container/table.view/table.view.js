@@ -110,17 +110,10 @@ class TableView extends React.Component {
     this.templateHelpersData.selectedRoomConstant = this.widgetTileModel.data.selectedRoomConstant;
   };
   
-  // Set filter table view!
-  setFilterTableView(){
-    this.state.metadataTableState.infoMessage = tableViewConstants.tableInfoMessage.ZERO_FILTER_MESSAGE;
-    this.getFilteredData(); // Get the filtered data based on the filter applied by the user!
-    return this.filteredModel[this.roomConstant];
-  };
-  
   // Get room constant collection!
   getRoomConstantCollection(){
     if(this.roomConstant !== 'afterCheckin'){
-      return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant] || this.setFilterTableView();
+      return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant] || this.setExpandedTableView();
     } else {
       return this.widgetTileModel.propertyDetails.userCollection;
     }
@@ -195,7 +188,7 @@ class TableView extends React.Component {
       <>
         <MetadataFields data = {this.panelFieldState} />
         {this.templateHelpers()}
-        {this.state.customModal.show && this._renderCustomModal()}
+        {this.state.customModal?.show && this._renderCustomModal()}
       </>
     )
   };

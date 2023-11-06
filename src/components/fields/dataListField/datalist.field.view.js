@@ -12,10 +12,12 @@ const DataList = (props) => {
   });
   
   // Set the selected value from the dropdown field!
-  function setSelected(value){
+  function setSelected(value, actualValue){
     setDropdown(prevState => ({...prevState, selected: value}));
     triggerDropdown(dropdown.isOpen); // Close the dropdown when the value is selected!
-    inputChange(props.index, value, props.data.attribute);
+    var metadataVal = {value: value, actualValue: actualValue}; // This will help incase if we have to perform any data computation.
+    // Data computation with original constant value is hard, actualValue provides like a key structure to solve this usecase.
+    inputChange(props.index, metadataVal, props.data.attribute);
   }
   
   // Reference for input field!
@@ -97,7 +99,7 @@ const DataList = (props) => {
       )}
       {dropdown.isOpen && (
         <div className = "metadata-label">
-          <DropdownField data = {getDropdownProps()} setSelected = {(value) => setSelected(value)} />
+          <DropdownField data = {getDropdownProps()} setSelected = {(value, actualValue) => setSelected(value, actualValue)} />
         </div>
       )}
     </div>

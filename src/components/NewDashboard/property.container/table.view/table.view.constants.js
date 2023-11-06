@@ -7,7 +7,8 @@ var tableViewConstants = Object.freeze({
     afterCheckin: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
     upcomingCheckout: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
     upcomingPrebook: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
-    favorites: ['Guest Name', "Phone Number", 'Guest Identification Number']
+    favorites: ['Guest Name', "Phone Number", 'Guest Identification Number'],
+    logTableView: ['Log Type', 'Log Comments', 'Log Paid', 'Log Date & Time', 'Log Price']
   }),
   
   PropertyStatusRequiredKey: Object.freeze({
@@ -21,8 +22,7 @@ var tableViewConstants = Object.freeze({
   }),
   
   tableInfoMessage: Object.freeze({
-    ZERO_STATE_MESSAGE: 'You have no records for this table!',
-    ZERO_FILTER_MESSAGE: 'You have no filters applied to provide data!'
+    ZERO_STATE_MESSAGE: 'You have no records for this table!'
   }),
   
 });

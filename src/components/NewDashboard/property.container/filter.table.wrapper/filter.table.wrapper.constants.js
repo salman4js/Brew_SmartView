@@ -18,6 +18,9 @@ var filterTableConstants = Object.freeze({
   }),
   successOnTransfer: Object.freeze({
     SUCCESS_ON_TRANSFER: "Room Transfer is successfully completed!"
+  }),
+  tableInfoMessage: Object.freeze({
+    ZERO_FILTER_MESSAGE: 'You have no filters applied to provide data!'
   })
 });
 

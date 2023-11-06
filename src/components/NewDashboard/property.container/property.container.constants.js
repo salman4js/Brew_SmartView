@@ -5,7 +5,11 @@ var propertyContainerConstants = Object.freeze({
     roomStatus: 'roomStatus',
     default: 'default',
     statusTableView: 'statusTableView',
-    filterTableView: 'filterTableView'
+    filterTableView: 'filterTableView',
+    logTableView: 'logTableView'
+  }),
+  TABLE_HEADERS: Object.freeze({
+    logTableView: 'Guest Log Table'
   }),
   FORM_MODE: Object.freeze({
     checkinForm: 'checkin-form',
@@ -18,7 +22,7 @@ var propertyContainerConstants = Object.freeze({
     transferButton: 'Transfer Room'
   }),
   // Panel field not required dashboardMode constants array!
-  IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView']
+  IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView']
 });
 
 export default propertyContainerConstants;

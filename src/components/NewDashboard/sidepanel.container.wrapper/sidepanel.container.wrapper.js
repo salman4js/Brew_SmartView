@@ -143,6 +143,7 @@ const SidepanelWrapper = (props, ref) => {
       return 'roomStatus';
     }
   };  
+  
   // Enabled filter panel!
   function _setFilterPanel(value){
     // Generate options and update filterpanel data.

@@ -52,6 +52,13 @@ class FilterTable extends TableView {
     };
   };
   
+  // Prepare expanded table view!
+  setExpandedTableView(){
+    this.state.metadataTableState.infoMessage = filterTableConstants.tableInfoMessage.ZERO_FILTER_MESSAGE;
+    this.getFilteredData(); // Get the filtered data based on the filter applied by the user!
+    return this.filteredModel[this.roomConstant];
+  };
+  
   // Filter room collection based on the room status constant!
   filterRoomCollection(){
     this.filteredModel = {}; // Reinitialize this filteredModel here to prevent duplicate data!

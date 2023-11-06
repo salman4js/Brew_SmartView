@@ -6,7 +6,9 @@ import RoomStatusView from './room.status.view/room.status.view';
 import DefaultView from './default.view/default.view';
 import StatusTableView from './table.view/table.view';
 import FilterTable from './filter.table.wrapper/filter.table.wrapper';
+import LogTable from './log.table.wrapper/log.table.wrapper';
 import propertyContainerConstants from './property.container.constants';
+import { extractStateValue } from '../../common.functions/node.convertor';
 
 const PropertyContainer = (props) => {
   // Panel fields state handler!
@@ -21,7 +23,9 @@ const PropertyContainer = (props) => {
     return [
       {
         value: selectedValues,
+        actualValue: undefined,
         attribute: "dataListField",
+        name: 'panelFieldDropdown',
         allowInputField: false,
         allowPanelField: true,
         allowRightSideControl: true,
@@ -52,15 +56,32 @@ const PropertyContainer = (props) => {
     if(props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.roomStatus && props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.statusTableView){
        return [
           {
-            value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? propertyContainerConstants.FORM_MODE.checkinForm : propertyContainerConstants.FORM_MODE.checkoutForm)
+            value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? propertyContainerConstants.FORM_MODE.checkinForm : propertyContainerConstants.FORM_MODE.checkoutForm),
           },
           {
             value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : 'payment tracker')
+          },
+          {
+            value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : 'Maintainance Log'),
+            actualValue: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : propertyContainerConstants.DASHBOARD_MODE.logTableView)
           }
         ]
     } else {
       return []; // Return empty array as per the design of the panel field!
     }
+  };
+  
+  // Update panel field data from the metadata fields!
+  function _updatePanelFieldData(updatedData){
+    setPanelField(updatedData);
+    var panelFieldOptions = extractStateValue(updatedData, 'actualValue');
+    // Options to handle perspective change!
+    var options = {
+      navigateToStatusTableView: true,
+      selectedRoomConstant: propertyContainerConstants.TABLE_HEADERS.logTableView,
+      dashboardMode: panelFieldOptions.panelFieldDropdown
+    };
+    props.dashboardController(options);
   };
 
   // Get panel field dropdown selectedValues and values!
@@ -100,6 +121,11 @@ const PropertyContainer = (props) => {
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
       return <FilterTable data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
+      dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+    };
+    
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.logTableView){
+      return <LogTable data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
       dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
   };
@@ -196,7 +222,7 @@ const PropertyContainer = (props) => {
   return(
     <>
       {shouldShowPanelField() && (
-        <MetadataFields data = {panelField} updateData = {setPanelField} />
+        <MetadataFields data = {panelField} updateData = {(updatedData) => _updatePanelFieldData(updatedData)} />
       )}
       {_renderPropertyModel()}
     </>
