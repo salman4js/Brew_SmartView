@@ -11,7 +11,7 @@ const DropdownField = (props) => {
         props.data.options.map((opts, key) => {
           if(opts.value !== undefined){
             return(
-              <div className = "metadata-dropdown-list" style = {getStyle(props.data.style)} onClick = {() => props.setSelected && props.setSelected(opts.value)}>
+              <div className = "metadata-dropdown-list" style = {getStyle(props.data.style)} onClick = {() => props.setSelected && props.setSelected(opts.value, opts.actualValue)}>
                 {opts.value}
               </div>
             )

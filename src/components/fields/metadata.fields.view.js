@@ -13,10 +13,17 @@ const MetadataFields = (props) => {
   // Get input value!
   function getInputValue(event, attribute){
     if(attribute === 'dateField' || attribute === "dataListField" || attribute === "checkBoxField" || attribute === 'stepperButtonField'){
-      return event;
+      return event.value ? event.value : event;
     } else {
       return event.target.value;
     }
+  };
+  
+  // Get actual value helps in listField and dataListField fields to get the actual value!
+  function getActualValue(event, attribute){ // As of now this only supports in dataListField since we populate actual value for listField in the state itself.
+    if(attribute === 'dataListField'){
+      return event.actualValue;
+    };
   };
   
   // Update field should vanish field state! // TODO: Change this function later to work on all the variety scenarios!
@@ -71,6 +78,7 @@ const MetadataFields = (props) => {
   const handleInputChange = (index, event, attribute) => {
     const fieldState = [...props.data]; // Create a copy of the state array
     fieldState[index].value = getInputValue(event, attribute) // Update the value at the specified index
+    fieldState[index].actualValue = getActualValue(event, attribute);
     fieldState[index].isChanged = true; // Change the metafield value to true when the value changed!
     if(fieldState[index].eventKeyRequired && event.key){ // If event key is required, and if the event key is not undefined.
       // Send the key back to the respective component!
@@ -87,64 +95,66 @@ const MetadataFields = (props) => {
     props.toggleButtonProp && props.toggleButtonProp("success", true)
   };
 
-  return (
-      <>
-        {props.data.map((field, index) => {
-          if (field.attribute === 'dateField' && field.restrictShow !== true) {
-            return (
-              <DateField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
-            );
-          }
+  if(props.data !== undefined){
+    return (
+        <>
+          {props.data.map((field, index) => {
+            if (field.attribute === 'dateField' && field.restrictShow !== true) {
+              return (
+                <DateField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
+              );
+            }
 
-          if (field.attribute === 'textField' && field.restrictShow !== true) {
-            return (
-              <TextField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}
-                toggleButtonValue = {() => toggleButtonValue()}
-               />
-            );
-          }
-          
-          if(field.attribute === 'listField' && field.restrictShow !== true) {
-            return(
-              <ListField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
-            )
-          }
-          
-          if(field.attribute === 'dataListField' && field.restrictShow !== true) {
-            return(
-              <DataList data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
-            )
-          }
-          
-          if(field.attribute === "checkBoxField" && field.restrictShow !== true){
-            return(
-              <CheckBox data = {field} index = {index} checkboxIndex = {props.checkboxIndex} 
-              handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}  />
-            )
-          }
-          
-          if(field.attribute === 'buttonField' && field.restrictShow !== true){
-            return(
-              <ButtonField data = {field} />
-            )
-          }
-          
-          if(field.attribute === 'labelFields' && field.restrictShow !== true){
-            return (
-              <LabelField data = {field} />
-            )
-          }
-          
-          if(field.attribute === 'stepperButtonField' && field.restrictShow !== true){
-            return(
-              <StepperField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
-            )
-          }
-          
-          return null;
-        })}
-      </>
-  );
-}
+            if (field.attribute === 'textField' && field.restrictShow !== true) {
+              return (
+                <TextField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}
+                  toggleButtonValue = {() => toggleButtonValue()}
+                 />
+              );
+            }
+            
+            if(field.attribute === 'listField' && field.restrictShow !== true) {
+              return(
+                <ListField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
+              )
+            }
+            
+            if(field.attribute === 'dataListField' && field.restrictShow !== true) {
+              return(
+                <DataList data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
+              )
+            }
+            
+            if(field.attribute === "checkBoxField" && field.restrictShow !== true){
+              return(
+                <CheckBox data = {field} index = {index} checkboxIndex = {props.checkboxIndex} 
+                handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}  />
+              )
+            }
+            
+            if(field.attribute === 'buttonField' && field.restrictShow !== true){
+              return(
+                <ButtonField data = {field} />
+              )
+            }
+            
+            if(field.attribute === 'labelFields' && field.restrictShow !== true){
+              return (
+                <LabelField data = {field} />
+              )
+            }
+            
+            if(field.attribute === 'stepperButtonField' && field.restrictShow !== true){
+              return(
+                <StepperField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)} />
+              )
+            }
+            
+            return null;
+          })}
+        </>
+    );
+  };
+};
 
 export default MetadataFields;

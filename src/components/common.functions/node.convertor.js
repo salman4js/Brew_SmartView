@@ -40,8 +40,12 @@ export function extractQueryParams(){
 
 // Extract data from the state handlers. This is usefull when states are holding their view's sub view function.
 // In that case, sub view state will always hold the initial data.
-export function extractStateValue(state, values){
-  return;
+export function extractStateValue(state, value){
+  var result = {};
+  state.map((options, index) => {
+    result[options.name] = options[value];
+  });
+  return result;
 };
 
 // Convert the data into server understandable format!
