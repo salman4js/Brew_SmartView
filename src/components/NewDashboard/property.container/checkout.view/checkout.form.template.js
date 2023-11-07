@@ -142,7 +142,7 @@ export function templateHelpers(state, configOptions){
               <>
                 <div className = 'modal-gap'>
                   <label style = {{color: 'red', fontWeight: 'bold'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.refundAmount} </label>
-                  <p style = {{color: 'red', fontWeight: 'bold'}}> {billingInfo.totalPrice.slice(1)} </p>
+                  <p style = {{color: 'red', fontWeight: 'bold'}}> {billingInfo.totalPrice} </p>
                 </div>
               </>
             )}
