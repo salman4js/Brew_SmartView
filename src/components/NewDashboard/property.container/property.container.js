@@ -78,7 +78,8 @@ const PropertyContainer = (props) => {
     // Options to handle perspective change!
     var options = {
       navigateToStatusTableView: true,
-      selectedRoomConstant: propertyContainerConstants.TABLE_HEADERS.logTableView,
+      selectedRoomConstant: propertyContainerConstants.TABLE_HEADERS.logTableView, // Here, selectedRoomConstant represents table header for the table view.
+      // Incase of room transfer view, the table header value is being overriden in the filter.table.wrapper
       dashboardMode: panelFieldOptions.panelFieldDropdown
     };
     props.dashboardController(options);

@@ -91,7 +91,7 @@ class TableView extends React.Component {
   // Organize and prepare the required table data!
   prepareTableData(){
     if(this.widgetTileModel.data !== undefined){
-      var convertedCollection = this.getWidgetTileTableCollectionData(); // Get the widget tile collection data for the table cell values!
+      this.getWidgetTileTableCollectionData(); // Get the widget tile collection data for the table cell values!
     };
   };
   
@@ -111,19 +111,19 @@ class TableView extends React.Component {
   };
   
   // Get room constant collection!
-  getRoomConstantCollection(){
+  async getRoomConstantCollection(){
     if(this.roomConstant !== 'afterCheckin'){
-      return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant] || this.setExpandedTableView();
+      return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant] || await this.setExpandedTableView();
     } else {
       return this.widgetTileModel.propertyDetails.userCollection;
     }
   };
   
   // Get the widget tile model data for the table!
-  getWidgetTileTableCollectionData(){
+  async getWidgetTileTableCollectionData(){
     this.filterEnabled = false;
     var convertedCollection = [],
-      rawRoomModel = this.getRoomConstantCollection();
+      rawRoomModel = await this.getRoomConstantCollection();
     this.getTableHeaders(); // Get the table headers!
     if(rawRoomModel){
       rawRoomModel.map((data) => {
