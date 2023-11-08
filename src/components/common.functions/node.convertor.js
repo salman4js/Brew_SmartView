@@ -311,6 +311,25 @@ export function arrangeObj(obj, orderedArr){
   return orderedObj;
 };
 
+// Change the array of object data value based on the key!
+/**
+This method will take an array of object and key value of array and an objRules as an parameter.
+objRules is used to map the value to the user wanted data.
+key represents the key value which has to be modified.
+**/
+export function convertObjectValue(arr, key, objRules){
+  _.filter(arr, function(obj){
+    for (var i = 0; i <= key.length -1; i++){
+      if(obj[key[i]] !== undefined){
+        if(Object.keys(objRules).includes(obj[key[i]].toString())){
+          obj[key[i]] = objRules[obj[key[i]].toString()];
+        };
+      };
+    };
+  });
+  return arr;
+};
+
 // Refresh the entire page when needed!
 export function domRefresh(){
   window.location.reload();
