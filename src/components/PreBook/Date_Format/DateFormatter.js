@@ -1,5 +1,4 @@
 function formatDate(date) {
-    console.log("Date formatter Date", date);
     if(date == undefined){
         return undefined;
     } else {

@@ -40,6 +40,13 @@ class FilterTable extends TableView {
         footerButtons: undefined
       }
     };
+    this.shouldRender = true; // This flag is used re render the table data state only when the filtered data is changes.
+    /**
+      Ideally, for the first time when the table state is being updated re-render lifecycle method will get triggered.
+      So, again the computation happens, then the table state is being updated re-render lifecycle method will get triggered again 
+      which gets the application to unresponsive state.
+      and thats why added this flag to prevent that.
+    **/
     this.params = props.params;
     this.filterActionTableHeaderValue = 'Actions';
     this.checkoutUtils = new CheckoutUtils({accId: props.params.accIdAndName[0]});
@@ -55,6 +62,7 @@ class FilterTable extends TableView {
   // Prepare expanded table view!
   setExpandedTableView(){
     this.state.metadataTableState.infoMessage = filterTableConstants.tableInfoMessage.ZERO_FILTER_MESSAGE;
+    this.getTableHeaderValue();
     this.getFilteredData(); // Get the filtered data based on the filter applied by the user!
     return this.filteredModel[this.roomConstant];
   };
@@ -93,8 +101,12 @@ class FilterTable extends TableView {
     // this handle dateofcheckout filter!
     _.remove(this.filteredModel[this.props.data.selectedRoomConstant], function(obj){
       if(obj.prebookDateofCheckin.length > 0){
-        var inBetweenDates = brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), obj.prebookDateofCheckin);
-        return !inBetweenDates.includes(filterData.checkinDate); 
+        for(var i = 0; i < obj.prebookDateofCheckin.length; i++){
+          var inBetweenDates = brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), obj.prebookDateofCheckin[i]);
+          if(!inBetweenDates.includes(filterData.checkinDate)){
+            return true; 
+          }; 
+        };
       };
     });
   };
@@ -229,6 +241,8 @@ class FilterTable extends TableView {
       };
     });;
     this.state.metadataTableState.cellValues = tableCellsClone;
+    this.shouldRender && this._toggleTableLoader(false);
+    this.shouldRender = false;
   };
   
   // Set filter table state for header and cells!
@@ -246,7 +260,6 @@ class FilterTable extends TableView {
 
   // Get the filtered data based on the filter applied by the user!
   getFilteredData(){
-    this.getTableHeaderValue();
     this.filterEnabled = true; // So that in table view, table header and cell can be created accordingly!
     this.roomConstant = this.props.data.selectedRoomConstant;
     this.filterRoomCollection();
@@ -260,6 +273,7 @@ class FilterTable extends TableView {
   componentDidUpdate(){
     if(this.state.data.filteredData !== this.props.data.filteredData){
       this._updateStateValue(this.props.data);
+      this.shouldRender = true; // This flag should only change to true when the filter data changes.
     };
   };
 

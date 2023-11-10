@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import _ from 'lodash';
 import retrieveDate from '../../PreBook_Date_Spike/DateCorrector';
 import EditPrebookRoomItem from '../../edit.room.view/edit.prebook.room.view/edit.prebook.room.item.view';
 import { addRefundTracker, checkinPrebookGuest } from './prebook.components.utils/prebook.components.utils';
+import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
+import { removePrebookData } from '../../NewDashboard/property.container/checkin.view/checkin.form.utils';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import GuestRegistration from '../../GRC/grc.view';
 import axios from "axios";
@@ -307,7 +310,7 @@ const Prebook_component = (props) => {
       const currentResult = formDate(currentTime);
       return {checkinTime: checkinResult.getTime(), currentTime: currentResult.getTime()};
     } catch(err){
-        console.log("Earlier release we dont have checkin time!")
+        console.warn("Earlier release we dont have checkin time!");
     }
   }
 
@@ -403,28 +406,29 @@ const Prebook_component = (props) => {
         setSuccess(result.data.message);
       }
     }
-  }
+  };
 
   // Delete prebook order
-  const deletePrebook = () => {    
+  const deletePrebook = async () => {    
     setLoading(true);
-    const credentials = {
-      prebookUserId: props.prebookuser
-    }
-    axios.post(`${Variables.hostId}/${props.lodgeid}/deleteprebookuserrooms`, credentials)
-      .then(res => {
-        if (res.data.success) {
-          setLoading(false);
-          deletePrebookModal();
-          props.setLoad(true);
-        } else {
-          setLoading(false);
-          deletePrebookModal();
-          handleClose();
-          _showCustomModal(res.data.message, res.data.refundAmount)
-        }
-      })
-  }
+    const data = {
+      prebookUserId: props.prebookuser,
+      lodgeId: props.lodgeid,
+      roomId: props.roomid,
+      prebookDateofCheckin: props.dateofcheckin
+    };
+    var result = await removePrebookData(data);
+    if(result.data.success){
+      setLoading(false);
+      deletePrebookModal();
+      props.setLoad(true);
+    } else {
+      setLoading(false);
+      deletePrebookModal();
+      handleClose();
+      _showCustomModal(result.data.message, result.data.refundAmount)
+    };
+  };
   
   // Check for the camera access and turn on the camera accordingly!
   function checkCameraAccess(){
