@@ -4,7 +4,11 @@ let widgetTileModelSchema = {
   // Created or not.
   collections: {
     // Inside the collections, Populate the data with factory design pattern!
-  }
+  },
+  fetch: {
+    url: undefined,
+    payload: undefined
+  } // This is used to fetch the collections when the collection data has been lost.
 };
 
 export default widgetTileModelSchema;

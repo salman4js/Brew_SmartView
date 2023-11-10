@@ -7,6 +7,7 @@ import Loading from './Loading';
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import { Link, useParams } from "react-router-dom";
+import CollectionInstance from '../global.collection/widgettile.collection/widgettile.collection';
 import axios from "axios";
 
 const AddRooms = () => {
@@ -83,6 +84,7 @@ const AddRooms = () => {
             .then(res => {
                 {
                     if (res.data.success) {
+                        CollectionInstance.setCollections('roomsListCollection', res.data.updatedData); // Adding the created room data in the global collections.
                         setLoading(false);
                         setError(res.data);
                         setShow(true);

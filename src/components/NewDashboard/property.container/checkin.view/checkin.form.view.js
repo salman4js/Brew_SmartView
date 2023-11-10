@@ -354,10 +354,10 @@ const CheckinForm = (props) => {
       const finalFormValue = Object.assign(formValue, customizableFormValues); // Final form value ready to be sent to the server!
       const serverResult = await checkInFormValue(finalFormValue);
       if(serverResult.data.success){
-        _toggleLoader(false);
         _triggerCustomModal(true, {updatedRoomModel: serverResult.data.updatedModel, updatedUserModel: serverResult.data.updatedUserModel});
-      }
-    }
+        _toggleLoader(false);
+      };
+    };
   };
   
   // Update default form values!
