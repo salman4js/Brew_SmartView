@@ -33,9 +33,18 @@ export async function getRoomList(lodgeId, fetchPref, fetchUserColl){
   var resultData = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/false/roomlodge`, params);
   // Add the rooms list to the global collections!
   if(resultData.data.success){
+    /**
+      We fetch the roomsListCollection everytime when the dashboard loads to keep the data in sync.
+      or we have to update the roomlistCollection from every other route when the user changes the any room related model data.
+      By keeping this in this way, with minimal changes the roomsListCollection will be sync with the server.
+      In future, if the requirement was to keep the dashboard much faster then we might want to change this and 
+      update the collection from all the routes where and all the room related data changes.
+    **/
     var roomListCollections = CollectionInstance.getCollections('roomsListCollection');
     if(!roomListCollections){
       CollectionInstance.setCollections('roomsListCollection', resultData.data.message);
+    } else {
+      CollectionInstance.updateCollections('roomsListCollection', resultData.data.message);
     };
   };
   return resultData;

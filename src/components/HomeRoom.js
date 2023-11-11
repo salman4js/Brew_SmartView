@@ -22,7 +22,7 @@ import Modals from './Modals';
 import GuestRegistration from './GRC/grc.view';
 import {universalLang} from './universalLang/universalLang'
 import { handleTimeFormat, loadDate, getStayedDays, getExtraBedPrice, refreshPage } from './common.functions/common.functions';
-import { checkInFormValue, prebookFormValue } from './NewDashboard/property.container/checkin.view/checkin.form.utils';
+import { checkInFormValue, prebookFormValue, editOccupiedUserModel } from './NewDashboard/property.container/checkin.view/checkin.form.utils';
 import CheckoutUtils from './NewDashboard/property.container/checkout.view/checkout.form.utils';
 
 
@@ -971,7 +971,7 @@ const HomeRoom = (props) => {
     const [editDetails, setEditDetails] = useState({});
 
     // Update Customer Details!
-    function updateOptions(){
+    async function updateOptions(){
 
       var updatedAdvance = 0;
       // If there is prev advance, add it into the advance to get the updated advance.
@@ -998,20 +998,18 @@ const HomeRoom = (props) => {
             checkOutTime: editDetails.timeofcheckin,
             roomno: props.roomno,
             roomId: props.roomid,
-            isPrebook: false
-        }
-
-        axios.post(`${Variables.hostId}/${props.lodgeid}/updateoccupieddata`, options)
-            .then(res => {
-                if (res.data.success) {
-                    handleModal();
-                    setShowerror(true);
-                    setSuccess(res.data.message)
-                } else {
-                    setShowerror(true);
-                    setSuccess(res.data.message)
-                }
-            })
+            isPrebook: false,
+            lodgeId: props.lodgeid
+        };
+        const result = await editOccupiedUserModel(options);
+        if(result.data.success){
+          handleModal();
+          setShowerror(true);
+          setSuccess(result.data.message)
+        } else {
+          setShowerror(true);
+          setSuccess(result.data.message)
+        };
     };
     
     // Get userName from the userdata state!
