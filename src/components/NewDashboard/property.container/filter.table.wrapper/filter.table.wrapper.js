@@ -125,6 +125,10 @@ class FilterTable extends TableView {
     // Check in api takes aadharcard as aadhar and username as customername!
     filteredUserModel['aadhar'] = filteredUserModel.aadharcard;
     filteredUserModel['customername'] = filteredUserModel.username;
+    // In case the booking was through channel manager, then we would want to add the updatedPrice in the filteredUserModel.
+    filteredUserModel['isChannel'] = filteredUserModel.channel !== filterTableConstants.channelManager;
+    filteredUserModel['updatePrice'] = this.state.data.roomModel.totalAmount;
+    // Remove the unused object keys to prevent confusion.
     delete filteredUserModel.aadharcard;
     delete filteredUserModel.username;
     return filteredUserModel;

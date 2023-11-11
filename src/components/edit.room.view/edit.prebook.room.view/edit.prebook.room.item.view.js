@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { editPrebookDetails } from '../../NewDashboard/property.container/checkin.view/checkin.form.utils';
 import brewDate from 'brew-date';
 import Variables from '../../Variables';
 import CustomModal from '../../CustomModal/custom.modal.view';
@@ -93,7 +93,7 @@ const EditPrebookRoomItem = (props) => {
   }
   
   // Send the formed data into the server!
-  function saveData(){
+  async function saveData(){
     // Start the loader!
     _triggerLoading(true);
 
@@ -121,18 +121,15 @@ const EditPrebookRoomItem = (props) => {
     fieldData.paymentTracker['dateTime'] = brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime());
     fieldData.paymentTracker['callPaymentTracker'] = isAdvPropChanged(); // If its true, then the advance field has been changed
     // Hence calling the paymentTracker!
-
-    axios.post(`${Variables.hostId}/${props.data.lodgeId}/editprebookedrooms`, fieldData)
-      .then(res => {
-        if(res.data.success){
-          props.onHide();
-          updateItemView(); // Update the prebook details component forcefully!
-          _triggerLoading(false);
-        } else {
-          // Failure error handler!
-        }
-      })
-  }
+    const result = await editPrebookDetails(fieldData);
+    if(result.data.success){
+      props.onHide();
+      updateItemView(); // Update the prebook details component forcefully!
+      _triggerLoading(false);
+    } else {
+      // Failure error handler!
+    };
+  };
   
   // Get field data!
   function getFieldData(){

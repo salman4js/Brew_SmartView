@@ -30,6 +30,11 @@ class Collections { // Design pattern --> Singleton class!
   updateCollections(propertyName, data){
     widgetTileModelSchema.collections[propertyName].data = data;
   };
+  
+  // Update the existing model data by the collection name!
+  updateModel(collectionName, modelName, data){
+    widgetTileModelSchema.collections[collectionName].data[modelName] = data;
+  };
 
   // Add new collections!
   addCollections(propertyName, data){
@@ -147,7 +152,6 @@ class Collections { // Design pattern --> Singleton class!
       throw new Error('Collection data is not yet fetched or its empty!');
     } else {
       // Perform filtering!
-      console.log(collections);
     }
   };
   

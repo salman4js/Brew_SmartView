@@ -5,7 +5,7 @@ import Navbar from "../Navbar";
 import Loading from "../Loading";
 import Variables from "../Variables";
 import { Link, useParams } from "react-router-dom";
-import {clearStorage} from '../../Controller/Storage/Storage'
+import {clearStorage, getStorage} from '../../Controller/Storage/Storage'
 import changeScreen from "../Action";
 
 
@@ -14,6 +14,9 @@ const EditRoom = () => {
     // Getting ID!
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
+    
+    // Should show full details in old dashboard card view
+    var showFullDetails = JSON.parse(getStorage('showFullDetails'));
 
     // Edit Room State Handler!
     const [edit, setEdit] = useState({
@@ -83,7 +86,7 @@ const EditRoom = () => {
                             <div class="container">
                                 <div className="row">
                                     <div className="col-8">
-                                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name = {searchConfig.search} value = {searchConfig.search} onChange = {(e) => setSearchConfig(prevState => ({...prevState, search: e.target.value}))} />
+                                      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name = {searchConfig.search} value = {searchConfig.search} onChange = {(e) => setSearchConfig(prevState => ({...prevState, search: e.target.value}))} />
                                     </div>
                                     <div className="col">
                                         <select class="form-select" arai-label="Sort by" placeholder="Sort By" onChange={(e) => changeSearchConfig(e.target.value)}>
@@ -111,7 +114,7 @@ const EditRoom = () => {
                                             }
                                         }).map((item, key) => {
                                             return (
-                                                <HomeRoom floorNo = {item.floorNo} edit={true} lodgeName={splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
+                                                <HomeRoom showFullDetails = {showFullDetails} floorNo = {item.floorNo} edit={true} lodgeName={splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
                                                     roomid={item._id} id={id} lodgeid={splitedIds[0]} price={item.price} isPrebook = {false}
                                                     prebook={item.preBooked} prevalid={item.preValid} discount={item.discount} advance = {item.advancePrice}
                                                  />
