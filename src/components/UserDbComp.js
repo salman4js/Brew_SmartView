@@ -126,73 +126,77 @@ const UserDbComp = (props) => {
               <p className="font-big">
                 Checked Out: {props.checkout} / {handleTimeFormat(props.checkoutTime)}
               </p>
-              {
-                props.discount ===  undefined || props.discount === null ? (
+              {!props.isUserTransfered && (
+                <>
+                {
+                  props.discount ===  undefined || props.discount === null ? (
+                    <p className="font-big">
+                      Discount Applied: False
+                    </p>
+                  ) : (
+                    <div>
+                      <p className="font-big">
+                        Discount Applied: True
+                      </p>
+                      <p className="font-big">
+                        Discount Amount: {props.discount === "" ? 0 : props.discount}
+                      </p>
+                    </div>
+                  )
+                }
+                {
+                 props.advance === undefined || props.advance === null ? (
                   <p className="font-big">
-                    Discount Applied: False
+                    Advance Applied: False
                   </p>
-                ) : (
+                 ) : (
                   <div>
                     <p className="font-big">
-                      Discount Applied: True
+                      Advance Applied: True
                     </p>
                     <p className="font-big">
-                      Discount Amount: {props.discount === "" ? 0 : props.discount}
+                      Advance Amount: {props.advance === "" ? 0 : props.advance}
                     </p>
                   </div>
-                )
-              }
-              {
-               props.advance === undefined || props.advance === null ? (
+                 )
+                }
                 <p className="font-big">
-                  Advance Applied: False
+                    Dish Amount : {props.dishBill}
                 </p>
-               ) : (
-                <div>
-                  <p className="font-big">
-                    Advance Applied: True
-                  </p>
-                  <p className="font-big">
-                    Advance Amount: {props.advance === "" ? 0 : props.advance}
-                  </p>
-                </div>
-               )
-              }
-              <p className="font-big">
-                  Dish Amount : {props.dishBill}
-              </p>
-              <p className='font-big'>
-                Dish GST Amount: {props.foodGst}
-              </p>
-              <p className="font-big">
-                  Stay Amount : {props.bill}
-              </p>
-              <p className = "font-big">
-                Channel : {props.channel}
-              </p>
-              {
-                props.isGst ? (
-                  <div>
-                    <p className = 'font-big'>
-                      Stay GST Amount: {props.stayGst}
-                    </p>
-                    {!props.isRoomTransfered && (
-                      <p className='font-big'>
-                        Total Paid Amount: {props.totalAmount}
+                <p className='font-big'>
+                  Dish GST Amount: {props.foodGst}
+                </p>
+                <p className="font-big">
+                    Stay Amount : {props.bill}
+                </p>
+                <p className = "font-big">
+                  Channel : {props.channel}
+                </p>
+                {
+                  props.isGst ? (
+                    <div>
+                      <p className = 'font-big'>
+                        Stay GST Amount: {props.stayGst}
                       </p>
-                    )}
-                    {props.isRoomTransfered && (
-                      <p className='font-big'>
-                        Total Paid Amount: {props.totalAmount + props.oldRoomPrice}
-                      </p>
-                    )}
-                  </div>
-                ) : (
-                  <div>
+                      {!props.isRoomTransfered && (
+                        <p className='font-big'>
+                          Total Paid Amount: {props.totalAmount}
+                        </p>
+                      )}
+                      {props.isRoomTransfered && (
+                        <p className='font-big'>
+                          Total Paid Amount: {props.totalAmount + props.oldRoomPrice}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <div>
 
-                  </div>
-                )
-              }
+                    </div>
+                  )
+                }
+                </>
+              )}
             </div>
           </Modal.Body>
           <Modal.Footer>

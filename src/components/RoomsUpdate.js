@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Variables from './Variables';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import axios from "axios";
-
+import axios from 'axios';
+import { editRoomModel, deleteRoomModel } from './NewDashboard/property.container/checkin.view/checkin.form.utils';
 
 const RoomsUpdate = (props) => {
 
@@ -30,40 +30,33 @@ const RoomsUpdate = (props) => {
     //Loader--Modal
     const [loading, setLoading] = useState(false);
 
-
-    const updateRooms = () => {
+    // When the room data is being updated.
+    const updateRooms = async () => {
         setLoading(true);
-        const credentials = {
+        const data = {
             floorNo: floorNo,
             roomno: roomno,
             bedcount: bedcount,
             suitename: suitetype,
             roomStatusConstant: 'customState',
             roomStatus: roomState,
-            roomId: props.roomid
-        }
-        axios.post(`${Variables.hostId}/${props.lodgeId}/roomupdater`, credentials)
-            .then(res => {
-                if (res.data.success) {
-                    setLoading(false);
-                    setShowerror(true)
-                    setSuccess(res.data.message);
-                    handleClose();
-                } else {
-                    setLoading(false);
-                    setShowerror(true)
-                    setSuccess(res.data.message)
-                }
-            })
-            .catch(err => {
-                setShowerror(true);
-                setSuccess("Some internal error occured!");
-            })
-            .finally(() => {
-                // Reloading the component everytime the value gets updated!
-                props.load();
-            })
-    }
+            roomId: props.roomid,
+            lodgeId: props.lodgeId
+        };
+        
+        const result = await editRoomModel(data);
+        if (result.data.success) {
+            setLoading(false);
+            setShowerror(true)
+            setSuccess(result.data.message);
+            handleClose();
+        } else {
+            setLoading(false);
+            setShowerror(true)
+            setSuccess(result.data.message)
+        };
+        props.load(); // Reload the component everytime when the component data updated.
+    };
 
     // Getting Options
     const getRoomTypes = () => {
@@ -71,52 +64,40 @@ const RoomsUpdate = (props) => {
             .then(data => {
                 setOption(data.data.message);
             })
-    }
-
+    };
 
     // Delete Room Data...
-
-    const deleteRoom = () => {
+    const deleteRoom = async() => {
         setLoading(true);
-        const credentials = {
+        const data = {
             roomId: props.roomid
+        };
+        const result = await deleteRoomModel(data);
+        if(result.data.success){
+          setLoading(false);
+          setShowerror(true);
+          setSuccess(result.data.message);
+          deleteModal();
+        } else {
+          setLoading(false);
+          setShowerror(true);
+          setSuccess(result.data.message)
+          deleteModal();
         }
-        axios.post(`${Variables.hostId}/${props.lodgeId}/deleteroom`, credentials)
-            .then(res => {
-                if (res.data.success) {
-                    setLoading(false);
-                    setShowerror(true);
-                    setSuccess(res.data.message);
-                    deleteModal();
-                    props.setLoad(true)
-                } else {
-                    setLoading(false);
-                    setShowerror(true);
-                    setSuccess(res.data.message)
-                    deleteModal();
-                }
-            })
-            .catch(err => {
-                setShowerror(true);
-                setSuccess("Some internal error occured!");
-            })
-            .finally(() => {
-                // Reloading the component after the deletion
-                props.load();
-            })
-    }
+        props.load(); // Reload the component everytime when the component data updated.result
+    };
 
     const handleClose = () => {
         setShow(!show);
-    }
+    };
 
     const handleCloseModal = () => {
         setShowerror(!showerror)
-    }
+    };
 
     const handleCloseAlert = () => {
         setCloseAlert(!closeAlert);
-    }
+    };
 
     const deleteModal = () => {
         if (props.engaged === "false") {
@@ -124,7 +105,7 @@ const RoomsUpdate = (props) => {
         } else {
             setOccupied(!occupied);
         }
-    }
+    };
 
     const Occupied = () => {
         setOccupied(!occupied);
@@ -145,7 +126,7 @@ const RoomsUpdate = (props) => {
           <option>Release</option>
         )
       }
-    }
+    };
 
     useEffect(() => {
         getRoomTypes();
