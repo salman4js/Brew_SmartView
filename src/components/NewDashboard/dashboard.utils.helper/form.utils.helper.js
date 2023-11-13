@@ -39,7 +39,7 @@ export function removeModelsFromCollections(modelName, data){
 };
 
 // Update the room list collection --> Delete the prebookUserId from the room model when the prebook has been cancelled.
-export function _updateRoomListCollection(data, action){
+export function _updateRoomListCollection(data, action, performer){
   // Get the roomList Collections.
   var roomListCollection = CollectionInstance.getCollections('roomsListCollection').data;
   if(roomListCollection){
@@ -47,25 +47,39 @@ export function _updateRoomListCollection(data, action){
     var filteredCollection = _.filter(roomListCollection, function(model){
       return model._id === data.roomId;
     });
-    var filteredModel = filteredCollection[0]; // As of now, only one prebook can be deleted at a time.
+    var filteredModel = filteredCollection[0]; // As of now, only one instance can be processed at a time.
     if(filteredCollection && action === 'DELETE'){ // Remove the room model from the roomListCollection if the room model was found.
       _.remove(roomListCollection, function(model){
         return model._id === data.roomId;
       });
-      // Delete the prebook user id from the filtered room model.
-      _.remove(filteredModel.prebookuser, function(value){
-        return value === data.prebookUserId;
-      });
-      // Delete the prebook date of checkin from the filtered model so the filter table for room transfer can work as expected.
-      _.remove(filteredModel.prebookDateofCheckin, function(value){
-        return value === data.prebookDateofCheckin;
-      });
-      // Now, add the filteredModel in the roomListCollection and update the collections.
-      roomListCollection.push(filteredModel);
+      if(performer === 'pre-book'){ // If the performer is prebook then we would have to delete the prebook entry from the roomsListCollection model.
+        // Otherwise roomModel will still have prebook entries stored which will lead to some misbehavior in almost all aspects.
+        // Delete the prebook user id from the filtered room model.
+        _.remove(filteredModel.prebookuser, function(value){
+          return value === data.prebookUserId;
+        });
+        // Delete the prebook date of checkin from the filtered model so the filter table for room transfer can work as expected.
+        _.remove(filteredModel.prebookDateofCheckin, function(value){
+          return value === data.prebookDateofCheckin;
+        });
+        // Now, add the filteredModel in the roomListCollection and update the collections.
+        roomListCollection.push(filteredModel);
+      };
     };
     if(filteredCollection && action === 'ADD'){
-      filteredModel.prebookuser.push(data.prebookUserId);
-      filteredModel.prebookDateofCheckin.push(data.prebookDateofCheckin);
+      if(performer === 'pre-book'){
+        filteredModel.prebookuser.push(data.prebookUserId);
+        filteredModel.prebookDateofCheckin.push(data.prebookDateofCheckin);
+      } else {
+        roomListCollection.push(data);
+      };
+    };
+    if(filteredCollection && action === 'EDIT'){
+      // Remove that edited entry model from the roomListCollection 
+      // and then add the updatedData into the roomsListCollection.
+      _updateRoomListCollection(data, 'DELETE');
+      // Add the updated data into the roomsListCollection.
+      _updateRoomListCollection(data, 'ADD');
     };
     // Atlast, update the room list collections.
     CollectionInstance.updateCollections('roomsListCollection', roomListCollection);

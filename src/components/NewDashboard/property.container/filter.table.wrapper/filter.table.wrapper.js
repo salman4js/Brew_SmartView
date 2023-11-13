@@ -127,7 +127,9 @@ class FilterTable extends TableView {
     filteredUserModel['customername'] = filteredUserModel.username;
     // In case the booking was through channel manager, then we would want to add the updatedPrice in the filteredUserModel.
     filteredUserModel['isChannel'] = filteredUserModel.channel !== filterTableConstants.channelManager;
-    filteredUserModel['updatePrice'] = this.state.data.roomModel.totalAmount;
+    if(filteredUserModel.isChannel){
+      filteredUserModel['updatePrice'] = this.state.data.roomModel.totalAmount;
+    };
     // Remove the unused object keys to prevent confusion.
     delete filteredUserModel.aadharcard;
     delete filteredUserModel.username;
@@ -180,13 +182,21 @@ class FilterTable extends TableView {
     };
     this._prepareCustomModal(customModalOptions);
   };
+  
+  // Prepare checkout details!
+  getCheckoutDetails(selectedCellIndex){
+    var checkoutDetails = this.state.data.userModel;
+    checkoutDetails['isUserTransfered'] = true;
+    checkoutDetails['transferedRoomNo'] = this.getRoomDetails(selectedCellIndex).nextRoom;
+    return checkoutDetails;
+  };
 
   // Perform transfer action!
   async _performTransfer(cellIndex){
     this.onCloseCustomModal();
     this._toggleTableLoader(true); // Enable the loader!
     // Get the user model by the userId.
-    var checkoutDetails = this.state.data.userModel, // This user model contains checkoutDetails, so that the user can be checkedout.
+    var checkoutDetails = this.getCheckoutDetails(cellIndex), // This user model contains checkoutDetails, so that the user can be checkedout.
       checkinRoomDetails = this.prepareCheckinRoomDetails(cellIndex),
       checkinUserDetails = this.prepareCheckInUserModel(),
       checkinParams = Object.assign(checkinRoomDetails, checkinUserDetails);

@@ -24,14 +24,14 @@ export async function prebookFormValue(data){
   addCollections && addToCollections('upcomingPrebook', result.data.updatedUserModel); // This is for the default.view (New dashboard tile view)
   // Add the prebookuser into the room model prebook user array in the room colletions!
   var data = {roomId: result.data.updatedUserModel.room, prebookUserId: result.data.updatedUserModel._id, prebookDateofCheckin: data.prebookdateofcheckin};
-  _updateRoomListCollection(data, 'ADD'); // this is to update the roomsListCollection to keep the data in sync for the filter.table (Room transfer).
+  _updateRoomListCollection(data, 'ADD', 'pre-book'); // this is to update the roomsListCollection to keep the data in sync for the filter.table (Room transfer).
   return result;
 };
 
 // Remove prebook data for the room model.
 export async function removePrebookData(data){
   const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteprebookuserrooms`, data);
-  result.data.success && _updateRoomListCollection(data, 'DELETE');
+  result.data.success && _updateRoomListCollection(data, 'DELETE', 'pre-book');
   result.data.success && _updateWidgetTileCollections('upcomingPrebook', result.data.updatedPrebookModel, 'DELETE');
   return result;
 };
@@ -50,6 +50,37 @@ export async function editOccupiedUserModel(data){
   const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/updateoccupieddata`, data);
   // Determine the action based on the datesBetweenCount user preferences.
   const action = shouldUpdateCollections ? 'EDIT' : 'DELETE';
-  result.data.success && _updateWidgetTileCollections('upcomingCheckout', result.data.updatedUserModel, action);
+  shouldAddToCollections && result.data.success && _updateWidgetTileCollections('upcomingCheckout', result.data.updatedUserModel, action);
   return result;
 };
+
+// Edit existing room model and also update the roomsListCollection.
+export async function editRoomModel(data){
+  const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/roomupdater`, data);
+  if(result.data.success){
+    // Modify the result.data.updatedData just to update the room list collections.
+    result.data.updatedData['roomId'] = data.roomId;
+    _updateRoomListCollection(result.data.updatedData, 'EDIT');
+  };
+  return result;
+};
+
+// Delete the existing room model.
+export async function deleteRoomModel(data){
+  const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteroom`, data);
+  result.data.success && _updateRoomListCollection(data, 'DELETE');
+  return result;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
