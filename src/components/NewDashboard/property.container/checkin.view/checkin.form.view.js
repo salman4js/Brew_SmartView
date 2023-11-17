@@ -5,8 +5,8 @@ import { prebookExcludeDates } from '../../../ExcludeDates/excludesdates';
 import MetadataFields from '../../../fields/metadata.fields.view';
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
-import { getTimeDate, formatDate, getStayedDays, determineGSTPercent } from '../../../common.functions/common.functions';
-import { nodeConvertor, validateFieldData, _clearData, _enableInlineToast, getFieldsData, updateMetadataFields } from '../../../common.functions/node.convertor';
+import { getStayedDays, determineGSTPercent } from '../../../common.functions/common.functions';
+import { nodeConvertor, validateFieldData, getFieldsData, updateMetadataFields } from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 
 
@@ -347,10 +347,9 @@ const CheckinForm = (props) => {
     if(isFormValid.length === 0 && isCustomizableFieldValid.length === 0){
       const formValue = getFieldData(checkinFields); // Default input fields!
       const customizableFormValues = getFieldData(customizableFields); // Customizable form values!
-      customizableFormValues['isChannel'] = customizableFormValues.channel !== 'Walk-In' ? true : false; // This params is needed when dealing with channel manager!
+      customizableFormValues['isChannel'] = (customizableFormValues.channel !== 'Walk-In'); // This params is needed when dealing with channel manager!
       // Delete advance and discount from the fieldValue if the channel manager is true!
       customizableFormValues.isChannel && delete customizableFormValues.advance && delete customizableFormValues.discount;
-      const updatedFormValue = updateDefaultFormValue(formValue);
       const finalFormValue = Object.assign(formValue, customizableFormValues); // Final form value ready to be sent to the server!
       const serverResult = await checkInFormValue(finalFormValue);
       if(serverResult.data.success){
@@ -358,22 +357,6 @@ const CheckinForm = (props) => {
         _toggleLoader(false);
       };
     };
-  };
-  
-  // Update default form values!
-  function updateDefaultFormValue(formValue){
-    var timeDate = getTimeDate();
-    formValue.checkin = brewDate.getFullDate("yyyy/mm/dd");
-    formValue.checkout = formatDate(formValue.checkout);
-    formValue['checkinTime'] = timeDate.getTime;
-    formValue['checkoutTime'] = formValue.checkout !== undefined ? timeDate.getTime : undefined;
-    formValue['isPrebook'] = false;
-    formValue['dateTime'] = brewDate.getFullDate("dd/mmm") +  " " + brewDate.timeFormat(brewDate.getTime());
-    formValue['roomid'] = props.data.roomModel._id;
-    formValue['roomno'] = props.data.roomModel.roomno;
-    formValue['floorNo'] = props.data.roomModel.floorNo;
-    formValue['lodgeId'] = props.params.accIdAndName[0];
-    return formValue;
   };
   
   // After form has been saved!

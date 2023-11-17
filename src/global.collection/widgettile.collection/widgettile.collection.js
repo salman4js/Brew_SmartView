@@ -192,6 +192,17 @@ class Collections { // Design pattern --> Singleton class!
       return attrArr
     };
   };
+  
+  // Delete the collections by the collection name.
+  deleteCollections(collectionName){
+    delete widgetTileModelSchema.collections[collectionName];
+  };
+  
+  // Delete all collections, which inturn reset the entire data.
+  deleteAllCollections(){
+    widgetTileModelSchema.instance = undefined;
+    widgetTileModelSchema.collections = {};
+  };
 };
 
 let CollectionInstance = Object.freeze(new Collections());
