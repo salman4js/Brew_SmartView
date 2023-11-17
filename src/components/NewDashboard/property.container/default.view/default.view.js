@@ -102,7 +102,6 @@ class DefaultView extends React.Component {
 
   // Card body child view list item function!
   cardBodyChildView(roomStatusConstant){
-    var dummyValue = this.state.propertyStatusDetails;
     // Get the count of the roomStatus from the state!
     var countOfTheState = roomStatusConstant !== undefined ? this.state.propertyStatusDetails[roomStatusConstant] : 0;
     return widgetTileBodyTemplateHelpers(countOfTheState);

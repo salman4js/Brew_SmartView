@@ -12,15 +12,20 @@ var filterTableConstants = Object.freeze({
       transferBtn: 'Yes, Transfer'
     }
   }),
+  promptErrorDialog: Object.freeze({
+    header: (details) => `You are about to transfer this guest from ${details.currentRoomType} type to ${details.nextRoomType} type. 
+                                  Do you want to change any ${details.nextRoom}'s room properties before transfer operation?`,
+    footerButtons: {
+      cancelBtn: 'Cancel and Transfer',
+      editPropsBtn: 'Edit Properties'
+    }
+  }),
   errorOnTransfer: Object.freeze({
     ERROR_ON_CHECKOUT: 'Something went wrong during the room transfer process, Please perform the checkout and checkin process manually.',
     ERROR_ON_CHECKIN: 'Something went wrong during the room transfer process, Customer has been checkedout from the current room, please perform the checkin process manually.'
   }),
   successOnTransfer: Object.freeze({
     SUCCESS_ON_TRANSFER: "Room Transfer is successfully completed!"
-  }),
-  tableInfoMessage: Object.freeze({
-    ZERO_FILTER_MESSAGE: 'You have no filters applied to provide data!'
   })
 });
 

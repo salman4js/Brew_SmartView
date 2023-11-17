@@ -200,11 +200,18 @@ const Login = () => {
       headerText: data.headerText,
       message: data.message
     })
-  }
-
-
+  };
+  
+  // When the route changes to login in any circumstances,
+  // delete the entire collection to keep the data in sync.
+  function _updateGlobalCollections(){
+    CollectionInstance.deleteAllCollections();
+    return;
+  };
+  
   useEffect(() => {
     localStorage.clear();
+    _updateGlobalCollections();
   }, [])
 
   return (

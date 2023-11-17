@@ -56,6 +56,7 @@ class TableView extends React.Component {
         header: undefined,
         centered: true,
         restrictBody: true,
+        showBodyItemView: undefined,
         modalSize: "medium",
         footerEnabled: false,
         footerButtons: undefined
@@ -156,6 +157,8 @@ class TableView extends React.Component {
     this.state.customModal.show = true;
     this.state.customModal.centered = options.centered !== undefined ? options.centered : true;
     this.state.customModal.onHide = options.onHide !== undefined ? options.onHide : this.state.customModal.onHide;
+    this.state.customModal.restrictBody = (options.restrictBody === false) ? options.restrictBody : true; // By default, restrictBody is set to true.
+    this.state.customModal.showBodyItemView = () => options.showBodyItemView && options.showBodyItemView();
     this.state.customModal.header = options.header;
     this.state.customModal.footerEnabled = options.footerEnabled;
     this.state.customModal.footerButtons = options.footerButtons;

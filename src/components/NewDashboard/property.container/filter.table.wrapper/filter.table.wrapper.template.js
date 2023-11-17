@@ -1,4 +1,5 @@
-// filter table wrapper overriden table templates!
+// filter table wrapper override table templates!
+import MetadataFieldsView from "../../../fields/metadata.fields.view";
 
 // Filter table action cell view!
 export function filterTableActionCellView(events, index){
@@ -8,4 +9,9 @@ export function filterTableActionCellView(events, index){
       {transfer}
     </div>
   )
-};
+}
+
+// Edit properties custom modal body item view!
+export function editPropertiesBodyView(data, updateData){
+  return <MetadataFieldsView data = {data} updateData = {updateData}/>
+}

@@ -1,14 +1,13 @@
-import React from 'react';
 import './filter.table.wrapper.css';
 import _ from 'lodash';
 import brewDate from 'brew-date';
 import TableView from '../table.view/table.view';
-import { filterTableActionCellView } from './filter.table.wrapper.template';
+import {filterTableActionCellView, editPropertiesBodyView} from './filter.table.wrapper.template';
 import filterTableConstants from './filter.table.wrapper.constants';
-import { filterKeysInObj } from '../../../common.functions/node.convertor';
-import { getTimeDate } from  '../../../common.functions/common.functions';
+import {filterKeysInObj, nodeConvertor, validateFieldData} from '../../../common.functions/node.convertor';
+import {getTimeDate} from '../../../common.functions/common.functions';
 import CheckoutUtils from '../checkout.view/checkout.form.utils';
-import { checkInFormValue } from '../checkin.view/checkin.form.utils';
+import {checkInFormValue} from '../checkin.view/checkin.form.utils';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 
 class FilterTable extends TableView {
@@ -38,7 +37,29 @@ class FilterTable extends TableView {
         modalSize: "medium",
         footerEnabled: false,
         footerButtons: undefined
-      }
+      },
+      editPropertiesFields: [{
+        value: undefined,
+        placeholder: "",
+        label: "Update Room Price",
+        name: 'updatePrice',
+        attribute: 'textField',
+        isRequired: true,
+        inlineToast: {
+          isShow: false,
+          inlineMessage: 'Please enter a valid price'
+        }
+      }, {
+        value: undefined,
+        defaultValue: 0,
+        placeholder: '',
+        label: 'Extra Beds',
+        name: 'extraBeds',
+        validation: false,
+        validationRegex: /^(0|[1-9]\d*)$/,
+        attribute: 'textField',
+        isRequired: false
+      }]
     };
     this.shouldRender = true; // This flag is used re render the table data state only when the filtered data is changes.
     /**
@@ -58,6 +79,50 @@ class FilterTable extends TableView {
       transferEvent: this.promptTransferDialog.bind(this)
     };
   };
+
+  // Get transfer modal information!
+  getTransferModalInfo(){
+    var transferHeader = filterTableConstants.promptTransferDialog.header({currentRoom: this.roomDetails.currentRoom, nextRoom: this.roomDetails.nextRoom});
+    return {
+      header: transferHeader,
+      footerEnabled: true,
+      footerButtons: [{
+        btnId: filterTableConstants.promptTransferDialog.footerButtons.cancelBtn,
+        variant: 'secondary',
+        onClick: this.onCloseCustomModal.bind(this)
+      }, {
+        btnId: filterTableConstants.promptTransferDialog.footerButtons.transferBtn,
+        variant: 'success',
+        onClick: this._performTransfer.bind(this)
+      }]
+    };
+  };
+
+  // Edit properties custom modal body view!
+  _editPropertiesCustomModalBodyView(){
+    return editPropertiesBodyView(this.state.editPropertiesFields, (updatedData) => this.setState({editPropertiesFields: updatedData}));
+  };
+
+  // Get edit prop modal information!
+  getEditPropModalInfo(){
+    var modalHeader = filterTableConstants.promptErrorDialog.header({nextRoom: this.roomDetails.nextRoom, currentRoomType: this.roomDetails.currentRoomType,
+    nextRoomType: this.roomDetails.nextRoomType});
+    return {
+      header: modalHeader,
+      footerEnabled: true,
+      restrictBody: false,
+      showBodyItemView: () => this._editPropertiesCustomModalBodyView(this),
+      footerButtons: [{
+        btnId: filterTableConstants.promptErrorDialog.footerButtons.cancelBtn,
+        variant: 'secondary',
+        onClick: this._performTransfer.bind(this)
+      }, {
+        btnId: filterTableConstants.promptErrorDialog.footerButtons.editPropsBtn,
+        variant: 'success',
+        onClick: this._updateProperties.bind(this)
+      }]
+    };
+  };
   
   // Prepare expanded table view!
   setExpandedTableView(){
@@ -74,13 +139,13 @@ class FilterTable extends TableView {
     var roomConstant = this.props.data.selectedRoomConstant,
       roomCollections = CollectionInstance.getCollections('roomsListCollection'),
       self = this;
-    if(this.filteredModel[this.props.data.selectedRoomConstant] === undefined){
-      this.filteredModel[this.props.data.selectedRoomConstant] = [];
-    };
+    if(this.filteredModel[roomConstant] === undefined){
+      this.filteredModel[roomConstant] = [];
+    }
     _.find(roomCollections.data, function(obj){
-      if(obj.roomStatusConstant === self.props.data.selectedRoomConstant){
-        self.filteredModel[self.props.data.selectedRoomConstant].push(obj);
-      };
+      if(obj.roomStatusConstant === roomConstant){
+        self.filteredModel[roomConstant].push(obj);
+      }
     });
     this.state.data.filteredData && this._applyFilter();
   };
@@ -92,8 +157,7 @@ class FilterTable extends TableView {
   
   // Apply user selected filter data!
   _applyFilter(){
-    var filterData = this.state.data.filteredData,
-      self = this;
+    var filterData = this.state.data.filteredData;
     // this handle filter by room type!
     _.remove(this.filteredModel[this.props.data.selectedRoomConstant], function(obj){
         return obj.suiteName !== filterData.suiteType;
@@ -105,9 +169,9 @@ class FilterTable extends TableView {
           var inBetweenDates = brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), obj.prebookDateofCheckin[i]);
           if(!inBetweenDates.includes(filterData.checkinDate)){
             return true; 
-          }; 
-        };
-      };
+          }
+        }
+      }
     });
   };
   
@@ -116,7 +180,7 @@ class FilterTable extends TableView {
     var userId = Array.isArray(this.state.data.roomModel.user) ? this.state.data.roomModel.user[0] : this.state.data.roomModel.user;
     if(!this.userCollection){
       this.userCollection = CollectionInstance.getCollections('userCollections').data;
-    };
+    }
     var userModel = _.find(this.userCollection, function(obj){
       return obj._id === userId;
     });
@@ -127,9 +191,13 @@ class FilterTable extends TableView {
     filteredUserModel['customername'] = filteredUserModel.username;
     // In case the booking was through channel manager, then we would want to add the updatedPrice in the filteredUserModel.
     filteredUserModel['isChannel'] = filteredUserModel.channel !== filterTableConstants.channelManager;
-    if(filteredUserModel.isChannel){
+    if(filteredUserModel.isChannel && this.isTransferOnSameType){ // Update the price only if the both room types are same.
       filteredUserModel['updatePrice'] = this.state.data.roomModel.totalAmount;
-    };
+    }
+    if(this.shouldUpdateProperties){ // this is added here to change the data when the user edited the nextRoom properties.
+      filteredUserModel['updatePrice'] = this.editPropertiesFieldData.updatePrice;
+      filteredUserModel['extraBeds'] = this.editPropertiesFieldData.extraBeds;
+    }
     // Remove the unused object keys to prevent confusion.
     delete filteredUserModel.aadharcard;
     delete filteredUserModel.username;
@@ -137,9 +205,9 @@ class FilterTable extends TableView {
   };
   
   // Get the room model with checkin details!
-  prepareCheckinRoomDetails(cellIndex){
+  prepareCheckinRoomDetails(){
     var timeDate = getTimeDate();
-    var selectedRoomModel = this.state.metadataTableState.cellValues[cellIndex];
+    var selectedRoomModel = this.roomDetails.selectedRoomModel;
     delete selectedRoomModel.actions;
     selectedRoomModel['lodgeId'] = this.props.params.accIdAndName[0];
     selectedRoomModel['roomid'] = selectedRoomModel._id;
@@ -152,7 +220,7 @@ class FilterTable extends TableView {
     selectedRoomModel['dateTime'] = brewDate.getFullDate("dd/mmm") +  " " + brewDate.timeFormat(brewDate.getTime());
     // This here represents specially room transfer details only!
     selectedRoomModel['isRoomTransfered'] = true;
-    selectedRoomModel['oldRoomNo'] = this.getRoomDetails(cellIndex).currentRoom;
+    selectedRoomModel['oldRoomNo'] = this.roomDetails.currentRoom;
     selectedRoomModel['oldRoomPrice'] = this.state.data.userModel.amount + this.state.data.userModel.stayGst;
     selectedRoomModel['oldRoomStayDays'] = this.state.data.userModel.stayeddays;
     return selectedRoomModel;
@@ -160,46 +228,36 @@ class FilterTable extends TableView {
   
   // Get room details of current and next room!
   getRoomDetails(cellIndex){
-    return {currentRoom : this.state.data.userModel.roomno, nextRoom: this.state.metadataTableState.cellValues[cellIndex].roomno}
+    this.roomDetails = {currentRoom : this.state.data.userModel.roomno, nextRoom: this.state.metadataTableState.cellValues[cellIndex].roomno,
+                           currentRoomType: this.state.data.userModel.roomtype, nextRoomType: this.state.metadataTableState.cellValues[cellIndex].suiteName,
+                           selectedRoomModel: this.state.metadataTableState.cellValues[cellIndex]};
+    this.isTransferOnSameType = (this.roomDetails.currentRoomType === this.roomDetails.nextRoomType);
   };
   
   // Propmt transfer dialog!
   promptTransferDialog(cellIndex){
-    var roomDetails = this.getRoomDetails(cellIndex); // Get room details of current and next room.
-    var transferHeader = filterTableConstants.promptTransferDialog.header({currentRoom: roomDetails.currentRoom, nextRoom: roomDetails.nextRoom})
-    var customModalOptions = {
-      header: transferHeader,
-      footerEnabled: true,
-      footerButtons: [{
-        btnId: filterTableConstants.promptTransferDialog.footerButtons.cancelBtn,
-        variant: 'secondary',
-        onClick: this.onCloseCustomModal.bind(this)
-      },{
-        btnId: filterTableConstants.promptTransferDialog.footerButtons.transferBtn,
-        variant: 'success',
-        onClick: this._performTransfer.bind(this, cellIndex)
-      }]
-    };
-    this._prepareCustomModal(customModalOptions);
+    this.getRoomDetails(cellIndex); // Get room details of current and next room.
+    var modalInfo = this.isTransferOnSameType ? this.getTransferModalInfo() : this.getEditPropModalInfo();
+    this._prepareCustomModal(modalInfo);
   };
   
   // Prepare checkout details!
-  getCheckoutDetails(selectedCellIndex){
+  getCheckoutDetails(){
     var checkoutDetails = this.state.data.userModel;
     checkoutDetails['isUserTransfered'] = true;
-    checkoutDetails['transferedRoomNo'] = this.getRoomDetails(selectedCellIndex).nextRoom;
+    checkoutDetails['transferedRoomNo'] = this.roomDetails.nextRoom;
     return checkoutDetails;
   };
 
   // Perform transfer action!
-  async _performTransfer(cellIndex){
+  async _performTransfer(){
     this.onCloseCustomModal();
     this._toggleTableLoader(true); // Enable the loader!
     // Get the user model by the userId.
-    var checkoutDetails = this.getCheckoutDetails(cellIndex), // This user model contains checkoutDetails, so that the user can be checkedout.
-      checkinRoomDetails = this.prepareCheckinRoomDetails(cellIndex),
-      checkinUserDetails = this.prepareCheckInUserModel(),
-      checkinParams = Object.assign(checkinRoomDetails, checkinUserDetails);
+    var checkoutDetails = this.getCheckoutDetails(), // This user model contains checkoutDetails, so that the user can be checkedout.
+      checkinRoomDetails = this.prepareCheckinRoomDetails(),
+      checkinUserDetails = this.prepareCheckInUserModel();
+    Object.assign(checkinRoomDetails, checkinUserDetails);
     // First checkout the user from old room and then do the checkin!
     var checkoutResult = await this.checkoutUtils.onCheckout(checkoutDetails);
     if(checkoutResult.data.success){
@@ -216,6 +274,16 @@ class FilterTable extends TableView {
       }
     } else {
       this._triggerInfoMessage(filterTableConstants.errorOnTransfer.ERROR_ON_CHECKOUT);
+    }
+  };
+
+  // Update the nextRoom properties in case of room type mismatching and if the user wanted.
+  async _updateProperties(){
+    var updatePropFieldData = await validateFieldData(this.state.editPropertiesFields, (updatedData) => this.setState({editPropertiesFields: updatedData}));
+    if(updatePropFieldData.length === 0){
+      this.shouldUpdateProperties = true;
+      this.editPropertiesFieldData = nodeConvertor(this.state.editPropertiesFields);
+      await this._performTransfer();
     }
   };
   
@@ -252,8 +320,8 @@ class FilterTable extends TableView {
     tableCellsClone.map((options, index) => { // SInce the table cell value is an array of object, mapping it and then adding the actions view!
       if(!options.actions){
         options.actions = this.filterActionCellView(index);
-      };
-    });;
+      }
+    });
     this.state.metadataTableState.cellValues = tableCellsClone;
     this.shouldRender && this._toggleTableLoader(false);
     this.shouldRender = false;
