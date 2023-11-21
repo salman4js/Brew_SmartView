@@ -145,16 +145,6 @@ class Collections { // Design pattern --> Singleton class!
     }
   };
   
-  // Filter any collections based on the data provided for filter!
-  filterCollections(propertyName, filterData){
-    var collections = this.getCollections(propertyName);
-    if(collections.data.length === 0){
-      throw new Error('Collection data is not yet fetched or its empty!');
-    } else {
-      // Perform filtering!
-    }
-  };
-  
   // Get the type of collection by passing the collection.
   // -1 being the array type, 1 being the object type.
   getTypeOfCollection(collection){
@@ -192,13 +182,20 @@ class Collections { // Design pattern --> Singleton class!
       return attrArr
     };
   };
+
+  whereInCollections(collectionName, searchKey, searchValue){
+    var collection = this.getCollections(collectionName);
+    return _.filter(collection.data, function(val){
+      return val[searchKey] === searchValue;
+    });
+  };
   
   // Delete the collections by the collection name.
   deleteCollections(collectionName){
     delete widgetTileModelSchema.collections[collectionName];
   };
-  
-  // Delete all collections, which inturn reset the entire data.
+
+  // Delete all collections, which reset the entire data.
   deleteAllCollections(){
     widgetTileModelSchema.instance = undefined;
     widgetTileModelSchema.collections = {};

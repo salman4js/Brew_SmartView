@@ -50,7 +50,7 @@ const DashboardWrapper = (props, ref) => {
     // By using the roomId, Add the particular user reference to the userCollection on Checkin operation!
     if(options.action === 'CHECK-IN'){
       userCollection.push(options.updatedUserModel);
-    } ;
+    };
     // By using the roomId, Delete the particular user reference from the userCollection on Checkout operation!
     if(options.action === 'CHECK-OUT'){
       _.remove(userCollection, function(obj){

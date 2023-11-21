@@ -280,7 +280,7 @@ class CheckOutView extends React.Component {
     // Calculate GST price!
     calculateGSTPrice(){
       this.gstPercent = determineGSTPercent(this.state.data.roomModel.price);
-      this.isChannel = this.state.userModel.channel !== 'Walk-In' ? true : false;
+      this.isChannel = this.state.userModel.channel !== 'Walk-In';
       if(!this.isChannel){
         this.getIsExclusive() ? this.getGSTForExclusive() : this.getGSTForInclusive();
       } else {
@@ -297,12 +297,13 @@ class CheckOutView extends React.Component {
           ...prevState.billingInfo,
           gstPrice: this.gstPrice, 
           roomPrice: this.getRoomPrice() + " Rs", 
-          totalPrice: this.getTotalPayableAmount() + this.gstPrice,
+          totalPrice: this.getTotalPayableAmount() + (this.getIsExclusive() ? this.gstPrice : 0), // In case of inclusive, GST amount would be in the
+            // total amount, hence we don't have to add gst price with the total payable amount.
           advanceAmount: this.state.billingDetails.advanceCheckin + ' Rs',
           discountAmount: this.state.billingDetails.discountPrice + ' Rs',
           withoutGST: this.getAmountWithoutGST() + ' Rs',
           roomPricePerStays: this.getAmountForStayedDays(),
-          isNegativeValue: this.getTotalPayableAmount() > 0 ? false : true
+          isNegativeValue: this.getTotalPayableAmount() <= 0
         }
       }), () => {
         this.prepareUserCheckoutDetails();
@@ -310,16 +311,18 @@ class CheckOutView extends React.Component {
     };
 
     // Get total amount with advance and discount but without GST!
+    // In case of inclusive, GST amount would be in the total amount, hence we would have to reduce the gstPrice from the result.
     getAmountWithoutGST(){
       var extraBedPrice = Number(this.getExtraBedPrice());
-      return ((this.getRoomPrice() * this.state.stayeddays) - this.state.billingDetails.advanceCheckin - this.state.billingDetails.discountPrice) + extraBedPrice;
+      var result = ((this.getRoomPrice() * this.state.stayeddays) - this.state.billingDetails.advanceCheckin - this.state.billingDetails.discountPrice) + extraBedPrice;
+      return this.getIsExclusive() ? result : (result - this.gstPrice);
     };
 
     // Calculate GST for inclusive calculation!
     getGSTForInclusive(){
       var amountForStayedDays = (this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) - this.state.billingDetails.discountPrice;
-      var inclusiveGSTAmount = amountForStayedDays / (1 + determineGSTPercent(this.state.data.roomModel.price));
-      this.gstPrice = this.getAmountForStayedDays() - inclusiveGSTAmount;
+      var inclusiveGSTAmount = Math.round(amountForStayedDays / (1 + determineGSTPercent(this.state.data.roomModel.price)));
+      this.gstPrice = amountForStayedDays - inclusiveGSTAmount;
     };
 
     // Calculate GST for exclusive calculation!
@@ -410,7 +413,8 @@ class CheckOutView extends React.Component {
     prepareUserCheckoutDetails(){
       this.checkoutDetails = {userid: this.state.userModel._id, username: this.state.userModel.username,
         roomid: this.state.data.roomModel._id, stayeddays: this.state.stayeddays,
-        checkoutdate: this.getTodayDate(), checkoutTime: getTimeDate().getTime, roomtype: this.state.data.roomModel.suiteName,
+        checkoutdate: this.getTodayDate(), checkoutTime: getTimeDate().getTime,
+          checkinDate: this.state.userModel.dateofcheckin, checkinTime: this.state.userModel.checkinTime, roomtype: this.state.data.roomModel.suiteName,
         prebook: this.state.data.roomModel.preBooked, amount: this.getTotalPayableAmount(), refund: this.getRefundAmount(), 
         totalDishAmount: 0, isGst: this.getIsGSTEnabled(), foodGst: 0, stayGst: this.state.billingInfo.gstPrice,
         roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime()};

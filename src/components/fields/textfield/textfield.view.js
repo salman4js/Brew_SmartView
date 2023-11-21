@@ -40,7 +40,13 @@ const TextField = (props) => {
   
   // Get value for the input field!
   function getValue(){
-    return props.data.value !== undefined ? props.data.value : props.data.defaultValue;
+    if(props.data.value !== undefined){
+      return props.data.value;
+    } else if(props.data.defaultValue !== undefined){
+      return  props.data.defaultValue;
+    } else {
+      return ''; // Showing here as empty string, which will not be considered in nodeConvertor function, so its safe.
+    }
   };
   
   // Get value for the placeholder!

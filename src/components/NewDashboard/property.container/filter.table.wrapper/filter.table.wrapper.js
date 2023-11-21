@@ -4,7 +4,7 @@ import brewDate from 'brew-date';
 import TableView from '../table.view/table.view';
 import {filterTableActionCellView, editPropertiesBodyView} from './filter.table.wrapper.template';
 import filterTableConstants from './filter.table.wrapper.constants';
-import {filterKeysInObj, nodeConvertor, validateFieldData} from '../../../common.functions/node.convertor';
+import {filterKeysInObj, nodeConvertor, validateFieldData, updateMultipleMetadataFields} from '../../../common.functions/node.convertor';
 import {getTimeDate} from '../../../common.functions/common.functions';
 import CheckoutUtils from '../checkout.view/checkout.form.utils';
 import {checkInFormValue} from '../checkin.view/checkin.form.utils';
@@ -40,15 +40,12 @@ class FilterTable extends TableView {
       },
       editPropertiesFields: [{
         value: undefined,
-        placeholder: "",
+        placeholder: '',
         label: "Update Room Price",
         name: 'updatePrice',
         attribute: 'textField',
-        isRequired: true,
-        inlineToast: {
-          isShow: false,
-          inlineMessage: 'Please enter a valid price'
-        }
+        restrictShow: false,
+        isRequired: false
       }, {
         value: undefined,
         defaultValue: 0,
@@ -58,10 +55,28 @@ class FilterTable extends TableView {
         validation: false,
         validationRegex: /^(0|[1-9]\d*)$/,
         attribute: 'textField',
+        restrictShow: false,
         isRequired: false
+      }, {
+        select: null,
+        value: undefined,
+        name: 'timePeriod',
+        attribute: 'checkBoxField',
+        updateValue: true,
+        restrictShow: true,
+        label: 'Choose time period by hours for old room (Default: Days)',
+        isLabelFirst: true,
+        customStyle: {
+          color: 'black',
+          border: '1px solid grey',
+          backgroundColor: '#EDEADE',
+          padding: '5px 5px 5px 5px',
+          borderRadius: '5px',
+          marginTop: '15px'
+        }
       }]
     };
-    this.shouldRender = true; // This flag is used re render the table data state only when the filtered data is changes.
+    this.shouldRender = true; // This flag is used re-render the table data state only when the filtered data is changes.
     /**
       Ideally, for the first time when the table state is being updated re-render lifecycle method will get triggered.
       So, again the computation happens, then the table state is being updated re-render lifecycle method will get triggered again 
@@ -85,6 +100,8 @@ class FilterTable extends TableView {
     var transferHeader = filterTableConstants.promptTransferDialog.header({currentRoom: this.roomDetails.currentRoom, nextRoom: this.roomDetails.nextRoom});
     return {
       header: transferHeader,
+      restrictBody: !this.autoDecideStayTimePeriod,
+      showBodyItemView: () => this._editPropertiesCustomModalBodyView(this),
       footerEnabled: true,
       footerButtons: [{
         btnId: filterTableConstants.promptTransferDialog.footerButtons.cancelBtn,
@@ -93,9 +110,19 @@ class FilterTable extends TableView {
       }, {
         btnId: filterTableConstants.promptTransferDialog.footerButtons.transferBtn,
         variant: 'success',
-        onClick: this._performTransfer.bind(this)
+        onClick: this._updateProperties.bind(this)
       }]
     };
+  };
+
+  // Show stay time period decider on both transfer and edit properties modal.
+  async showRequiredEditPropFields(){
+    var editPropertiesFields = {
+      'updatePrice' : {restrictShow: this.isTransferOnSameType},
+      'extraBeds': {restrictShow: this.isTransferOnSameType},
+      'timePeriod': {restrictShow: !this.autoDecideStayTimePeriod}
+    };
+    await updateMultipleMetadataFields(editPropertiesFields, this.state.editPropertiesFields, (updatedData) => this.setState({editPropertiesFields: updatedData}));
   };
 
   // Edit properties custom modal body view!
@@ -195,8 +222,12 @@ class FilterTable extends TableView {
       filteredUserModel['updatePrice'] = this.state.data.roomModel.totalAmount;
     }
     if(this.shouldUpdateProperties){ // this is added here to change the data when the user edited the nextRoom properties.
+      // When the timePeriod checkbox is selected, the user wants to calculate the price based on the stay time period
+      // which would be in hours in this case.
+      this.editPropertiesFieldData.timePeriod && this._calculateHourlyPrice();
       filteredUserModel['updatePrice'] = this.editPropertiesFieldData.updatePrice;
       filteredUserModel['extraBeds'] = this.editPropertiesFieldData.extraBeds;
+      filteredUserModel['oldRoomPrice'] = this.stayTimePeriodPrice;
     }
     // Remove the unused object keys to prevent confusion.
     delete filteredUserModel.aadharcard;
@@ -225,18 +256,33 @@ class FilterTable extends TableView {
     selectedRoomModel['oldRoomStayDays'] = this.state.data.userModel.stayeddays;
     return selectedRoomModel;
   };
+
+  // Calculate hourly price based on the price per day only when timePeriod checkbox is selected,
+  _calculateHourlyPrice(){
+    var oneHourPrice = Number(this.roomDetails.currentRoomPricePerDay) / 24; // 24 being the hours of the day.
+    this.stayTimePeriodPrice = Math.round(this.stayTimePeriod * oneHourPrice);
+  };
   
   // Get room details of current and next room!
-  getRoomDetails(cellIndex){
-    this.roomDetails = {currentRoom : this.state.data.userModel.roomno, nextRoom: this.state.metadataTableState.cellValues[cellIndex].roomno,
-                           currentRoomType: this.state.data.userModel.roomtype, nextRoomType: this.state.metadataTableState.cellValues[cellIndex].suiteName,
-                           selectedRoomModel: this.state.metadataTableState.cellValues[cellIndex]};
+  async getRoomDetails(cellIndex){
+    this.roomDetails = {currentRoom : this.state.data.userModel.roomno,
+      nextRoom: this.state.metadataTableState.cellValues[cellIndex].roomno,
+      currentRoomType: this.state.data.userModel.roomtype,
+      nextRoomType: this.state.metadataTableState.cellValues[cellIndex].suiteName,
+      selectedRoomModel: this.state.metadataTableState.cellValues[cellIndex],
+      currentRoomPricePerDay: this.state.data.roomModel.price,
+      checkinDateAndTime: this.state.data.userModel.checkinDate + ' ' + this.state.data.userModel.checkinTime};
     this.isTransferOnSameType = (this.roomDetails.currentRoomType === this.roomDetails.nextRoomType);
+    this.stayTimePeriod = Number(brewDate.diffHours(this.roomDetails.checkinDateAndTime).slice(0, -10)); // stayTimePeriod would be in hours always.
+    // -10 here because brewDate would return the result as {hours} hours ago, just to take only the hours, slicing the unwanted strings.
+    this.autoDecideStayTimePeriod = this.stayTimePeriod < 24; // 24 being the hours of the day.
+    // If the stay time period is lesser than 24 hours, then we are giving the control to decide the stay time period to the user.
+    this.autoDecideStayTimePeriod && await this.showRequiredEditPropFields();
   };
   
   // Propmt transfer dialog!
-  promptTransferDialog(cellIndex){
-    this.getRoomDetails(cellIndex); // Get room details of current and next room.
+  async promptTransferDialog(cellIndex){
+    await this.getRoomDetails(cellIndex); // Get room details of current and next room.
     var modalInfo = this.isTransferOnSameType ? this.getTransferModalInfo() : this.getEditPropModalInfo();
     this._prepareCustomModal(modalInfo);
   };

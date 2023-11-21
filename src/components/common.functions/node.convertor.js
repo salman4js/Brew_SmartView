@@ -1,3 +1,5 @@
+import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
+
 const storage = require("../../Controller/Storage/Storage");
 const _ = require('lodash');
 
@@ -166,6 +168,13 @@ function findAndSet(obj, nodeValue) {
     return obj;
 };
 
+// Update multiple metadata fields in single state of array of object.
+export async function updateMultipleMetadataFields(nodeStateOfValue, state, setState){
+  for (const property in nodeStateOfValue){
+    await updateMetadataFields(property, nodeStateOfValue[property], state, setState);
+  }
+}
+
 // Update any metadata fields data!
 export function updateMetadataFields(nodeValue, nodeState, state, setState){
   return new Promise((resolve, reject) => {
@@ -328,6 +337,14 @@ export function convertObjectValue(arr, key, objRules){
     };
   });
   return arr;
+};
+
+// Filter the data in the collection by using the passed regular expression(searchPattern).
+export function filterCollections(collectionName, searchKey, searchValue, searchPattern){
+  var collection = CollectionInstance.getCollections(collectionName).data;
+  return _.filter(collection, function(model){
+    return model[searchKey] && searchValue && searchPattern.test(model[searchKey]);
+  });
 };
 
 // Refresh the entire page when needed!
