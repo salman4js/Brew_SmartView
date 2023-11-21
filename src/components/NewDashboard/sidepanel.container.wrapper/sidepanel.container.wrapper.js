@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
+import sidepanelConstants from "./sidepanel.container.constants";
 import { getAvailableRoomTypes, getUserModel } from './sidepanel.container.utils';
 import { getRoomList } from '../../paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import { getStatusCodeColor, formatDate } from '../../common.functions/common.functions';
-import { updateMetadataFields, nodeConvertor } from '../../common.functions/node.convertor';
-import { globalMessage, commonLabel, activityLoader } from '../../common.functions/common.functions.view';
+import { updateMetadataFields, nodeConvertor, filterCollections } from '../../common.functions/node.convertor';
+import { activityLoader } from '../../common.functions/common.functions.view';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import MetadataTableView from '../../metadata.table.view/metadata.table.view';
 import MetadataFields from '../../fields/metadata.fields.view';
@@ -22,10 +23,31 @@ const SidepanelWrapper = (props, ref) => {
     childData: undefined,
     selectedId: []
   });
+
+  // Side-panel search bar state handler!
+  const [searchBar, setSearchBar] = useState([{
+    value: undefined,
+    width: '300px',
+    padding: '5px 5px 5px 5px',
+    placeholder: 'Search Anything',
+    name: 'searchString',
+    attribute: 'textField',
+    restrictShow: false,
+    isRequired: false,
+    callBackAfterUpdate: _updateSearchString
+  }]);
+
+  // When the search string is an empty string, update it to undefined!
+  async function _updateSearchString(){
+    var search = nodeConvertor(searchBar);
+    if(search.searchString === '') {
+      await updateMetadataFields('searchString', {value: undefined}, searchBar, setSearchBar);
+    }
+  }
   
   // Sidepanel view state handler!
   const [sidepanelView, setSidepanelView] = useState({
-    roomListTreePanel: true, // By default roomListTreePanel is true!
+    roomListTreePanel: true, // By default, roomListTreePanel is true!
     filterRoomPanel: false
   });
   
@@ -109,13 +131,27 @@ const SidepanelWrapper = (props, ref) => {
       </div>
     )
   };
+
+  // Side-panel search bar view!
+  function _renderSearchBarView(){
+    return <MetadataFields data = {searchBar} updateData = {setSearchBar}/>
+  }
   
   // Sidepanel room list tree view!
   function roomListTreeView(){
-    return sidepanel.parentData.map((options) => {
-      return <CollectionView data = {options.suiteType} 
-      showCollectionChildView = {() => _renderPanelItemViewCollection(options.suiteType)}/>
-    })
+    var search = nodeConvertor(searchBar),
+        filteredCollection = filterCollections('roomsListCollection', 'roomno', search.searchString, new RegExp(`^${search.searchString}\\d*`));
+    return (
+        <>
+          {_renderSearchBarView()}
+          {!search.searchString && sidepanel.parentData.map((options) => {
+            return <CollectionView data = {options.suiteType} showCollectionChildView = {() => _renderPanelItemViewCollection(options.suiteType)}/>
+          })}
+          {filteredCollection.map((options) => {
+            return _renderPanelItemView(options);
+          })}
+        </>
+    )
   };
   
   // Render custom inline menu for item panel collection!
@@ -135,12 +171,12 @@ const SidepanelWrapper = (props, ref) => {
   // Get form mode based on room status constant!
   function getFormMode(model) {
     const status = model.roomStatusConstant;
-    if (status === 'afterCheckin') {
-      return 'read';
-    } else if (status === 'afterCleaned') {
-      return 'edit';
+    if (status === sidepanelConstants.formModeConstants.READ_MODE) {
+      return sidepanelConstants.formMode.READ_MODE;
+    } else if (status === sidepanelConstants.formModeConstants.EDIT_MODE) {
+      return sidepanelConstants.formMode.EDIT_MODE;
     } else {
-      return 'roomStatus';
+      return sidepanelConstants.formMode.ROOM_STATUS_MODE;
     }
   };  
   
@@ -167,7 +203,7 @@ const SidepanelWrapper = (props, ref) => {
   // Toggle between sidepanel view!
   function _toggleSidepanelView(roomListTree, filterPanel){
     // Choose header and change panel state!
-    var panelHeader = roomListTree ? 'Rooms List' : 'Filter Panel';
+    var panelHeader = roomListTree ? sidepanelConstants.panelHeader.ROOM_LISTS : sidepanelConstants.panelHeader.FILTER_PANEL;
     setSidepanel(prevState => ({...prevState, header: panelHeader}));
     setSidepanelView(prevState => ({roomListTreePanel: roomListTree, filterRoomPanel: filterPanel}));
   };
@@ -188,14 +224,19 @@ const SidepanelWrapper = (props, ref) => {
   function _renderPanelItemViewCollection(selectedType){
     return sidepanel.childData.map((options) => {
       if(options.suiteName === selectedType){
-        // Determine the status color code!
-        var statusColorCode = getStatusCodeColor(options.roomStatusConstant);
-        return <PanelItemView data = {options.roomno} _id = {options._id} showIndentationArrow = {true}
-        showInlineMenu = {true} customInlineMenu = {true} colorCode = {statusColorCode}
-        onClick = {(uId) => panelItemOnClick(uId, options)} selectedItem = {sidepanel.selectedId}
-        _renderCustomInlineMenu = {() => _renderCustomInlineMenu(options)} />
+        return _renderPanelItemView(options);
       }
     })
+  };
+
+  // Render panel item view for filter and non-filter data's.
+  function _renderPanelItemView(options){
+    // Determine the status color code!
+    var statusColorCode = getStatusCodeColor(options.roomStatusConstant);
+    return <PanelItemView data = {options.roomno} _id = {options._id} showIndentationArrow = {true}
+                   showInlineMenu = {true} customInlineMenu = {true} colorCode = {statusColorCode}
+                   onClick = {(uId) => panelItemOnClick(uId, options)} selectedItem = {sidepanel.selectedId}
+                   _renderCustomInlineMenu = {() => _renderCustomInlineMenu(options)} />
   };
   
   // Get side panel loader options!
@@ -210,7 +251,7 @@ const SidepanelWrapper = (props, ref) => {
   // Side panel custom modal body item view!
   function customModalBodyItemView(){
     var data = customModal.customData,
-      headerValue = ['Floor No', 'Bed Count', 'Ext Bed Rate', 'Room Price'],
+      headerValue = sidepanelConstants.tableHeader.MORE_DETAILS_HEADER,
       cellValues = [{_id: 'dummyInstance', floorNo: data.floorNo, bedCount: data.bedCount, extraBedPrice: data.extraBedPrice, roomPrice: data.price}],
       tableData = {headerValue, cellValues, tableCellWidth: "180px"};
     return <MetadataTableView data = {tableData} /> 

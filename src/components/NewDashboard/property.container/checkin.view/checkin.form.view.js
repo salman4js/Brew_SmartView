@@ -5,7 +5,7 @@ import { prebookExcludeDates } from '../../../ExcludeDates/excludesdates';
 import MetadataFields from '../../../fields/metadata.fields.view';
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
-import { getStayedDays, determineGSTPercent } from '../../../common.functions/common.functions';
+import {getStayedDays, determineGSTPercent, getTimeDate, formatDate} from '../../../common.functions/common.functions';
 import { nodeConvertor, validateFieldData, getFieldsData, updateMetadataFields } from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 
@@ -351,12 +351,29 @@ const CheckinForm = (props) => {
       // Delete advance and discount from the fieldValue if the channel manager is true!
       customizableFormValues.isChannel && delete customizableFormValues.advance && delete customizableFormValues.discount;
       const finalFormValue = Object.assign(formValue, customizableFormValues); // Final form value ready to be sent to the server!
+      updateDefaultFormValue(formValue); // This will change the formValue directly.
       const serverResult = await checkInFormValue(finalFormValue);
       if(serverResult.data.success){
         _triggerCustomModal(true, {updatedRoomModel: serverResult.data.updatedModel, updatedUserModel: serverResult.data.updatedUserModel});
         _toggleLoader(false);
       };
     };
+  };
+
+  // Update the form value with default values!
+  function updateDefaultFormValue(formValue){
+    var timeDate = getTimeDate();
+    formValue.checkin = brewDate.getFullDate("yyyy/mm/dd");
+    formValue.checkout = formatDate(formValue.checkout);
+    formValue['checkinTime'] = timeDate.getTime;
+    formValue['checkoutTime'] = formValue.checkout !== undefined ? timeDate.getTime : undefined;
+    formValue['isPrebook'] = false;
+    formValue['dateTime'] = brewDate.getFullDate("dd/mmm") +  " " + brewDate.timeFormat(brewDate.getTime());
+    formValue['roomid'] = props.data.roomModel._id;
+    formValue['roomno'] = props.data.roomModel.roomno;
+    formValue['floorNo'] = props.data.roomModel.floorNo;
+    formValue['lodgeId'] = props.params.accIdAndName[0];
+    return formValue;
   };
   
   // After form has been saved!

@@ -24,7 +24,7 @@ const CheckBox = (props) => {
     // When state gets updated, update the checkbox state accordingly!
     useEffect(() => {
       updateCheckboxState();
-    }, [props.data])
+    }, [props.data, props.data.value])
   
   return(
     <div className = "metadata-field-checkbox" style = {props.data.customStyle}>

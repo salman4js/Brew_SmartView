@@ -1,5 +1,5 @@
-import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
-import { excludeDatesCheckin, prebookExcludeDates } from './ExcludeDates/excludesdates';
+import React, { useEffect, useState, useRef } from 'react';
+import { prebookExcludeDates } from './ExcludeDates/excludesdates';
 import { moveToNextState } from './room.status.utils/room.status.utils';
 import CustomModal from './CustomModal/custom.modal.view';
 import MetadataTableView from './metadata.table.view/metadata.table.view';
@@ -9,8 +9,6 @@ import axios from "axios";
 import Variables from './Variables';
 import brewDate from 'brew-date';
 import formatDate from './PreBook/Date_Format/DateFormatter';
-import retrieveDate from './PreBook_Date_Spike/DateCorrector';
-import Loading from './Loading';
 import Table from './Table';
 import InlineToast from './InlineToast/Inline.toast.view';
 import DatePicker from 'react-datepicker';
@@ -21,7 +19,7 @@ import { getStorage, setStorage } from '../Controller/Storage/Storage';
 import Modals from './Modals';
 import GuestRegistration from './GRC/grc.view';
 import {universalLang} from './universalLang/universalLang'
-import { handleTimeFormat, loadDate, getStayedDays, getExtraBedPrice, refreshPage } from './common.functions/common.functions';
+import { getStayedDays, getExtraBedPrice, refreshPage } from './common.functions/common.functions';
 import { checkInFormValue, prebookFormValue, editOccupiedUserModel } from './NewDashboard/property.container/checkin.view/checkin.form.utils';
 import CheckoutUtils from './NewDashboard/property.container/checkout.view/checkout.form.utils';
 

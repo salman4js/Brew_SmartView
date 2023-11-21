@@ -64,7 +64,8 @@ const MetadataFields = (props) => {
     fieldState.forEach((options, index) => {
       if (dependentValues.includes(options.name)) {
         fieldState[index].value = undefined;
-        fieldState[index].isChanged = false;        if (options.updateIsRequiredOnDependentValue) {
+        fieldState[index].isChanged = false;
+        if (options.updateIsRequiredOnDependentValue) {
           fieldState[index].isRequired = false;
           // Check if the dependent value should vanish!
           fieldState[index].fieldShouldVanish && _updateFieldShouldVanish(fieldState, index, dependentValueField, currentFieldIndex);
