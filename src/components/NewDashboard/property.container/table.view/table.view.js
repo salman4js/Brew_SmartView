@@ -3,7 +3,6 @@ import _ from 'lodash';
 import TableViewTemplateHelpers from './table.view.template';
 import { filterKeysInObj, arrangeObj } from '../../../common.functions/node.convertor';
 import  tableViewConstants  from './table.view.constants';
-import MetadataTable from '../../../metadata.table.view/metadata.table.view';
 import MetadataFields from '../../../fields/metadata.fields.view';
 
 class TableView extends React.Component {
@@ -14,7 +13,17 @@ class TableView extends React.Component {
       data: props.data,
       userCollection: props.userCollection,
       height: props.height,
-      propertyDetails: props.propertyDetails
+      propertyDetails: props.propertyDetails,
+      allowPagination: false,
+      isHeightAdjustedForPagination: false,
+      paginationData: {
+        count: 0,
+        skipCount: 0,
+        limitCount: 15,
+        events: {
+          onPageShift: this.onPageShift.bind(this)
+        }
+      }
     };
     this.templateHelpersData = {};
     this.panelFieldState = [
@@ -62,6 +71,7 @@ class TableView extends React.Component {
         footerButtons: undefined
       }
     };
+    this.paginationConstants = tableViewConstants.paginationConstants;
     this.propertyStatusTableHeader = tableViewConstants.PropertyStatusTableHeader;
     this.propertyStatusRequiredKey = tableViewConstants.PropertyStatusRequiredKey;
     this.tableViewTemplate = new TableViewTemplateHelpers();
@@ -87,6 +97,32 @@ class TableView extends React.Component {
   // Handle back action triggered on left side controller!
   onBackClick(){
     this.props.dashboardController({reloadSidepanel: {silent: true}, navigateToPropertyContainer:true});
+  };
+
+  // On page shift from pagination view, increase the skipCount and limitCount based on the selectedIndex.
+  onPageShift(selectedIndex){
+    var index = selectedIndex - 1;
+    // Table loader will be set to false when the computation has been completed in the filter collection function.
+    this._toggleTableLoader(true);
+    this.widgetTileModel.paginationData.skipCount = (index * this.paginationConstants.PAGINATION_DEFAULT_LIMIT);
+    this.widgetTileModel.paginationData.limitCount = (selectedIndex * this.paginationConstants.PAGINATION_DEFAULT_LIMIT);
+  };
+
+  // Adjust property container height in case pagination view is set to true.
+  _adjustHeightForPagination(){
+    if(this.widgetTileModel.allowPagination && !this.widgetTileModel.isHeightAdjustedForPagination){
+      this.widgetTileModel.height = this.widgetTileModel.height - 20;
+      this.widgetTileModel.isHeightAdjustedForPagination = true;
+    }
+  };
+
+  // Enable pagination view if the limit set to pagination exceeds.
+  _enablePaginationView(convertedCollection){
+    if(this.isPaginationRequired){
+      this.widgetTileModel.allowPagination = true;
+      this.widgetTileModel.paginationData.count = convertedCollection.length;
+      this._adjustHeightForPagination();
+    }
   };
   
   // Organize and prepare the required table data!
@@ -119,6 +155,12 @@ class TableView extends React.Component {
       return this.widgetTileModel.propertyDetails.userCollection;
     }
   };
+
+  // Filter the converted collection for pagination.
+  filterCollection(collection){
+    this.filteredCollection = collection.slice(this.widgetTileModel.paginationData.skipCount, this.widgetTileModel.paginationData.limitCount);
+    this.state.metadataTableState.tableLoader && this._toggleTableLoader(false);
+  };
   
   // Get the widget tile model data for the table!
   async getWidgetTileTableCollectionData(){
@@ -135,7 +177,10 @@ class TableView extends React.Component {
         convertedCollection.push(arrangedObj);
       });  
     };
-    this.state.metadataTableState.cellValues = convertedCollection;
+    this.filterCollection(convertedCollection);
+    this.state.metadataTableState.cellValues = this.filteredCollection;
+    this.isPaginationRequired = convertedCollection.length > this.paginationConstants.PAGINATION_DEFAULT_LIMIT;
+    this.isPaginationRequired && this._enablePaginationView(convertedCollection);
     this.filterEnabled && this._setFilterTableState();
   };
   

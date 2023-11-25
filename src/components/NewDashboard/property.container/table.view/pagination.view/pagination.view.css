@@ -1,0 +1,24 @@
+.pagination-container {
+    background-color: rgba(0, 0, 0, 0.07);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-number-container {
+    color: #0a0a23;
+    font-size: 13px;
+    text-align: center; /* Center text within the container */
+}
+
+.page-number-unselected,
+.page-number-selected {
+    background-color: #d3d9df;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 0 2px; /* Adjust the margin as needed */
+}
+
+.page-number-selected {
+    background-color: #a6a6a6;
+}

@@ -243,8 +243,10 @@ class DefaultView extends React.Component {
       var model = {}; // Create an object with a key which is identical to prepareWidgetTile to reuse that function!
       model.roomStatus = this.configurableWidgetTiles[widgetTile]; 
       model.roomStatusConstant = widgetTile;
-      this._updatePropertyStatusMap(model); // Update property status map!
-      this.prepareWidgetTile(model, cardViewCollectionProps);
+      if(model.roomStatus){ // This will only render the array of object widgetTileModel.
+        this._updatePropertyStatusMap(model); // Update property status map!
+        this.prepareWidgetTile(model, cardViewCollectionProps);
+      }
     }
   };
 

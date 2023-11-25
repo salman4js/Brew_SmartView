@@ -13,6 +13,12 @@ const UserDb = () => {
     const { id } = useParams();
     const splitedIds = id.split(/[-]/);
 
+    // Pagination state handler!
+    const [pagination, setPagination] = useState({
+        skipCount: 0,
+        limitCount: 10
+    });
+
     const [data, setData] = useState([]);
 
     //Loader
@@ -33,7 +39,7 @@ const UserDb = () => {
         if (!token) {
             setData(false)
         } else {
-            axios.post(`${Variables.hostId}/${splitedIds[0]}/userdb`, {
+            axios.get(`${Variables.hostId}/${splitedIds[0]}/${pagination.skipCount}/${pagination.limitCount}/userdb`, {
                 headers: {
                     "x-access-token": localStorage.getItem("token"),
                 }
@@ -41,7 +47,7 @@ const UserDb = () => {
                 .then(res => {
                     if (res.data.success) {
                         setLoading(false);
-                        setData(res.data.message.reverse());
+                        setData(res.data.data);
                     } else {
                         setLoading(false);
                         localStorage.clear();

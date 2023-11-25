@@ -51,6 +51,9 @@ const PanelItemView = (props) => {
       style = {getStyle()}>
        <span className = "brew-title-workspace side-align" style = {{color: props.colorCode || 'black'}}>
           {props.showIndentationArrow && '> '}{props.data}
+         {props.allowSubData && props.subData && (
+             ' (' + props.subData + ')'
+         )}
        </span>
        {props.showInlineMenu && inlineAction.mouseOver && (
          props.customInlineMenu ? (props._renderCustomInlineMenu && props._renderCustomInlineMenu()) :  _inlineMenu()

@@ -1,6 +1,6 @@
 import MetadataTable from '../../../metadata.table.view/metadata.table.view';
 import CustomModal from '../../../CustomModal/custom.modal.view';
-import { activityLoader } from '../../../common.functions/common.functions.view';
+import PaginationView from "./pagination.view/pagination.view";
 
 class TableViewTemplateHelpers {
   
@@ -25,9 +25,12 @@ class TableViewTemplateHelpers {
   // Table view template helpers!
   tableViewTemplateHelper(tableData, widgetData){
     return(
-      <div className = 'metadata-table-view-dashboard-container' style = {{height: widgetData.height}}>
-        <MetadataTable data = {tableData} height = {widgetData.height} />
-      </div>
+      <>
+          <div className = 'metadata-table-view-dashboard-container' style = {{height: widgetData.height}}>
+              <MetadataTable data = {tableData} height = {widgetData.height} />
+          </div>
+          <PaginationView data = {widgetData.paginationData} />
+      </>
     )
   };
   

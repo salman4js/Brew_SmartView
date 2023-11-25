@@ -1,5 +1,5 @@
 var tableViewConstants = Object.freeze({
-  
+
   PropertyStatusTableHeader: Object.freeze({
     afterCheckedout: ['Floor No', 'Room No', 'Room type', 'Bed Count', 'Extra Bed Price Per Day', 'Price Per Day'],
     afterCleaned: ['Floor No', 'Room No', 'Room type', 'Bed Count', 'Extra Bed Price Per Day', 'Price Per Day'],
@@ -10,7 +10,7 @@ var tableViewConstants = Object.freeze({
     favorites: ['Guest Name', "Phone Number", 'Guest Identification Number'],
     logTable: ['Log Type', 'Log Comments', 'Log Paid', 'Log Date & Time', 'Log Price']
   }),
-  
+
   PropertyStatusRequiredKey: Object.freeze({
     afterCheckedout: ['_id','floorNo', 'roomno', 'suiteName', 'bedCount', 'extraBedPrice', 'price'],
     afterCleaned: ['_id','floorNo', 'roomno', 'suiteName', 'bedCount', 'extraBedPrice', 'price'],
@@ -21,11 +21,15 @@ var tableViewConstants = Object.freeze({
     favorites: ['_id', 'username', 'phonenumber', 'aadharcard'],
     logTable: ['_id', 'priceType', 'priceLog', 'isPaid', 'dateTime', 'price']
   }),
-  
+
   tableInfoMessage: Object.freeze({
     ZERO_STATE_MESSAGE: 'You have no records for this table!'
   }),
-  
+
+  paginationConstants: Object.freeze({
+    PAGINATION_DEFAULT_LIMIT: 15
+  }),
+
 });
 
 export default tableViewConstants;

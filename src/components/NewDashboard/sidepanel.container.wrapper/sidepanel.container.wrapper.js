@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import sidepanelConstants from "./sidepanel.container.constants";
+import SidepanelContainerSearchView from "./sidepanel.container.search.view";
 import { getAvailableRoomTypes, getUserModel } from './sidepanel.container.utils';
 import { getRoomList } from '../../paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import { getStatusCodeColor, formatDate } from '../../common.functions/common.functions';
-import { updateMetadataFields, nodeConvertor, filterCollections } from '../../common.functions/node.convertor';
+import { updateMetadataFields, nodeConvertor } from '../../common.functions/node.convertor';
 import { activityLoader } from '../../common.functions/common.functions.view';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import MetadataTableView from '../../metadata.table.view/metadata.table.view';
@@ -21,29 +22,9 @@ const SidepanelWrapper = (props, ref) => {
     isLoading: true,
     parentData: undefined,
     childData: undefined,
-    selectedId: []
+    selectedId: [],
+    listFilter: undefined
   });
-
-  // Side-panel search bar state handler!
-  const [searchBar, setSearchBar] = useState([{
-    value: undefined,
-    width: '300px',
-    padding: '5px 5px 5px 5px',
-    placeholder: 'Search Anything',
-    name: 'searchString',
-    attribute: 'textField',
-    restrictShow: false,
-    isRequired: false,
-    callBackAfterUpdate: _updateSearchString
-  }]);
-
-  // When the search string is an empty string, update it to undefined!
-  async function _updateSearchString(){
-    var search = nodeConvertor(searchBar);
-    if(search.searchString === '') {
-      await updateMetadataFields('searchString', {value: undefined}, searchBar, setSearchBar);
-    }
-  }
   
   // Sidepanel view state handler!
   const [sidepanelView, setSidepanelView] = useState({
@@ -94,6 +75,11 @@ const SidepanelWrapper = (props, ref) => {
     centered: true,
     modalSize: 'medium'
   });
+
+  // Update filter string from the sidepanel search view!
+  function _updateFilterData(filterData){
+    setSidepanel(prevState => ({...prevState, listFilter: filterData}))
+  };
   
   // Update sidepanel height!
   function updateSidePanelHeight(value){
@@ -134,21 +120,24 @@ const SidepanelWrapper = (props, ref) => {
 
   // Side-panel search bar view!
   function _renderSearchBarView(){
-    return <MetadataFields data = {searchBar} updateData = {setSearchBar}/>
+    return <SidepanelContainerSearchView updateFilterData = {(filterData) => _updateFilterData(filterData)} />
   }
   
   // Sidepanel room list tree view!
   function roomListTreeView(){
-    var search = nodeConvertor(searchBar),
-        filteredCollection = filterCollections('roomsListCollection', 'roomno', search.searchString, new RegExp(`^${search.searchString}\\d*`));
     return (
         <>
           {_renderSearchBarView()}
-          {!search.searchString && sidepanel.parentData.map((options) => {
+          {!sidepanel.listFilter && sidepanel.parentData.map((options) => {
             return <CollectionView data = {options.suiteType} showCollectionChildView = {() => _renderPanelItemViewCollection(options.suiteType)}/>
           })}
-          {filteredCollection.map((options) => {
-            return _renderPanelItemView(options);
+          {sidepanel.listFilter && (sidepanel.listFilter.length !== 0) && sidepanel.listFilter.map((options) => {
+            options['allowSubData'] = true;
+            return (
+                <div className = 'collection-sub-child-view'>
+                  {_renderPanelItemView(options)}
+                </div>
+            )
           })}
         </>
     )
@@ -233,8 +222,8 @@ const SidepanelWrapper = (props, ref) => {
   function _renderPanelItemView(options){
     // Determine the status color code!
     var statusColorCode = getStatusCodeColor(options.roomStatusConstant);
-    return <PanelItemView data = {options.roomno} _id = {options._id} showIndentationArrow = {true}
-                   showInlineMenu = {true} customInlineMenu = {true} colorCode = {statusColorCode}
+    return <PanelItemView data = {options.roomno} _id = {options._id} showIndentationArrow = {true} subData = {options.customerName}
+                   allowSubData = {options.allowSubData} showInlineMenu = {true} customInlineMenu = {true} colorCode = {statusColorCode}
                    onClick = {(uId) => panelItemOnClick(uId, options)} selectedItem = {sidepanel.selectedId}
                    _renderCustomInlineMenu = {() => _renderCustomInlineMenu(options)} />
   };
