@@ -8,6 +8,7 @@ var tableViewConstants = Object.freeze({
     upcomingCheckout: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
     upcomingPrebook: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
     favorites: ['Guest Name', "Phone Number", 'Guest Identification Number'],
+    history: ['Guest Name', 'Phone Number', 'Guest Identity Number', 'Address', 'Date of Checkin', 'Time of Checkin', 'Date of Checkout', 'Time of Checkout'],
     logTable: ['Log Type', 'Log Comments', 'Log Paid', 'Log Date & Time', 'Log Price']
   }),
 
@@ -19,6 +20,7 @@ var tableViewConstants = Object.freeze({
     upcomingCheckout: ['_id','floorNo', 'roomno', 'username', 'phonenumber', 'dateofcheckin', 'dateofcheckout'],
     upcomingPrebook: ['_id', 'floorNo', 'roomno', 'prebookUsername', 'prebookPhoneNumber', 'prebookDateofCheckin', 'prebookDateofCheckout'],
     favorites: ['_id', 'username', 'phonenumber', 'aadharcard'],
+    history: ['_id', 'username', 'phonenumber', 'aadharcard', 'address', 'dateofcheckin', 'checkinTime', 'dateofcheckout', 'checkoutTime'],
     logTable: ['_id', 'priceType', 'priceLog', 'isPaid', 'dateTime', 'price']
   }),
 
@@ -27,7 +29,10 @@ var tableViewConstants = Object.freeze({
   }),
 
   paginationConstants: Object.freeze({
-    PAGINATION_DEFAULT_LIMIT: 15
+    PAGINATION_DEFAULT_LIMIT: 15,
+    PAGINATION_DEFAULT_SKIP_COUNT: 0,
+    PAGINATION_DEFAULT_COUNT: 0,
+    PAGINATION_VIEW_HEIGHT: 20
   }),
 
 });

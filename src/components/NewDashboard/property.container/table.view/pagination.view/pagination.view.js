@@ -22,8 +22,11 @@ class PaginationView extends React.Component {
     };
 
     templateHelpers(){
-        var paginationViewTemplate = new PaginationViewTemplate(this.state.paginationData, this.templateHelpersEvents)
-        return paginationViewTemplate._render();
+        var paginationViewTemplate = new PaginationViewTemplate(this.state.paginationData, this.templateHelpersEvents);
+        if(this.state.paginationData.pageCount > 0){ // This will make sure that the pagination view is getting rendered
+            // If multiple pages are required to display the contents.
+            return paginationViewTemplate._render();
+        }
     };
 
     // Setting up the events for pagination view.

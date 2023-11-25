@@ -130,6 +130,16 @@ const Navbar = (props) => {
         isLabelFirst: true,
         customStyle: customCheckboxStyle
       },
+        {
+            select: null,
+            value: undefined,
+            name: 'history',
+            attribute: 'checkBoxField',
+            updateValue: true,
+            label: 'Enable history in dashboard',
+            isLabelFirst: true,
+            customStyle: customCheckboxStyle
+        },
       {
         value: 0,
         name: 'datesBetweenCount',

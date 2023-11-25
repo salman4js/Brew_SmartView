@@ -1,5 +1,4 @@
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
-import MetadataModelState from './metadata.model.state/maintainance.log.model.state';
 import { filterKeysInArr } from '../../../common.functions/node.convertor';
 const axios = require('axios');
 const Variables = require("../../../Variables");
