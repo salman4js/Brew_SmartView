@@ -112,7 +112,7 @@ const DashboardWrapper = (props, ref) => {
   
   // Navigate to status table view!
   function _navigateToStatusTableView(opts){
-    setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode, 
+    setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode,
     widgetTileModel: opts.widgetTileModel, userStatusMap: opts.userStatusMap, selectedRoomConstant: opts.selectedRoomConstant}));
   };
 
