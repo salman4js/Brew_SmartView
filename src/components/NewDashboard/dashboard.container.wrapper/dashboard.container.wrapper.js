@@ -17,7 +17,8 @@ const DashboardWrapper = (props, ref) => {
     dashboardMode: 'default',
     onFormSave: false,
     onCheckout: false,
-    widgetTileModel: undefined, // This two states used for widget tile for statusTableView
+    widgetTileModel: undefined, // This two states used for widget tile for statusTableView,
+    widgetTileModelCount: undefined,
     userStatusMap: undefined,
     selectedRoomConstant: undefined,
     filteredData: undefined
@@ -112,7 +113,7 @@ const DashboardWrapper = (props, ref) => {
   
   // Navigate to status table view!
   function _navigateToStatusTableView(opts){
-    setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode,
+    setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode, widgetTileModelCount: opts.widgetTileModelCount,
     widgetTileModel: opts.widgetTileModel, userStatusMap: opts.userStatusMap, selectedRoomConstant: opts.selectedRoomConstant}));
   };
 

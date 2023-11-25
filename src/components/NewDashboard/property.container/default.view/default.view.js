@@ -96,7 +96,8 @@ class DefaultView extends React.Component {
   
   // On widget tile click handler!
   onWidgetTileClick(value){
-    this.props.dashboardController({navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel, 
+    this.props.dashboardController({navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel,
+      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount,
       dashboardMode: 'statusTableView', userStatusMap: this.propertyStatusMap, selectedRoomConstant: value});
   };
 
@@ -231,7 +232,7 @@ class DefaultView extends React.Component {
   addPropertyStatusDetails(propertyStatus){
     if(this.state.propertyStatusDetails[propertyStatus] === undefined){
       // Get the count.
-      this.state.propertyStatusDetails[propertyStatus] = this.widgetTileCollection[propertyStatus].length;
+      this.state.propertyStatusDetails[propertyStatus] = this.widgetTileCollection.widgetTileModelCount[propertyStatus];
     }
   };
   

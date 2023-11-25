@@ -17,9 +17,9 @@ class TableView extends React.Component {
       allowPagination: false,
       isHeightAdjustedForPagination: false,
       paginationData: {
-        count: 0,
-        skipCount: 0,
-        limitCount: 15,
+        count: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_COUNT,
+        skipCount: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_SKIP_COUNT,
+        limitCount: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_LIMIT,
         events: {
           onPageShift: this.onPageShift.bind(this)
         }
@@ -111,18 +111,22 @@ class TableView extends React.Component {
   // Adjust property container height in case pagination view is set to true.
   _adjustHeightForPagination(){
     if(this.widgetTileModel.allowPagination && !this.widgetTileModel.isHeightAdjustedForPagination){
-      this.widgetTileModel.height = this.widgetTileModel.height - 20;
+      this.widgetTileModel.height = this.widgetTileModel.height - this.paginationConstants.PAGINATION_VIEW_HEIGHT;
       this.widgetTileModel.isHeightAdjustedForPagination = true;
+    }
+    if(!this.widgetTileModel.allowPagination && this.widgetTileModel.isHeightAdjustedForPagination){
+      this.widgetTileModel.height = this.widgetTileModel.height + this.paginationConstants.PAGINATION_VIEW_HEIGHT;
+      this.widgetTileModel.isHeightAdjustedForPagination = false;
     }
   };
 
   // Enable pagination view if the limit set to pagination exceeds.
-  _enablePaginationView(convertedCollection){
-    if(this.isPaginationRequired){
-      this.widgetTileModel.allowPagination = true;
-      this.widgetTileModel.paginationData.count = convertedCollection.length;
-      this._adjustHeightForPagination();
-    }
+  _checkAndEnablePaginationView(convertedCollection){
+    var widgetTileModelCount = this.widgetTileModel.data.widgetTileModelCount[this.roomConstant] || convertedCollection.length;
+    this.isPaginationRequired = widgetTileModelCount > this.paginationConstants.PAGINATION_DEFAULT_COUNT;
+    this.widgetTileModel.allowPagination = this.isPaginationRequired;
+    this.widgetTileModel.paginationData.count = this.isPaginationRequired ? widgetTileModelCount : 0;
+    this._adjustHeightForPagination();
   };
   
   // Organize and prepare the required table data!
@@ -149,6 +153,8 @@ class TableView extends React.Component {
   
   // Get room constant collection!
   async getRoomConstantCollection(){
+    if(!this.roomConstant) this.getTableHeaders(); // Sometimes when the component is being rendered and when the component
+    // is being updated, this.roomConstant becomes undefined, so if its undefined get the room-constant before proceeding.
     if(this.roomConstant !== 'afterCheckin'){
       return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant] || await this.setExpandedTableView();
     } else {
@@ -179,8 +185,7 @@ class TableView extends React.Component {
     };
     this.filterCollection(convertedCollection);
     this.state.metadataTableState.cellValues = this.filteredCollection;
-    this.isPaginationRequired = convertedCollection.length > this.paginationConstants.PAGINATION_DEFAULT_LIMIT;
-    this.isPaginationRequired && this._enablePaginationView(convertedCollection);
+    this._checkAndEnablePaginationView(convertedCollection);
     this.filterEnabled && this._setFilterTableState();
   };
   
