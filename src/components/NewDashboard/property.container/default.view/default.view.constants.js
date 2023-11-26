@@ -4,7 +4,10 @@ var defaultViewConstants = Object.freeze({
     upcomingPrebook: 'Upcoming Prebook',
     favorites: 'Favorite Customers',
     history: 'Booking History'
-  })
+  }),
+
+  RECEP_LEVEL_WIDGETS: ['upcomingCheckout', 'upcomingPrebook', 'favorites'],
+  MANAGER_LEVEL_WIDGETS: ['upcomingCheckout', 'upcomingPrebook', 'favorites', 'history']
 });
 
 export default defaultViewConstants;

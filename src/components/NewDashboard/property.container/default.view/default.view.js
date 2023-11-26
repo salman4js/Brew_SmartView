@@ -7,7 +7,6 @@ import { getRoomStatusConstants, getGreetings } from '../../../common.functions/
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 import BlockActions from '../../../fields/block.actions.view/block.actions.view';
 import { templateHelpers, widgetTileTemplateHelpers, widgetTileBodyTemplateHelpers } from './default.view.template';
-import { commonLabel } from '../../../common.functions/common.functions.view';
 
 
 class DefaultView extends React.Component {
@@ -29,6 +28,11 @@ class DefaultView extends React.Component {
       userRoomStatus: [], // User preference room status!
       widgetTile: this.renderWidgetTile.bind(this)
     };
+    this.widgetPermissions = {
+      recep: defaultViewConstants.RECEP_LEVEL_WIDGETS,
+      manager: defaultViewConstants.MANAGER_LEVEL_WIDGETS
+    };
+    this.isLoggedInAsRecep =  JSON.parse(getStorage("loggedInAsRecep"));
     this.configurableWidgetTiles = defaultViewConstants.CONFIGURABLE_WIDGET_TILE;
     this.propertyDetailsModel = {}; // Keeping the propertyDetailsModel outside of the state to avoid triggering change event!
     this.propertyStatusMap = {}; // this is to keep track of user defined room status mapping of room status constant.
@@ -235,16 +239,21 @@ class DefaultView extends React.Component {
       this.state.propertyStatusDetails[propertyStatus] = this.widgetTileCollection.widgetTileModelCount[propertyStatus];
     }
   };
-  
+
+  // Check the widget permission for receptionist users.
+  _checkForUserWidgetPermission(widgetConstant){
+    return this.isLoggedInAsRecep ? this.widgetPermissions.recep.includes(widgetConstant) : true;
+  };
+
   // Add widget collection to the widget tiles!
   addFeatureWidgetCollection(cardViewCollectionProps){
-    var cardViewProps = this.getCardViewProps(),
-    widgetTileCollectionsKey = Object.keys(this.widgetTileCollection);
+    var widgetTileCollectionsKey = Object.keys(this.widgetTileCollection);
     for(const widgetTile of widgetTileCollectionsKey){
       var model = {}; // Create an object with a key which is identical to prepareWidgetTile to reuse that function!
-      model.roomStatus = this.configurableWidgetTiles[widgetTile]; 
+      model.roomStatus = this.configurableWidgetTiles[widgetTile];
       model.roomStatusConstant = widgetTile;
-      if(model.roomStatus){ // This will only render the array of object widgetTileModel.
+      var isWidgetAuthorized = this._checkForUserWidgetPermission(widgetTile);
+      if(isWidgetAuthorized && model.roomStatus){ // This will only render the array of object widgetTileModel.
         this._updatePropertyStatusMap(model); // Update property status map!
         this.prepareWidgetTile(model, cardViewCollectionProps);
       }

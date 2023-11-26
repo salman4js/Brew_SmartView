@@ -1,7 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
 import TableViewTemplateHelpers from './table.view.template';
-import { filterKeysInObj, arrangeObj } from '../../../common.functions/node.convertor';
+import Variables from "../../../Variables";
+import {filterKeysInObj, arrangeObj, convertObjectValue} from '../../../common.functions/node.convertor';
 import  tableViewConstants  from './table.view.constants';
 import MetadataFields from '../../../fields/metadata.fields.view';
 
@@ -20,6 +21,7 @@ class TableView extends React.Component {
         count: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_COUNT,
         skipCount: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_SKIP_COUNT,
         limitCount: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_LIMIT,
+        getNextNode: false,
         events: {
           onPageShift: this.onPageShift.bind(this)
         }
@@ -71,9 +73,12 @@ class TableView extends React.Component {
         footerButtons: undefined
       }
     };
+    this.params = props.params;
     this.paginationConstants = tableViewConstants.paginationConstants;
     this.propertyStatusTableHeader = tableViewConstants.PropertyStatusTableHeader;
     this.propertyStatusRequiredKey = tableViewConstants.PropertyStatusRequiredKey;
+    this.convertableConstants = tableViewConstants.convertableConstants;
+    this.fetchableWidgets = tableViewConstants.fetchableWidgetTiles;
     this.tableViewTemplate = new TableViewTemplateHelpers();
   };
   
@@ -106,6 +111,7 @@ class TableView extends React.Component {
     this._toggleTableLoader(true);
     this.widgetTileModel.paginationData.skipCount = (index * this.paginationConstants.PAGINATION_DEFAULT_LIMIT);
     this.widgetTileModel.paginationData.limitCount = (selectedIndex * this.paginationConstants.PAGINATION_DEFAULT_LIMIT);
+    this.widgetTileModel.paginationData.getNextNode = true;
   };
 
   // Adjust property container height in case pagination view is set to true.
@@ -122,7 +128,7 @@ class TableView extends React.Component {
 
   // Enable pagination view if the limit set to pagination exceeds.
   _checkAndEnablePaginationView(convertedCollection){
-    var widgetTileModelCount = this.widgetTileModel.data.widgetTileModelCount[this.roomConstant] || convertedCollection.length;
+    var widgetTileModelCount = this.widgetTileModel.data.widgetTileModelCount?.[this.roomConstant] || convertedCollection.length;
     this.isPaginationRequired = widgetTileModelCount > this.paginationConstants.PAGINATION_DEFAULT_COUNT;
     this.widgetTileModel.allowPagination = this.isPaginationRequired;
     this.widgetTileModel.paginationData.count = this.isPaginationRequired ? widgetTileModelCount : 0;
@@ -162,24 +168,54 @@ class TableView extends React.Component {
     }
   };
 
+  // Fetch next nodes only for fetchable widgets.
+  async fetchNextNode(){
+    var options = {baseUrl: Variables.hostId, accId: this.params.accIdAndName[0], paginationData: this.widgetTileModel.paginationData};
+    this.nextNode = await fetch(this.fetchableWidgets[this.roomConstant](options));
+    this.nextNodeData = await this.nextNode.json();
+    this.rawRoomModel = this.nextNodeData.data.result;
+    this.widgetTileModel.paginationData.getNextNode = false;
+  };
+
+  // Check for fetchable widgets.
+  isFetchableWidget(){
+    return Object.keys(this.fetchableWidgets).includes(this.roomConstant);
+  };
+
   // Filter the converted collection for pagination.
   filterCollection(collection){
     this.filteredCollection = collection.slice(this.widgetTileModel.paginationData.skipCount, this.widgetTileModel.paginationData.limitCount);
     this.state.metadataTableState.tableLoader && this._toggleTableLoader(false);
   };
+
+  // Check for convertable constant and convert them.
+  _checkForConvertableConstant(convertedModel){
+    var convertableKeys = Object.keys(this.convertableConstants);
+    if(convertableKeys.includes(this.roomConstant)){
+      var convertableObj = this.convertableConstants[this.roomConstant],
+          convertedResult = convertObjectValue([convertedModel], convertableObj.keyToConvert, convertableObj.objRules);
+      // The above function takes array of object as an input, so converting an object into and array and then reverting back while passing the result.
+      return convertedResult[0];
+    } else {
+      return convertedModel;
+    }
+  };
   
   // Get the widget tile model data for the table!
   async getWidgetTileTableCollectionData(){
     this.filterEnabled = false;
-    var convertedCollection = [],
-      rawRoomModel = await this.getRoomConstantCollection();
+    var convertedCollection = [];
+    this.rawRoomModel = await this.getRoomConstantCollection();
     this.getTableHeaders(); // Get the table headers!
-    if(rawRoomModel){
-      rawRoomModel.map((data) => {
+    this.shouldFetchForWidget = this.widgetTileModel.paginationData.getNextNode && this.isFetchableWidget(); // Check for fetchable widgets.
+    this.shouldFetchForWidget && await this.fetchNextNode();
+    if(this.rawRoomModel){
+      this.rawRoomModel.map((data) => {
         // Clone the data before filtering the keys as it would change the original data which would cause some trouble in the roomCollection!
         var clonedData = _.clone(data);
         var convertedModel = filterKeysInObj(clonedData, this.propertyStatusRequiredKey[this.roomConstant]);
         var arrangedObj = arrangeObj(convertedModel, this.propertyStatusRequiredKey[this.roomConstant]);
+        arrangedObj = this._checkForConvertableConstant(arrangedObj);
         convertedCollection.push(arrangedObj);
       });  
     };

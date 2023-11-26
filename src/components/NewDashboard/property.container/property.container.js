@@ -116,7 +116,7 @@ const PropertyContainer = (props) => {
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView){
-      return <StatusTableView data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
+      return <StatusTableView data = {props.data}  params = {props.params} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
       dashboardController = {(opts) => props.dashboardController(opts)} />
     };
     

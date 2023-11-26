@@ -8,7 +8,8 @@ var tableViewConstants = Object.freeze({
     upcomingCheckout: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
     upcomingPrebook: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
     favorites: ['Guest Name', "Phone Number", 'Guest Identification Number'],
-    history: ['Guest Name', 'Phone Number', 'Guest Identity Number', 'Address', 'Date of Checkin', 'Time of Checkin', 'Date of Checkout', 'Time of Checkout'],
+    history: ['Guest Name', 'Phone Number', 'Guest ID Number', 'Address', 'Date of Checkin',
+      'Time of Checkin', 'Date of Checkout', 'Time of Checkout', 'Total Amount'],
     logTable: ['Log Type', 'Log Comments', 'Log Paid', 'Log Date & Time', 'Log Price']
   }),
 
@@ -20,12 +21,26 @@ var tableViewConstants = Object.freeze({
     upcomingCheckout: ['_id','floorNo', 'roomno', 'username', 'phonenumber', 'dateofcheckin', 'dateofcheckout'],
     upcomingPrebook: ['_id', 'floorNo', 'roomno', 'prebookUsername', 'prebookPhoneNumber', 'prebookDateofCheckin', 'prebookDateofCheckout'],
     favorites: ['_id', 'username', 'phonenumber', 'aadharcard'],
-    history: ['_id', 'username', 'phonenumber', 'aadharcard', 'address', 'dateofcheckin', 'checkinTime', 'dateofcheckout', 'checkoutTime'],
+    history: ['_id', 'username', 'phonenumber', 'aadharcard', 'address', 'dateofcheckin',
+      'checkinTime', 'dateofcheckout', 'checkoutTime', 'totalAmount'],
     logTable: ['_id', 'priceType', 'priceLog', 'isPaid', 'dateTime', 'price']
   }),
 
   tableInfoMessage: Object.freeze({
     ZERO_STATE_MESSAGE: 'You have no records for this table!'
+  }),
+
+  convertableConstants: Object.freeze({
+    history: {
+      keyToConvert: ['dateofcheckout', 'checkoutTime', 'totalAmount'],
+      objRules: {
+        '' : 'Not Checked-Out Yet'
+      }
+    }
+  }),
+
+  fetchableWidgetTiles: Object.freeze({
+    history: (details) => `${details.baseUrl}/${details.accId}/${details.paginationData.skipCount}/${details.paginationData.limitCount}/userdb1`
   }),
 
   paginationConstants: Object.freeze({
