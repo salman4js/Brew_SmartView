@@ -523,7 +523,7 @@ const Navbar = (props) => {
                                   {isRefundTrackerEnabled() && (
                                     <Link className='nav-link dropdown-item' to={`/${props.id}/refundtracker`} style={{ color: "black" }}> Refund Tracker </Link>
                                   )}
-                                  {!loggedInAsRecep && <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}>   Booking History </Link>}
+                                  {!dashboardVersion && !loggedInAsRecep && <Link className='nav-link dropdown-item' to={`/${props.id}/userdb`} style={{ color: "black" }}>   Booking History </Link>}
                                   <Link className='nav-link dropdown-item' to={`/login`} style={{ color: "black" }}>   LogOut </Link>
                               </div>
                           </li>

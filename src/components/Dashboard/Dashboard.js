@@ -118,7 +118,8 @@ const Dashboard = () => {
         // even though we fetch the preference in navbar, Since navbar and dashboard are not sync, data mispopulation could happen in some case!
         // and second true indicates if we need to fetch userCollection or not.
         const availability = await axios.post(`${Variables.hostId}/${splitedIds[0]}/availability`);
-        const checkoutData = await axios.post(`${Variables.hostId}/${splitedIds[0]}/userdb1`);
+        const checkoutData = await axios.get(`${Variables.hostId}/${splitedIds[0]}/0/15/userdb1`);
+        // 0 is being as the skip count and 15 is being as the limit count.
         const revpar = await axios.post(`${Variables.hostId}/${splitedIds[0]}/totalratecalculator`, revpar_model);
         
         axios.all([average, availability, checkoutData, revpar])
@@ -145,7 +146,8 @@ const Dashboard = () => {
 
                 // Recently Checkout Data
                 if(checkoutData.data.success){
-                    setCheck(checkoutData.data.message.reverse().slice(0,6)); // Reversing the data, last in, first out... & getting only the last five data's
+                    // Changed this state handling as the api response has been changed.
+                    setCheck(checkoutData.data.data.result); // Reversing the data, last in, first out... & getting only the last five data's
                 } else {
                     sessionExpired();
                 }

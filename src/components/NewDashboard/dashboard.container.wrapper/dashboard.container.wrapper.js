@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import _ from 'lodash';
 import SidepanelWrapper from '../sidepanel.container.wrapper/sidepanel.container.wrapper';
 import PropertyContainer from '../property.container/property.container';
-import CustomModal from '../../CustomModal/custom.modal.view';
 import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
 
 
