@@ -57,9 +57,19 @@ class TableView extends React.Component {
         tableLoader: false,
         selectedRoomId: undefined,
         isCheckboxSelected: false,
-        enableCheckbox: false,
+        enableCheckbox: true,
+        checkboxSelection: [],
         tableCellWidth : "590px",
         showPanelField: false,
+        checkbox: [
+          {
+            select: (value, checkBoxIndex) => this._updateCheckboxSelection(value, checkBoxIndex),
+            value: false,
+            attribute: "checkBoxField",
+            enableCellCheckbox: true,
+            enableHeaderCheckbox: true
+          }
+        ],
       },
       customModal: {
         show: false,
@@ -104,11 +114,29 @@ class TableView extends React.Component {
     this.props.dashboardController({reloadSidepanel: {silent: true}, navigateToPropertyContainer:true});
   };
 
+  // Reset checkbox selection!
+  _resetCheckboxSelection(){
+    this.state.metadataTableState.checkboxSelection = [];
+  };
+
+  // Update the checkbox selection.
+  _updateCheckboxSelection(value, checkBoxIndex){
+    if(value){
+      this.state.metadataTableState.checkboxSelection.push(checkBoxIndex);
+    } else {
+      _.remove(this.state.metadataTableState.checkboxSelection, function(index){
+        return index === checkBoxIndex;
+      });
+    }
+    this._updateMetadataTableState();
+  };
+
   // On page shift from pagination view, increase the skipCount and limitCount based on the selectedIndex.
   onPageShift(selectedIndex){
     var index = selectedIndex - 1;
     // Table loader will be set to false when the computation has been completed in the filter collection function.
     this._toggleTableLoader(true);
+    this._resetCheckboxSelection();
     this.widgetTileModel.paginationData.skipCount = (index * this.paginationConstants.PAGINATION_DEFAULT_LIMIT);
     this.widgetTileModel.paginationData.limitCount = (selectedIndex * this.paginationConstants.PAGINATION_DEFAULT_LIMIT);
     this.widgetTileModel.paginationData.getNextNode = true;

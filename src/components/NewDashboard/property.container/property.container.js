@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import MetadataFields from '../../fields/metadata.fields.view';
+import CommandHelperField from "../../fields/commandField/command.helper.field";
 import CheckInForm from './checkin.view/checkin.form.view';
 import CheckOutView from './checkout.view/checkout.form.view';
 import RoomStatusView from './room.status.view/room.status.view';
@@ -34,7 +35,7 @@ const PropertyContainer = (props) => {
         width: '200px',
         selectedValue: selectedValues,
         showListValue: function(){
-          return props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.roomStatus ? true : false;
+          return props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.roomStatus;
         },
         style: {
           width: "200",
@@ -214,7 +215,7 @@ const PropertyContainer = (props) => {
     return !propertyContainerConstants.IGNORE_PANEL_FIELD.includes(props.data.dashboardMode);
   };
   
-  // Force update when the props changes!
+  // Force update when the props change!
   useEffect(() => {
     var panelFieldData = getPanelFieldData();
     setPanelField(panelFieldData); // Update the panel field data when the dashboardMode changes!

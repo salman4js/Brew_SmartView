@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {addValue, removeValue, getValue, removeAllValue} from '../../global.state/actions/index';
 import MetadataFields from '../fields/metadata.fields.view'
 import {getAccountDetails, deleteMultiple, editLogins} from './manage.recep.utils/manage.recep.utils';
 import {useCheckboxSelection} from '../global.state/global.state.manager'
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Navbar from '../Navbar';
 import ModalAssist from '../modal.assist/modal.assist.view';
 import CustomModal from '../CustomModal/custom.modal.view';
@@ -12,7 +12,7 @@ import ManageRecepAdd from './manage.recep.add.accounts/manage.recep.add.account
 import ManagerRecepDetails from './manage.recep.details/manage.recep.details';
 import {activityLoader} from '../common.functions/common.functions.view';
 import {validateFieldData} from '../common.functions/node.convertor';
-import {domRefresh, nodeConvertor, checkboxSelection} from '../common.functions/node.convertor';
+import {nodeConvertor, checkboxSelection} from '../common.functions/node.convertor';
 import {getStorage, setStorage, removeItemStorage} from '../../Controller/Storage/Storage'
 
 const ManageRecep = () => {
