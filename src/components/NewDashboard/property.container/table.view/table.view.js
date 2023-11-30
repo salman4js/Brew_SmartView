@@ -4,6 +4,7 @@ import TableViewTemplateHelpers from './table.view.template';
 import Variables from "../../../Variables";
 import {filterKeysInObj, arrangeObj, convertObjectValue} from '../../../common.functions/node.convertor';
 import  tableViewConstants  from './table.view.constants';
+import TableToolbarView from "../../table.toolbar.view/table.toolbar.view";
 import MetadataFields from '../../../fields/metadata.fields.view';
 
 class TableView extends React.Component {
@@ -33,18 +34,15 @@ class TableView extends React.Component {
         value: 'selectedValues',
         attribute: "dataListField",
         customPanelField: true,
-        renderCustomPanelField: this.renderLeftSideController.bind(this),
-        height: 27,
+        renderCustomPanelField: this.renderTableToolbarView.bind(this),
         width: '200px',
         selectedValue: 'selectedValues',
         style: {
           width: "200",
+          height: 27,
           color: "black",
-          fontSize: "15px",
-          paddingRight: "10px",
+          fontSize: "16px",
           paddingLeft: "10px",
-          paddingTop: "10px",
-          paddingBottom: "10px",
           cursor: "pointer",
         }
       }
@@ -128,6 +126,9 @@ class TableView extends React.Component {
         return index === checkBoxIndex;
       });
     }
+    // Update the toolbar padding style settings for menu action items.
+    this.state.metadataTableState.checkboxSelection.length > 0 ? this.panelFieldState[0].style.paddingLeft = 0
+        : this.panelFieldState[0].style.paddingLeft = 10 // Custom panel field requires a custom style property.
     this._updateMetadataTableState();
   };
 
@@ -292,11 +293,25 @@ class TableView extends React.Component {
     this.state.customModal.footerButtons = undefined;
     this._toggleCustomModal();
   };
-  
+
   // Left side controller and header!
-  renderLeftSideController(){
+  _renderLeftSideController(){
     var leftSideController = new TableViewTemplateHelpers(this.templateHelpersData);
     return leftSideController.renderLeftSideController();
+  };
+  
+  // Base table view toolbar item view.
+  renderTableToolbarView(){
+    // If the checkbox selection is greater than 0,
+    // then render tha table menu action items.
+    if(!this.state.metadataTableState.checkboxSelection) {
+      return this._renderLeftSideController();
+    }
+    if(this.state.metadataTableState.checkboxSelection.length === 0){
+      return this._renderLeftSideController();
+    } else {
+      return <TableToolbarView />
+    }
   };
   
   // On render function!

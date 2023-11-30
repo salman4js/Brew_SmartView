@@ -68,7 +68,7 @@ const DataList = (props) => {
         </div>
       )}
       {props.data.allowPanelField && (
-        <div className = "metadata-panel-helper" style = {{height: props.data?.height + "px"}}>
+        <div className = "metadata-panel-helper" style = {{height: props.data?.height + "px", paddingLeft: '10px'}}>
           <span className = "metadata-panel-helper-options brew-cursor" onClick = {() => triggerDropdown(dropdown.isOpen)}
            ref = {dataListFieldRef} style = {{width: props.data?.width}}>
             {props.data.value !== undefined ? props.data.value : props.data.selectedValue}
@@ -86,7 +86,7 @@ const DataList = (props) => {
         </div>
       )}
       {props.data.customPanelField && (
-        <div className = 'metadata-panel-helper' style = {{height: props.data?.height + "px"}}>
+        <div className = 'metadata-panel-helper' style = {getStyle(props.data.style)}>
           <span className = 'metadata-panel-helper-options brew-cursor' style = {{width: props.data?.width}}>
             {props.data.renderCustomPanelField && props.data.renderCustomPanelField()}
           </span>
