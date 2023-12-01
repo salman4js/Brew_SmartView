@@ -1,4 +1,5 @@
 [
   "./commands.initialize/commands.properties.js",
-  "./commands.initialize/commands.go.to.js"
+  "./commands.initialize/commands.go.to.js",
+  "./commands.initialize/commands.room.transfer.js"
 ]

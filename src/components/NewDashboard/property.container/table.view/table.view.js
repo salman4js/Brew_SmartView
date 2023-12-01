@@ -91,9 +91,9 @@ class TableView extends React.Component {
   };
   
   templateHelpers(){
-    this.setupEvents();
     this.prepareTemplateHelpersData();
     this.prepareTableData(); // When the table data is ready, Call the metadata table view!
+    this.setupEvents();
     return this.tableViewTemplate.tableViewTemplateHelper(this.state.metadataTableState, this.widgetTileModel);
   };
   
@@ -104,7 +104,7 @@ class TableView extends React.Component {
   
   // Set up events for any actions!
   setupEvents(){
-    this.templateHelpersData.onBack = this.onBackClick.bind(this);
+    this.templateHelpersData.options.onBack = this.onBackClick.bind(this);
   };
   
   // Handle back action triggered on left side controller!
@@ -183,7 +183,15 @@ class TableView extends React.Component {
   
   // Template helpers data!
   prepareTemplateHelpersData(){
-    this.templateHelpersData.selectedRoomConstant = this.widgetTileModel.data.selectedRoomConstant;
+    this.templateHelpersData.options = {
+      selectedRoomConstant: this.widgetTileModel.data.selectedRoomConstant,
+      roomConstantKey: this.roomConstant,
+      nodes: this.state.metadataTableState.checkboxSelection,
+      eventHelpers: {
+        dashboardController: (opts) => this.props.dashboardController(opts),
+        onRoomTransfer: (opts) => this.props.onRoomTransfer(opts)
+      }
+    }
   };
   
   // Get room constant collection!
@@ -296,12 +304,12 @@ class TableView extends React.Component {
 
   // Left side controller and header!
   _renderLeftSideController(){
-    var leftSideController = new TableViewTemplateHelpers(this.templateHelpersData);
-    return leftSideController.renderLeftSideController();
+    return this.tableViewTemplateHelpers.renderLeftSideController();
   };
   
   // Base table view toolbar item view.
   renderTableToolbarView(){
+    this.tableViewTemplateHelpers = new TableViewTemplateHelpers(this.templateHelpersData);
     // If the checkbox selection is greater than 0,
     // then render tha table menu action items.
     if(!this.state.metadataTableState.checkboxSelection) {
@@ -310,8 +318,7 @@ class TableView extends React.Component {
     if(this.state.metadataTableState.checkboxSelection.length === 0){
       return this._renderLeftSideController();
     } else {
-      return <TableToolbarView options = {this.props.dashboardController} nodes = {this.state.metadataTableState.checkboxSelection}
-                               roomConstant = {this.roomConstant} />
+      return this.tableViewTemplateHelpers.renderMenuActionItems();
     }
   };
   

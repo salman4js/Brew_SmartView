@@ -383,7 +383,7 @@ class FilterTable extends TableView {
   // Table header value!
   getTableHeaderValue(){
     var userStatusMap = CollectionInstance.getCollections('userStatusMap').data;
-    this.templateHelpersData.selectedRoomConstant = userStatusMap[this.props.data.selectedRoomConstant];
+    this.templateHelpersData.options.selectedRoomConstant = userStatusMap[this.props.data.selectedRoomConstant];
   };
 
   // Get the filtered data based on the filter applied by the user!
