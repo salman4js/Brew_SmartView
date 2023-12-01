@@ -6,14 +6,16 @@ class TableToolbarView extends React.Component {
     constructor(props) {
         super(props);
         this.options = props.options;
-        this.baseCommands = setupCommandsInstances();
+        this.nodes = props.nodes;
+        this.roomConstant = props.roomConstant;
+        this.baseCommands = setupCommandsInstances(props.roomConstant);
         this._prepareCommands();
     };
 
-    // Not all commands will be enabled for all the extended table view.
+    // Not all commands will be enabled for all the base table view.
     // Enable the commands based on the actions.
     _prepareCommands(){
-        this.commands = this.baseCommands._getCommands();
+        this.commands = this.baseCommands._getCommands(this.options, this.nodes, this.roomConstant);
     };
 
     templateHelpers(){

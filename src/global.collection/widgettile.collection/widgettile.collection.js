@@ -183,13 +183,18 @@ class Collections { // Design pattern --> Singleton class!
     };
   };
 
-  whereInCollections(collectionName, searchKey, searchValue){
+  whereInCollections(collectionName, searchKey, searchValue) {
     var collection = this.getCollections(collectionName);
-    return _.filter(collection.data, function(val){
-      return val[searchKey] === searchValue;
+    return _.filter(collection.data, (val) => {
+      if (Array.isArray(val[searchKey])) {
+        // Use _.includes to check if searchValue is in the array
+        return _.includes(val[searchKey], searchValue);
+      } else {
+        return val[searchKey] === searchValue;
+      }
     });
   };
-  
+
   // Delete the collections by the collection name.
   deleteCollections(collectionName){
     delete widgetTileModelSchema.collections[collectionName];
