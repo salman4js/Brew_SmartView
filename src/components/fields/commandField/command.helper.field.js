@@ -9,7 +9,7 @@ const CommnadHelper = (props) => {
         {props.data?.map((options, index) => {
           if(!options.disabled){
             return(
-              <span className = "metadata-command-fields brew-cursor" onClick = {() => options.onClick()}>
+              <span className = "metadata-command-fields brew-cursor" onClick = {() => options.onClick(options)}>
                 {options.value}
               </span>
             )

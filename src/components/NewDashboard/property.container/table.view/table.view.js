@@ -158,7 +158,7 @@ class TableView extends React.Component {
   // Enable pagination view if the limit set to pagination exceeds.
   _checkAndEnablePaginationView(convertedCollection){
     var widgetTileModelCount = this.widgetTileModel.data.widgetTileModelCount?.[this.roomConstant] || convertedCollection.length;
-    this.isPaginationRequired = widgetTileModelCount > this.paginationConstants.PAGINATION_DEFAULT_COUNT;
+    this.isPaginationRequired = widgetTileModelCount > this.paginationConstants.PAGINATION_DEFAULT_LIMIT;
     this.widgetTileModel.allowPagination = this.isPaginationRequired;
     this.widgetTileModel.paginationData.count = this.isPaginationRequired ? widgetTileModelCount : 0;
     this._adjustHeightForPagination();
@@ -310,7 +310,8 @@ class TableView extends React.Component {
     if(this.state.metadataTableState.checkboxSelection.length === 0){
       return this._renderLeftSideController();
     } else {
-      return <TableToolbarView />
+      return <TableToolbarView options = {this.props.dashboardController} nodes = {this.state.metadataTableState.checkboxSelection}
+                               roomConstant = {this.roomConstant} />
     }
   };
   

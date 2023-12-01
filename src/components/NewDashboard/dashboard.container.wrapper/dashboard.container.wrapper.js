@@ -107,6 +107,7 @@ const DashboardWrapper = (props, ref) => {
     opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need 
     // updated room model to updated it to the latest value
     opts.updatedModel && _updateRoomModel(opts);
+    opts.goToLocation && updateSelectedModel(opts.roomModel);
     opts.updateUserCollection && _updateUserCollection(opts.updateUserCollection, opts.ignoreUpdateOfDefaultView);
   };
   
