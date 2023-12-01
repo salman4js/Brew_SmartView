@@ -5,17 +5,15 @@ import TableToolbarTemplate from "./table.toolbar.template";
 class TableToolbarView extends React.Component {
     constructor(props) {
         super(props);
-        this.options = props.options;
-        this.nodes = props.nodes;
-        this.roomConstant = props.roomConstant;
-        this.baseCommands = setupCommandsInstances(props.roomConstant);
+        this.state = {
+          options: props.options
+        };
         this._prepareCommands();
     };
 
-    // Not all commands will be enabled for all the base table view.
-    // Enable the commands based on the actions.
     _prepareCommands(){
-        this.commands = this.baseCommands._getCommands(this.options, this.nodes, this.roomConstant);
+        this.baseCommands = setupCommandsInstances(this.state.options);
+        this.commands = this.baseCommands._getCommands();
     };
 
     templateHelpers(){
@@ -23,8 +21,19 @@ class TableToolbarView extends React.Component {
         return this.template._renderTableMenuActionsView();
     };
 
+    _updateState(updatedData){
+        this.setState({options: updatedData});
+    };
+
     render(){
-      return this.templateHelpers();
+        this._prepareCommands();
+        return this.templateHelpers();
+    };
+
+    componentDidUpdate() {
+      if(this.state.options !== this.props.options){
+          this._updateState(this.props.options);
+      }
     };
 }
 

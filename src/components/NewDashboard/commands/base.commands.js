@@ -4,13 +4,8 @@ class BaseCommandClass {
         this.defaults = [];
     };
 
-    _getCommands(options, nodes, roomConstant){
+    _getCommands(){
         this.commands = _.flatten(this.defaults);
-        this.commands.map((command) => {
-           command['options'] = options;
-           command['nodes'] = nodes;
-           command['roomConstant'] = roomConstant
-        });
         return this.commands;
     };
 
@@ -18,14 +13,14 @@ class BaseCommandClass {
         this.defaults.push(defaults);
     };
 
-    setupInstance(classPath, commandSignatureKey) {
+    setupInstance(classPath, signatureOptions) {
         const ExtendedClass = require(`${classPath}`).default;
-        const instance = new ExtendedClass(commandSignatureKey);
+        const instance = new ExtendedClass(signatureOptions);
         this.registerDefaults(instance.defaults);
     };
 
-    setupInstancesFromConfig(config, commandSignatureKey) {
-        config.map((classPath) => this.setupInstance(classPath, commandSignatureKey));
+    setupInstancesFromConfig(config, signatureOptions) {
+        config.map((classPath) => this.setupInstance(classPath, signatureOptions));
     };
 }
 

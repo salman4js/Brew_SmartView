@@ -1,32 +1,34 @@
 import lang from "../commands.constants";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
+
 class CommandsGoTo {
-    constructor(signatureKey) {
-        this.isEnabled = this.enabled(signatureKey);
+    constructor(signatureOptions) {
+        this.status = signatureOptions;
+        this.isEnabled = this.enabled();
         this.defaults = {
             value: lang.goToLocationCommand,
-            disabled: !this.isEnabled,
-            onClick: (status) => this.execute(status)
+            disabled: this.isEnabled,
+            onClick: () => this.execute()
         }
     };
 
-    execute(status){
+    execute(){
         // This command will take the perspective to the respective room state.
-        this.status = status;
         this._getCollectionSearchKey();
         this.findTargetedModelAndPrepareOptions();
-        status.options(this.controlOptions);
+        this.status.eventHelpers.dashboardController(this.controlOptions);
     };
 
-    enabled(signatureKey){
-      return lang.isCommandsEnabled.goToLocation.includes(signatureKey);
+    // Enable the commands based on the actions and signature value.
+    enabled() {
+        return !(lang.isCommandsEnabled.goToLocation.includes(this.status.roomConstantKey) && this.status.nodes.length === 1);
     };
 
     _getCollectionSearchKey(){
       var searchKeys = Object.keys(lang.PropertySearchKey),
           searchKey;
       for (var key of searchKeys){
-          if(lang.PropertySearchKey[key].includes(this.status.roomConstant)){
+          if(lang.PropertySearchKey[key].includes(this.status.roomConstantKey)){
               searchKey = key;
           }
       }
