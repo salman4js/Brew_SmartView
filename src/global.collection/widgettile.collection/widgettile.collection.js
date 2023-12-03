@@ -183,9 +183,9 @@ class Collections { // Design pattern --> Singleton class!
     };
   };
 
-  whereInCollections(collectionName, searchKey, searchValue) {
-    var collection = this.getCollections(collectionName);
-    return _.filter(collection.data, (val) => {
+  whereInCollections(collectionName, modelName, searchKey, searchValue) {
+    var collection = modelName !== undefined ? this.getModel(collectionName, modelName) : this.getCollections(collectionName).data;
+    return _.filter(collection, (val) => {
       if (Array.isArray(val[searchKey])) {
         // Use _.includes to check if searchValue is in the array
         return _.includes(val[searchKey], searchValue);

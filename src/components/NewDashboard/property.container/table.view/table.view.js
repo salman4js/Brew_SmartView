@@ -53,6 +53,13 @@ class TableView extends React.Component {
         headerValue: undefined,
         infoMessage: tableViewConstants.tableInfoMessage.ZERO_STATE_MESSAGE,
         tableLoader: false,
+        /**
+            keepLoader flag is added here because when we invoke any command model functionality, filterCollection happens for pagination
+            by that time, if the tableLoader is true, filterCollection method kills off the table loader even though command model wants the loader
+            to persist till command model job is over. Hence, introduced this new flag here to prevent the filterCollection method from killing
+            the table loader.
+         **/
+        keepLoader: false,
         selectedRoomId: undefined,
         isCheckboxSelected: false,
         enableCheckbox: true,
@@ -176,8 +183,9 @@ class TableView extends React.Component {
     this.setState({metadataTableState: this.state.metadataTableState});
   };
   
-  _toggleTableLoader(value){
+  _toggleTableLoader(value, keepLoader){
     this.state.metadataTableState.tableLoader = value;
+    this.state.metadataTableState.keepLoader = keepLoader;
     this._updateMetadataTableState();
   };
   
@@ -186,10 +194,13 @@ class TableView extends React.Component {
     this.templateHelpersData.options = {
       selectedRoomConstant: this.widgetTileModel.data.selectedRoomConstant,
       roomConstantKey: this.roomConstant,
+      params: this.params,
       nodes: this.state.metadataTableState.checkboxSelection,
       eventHelpers: {
         dashboardController: (opts) => this.props.dashboardController(opts),
-        onRoomTransfer: (opts) => this.props.onRoomTransfer(opts)
+        onRoomTransfer: (opts) => this.props.onRoomTransfer(opts),
+        triggerTableLoader: (value, keepLoader) => this._toggleTableLoader(value, keepLoader),
+        updateSelectedModel: (roomModel, dashboardMode, userModel) => this.props.updateSelectedModel(roomModel, dashboardMode, userModel)
       }
     }
   };
@@ -222,7 +233,7 @@ class TableView extends React.Component {
   // Filter the converted collection for pagination.
   filterCollection(collection){
     this.filteredCollection = collection.slice(this.widgetTileModel.paginationData.skipCount, this.widgetTileModel.paginationData.limitCount);
-    this.state.metadataTableState.tableLoader && this._toggleTableLoader(false);
+    this.state.metadataTableState.tableLoader && !this.state.metadataTableState.keepLoader && this._toggleTableLoader(false);
   };
 
   // Check for convertable constant and convert them.
@@ -283,6 +294,7 @@ class TableView extends React.Component {
     this.state.customModal.restrictBody = (options.restrictBody === false) ? options.restrictBody : true; // By default, restrictBody is set to true.
     this.state.customModal.showBodyItemView = () => options.showBodyItemView && options.showBodyItemView();
     this.state.customModal.header = options.header;
+    this.state.customModal.modalSize = options.modalSize;
     this.state.customModal.footerEnabled = options.footerEnabled;
     this.state.customModal.footerButtons = options.footerButtons;
     this._toggleCustomModal();

@@ -30,7 +30,7 @@ class SidepanelContainerSearchView extends React.Component {
     // When the user search for roomno, find the user id from the room model and add the customer name in the filter data.
     addGuestDetails(){
         _.forEach(this.filteredCollection, function(model){
-            var userModel = CollectionInstance.whereInCollections('userCollections', '_id', model.user[0]);
+            var userModel = CollectionInstance.whereInCollections('userCollections', undefined,'_id', model.user[0]);
             model['customerName'] =  userModel[0]?.username;
         });
     };
@@ -41,7 +41,7 @@ class SidepanelContainerSearchView extends React.Component {
       var self = this;
       this.filteredRoomCol = [];
       _.forEach(this.filteredCollection, function(model){
-        var roomModel = CollectionInstance.whereInCollections('roomsListCollection', '_id', model.room);
+        var roomModel = CollectionInstance.whereInCollections('roomsListCollection', undefined,'_id', model.room);
         roomModel[0]['customerName'] = model.username;
         self.filteredRoomCol.push(roomModel[0]);
       });

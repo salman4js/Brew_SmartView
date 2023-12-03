@@ -118,7 +118,8 @@ const PropertyContainer = (props) => {
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView){
       return <StatusTableView data = {props.data}  params = {props.params} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
-      dashboardController = {(opts) => props.dashboardController(opts)} onRoomTransfer = {(opts) => props.onRoomTransfer(opts)}/>
+      dashboardController = {(opts) => props.dashboardController(opts)} onRoomTransfer = {(opts) => props.onRoomTransfer(opts)}
+                              updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)}/>
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
