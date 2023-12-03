@@ -165,7 +165,7 @@ class FilterTable extends TableView {
   // Favorites checkin form sub child view.
   _checkInFormView(){
     return favoritesCheckInFormView({roomModel: this.roomDetails.selectedRoomModel, userModel: this.state.data.userModel,
-    onFormSave: this.state.data.onFormSave, params: this.params, afterFormSave: (opts) => this.state.data.afterSave(opts)});
+    onFormSave: this.state.data.onFormSave, params: this.params, afterFormSave: (opts) => this.state.data.filterTableOptions.afterSave(opts)});
   };
 
   // Get edit prop modal information!
@@ -308,13 +308,13 @@ class FilterTable extends TableView {
   
   // Get room details of current and next room!
   async getRoomDetails(cellIndex){
-    this.roomDetails = {currentRoom : this.state.data?.userModel.roomno,
+    this.roomDetails = {currentRoom : this.state.data?.userModel?.roomno,
       nextRoom: this.state.metadataTableState.cellValues[cellIndex].roomno,
-      currentRoomType: this.state.data?.userModel.roomtype,
+      currentRoomType: this.state.data?.userModel?.roomtype,
       nextRoomType: this.state.metadataTableState.cellValues[cellIndex].suiteName,
       selectedRoomModel: this.state.metadataTableState.cellValues[cellIndex],
-      currentRoomPricePerDay: this.state.data.roomModel.price,
-      checkinDateAndTime: this.state.data.userModel.checkinDate + ' ' + this.state.data.userModel.checkinTime};
+      currentRoomPricePerDay: this.state.data?.roomModel?.price,
+      checkinDateAndTime: this.state.data.userModel?.checkinDate + ' ' + this.state.data.userModel?.checkinTime};
     this.isTransferOnSameType = (this.roomDetails.currentRoomType === this.roomDetails.nextRoomType);
     this.stayTimePeriod = Number(brewDate.diffHours(this.roomDetails.checkinDateAndTime).slice(0, -10)); // stayTimePeriod would be in hours always.
     // -10 here because brewDate would return the result as {hours} hours ago, just to take only the hours, slicing the unwanted strings.
