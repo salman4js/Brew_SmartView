@@ -8,7 +8,7 @@ class CommandsFavoritesCheckin extends CommandsRoomTransfer {
         this.status = signatureOptions;
         this.isDisabled = this.enabled();
         this.defaults = {
-            value: lang.favoritesCheckin,
+            value: lang.FAVORITES_CHECKIN.favoritesCheckin,
             disabled: this.isDisabled,
             onClick: () => this.execute()
         }
@@ -22,13 +22,15 @@ class CommandsFavoritesCheckin extends CommandsRoomTransfer {
     _getTargetedModel() {
         this._prepareFavoritesOptions();
         this.state.userModel = CollectionInstance.whereInCollections('widgetTileCollections', 'favorites', '_id', this.status.nodes[0])[0];
+        this.status.eventHelpers.updateSelectedModel(undefined, lang.FAVORITES_CHECKIN.dashboardMode, this.state.userModel);
         this.status.eventHelpers.onRoomTransfer(this.transferOptions);
     };
 
     // Prepare the options for favorites checkin.
     _prepareFavoritesOptions(){
         this.transferOptions['filterTableOptions'] = {
-            extraColumnState: lang.favoritesCheckinKey
+            extraColumnState: lang.FAVORITES_CHECKIN.favoritesCheckinKey,
+            afterSave: (opts) => this.status.eventHelpers.dashboardController(opts)
         }
     };
 }
