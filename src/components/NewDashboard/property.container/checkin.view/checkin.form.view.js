@@ -81,7 +81,7 @@ const CheckinForm = (props) => {
       callBackAfterUpdate: _restrictAdvAndDiscount
     },
     {
-      value: undefined,
+      value: props.data?.userModel?.username,
       width: '500px',
       placeholder: "Customer Name",
       label: "Customer Name",
@@ -94,7 +94,7 @@ const CheckinForm = (props) => {
       }
     },
     {
-      value: undefined,
+      value: props.data?.userModel?.phonenumber,
       width: '500px',
       placeholder: "Phone Number",
       label: "Phone Number",
@@ -107,7 +107,7 @@ const CheckinForm = (props) => {
       }
     },
     {
-      value: undefined,
+      value: props.data?.userModel?.aadharcard,
       width: '500px',
       placeholder: "Aadhar Number",
       label: "Aadhar Number",
@@ -120,7 +120,7 @@ const CheckinForm = (props) => {
       }
     },
     {
-      value: undefined,
+      value: props.data?.userModel?.address,
       width: '500px',
       placeholder: "Address",
       label: "Address",
@@ -300,7 +300,7 @@ const CheckinForm = (props) => {
     setPropertyContainer(prevState => ({...prevState, isLoading: value}));
   };
   
-  // trigger custom modal!
+  // trigger custom modal!valueFromCustomModal
   function _triggerCustomModal(value, customData){
     setPropertyContainer(prevState => ({...prevState, customModal: value}));
     setCustomModalState(prevState => ({...prevState, show: value, customData: customData}));
@@ -372,7 +372,7 @@ const CheckinForm = (props) => {
     formValue['roomid'] = props.data.roomModel._id;
     formValue['roomno'] = props.data.roomModel.roomno;
     formValue['floorNo'] = props.data.roomModel.floorNo;
-    formValue['lodgeId'] = props.params.accIdAndName[0];
+    formValue['lodgeId'] = props?.params?.accIdAndName[0];
     return formValue;
   };
   

@@ -12,6 +12,13 @@ var filterTableConstants = Object.freeze({
       transferBtn: 'Yes, Transfer'
     }
   }),
+  promptCheckInDialog: Object.freeze({
+    header: 'Favorites Guest Check-In',
+    footerButtons: {
+      cancelBtn: 'Cancel',
+      transferBtn: 'Yes, Check-In'
+    }
+  }),
   promptErrorDialog: Object.freeze({
     header: (details) => `You are about to transfer this guest from ${details.currentRoomType} type to ${details.nextRoomType} type. 
                                   Do you want to change any ${details.nextRoom}'s room properties before transfer operation?`,
@@ -26,6 +33,11 @@ var filterTableConstants = Object.freeze({
   }),
   successOnTransfer: Object.freeze({
     SUCCESS_ON_TRANSFER: "Room Transfer is successfully completed!"
+  }),
+  columnState: Object.freeze({
+    DEFAULT_COLUMN_STATE: 'DEFAULT',
+    FILTER_COLUMN_STATE: 'FILTER',
+    CHECKIN_COLUMN_STATE: 'CHECK-IN'
   })
 });
 

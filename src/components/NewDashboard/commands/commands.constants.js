@@ -1,6 +1,19 @@
 var commandsConstant = Object.freeze({
     goToLocationCommand: 'Go to room',
     roomTransferCommand: 'Transfer Guest',
+    favoritesCheckin: 'Check-In',
+    favoritesCheckinKey: 'CHECK-IN',
+    FAVORITES_CHECKIN_DIALOG: {
+        favoritesCheckinHeader: 'Favorites Guest Check-In',
+        cancelFooterBtn: 'Cancel',
+        primaryFooterBtn: 'Check-In'
+    },
+
+    FAVORITES_ROOM_PICKER_DIALOG: {
+        favoritesRoomPickerDialog: 'Favorites Room Picker',
+        cancelFooterBtn: 'Cancel',
+        primaryFooterBtn: 'Select Room'
+    },
 
     PropertySearchKey: Object.freeze({
         user: ['afterCheckin', 'upcomingCheckout', 'upcomingPrebook'],
@@ -14,7 +27,8 @@ var commandsConstant = Object.freeze({
 
     isCommandsEnabled: Object.freeze({
         goToLocation: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned'],
-        roomTransfer: ['afterCheckin', 'upcomingCheckout']
+        roomTransfer: ['afterCheckin', 'upcomingCheckout'],
+        favoritesCheckin: ['favorites']
     })
 });
 

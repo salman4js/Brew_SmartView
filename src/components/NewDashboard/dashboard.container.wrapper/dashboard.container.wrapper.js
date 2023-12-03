@@ -20,7 +20,8 @@ const DashboardWrapper = (props, ref) => {
     widgetTileModelCount: undefined,
     userStatusMap: undefined,
     selectedRoomConstant: undefined,
-    filteredData: undefined
+    filteredData: undefined,
+    filterTableOptions: undefined
   });
 
   // Default view room model details state handler!
@@ -114,7 +115,8 @@ const DashboardWrapper = (props, ref) => {
   // Navigate to status table view!
   function _navigateToStatusTableView(opts){
     setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode, widgetTileModelCount: opts.widgetTileModelCount,
-    widgetTileModel: opts.widgetTileModel, userStatusMap: opts.userStatusMap, selectedRoomConstant: opts.selectedRoomConstant}));
+    widgetTileModel: opts.widgetTileModel, userStatusMap: opts.userStatusMap, selectedRoomConstant: opts.selectedRoomConstant,
+      filterTableOptions: opts.filterTableOptions}));
   };
 
   // Reload sidepanel function!

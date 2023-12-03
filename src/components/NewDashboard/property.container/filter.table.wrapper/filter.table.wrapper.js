@@ -2,13 +2,18 @@ import './filter.table.wrapper.css';
 import _ from 'lodash';
 import brewDate from 'brew-date';
 import TableView from '../table.view/table.view';
-import {filterTableActionCellView, editPropertiesBodyView} from './filter.table.wrapper.template';
+import {
+  filterTableActionCellView,
+  editPropertiesBodyView,
+  filterTableCheckInActionCellView, favoritesCheckInFormView
+} from './filter.table.wrapper.template';
 import filterTableConstants from './filter.table.wrapper.constants';
 import {filterKeysInObj, nodeConvertor, validateFieldData, updateMultipleMetadataFields} from '../../../common.functions/node.convertor';
 import {getTimeDate} from '../../../common.functions/common.functions';
 import CheckoutUtils from '../checkout.view/checkout.form.utils';
 import {checkInFormValue} from '../checkin.view/checkin.form.utils';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
+import filterTableWrapperConstants from "./filter.table.wrapper.constants";
 
 class FilterTable extends TableView {
   
@@ -26,7 +31,7 @@ class FilterTable extends TableView {
         isCheckboxSelected: false,
         enableCheckbox: false,
         tableCellWidth : "590px",
-        showPanelField: false,
+        showPanelField: false
       },
       customModal: {
         show: false,
@@ -76,6 +81,12 @@ class FilterTable extends TableView {
         }
       }]
     };
+    /*
+     * @type {*|string}
+     * This flag extraColumnState added to handle the dynamic header and action cell creation and its functionality.
+     */
+    this.extraColumnState = this.state.data?.filterTableOptions?.extraColumnState !== undefined ?
+        this.state.data?.filterTableOptions?.extraColumnState : filterTableWrapperConstants.columnState.FILTER_COLUMN_STATE;
     this.shouldRender = true; // This flag is used re-render the table data state only when the filtered data is changes.
     /**
       Ideally, for the first time when the table state is being updated re-render lifecycle method will get triggered.
@@ -85,13 +96,14 @@ class FilterTable extends TableView {
     **/
     this.params = props.params;
     this.filterActionTableHeaderValue = 'Actions';
-    this.checkoutUtils = new CheckoutUtils({accId: props.params.accIdAndName[0]});
+    this.checkoutUtils = new CheckoutUtils({accId: props.params?.accIdAndName[0]});
   };
   
   // Set up the events for filter table events!
   _setUpFilterTableEvents(){
     this.events = {
-      transferEvent: this.promptTransferDialog.bind(this)
+      transferEvent: this.promptTransferDialog.bind(this),
+      checkInEvent: this.promptCheckInDialog.bind(this)
     };
   };
 
@@ -115,6 +127,26 @@ class FilterTable extends TableView {
     };
   };
 
+  // Get favorites checkin dialog modal information.
+  getCheckInModalInfo(){
+    return {
+      header: filterTableConstants.promptCheckInDialog.header,
+      restrictBody: false,
+      modalSize: 'xl',
+      showBodyItemView: () => this._checkInFormView(this),
+      footerEnabled: true,
+      footerButtons: [{
+        btnId: filterTableConstants.promptCheckInDialog.footerButtons.cancelBtn,
+        variant: 'secondary',
+        onClick: this.onCloseCustomModal.bind(this)
+      }, {
+        btnId: filterTableConstants.promptCheckInDialog.footerButtons.transferBtn,
+        variant: 'success',
+        onClick: this._checkInFavoritesGuest.bind(this)
+      }]
+    };
+  };
+
   // Show stay time period decider on both transfer and edit properties modal.
   async showRequiredEditPropFields(){
     var editPropertiesFields = {
@@ -128,6 +160,12 @@ class FilterTable extends TableView {
   // Edit properties custom modal body view!
   _editPropertiesCustomModalBodyView(){
     return editPropertiesBodyView(this.state.editPropertiesFields, (updatedData) => this.setState({editPropertiesFields: updatedData}));
+  };
+
+  // Favorites checkin form sub child view.
+  _checkInFormView(){
+    return favoritesCheckInFormView({roomModel: this.roomDetails.selectedRoomModel, userModel: this.state.data.userModel,
+    onFormSave: this.state.data.onFormSave, params: this.params, afterFormSave: (opts) => this.state.data.afterSave(opts)});
   };
 
   // Get edit prop modal information!
@@ -174,17 +212,22 @@ class FilterTable extends TableView {
         self.filteredModel[roomConstant].push(obj);
       }
     });
-    this.state.data.filteredData && this._applyFilter();
+    this.state.data?.filteredData && this._applyFilter();
   };
   
   // Filter action table cell view!
   filterActionCellView(index){
-    return filterTableActionCellView(this.events, index);
+    if(this.extraColumnState === filterTableWrapperConstants.columnState.FILTER_COLUMN_STATE){
+      return filterTableActionCellView(this.events, index);
+    }
+    if(this.extraColumnState === filterTableWrapperConstants.columnState.CHECKIN_COLUMN_STATE){
+      return filterTableCheckInActionCellView(this.events, index);
+    }
   };
   
   // Apply user selected filter data!
   _applyFilter(){
-    var filterData = this.state.data.filteredData;
+    var filterData = this.state.data?.filteredData;
     // this handle filter by room type!
     _.remove(this.filteredModel[this.props.data.selectedRoomConstant], function(obj){
         return obj.suiteName !== filterData.suiteType;
@@ -204,7 +247,7 @@ class FilterTable extends TableView {
   
   // Get the user model based on the userId!
   prepareCheckInUserModel(){
-    var userId = Array.isArray(this.state.data.roomModel.user) ? this.state.data.roomModel.user[0] : this.state.data.roomModel.user;
+    var userId = Array.isArray(this.state.data?.roomModel.user) ? this.state.data?.roomModel.user[0] : this.state.data?.roomModel.user;
     if(!this.userCollection){
       this.userCollection = CollectionInstance.getCollections('userCollections').data;
     }
@@ -219,7 +262,7 @@ class FilterTable extends TableView {
     // In case the booking was through channel manager, then we would want to add the updatedPrice in the filteredUserModel.
     filteredUserModel['isChannel'] = filteredUserModel.channel !== filterTableConstants.channelManager;
     if(filteredUserModel.isChannel && this.isTransferOnSameType){ // Update the price only if the both room types are same.
-      filteredUserModel['updatePrice'] = this.state.data.roomModel.totalAmount;
+      filteredUserModel['updatePrice'] = this.state.data?.roomModel.totalAmount;
     }
     if(this.shouldUpdateProperties){ // this is added here to change the data when the user edited the nextRoom properties.
       // When the timePeriod checkbox is selected, the user wants to calculate the price based on the stay time period
@@ -245,15 +288,15 @@ class FilterTable extends TableView {
     selectedRoomModel['channel'] = filterTableConstants.channelManager;
     selectedRoomModel['isPrebook'] = false;
     selectedRoomModel['checkin'] = brewDate.getFullDate("yyyy/mm/dd");
-    selectedRoomModel['checkout'] = this.state.data.filteredData.checkinDate;
+    selectedRoomModel['checkout'] = this.state.data?.filteredData.checkinDate;
     selectedRoomModel['checkinTime'] = timeDate.getTime;
     selectedRoomModel['checkoutTime'] = timeDate.getTime;
     selectedRoomModel['dateTime'] = brewDate.getFullDate("dd/mmm") +  " " + brewDate.timeFormat(brewDate.getTime());
     // This here represents specially room transfer details only!
     selectedRoomModel['isRoomTransfered'] = true;
     selectedRoomModel['oldRoomNo'] = this.roomDetails.currentRoom;
-    selectedRoomModel['oldRoomPrice'] = this.state.data.userModel.amount + this.state.data.userModel.stayGst;
-    selectedRoomModel['oldRoomStayDays'] = this.state.data.userModel.stayeddays;
+    selectedRoomModel['oldRoomPrice'] = this.state.data?.userModel.amount + this.state.data?.userModel.stayGst;
+    selectedRoomModel['oldRoomStayDays'] = this.state.data?.userModel.stayeddays;
     return selectedRoomModel;
   };
 
@@ -265,9 +308,9 @@ class FilterTable extends TableView {
   
   // Get room details of current and next room!
   async getRoomDetails(cellIndex){
-    this.roomDetails = {currentRoom : this.state.data.userModel.roomno,
+    this.roomDetails = {currentRoom : this.state.data?.userModel.roomno,
       nextRoom: this.state.metadataTableState.cellValues[cellIndex].roomno,
-      currentRoomType: this.state.data.userModel.roomtype,
+      currentRoomType: this.state.data?.userModel.roomtype,
       nextRoomType: this.state.metadataTableState.cellValues[cellIndex].suiteName,
       selectedRoomModel: this.state.metadataTableState.cellValues[cellIndex],
       currentRoomPricePerDay: this.state.data.roomModel.price,
@@ -286,10 +329,17 @@ class FilterTable extends TableView {
     var modalInfo = this.isTransferOnSameType ? this.getTransferModalInfo() : this.getEditPropModalInfo();
     this._prepareCustomModal(modalInfo);
   };
+
+  // Prompt check-in dialog -->  This method is currently being used for favorites checkin.
+  async promptCheckInDialog(cellIndex){
+    await this.getRoomDetails(cellIndex);
+    var modalInfo = this.getCheckInModalInfo();
+    this._prepareCustomModal(modalInfo);
+  };
   
   // Prepare checkout details!
   getCheckoutDetails(){
-    var checkoutDetails = this.state.data.userModel;
+    var checkoutDetails = this.state.data?.userModel;
     checkoutDetails['isUserTransfered'] = true;
     checkoutDetails['transferedRoomNo'] = this.roomDetails.nextRoom;
     return checkoutDetails;
@@ -331,6 +381,12 @@ class FilterTable extends TableView {
       this.editPropertiesFieldData = nodeConvertor(this.state.editPropertiesFields);
       await this._performTransfer();
     }
+  };
+
+  // Check-In favorites guest.
+  _checkInFavoritesGuest(){
+    this.state.data.onFormSave = true;
+    this._updateStateValue(this.state.data);
   };
   
   // trigger error message on customModal!
