@@ -10,7 +10,7 @@ import { templateHelpers } from './checkout.form.template';
 import PropertyAlertContainer from '../property.alert.container/property.alert.container.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
 import { getTimeDate, determineGSTPercent } from '../../../common.functions/common.functions';
-import { getBaseUrl, formQueryParams, nodeConvertor, validateFieldData, updateMetadataFields } from '../../../common.functions/node.convertor';
+import { getBaseUrl, formQueryParams, nodeConvertor, validateFieldData, updateMetadataFields, getCurrentUser} from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 
 
@@ -416,7 +416,7 @@ class CheckOutView extends React.Component {
           checkinDate: this.state.userModel.dateofcheckin, checkinTime: this.state.userModel.checkinTime, roomtype: this.state.data.roomModel.suiteName,
         prebook: this.state.data.roomModel.preBooked, amount: this.getTotalPayableAmount(), refund: this.getRefundAmount(), 
         totalDishAmount: 0, isGst: this.getIsGSTEnabled(), foodGst: 0, stayGst: this.state.billingInfo.gstPrice,
-        roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime()};
+        roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime(), checkoutBy: getCurrentUser()};
       this.props.updateSelectedModel(this.state.data.roomModel, undefined, this.checkoutDetails);
     };
     

@@ -1,4 +1,5 @@
 import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
+import {getStorage} from "../../Controller/Storage/Storage";
 const saveAs = require('file-saver');
 const axios = require('axios');
 const storage = require("../../Controller/Storage/Storage");
@@ -39,6 +40,11 @@ export function extractQueryParams(){
     extractedParams[key] = value;
   }
   return extractedParams;
+};
+
+// Get current logged-in user.
+export function getCurrentUser(){
+  return getStorage('loggedInUser');
 };
 
 // Extract data from the state handlers. This is usefull when states are holding their view's sub view function.

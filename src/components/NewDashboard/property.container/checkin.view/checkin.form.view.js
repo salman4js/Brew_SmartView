@@ -6,7 +6,7 @@ import MetadataFields from '../../../fields/metadata.fields.view';
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
 import {getStayedDays, determineGSTPercent, getTimeDate, formatDate} from '../../../common.functions/common.functions';
-import { nodeConvertor, validateFieldData, getFieldsData, updateMetadataFields } from '../../../common.functions/node.convertor';
+import { nodeConvertor, validateFieldData, getFieldsData, updateMetadataFields, getCurrentUser } from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 
 
@@ -373,6 +373,7 @@ const CheckinForm = (props) => {
     formValue['roomno'] = props.data.roomModel.roomno;
     formValue['floorNo'] = props.data.roomModel.floorNo;
     formValue['lodgeId'] = props?.params?.accIdAndName[0];
+    formValue['checkinBy'] = getCurrentUser();
     return formValue;
   };
   
