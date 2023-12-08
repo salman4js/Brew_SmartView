@@ -2,5 +2,6 @@
   "./commands.initialize/commands.properties.js",
   "./commands.initialize/commands.go.to.js",
   "./commands.initialize/commands.room.transfer.js",
-  "./commands.initialize/commands.favorites.checkin.js"
+  "./commands.initialize/commands.favorites.checkin.js",
+  "./commands.initialize/commands.export.to.excel.js"
 ]

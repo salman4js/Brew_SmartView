@@ -2,9 +2,9 @@ import React from 'react';
 import _ from 'lodash';
 import TableViewTemplateHelpers from './table.view.template';
 import Variables from "../../../Variables";
-import {filterKeysInObj, arrangeObj, convertObjectValue} from '../../../common.functions/node.convertor';
+import {filterKeysInObj, arrangeObj, convertObjectValue, nodeConvertor} from '../../../common.functions/node.convertor';
 import  tableViewConstants  from './table.view.constants';
-import TableToolbarView from "../../table.toolbar.view/table.toolbar.view";
+import {validateFieldData} from "../../../common.functions/node.convertor";
 import MetadataFields from '../../../fields/metadata.fields.view';
 
 class TableView extends React.Component {
@@ -86,7 +86,14 @@ class TableView extends React.Component {
         modalSize: "medium",
         footerEnabled: false,
         footerButtons: undefined
-      }
+      },
+      /**
+        customModalBodyViewOptions flag is introduced here because of commands model use case.
+        commands model is not a React component, hence rendering or updating the state of any view is not possible in commands model.
+        So, for custom modal, to update the state of the custom modal's body view, Table view allows to render the custom modal's body view
+        as its own state, hence updating the state of the custom modal's body view is possible through table.view.js
+       **/
+      customModalBodyViewOptions: undefined, // This value should get populated to use custom modal's body view.
     };
     this.params = props.params;
     this.paginationConstants = tableViewConstants.paginationConstants;
@@ -107,6 +114,12 @@ class TableView extends React.Component {
   // Render custom modal!
   _renderCustomModal(){
     return this.tableViewTemplate._renderCustomModal(this.state.customModal);
+  };
+
+  // Table view allows other components or commands model to render custom modal body view.
+  // To render the custom modal, use _prepareCustomModal method and to render custom modal body view, Use the flag renderCustomBodyView!
+  _renderCustomModalBodyView(){
+    return <MetadataFields data = {this.state.customModalBodyViewOptions} updateData = {(updatedData) => this.setState({customModalBodyViewOptions: updatedData})}/>
   };
   
   // Set up events for any actions!
@@ -162,6 +175,16 @@ class TableView extends React.Component {
     }
   };
 
+  // Validate state fields, this state fields would be from the non-component file such as commands model.
+  // Fields cannot be validated by node convertor if it's not a component file,
+  // so table.view allows to render custom modal body view and validate the fields passed by the non-component file.
+  async validateAbstractedStateFields(){
+    var isValid = await validateFieldData(this.state.customModalBodyViewOptions, (validatedData) => this.setState({customModalBodyViewOptions: validatedData}));
+    if(isValid.length === 0){
+      return nodeConvertor(this.state.customModalBodyViewOptions, ['value']);
+    }
+  };
+
   // Enable pagination view if the limit set to pagination exceeds.
   _checkAndEnablePaginationView(convertedCollection){
     var widgetTileModelCount = this.widgetTileModel.data.widgetTileModelCount?.[this.roomConstant] || convertedCollection.length;
@@ -200,6 +223,9 @@ class TableView extends React.Component {
         dashboardController: (opts) => this.props.dashboardController(opts),
         onRoomTransfer: (opts) => this.props.onRoomTransfer(opts),
         triggerTableLoader: (value, keepLoader) => this._toggleTableLoader(value, keepLoader),
+        triggerCustomModel: (options) => this._prepareCustomModal(options),
+        collapseCustomModal: () => this.onCloseCustomModal(),
+        validateStateFields: () => this.validateAbstractedStateFields(),
         updateSelectedModel: (roomModel, dashboardMode, userModel) => this.props.updateSelectedModel(roomModel, dashboardMode, userModel)
       }
     }
@@ -274,7 +300,7 @@ class TableView extends React.Component {
   };
   
   // Get the table headers for the selected widget tile!
-  getTableHeaders(){
+  getTableHeaders() {
     this.state.metadataTableState.headerValue = undefined; // Set the initial value
     if(this.widgetTileModel.data.userStatusMap !== undefined){
       this.roomConstant = _.findKey(this.widgetTileModel.data.userStatusMap, function(value) { // Using lodash function here to get the key by its value!
@@ -288,11 +314,16 @@ class TableView extends React.Component {
   
   // Prepare custom modal state data!
   _prepareCustomModal(options){
+    // If renderCustomBodyView is true and customModalBodyViewOptions is provided, set it in customModalBodyViewOptions state.
+    if(options.renderCustomBodyView && options.customBodyViewOptions){
+      this.setState({customModalBodyViewOptions: options.customBodyViewOptions});
+    };
     this.state.customModal.show = true;
     this.state.customModal.centered = options.centered !== undefined ? options.centered : true;
     this.state.customModal.onHide = options.onHide !== undefined ? options.onHide : this.state.customModal.onHide;
     this.state.customModal.restrictBody = (options.restrictBody === false) ? options.restrictBody : true; // By default, restrictBody is set to true.
-    this.state.customModal.showBodyItemView = () => options.showBodyItemView && options.showBodyItemView();
+    // Refer the declaration of customModalBodyViewOptions to understand this flag use case.
+    this.state.customModal.showBodyItemView = () => options.renderCustomBodyView ? this._renderCustomModalBodyView() : (options.showBodyItemView && options.showBodyItemView());
     this.state.customModal.header = options.header;
     this.state.customModal.modalSize = options.modalSize;
     this.state.customModal.footerEnabled = options.footerEnabled;

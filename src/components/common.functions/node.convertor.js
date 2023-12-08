@@ -1,5 +1,6 @@
 import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
-
+const saveAs = require('file-saver');
+const axios = require('axios');
 const storage = require("../../Controller/Storage/Storage");
 const _ = require('lodash');
 
@@ -345,6 +346,25 @@ export function filterCollections(collectionName, searchKey, searchValue, search
   return _.filter(collection, function(model){
     return model[searchKey] && searchValue && searchPattern.test(model[searchKey]);
   });
+};
+
+// Download the content into the filesystem.
+// This method watches for the content, If the content is passed, Content will be downloaded or
+// Content will be fetched from the server with the help download URL.
+export function downloadContent(options){
+  if(options.content){
+    // In this case, the content should be converted into blob before passing into this function.
+    saveAs(options.content, options.fileName);
+    return true;
+  } else {
+    axios.get(options.downloadUrl).then((result) => {
+      var blob = new Blob([result.data]);
+      saveAs(blob, options.filename);
+      return true;
+    }).catch(() => {
+      return false;
+    })
+  }
 };
 
 // Refresh the entire page when needed!

@@ -16,8 +16,15 @@ var commandsConstant = Object.freeze({
 
     FAVORITES_ROOM_PICKER_DIALOG: {
         favoritesRoomPickerDialog: 'Favorites Room Picker',
-        cancelFooterBtn: 'Cancel',
         primaryFooterBtn: 'Select Room'
+    },
+
+    EXPORT_TO_EXCEL: {
+      exportToExcelLabel: 'Export to excel',
+        footerButtons: {
+          primaryBtn: 'Export',
+          secondaryBtn: 'Cancel'
+        }
     },
 
     PropertySearchKey: Object.freeze({
@@ -30,10 +37,34 @@ var commandsConstant = Object.freeze({
         dashboardMode: 'filterTableView'
     }),
 
+    // TODO: Remove this later, when we have backend support for column customization.
+    configuredTableHeaderAndKey: Object.freeze({
+        history: [{
+            'id': 'username', 'title': 'Guest Name',
+        }, {
+            'id': 'phonenumber', 'title': 'Phone Number',
+        }, {
+            'id': 'aadharcard', 'title': 'Guest Id Number',
+        }, {
+            'id': 'address', 'title': 'Address',
+        }, {
+            'id': 'dateofcheckin', 'title': 'Date of Checkin',
+        }, {
+            'id': 'checkinTime', 'title': 'Time of Checkin',
+        }, {
+            'id': 'dateofcheckout', 'title': 'Date of Checkout',
+        }, {
+            'id': 'checkoutTime', 'title': 'Time of Checkout',
+        }, {
+            'id': 'totalAmount', 'title': 'Total Amount',
+        }]
+    }),
+
     isCommandsEnabled: Object.freeze({
         goToLocation: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned'],
         roomTransfer: ['afterCheckin', 'upcomingCheckout'],
-        favoritesCheckin: ['favorites']
+        favoritesCheckin: ['favorites'],
+        bookingHistory: ['history']
     })
 });
 
