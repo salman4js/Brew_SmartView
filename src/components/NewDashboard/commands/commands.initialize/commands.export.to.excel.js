@@ -13,7 +13,7 @@ class CommandsExportToExcel {
         };
         this.exportDialogFieldOptions = [{
             value: undefined,
-            placeholder: "Enter the name of the excel file",
+            placeholder: lang.EXPORT_TO_EXCEL.dialogPlaceholder,
             name: 'excelFileName',
             attribute: 'textField',
             isRequired: true,

@@ -24,7 +24,8 @@ var commandsConstant = Object.freeze({
         footerButtons: {
           primaryBtn: 'Export',
           secondaryBtn: 'Cancel'
-        }
+        },
+        dialogPlaceholder: 'Enter the name of the excel file'
     },
 
     PropertySearchKey: Object.freeze({

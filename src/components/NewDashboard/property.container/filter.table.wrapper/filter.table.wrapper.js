@@ -8,7 +8,7 @@ import {
   filterTableCheckInActionCellView, favoritesCheckInFormView
 } from './filter.table.wrapper.template';
 import filterTableConstants from './filter.table.wrapper.constants';
-import {filterKeysInObj, nodeConvertor, validateFieldData, updateMultipleMetadataFields} from '../../../common.functions/node.convertor';
+import {filterKeysInObj, nodeConvertor, validateFieldData, updateMultipleMetadataFields, getCurrentUser} from '../../../common.functions/node.convertor';
 import {getTimeDate} from '../../../common.functions/common.functions';
 import CheckoutUtils from '../checkout.view/checkout.form.utils';
 import {checkInFormValue} from '../checkin.view/checkin.form.utils';
@@ -272,6 +272,10 @@ class FilterTable extends TableView {
       filteredUserModel['extraBeds'] = this.editPropertiesFieldData.extraBeds;
       filteredUserModel['oldRoomPrice'] = this.stayTimePeriodPrice;
     }
+    // When we do transfer operation, we have to track who performed transfer operation.
+    // Checkin-By would remain as the user who checked-in the guest initially.
+    filteredUserModel['checkinBy'] = userModelClone.checkinBy;
+    filteredUserModel['transferBy'] = getCurrentUser();
     // Remove the unused object keys to prevent confusion.
     delete filteredUserModel.aadharcard;
     delete filteredUserModel.username;
