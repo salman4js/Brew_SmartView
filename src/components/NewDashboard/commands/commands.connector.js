@@ -1,5 +1,6 @@
+import CheckoutUtils from "../property.container/checkout.view/checkout.form.utils";
 const axios = require('axios');
-const Variables = require('../../Variables')
+const Variables = require('../../Variables');
 
 class CommandsConnector {
     constructor() {
@@ -8,8 +9,12 @@ class CommandsConnector {
 
     // Export to excel connector.
     static async onExportToExcel(options){
-        var result = await axios.post(`${Variables.Variables.hostId}/${options.lodgeId}/exporttocsv`, options);
-        return result;
+        return await axios.post(`${Variables.Variables.hostId}/${options.lodgeId}/exporttocsv`, options);
+    };
+
+    static async _getCustomHTMLContent(options){
+        var checkoutUtils = new CheckoutUtils(options);
+        return await checkoutUtils._getHTMLContent(options);
     };
 };
 

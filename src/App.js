@@ -1,4 +1,5 @@
 import './App.css';
+import './customHtmlContent.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Login from './components/Login';
 import LandingPage from './components/LandingPage';

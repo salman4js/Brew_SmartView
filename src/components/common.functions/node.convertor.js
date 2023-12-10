@@ -354,6 +354,27 @@ export function filterCollections(collectionName, searchKey, searchValue, search
   });
 };
 
+// This method is a helper function for renderCustomHTMLContent to replace the values with the fetched values.
+function replacePlaceholders(htmlContent, replacements){
+    let result = htmlContent.content;
+    for (const key in replacements) {
+      if (replacements.hasOwnProperty(key)) {
+        const placeholder = `{${key}}`;
+        const value = replacements[key];
+        result = result.replace(new RegExp(placeholder, 'g'), value);
+      }
+    }
+    return result;
+};
+
+export function renderCustomHTMLContent(htmlContent, replacements){
+  // Replace placeholders in the HTML content
+  const dynamicHTML = replacePlaceholders(htmlContent, replacements);
+  return (
+      <div dangerouslySetInnerHTML={{ __html: dynamicHTML }}></div>
+  );
+};
+
 // Download the content into the filesystem.
 // This method watches for the content, If the content is passed, Content will be downloaded or
 // Content will be fetched from the server with the help download URL.

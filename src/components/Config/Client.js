@@ -222,6 +222,19 @@ const Client = () => {
         }
       }
   ]);
+
+  // Custom HTML configuration state handler!
+  const [customHtmlConfiguration, setCustomHtmlConfiguration] = useState({
+        billPreview: {
+            label: "Select custom html content for bill preview",
+            isEnabled: undefined,
+        },
+      historyPreview: {
+          label: "Select custom html content for history preview",
+          isEnabled: undefined,
+      },
+      onChange: (isEnabled, node) => updateCustomHtmlContentConfig(isEnabled, node)
+  });
   
   // RefundTracker state handler!
   const [refundTracker, setRefundTracker] = useState({
@@ -233,7 +246,27 @@ const Client = () => {
   // Update refund tracker!
   function updateRefundTracker(value){
     setRefundTracker(prevState => ({...prevState, isEnabled: value}))
-  }
+  };
+
+  // Update the HTML configuration from the server initially
+  function _updateCustomHtmlConfig(customHtmlContentConfig){
+     if(customHtmlContentConfig){
+         var customHtmlContent = Object.keys(customHtmlContentConfig);
+         for ( var htmlContent of customHtmlContent){
+             updateCustomHtmlContentConfig(customHtmlContentConfig[htmlContent].isEnabled, htmlContent);
+         };
+     };
+  };
+
+  function updateCustomHtmlContentConfig(isEnabled, node) {
+      setCustomHtmlConfiguration(prevState => ({
+          ...prevState,
+          [node]: {
+              ...prevState[node],
+              isEnabled: isEnabled
+          }
+      }));
+  };
     
     // Get field data!
     function getFieldData(state){
@@ -389,6 +422,7 @@ const Client = () => {
                     setEditableOptions(prevState => ({...prevState, isEnabled: res.data.object.checkinDateEditable}));
                     _showFullDetailToggler(res.data.object.showFullDetails);
                     _linkVouchersWithLivixius(res.data.object.linkVouchersWithLivixius);
+                    _updateCustomHtmlConfig(res.data.object.customHtmlContent);
                 }
             })
        setLoading(false)
@@ -514,7 +548,8 @@ const Client = () => {
             linkVouchersWithLivixius: linkWithLivixius.isEnabled,
             restrictAdvance: restrictAdvance.isEnabled,
             checkinDateEditable: editableOptions.isEnabled,
-            showFullDetails: showFullDetails.isEnabled
+            showFullDetails: showFullDetails.isEnabled,
+            customHtmlContent: customHtmlConfiguration
         }
 
         axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
@@ -694,7 +729,8 @@ const Client = () => {
                                     extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
                                     extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
                                     invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} refundTracker = {refundTracker}
-                                    linkVouchersWithLivixius = {linkWithLivixius} restrictAdvance = {restrictAdvance} editableOptions = {editableOptions} showFullDetails = {showFullDetails} />
+                                    linkVouchersWithLivixius = {linkWithLivixius} restrictAdvance = {restrictAdvance} editableOptions = {editableOptions} showFullDetails = {showFullDetails}
+                                                  customHtmlConfiguration = {customHtmlConfiguration}/>
                                     <br />
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
                                 </div>

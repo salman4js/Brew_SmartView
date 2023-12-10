@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import MetadataFields from '../../fields/metadata.fields.view';
-import CommandHelperField from "../../fields/commandField/command.helper.field";
+import TableViewTemplateHelpers from "./table.view/table.view.template";
 import CheckInForm from './checkin.view/checkin.form.view';
 import CheckOutView from './checkout.view/checkout.form.view';
 import RoomStatusView from './room.status.view/room.status.view';
@@ -8,12 +8,18 @@ import DefaultView from './default.view/default.view';
 import StatusTableView from './table.view/table.view';
 import FilterTable from './filter.table.wrapper/filter.table.wrapper';
 import LogTable from './log.table.wrapper/log.table.wrapper';
+import PaymentTrackerWrapper from "./payment.tracker.view/payment.tracker.wrapper";
 import propertyContainerConstants from './property.container.constants';
-import { extractStateValue } from '../../common.functions/node.convertor';
+import { extractStateValue, renderCustomHTMLContent } from '../../common.functions/node.convertor';
 
 const PropertyContainer = (props) => {
   // Panel fields state handler!
   const [panelField, setPanelField] = useState([]);
+
+  // Table view template initializer.
+  var TableViewTemplate = new TableViewTemplateHelpers(
+      {options: {onBack: ()=> props.dashboardController({reloadSidepanel: {silent: true}, navigateToPropertyContainer:true}),
+      selectedRoomConstant: propertyContainerConstants.WIDGET_CONSTANTS[props.data.dashboardMode]}})
   
   // Get panel field data!
   function getPanelFieldData(){
@@ -28,8 +34,10 @@ const PropertyContainer = (props) => {
         attribute: "dataListField",
         name: 'panelFieldDropdown',
         allowInputField: false,
-        allowPanelField: true,
+        allowPanelField: propertyContainerConstants.ALLOW_PANEL_FIELD.includes(props.data.dashboardMode),
         allowRightSideControl: true,
+        customPanelField: !propertyContainerConstants.ALLOW_PANEL_FIELD.includes(props.data.dashboardMode),
+        renderCustomPanelField: () => TableViewTemplate.renderLeftSideController(),
         rightSideControl: _renderRightSideControl,
         height: 27,
         width: '200px',
@@ -43,8 +51,6 @@ const PropertyContainer = (props) => {
           fontSize: "15px",
           paddingRight: "10px",
           paddingLeft: "10px",
-          paddingTop: "10px",
-          paddingBottom: "10px",
           cursor: "pointer",
         },
         options: panelFieldDropdownOptions
@@ -52,15 +58,21 @@ const PropertyContainer = (props) => {
     ]
   };
 
+  // Should show panel dropdown for panel field.
+  function shouldShowPanelDropdown(){
+    return !propertyContainerConstants.IGNORE_PANEL_FIELD_DROPDOWN.includes(props.data.dashboardMode);
+  };
+
   // Get panel field dropdown values!
   function getPanelFieldDropdown(){
-    if(props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.roomStatus && props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.statusTableView){
+    if(shouldShowPanelDropdown()){
        return [
           {
             value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? propertyContainerConstants.FORM_MODE.checkinForm : propertyContainerConstants.FORM_MODE.checkoutForm),
           },
           {
-            value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : 'payment tracker')
+            value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : 'payment tracker'),
+            actualValue: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : propertyContainerConstants.DASHBOARD_MODE.paymentTrackerView)
           },
           {
             value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : 'Maintainance Log'),
@@ -79,7 +91,7 @@ const PropertyContainer = (props) => {
     // Options to handle perspective change!
     var options = {
       navigateToStatusTableView: true,
-      selectedRoomConstant: propertyContainerConstants.TABLE_HEADERS.logTableView, // Here, selectedRoomConstant represents table header for the table view.
+      selectedRoomConstant: propertyContainerConstants.TABLE_HEADERS[panelFieldOptions.panelFieldDropdown], // Here, selectedRoomConstant represents table header for the table view.
       // Incase of room transfer view, the table header value is being overriden in the filter.table.wrapper
       dashboardMode: panelFieldOptions.panelFieldDropdown
     };
@@ -130,6 +142,15 @@ const PropertyContainer = (props) => {
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.logTableView){
       return <LogTable data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
       dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+    };
+
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.paymentTrackerView){
+      return <PaymentTrackerWrapper data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
+                       dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+    };
+
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){
+      return renderCustomHTMLContent(props.htmlContent.customHtmlContent, props.htmlContent.replacements);
     };
   };
 

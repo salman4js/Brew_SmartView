@@ -1,0 +1,108 @@
+/** {*/
+/*    font-family: calibri;*/
+/*    text-transform: uppercase;*/
+/*}*/
+/*body {*/
+/*    height: 100vh;*/
+/*    margin: 5px 5px;*/
+/*}*/
+/*label {*/
+/*    font-weight: 500;*/
+/*}*/
+/*b {*/
+/*    font-size: 18px;*/
+/*}*/
+/*.container {*/
+/*    display: grid;*/
+/*    grid-template-columns: 1fr 1fr;*/
+/*    gap: 10px;*/
+/*}*/
+/*.header {*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    margin: 0 20px;*/
+/*}*/
+/*.header h2 {*/
+/*    justify-content: end;*/
+/*}*/
+/*.box1 {*/
+/*    border: 2px solid #000;*/
+/*    padding: 15px;*/
+/*}*/
+/*.box1 input {*/
+/*    border: none;*/
+/*}*/
+/*.age input {*/
+/*    border: 1px solid #000;*/
+/*}*/
+/*.box2 input {*/
+/*    border: none;*/
+/*}*/
+/*.box2 table {*/
+/*    width: 100%;*/
+/*    border: 2px solid #000;*/
+/*    padding: 15px;*/
+/*}*/
+/*.box2 .check {*/
+/*    margin-top: 15px;*/
+/*}*/
+/*.room_details table {*/
+/*    width: 100%;*/
+/*    margin-top: 15px;*/
+/*}*/
+/*.room_details thead {*/
+/*    background-color: rgba(246, 138, 15, 0.597);*/
+/*}*/
+/*.container2 {*/
+/*    display: grid;*/
+/*    grid-template-columns: 1fr 1fr;*/
+/*    gap: 10px;*/
+/*    margin-top: 15px;*/
+/*}*/
+/*.box3 {*/
+/*    padding: 25px 20px 0;*/
+/*    position: relative;*/
+/*}*/
+/*.box3 b {*/
+/*    position: relative;*/
+/*    padding: 50px 0px 0px 20px;*/
+/*}*/
+/*.box3 table {*/
+/*    border-top: 1px solid blue;*/
+/*    margin-top: 5px;*/
+/*    width: 300px;*/
+/*    padding-top: 5px;*/
+/*    background: none;*/
+/*    position: relative;*/
+/*    margin-left: 20px;*/
+/*}*/
+/*.box3 input {*/
+/*    border: none;*/
+/*    border-bottom: 1.5px dashed #000;*/
+/*    background: none;*/
+/*}*/
+/*.box3 span {*/
+/*    width: 250px;*/
+/*    height: 250px;*/
+/*    border-radius: 50%;*/
+/*    background-color: rgba(0, 145, 255, 0.393);*/
+/*    position: absolute;*/
+/*}*/
+/*.box3 .content1 {*/
+/*    margin: 60px 0 0 10px;*/
+/*}*/
+/*.box4 table {*/
+/*    width: 100%;*/
+/*    padding: 15px;*/
+/*}*/
+/*.box3 td {*/
+/*    font-weight: 600;*/
+/*}*/
+/*.box4 input {*/
+/*    border: none;*/
+/*}*/
+/*.box4 .total {*/
+/*    font-size: 25px;*/
+/*    font-weight: 800;*/
+/*    color: rgb(246, 138, 15);*/
+/*}*/

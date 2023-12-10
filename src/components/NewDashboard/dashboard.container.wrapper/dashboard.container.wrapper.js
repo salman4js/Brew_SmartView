@@ -24,6 +24,12 @@ const DashboardWrapper = (props, ref) => {
     filterTableOptions: undefined
   });
 
+  // Custom html content state handler!
+  const [htmlContent, setHtmlContent] = useState({
+    customHtmlContent: undefined,
+    replacements: undefined
+  })
+
   // Default view room model details state handler!
   const [propertyDetails, setPropertyDetails] = useState({
     roomCollection: undefined,
@@ -70,7 +76,7 @@ const DashboardWrapper = (props, ref) => {
   });
 
   // Update the selected model from the side panel wrapper!
-  function updateSelectedModel(roomModel, dashboardMode, userModel){
+  function updateSelectedModel(roomModel, dashboardMode, userModel, htmlContent){
     onFormCancel(); // this will clear out the form data, so that the newly selected roomModel will load.
     // When dashboardMode is undefined, get the dashboardMode from the roomModel data.
     dashboardMode = !dashboardMode ? getFormMode(roomModel.roomStatusConstant) : dashboardMode;
@@ -109,6 +115,7 @@ const DashboardWrapper = (props, ref) => {
     // updated room model to updated it to the latest value
     opts.updatedModel && _updateRoomModel(opts);
     opts.goToLocation && updateSelectedModel(opts.roomModel);
+    opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
     opts.updateUserCollection && _updateUserCollection(opts.updateUserCollection, opts.ignoreUpdateOfDefaultView);
   };
   
@@ -117,6 +124,13 @@ const DashboardWrapper = (props, ref) => {
     setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode, widgetTileModelCount: opts.widgetTileModelCount,
     widgetTileModel: opts.widgetTileModel, userStatusMap: opts.userStatusMap, selectedRoomConstant: opts.selectedRoomConstant,
       filterTableOptions: opts.filterTableOptions}));
+  };
+
+  // Navigate the perspective to custom html content by updating the html content and the dashboard mode.
+  function updateCustomHtmlContent(opts){
+    setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode}));
+    setHtmlContent(prevState => ({...prevState, customHtmlContent: opts.customHtmlContent,
+      replacements: opts.replacements}));
   };
 
   // Reload sidepanel function!
@@ -188,7 +202,7 @@ const DashboardWrapper = (props, ref) => {
         </div>
         <div className = "flex-2">
           <div className = "dashboard-property-container">
-            <PropertyContainer data = {selectedModel} propertyContainerHeight = {props.modalAssistData.height} propertyDetails = {propertyDetails}
+            <PropertyContainer data = {selectedModel} htmlContent = {htmlContent} propertyContainerHeight = {props.modalAssistData.height} propertyDetails = {propertyDetails}
             onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
             updateSelectedModel = {(roomModel, dashboardMode, userModel) => updateSelectedModel(roomModel, dashboardMode, userModel)}
             onCheckout = {(value) => onCheckout(value)} onRoomTransfer = {(opts) => onRoomTransfer(opts)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />

@@ -32,6 +32,8 @@ const DataList = (props) => {
   function getDropdownProps(){
     const data = props.data;
     data.style['width'] = props.data.width !== undefined ? props.data.width : getFieldWidth() + "px";
+    data.style['paddingTop'] = '10px';
+    data.style['paddingBottom'] = '10px';
     return data;
   }
   
