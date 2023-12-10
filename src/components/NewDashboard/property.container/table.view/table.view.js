@@ -248,7 +248,10 @@ class TableView extends React.Component {
     this.nextNode = await fetch(this.fetchableWidgets[this.roomConstant](options));
     this.nextNodeData = await this.nextNode.json();
     this.rawRoomModel = this.nextNodeData.data.result;
-    this.widgetTileModel.paginationData.getNextNode = false;
+    // Commented this line because when we change it to false, NextNode will not get fetched when the data changes,
+    // For example, When we perform export to excel command, when the modal renders, getWidgetTileTableCollectionData function will execute, that time
+    // getNextNode will be false, so that only the initial 15 data will persist which will cause the length of filteredCollection to zero.
+    // this.widgetTileModel.paginationData.getNextNode = false;
   };
 
   // Check for fetchable widgets.

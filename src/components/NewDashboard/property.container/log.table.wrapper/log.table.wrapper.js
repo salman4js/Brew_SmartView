@@ -1,5 +1,3 @@
-import React from 'react';
-import _ from 'lodash';
 import { convertObjectValue } from '../../../common.functions/node.convertor';
 import logTableConstants from './log.table.wrapper.constants';
 import LogTableUtils from './log.table.utils';
@@ -29,7 +27,7 @@ class LogTable extends TableView {
   
   // This is to handle extended functions from the table.view.
   async setExpandedTableView(){
-    this.roomConstant = logTableConstants.tableInfoMessage.PROPERTY_STATUS_KEY; // this will be used when we getting the required table data.
+    this.roomConstant = logTableConstants.tableInfoMessage.PROPERTY_STATUS_KEY; // this will be used when we're getting the required table data.
     // from the table.view.constants.
     this._prepareTableHeaderState();
     await this._prepareTableCellState();

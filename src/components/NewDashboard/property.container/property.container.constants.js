@@ -6,10 +6,13 @@ var propertyContainerConstants = Object.freeze({
     default: 'default',
     statusTableView: 'statusTableView',
     filterTableView: 'filterTableView',
-    logTableView: 'logTableView'
+    logTableView: 'logTableView',
+    paymentTrackerView: 'paymentTrackerView',
+    customHTMLView: 'customHtmlView'
   }),
   TABLE_HEADERS: Object.freeze({
-    logTableView: 'Guest Log Table'
+    logTableView: 'Guest Log Table',
+    paymentTrackerView: 'Payment Tracker Table'
   }),
   FORM_MODE: Object.freeze({
     checkinForm: 'checkin-form',
@@ -21,8 +24,13 @@ var propertyContainerConstants = Object.freeze({
     checkoutButton: 'Other Options',
     transferButton: 'Transfer Room'
   }),
+  WIDGET_CONSTANTS: Object.freeze({
+    customHtmlView: 'History Preview'
+  }),
   // Panel field not required dashboardMode constants array!
-  IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView']
+  IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView'],
+  ALLOW_PANEL_FIELD: ['edit', 'read'],
+  IGNORE_PANEL_FIELD_DROPDOWN: ['statusTableView', 'roomStatus', 'customHtmlView']
 });
 
 export default propertyContainerConstants;

@@ -54,6 +54,10 @@ class CheckOutView extends React.Component {
         },
         templateConstants: checkoutViewConstants,
         maintainanceLog: MetadataModelState.maintainanceLogInput,
+        htmlContent: {
+            content: undefined,
+            filename: props.params.accIdAndName[1] + '.html'
+        }
       };
       this.propertyController = {
         reloadSidepanel: false,
@@ -125,6 +129,10 @@ class CheckOutView extends React.Component {
     
     getExtraBedCalcConfig(){
       return JSON.parse(getStorage('extraCalc')); // This indicates if we have to calculate extra bed based on stayed days or not!
+    };
+
+    getIsCustomHtmlConfigured(){
+        return JSON.parse(getStorage('customHtmlForBillPreview'));
     };
     
     getProvidedCheckoutDate(){
@@ -651,6 +659,16 @@ class CheckOutView extends React.Component {
       };
       this._triggerCustomModal(customModalOpts);
     };
+
+    // Fetch the corresponding html file content.
+    fetchHTMLContent(){
+        var options = {
+            filename: this.state.htmlContent.filename // TODO: Change this into dynamic name.
+        };
+        this.checkoutUtils._getHTMLContent(options).then((result) => {
+            this.setState({htmlContent: {content: result}});
+        });
+    };
     
     // On update lifecyle method!
     async componentDidUpdate(prevProps, prevState){
@@ -666,6 +684,7 @@ class CheckOutView extends React.Component {
     // On render lifecyle method!
     async componentDidMount(){
       await this.fetchDetails(); // Fetch user details and billing information!
+      this.getIsCustomHtmlConfigured() && await this.fetchHTMLContent();
     };
     
     render(){

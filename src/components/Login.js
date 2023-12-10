@@ -72,7 +72,9 @@ const Login = () => {
             'isAdvanceRestricted': res.data.object.restrictAdvance,
             'isCheckinDateEditable': res.data.object.checkinDateEditable,
             'is-linked-with-vouchers': res.data.object.linkVouchersWithLivixius,
-            'showFullDetails': res.data.object.showFullDetails
+            'showFullDetails': res.data.object.showFullDetails,
+            'customHtmlForBillPreview': res.data.object.customHtmlContent.billPreview.isEnabled,
+            'customHtmlForHistoryPreview': res.data.object.customHtmlContent.historyPreview.isEnabled
           };
           
           defaultStorage(data);

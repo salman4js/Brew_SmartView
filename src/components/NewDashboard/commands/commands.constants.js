@@ -38,6 +38,11 @@ var commandsConstant = Object.freeze({
         dashboardMode: 'filterTableView'
     }),
 
+    MORE_DETAILS: Object.freeze({
+       dashboardMode: 'customHtmlView',
+       moreDetails: 'More Details'
+    }),
+
     // TODO: Remove this later, when we have backend support for column customization.
     configuredTableHeaderAndKey: Object.freeze({
         history: [{
@@ -65,7 +70,8 @@ var commandsConstant = Object.freeze({
         goToLocation: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned'],
         roomTransfer: ['afterCheckin', 'upcomingCheckout'],
         favoritesCheckin: ['favorites'],
-        bookingHistory: ['history']
+        bookingHistory: ['history'],
+        moreDetails: ['history']
     })
 });
 
