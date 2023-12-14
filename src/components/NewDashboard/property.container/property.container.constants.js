@@ -8,7 +8,8 @@ var propertyContainerConstants = Object.freeze({
     filterTableView: 'filterTableView',
     logTableView: 'logTableView',
     paymentTrackerView: 'paymentTrackerView',
-    customHTMLView: 'customHtmlView'
+    customHTMLView: 'customHtmlView',
+    receipt: 'receiptGeneration'
   }),
   TABLE_HEADERS: Object.freeze({
     logTableView: 'Guest Log Table',

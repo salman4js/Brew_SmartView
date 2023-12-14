@@ -24,6 +24,11 @@ const DashboardWrapper = (props, ref) => {
     filterTableOptions: undefined
   });
 
+  // Generate Receipt state handler!
+  const [invoiceOptions, setInvoiceOptions] = useState({
+    receiptOptions: undefined
+  });
+
   // Custom html content state handler!
   const [htmlContent, setHtmlContent] = useState({
     customHtmlContent: undefined,
@@ -116,6 +121,7 @@ const DashboardWrapper = (props, ref) => {
     opts.updatedModel && _updateRoomModel(opts);
     opts.goToLocation && updateSelectedModel(opts.roomModel);
     opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
+    opts.generateReceipt && _updateGenerateReceiptState(opts);
     opts.updateUserCollection && _updateUserCollection(opts.updateUserCollection, opts.ignoreUpdateOfDefaultView);
   };
   
@@ -131,6 +137,12 @@ const DashboardWrapper = (props, ref) => {
     setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode}));
     setHtmlContent(prevState => ({...prevState, customHtmlContent: opts.customHtmlContent,
       replacements: opts.replacements}));
+  };
+
+  // Navigate to Invoice View to trigger print.
+  function _updateGenerateReceiptState(opts){
+    setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode}));
+    setInvoiceOptions(prevState => ({...prevState, receiptOptions: opts.receiptOptions}));
   };
 
   // Reload sidepanel function!
@@ -202,7 +214,7 @@ const DashboardWrapper = (props, ref) => {
         </div>
         <div className = "flex-2">
           <div className = "dashboard-property-container">
-            <PropertyContainer data = {selectedModel} htmlContent = {htmlContent} propertyContainerHeight = {props.modalAssistData.height} propertyDetails = {propertyDetails}
+            <PropertyContainer data = {selectedModel} htmlContent = {htmlContent} invoiceOptions = {invoiceOptions} propertyContainerHeight = {props.modalAssistData.height} propertyDetails = {propertyDetails}
             onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
             updateSelectedModel = {(roomModel, dashboardMode, userModel) => updateSelectedModel(roomModel, dashboardMode, userModel)}
             onCheckout = {(value) => onCheckout(value)} onRoomTransfer = {(opts) => onRoomTransfer(opts)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />

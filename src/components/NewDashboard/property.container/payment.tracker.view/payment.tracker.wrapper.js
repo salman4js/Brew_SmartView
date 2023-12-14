@@ -14,9 +14,19 @@ class PaymentTrackerWrapper extends TableView {
                 tableLoader: true,
                 selectedRoomId: undefined,
                 isCheckboxSelected: false,
-                enableCheckbox: false,
+                enableCheckbox: true,
+                checkboxSelection: [],
                 tableCellWidth : "590px",
                 showPanelField: false,
+                checkbox: [
+                    {
+                        select: (value, checkBoxIndex) => this._updateCheckboxSelection(value, checkBoxIndex),
+                        value: false,
+                        attribute: "checkBoxField",
+                        enableCellCheckbox: true,
+                        enableHeaderCheckbox: true
+                    }
+                ]
             }
         };
         this.shouldFetch = true;
