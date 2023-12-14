@@ -9,6 +9,7 @@ import StatusTableView from './table.view/table.view';
 import FilterTable from './filter.table.wrapper/filter.table.wrapper';
 import LogTable from './log.table.wrapper/log.table.wrapper';
 import PaymentTrackerWrapper from "./payment.tracker.view/payment.tracker.wrapper";
+import InvoiceView from "../../Invoice/invoice.view";
 import propertyContainerConstants from './property.container.constants';
 import { extractStateValue, renderCustomHTMLContent } from '../../common.functions/node.convertor';
 
@@ -147,6 +148,10 @@ const PropertyContainer = (props) => {
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.paymentTrackerView){
       return <PaymentTrackerWrapper data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
                        dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+    };
+
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.receipt){
+      return <InvoiceView node = {props.invoiceOptions.receiptOptions}/>
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){

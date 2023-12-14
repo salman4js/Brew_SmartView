@@ -43,6 +43,11 @@ var commandsConstant = Object.freeze({
        moreDetails: 'More Details'
     }),
 
+    GENERATE_RECEIPT: Object.freeze({
+        dashboardMode: 'receiptGeneration',
+       generateReceipt: 'Generate Receipt'
+    }),
+
     // TODO: Remove this later, when we have backend support for column customization.
     configuredTableHeaderAndKey: Object.freeze({
         history: [{
@@ -71,7 +76,8 @@ var commandsConstant = Object.freeze({
         roomTransfer: ['afterCheckin', 'upcomingCheckout'],
         favoritesCheckin: ['favorites'],
         bookingHistory: ['history'],
-        moreDetails: ['history']
+        moreDetails: ['history'],
+        generateReceipt: ['paymentTrackerView']
     })
 });
 
