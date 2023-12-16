@@ -1,4 +1,5 @@
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
+import { checkoutFormValue } from "../checkin.view/checkin.form.utils";
 import { filterKeysInArr } from '../../../common.functions/node.convertor';
 const axios = require('axios');
 const Variables = require("../../../Variables");
@@ -7,6 +8,7 @@ const _ = require('lodash');
 class CheckoutUtils {
     
   constructor(options){
+    this.options = options;
     this.baseUrl = Variables.Variables.hostId + "/" + options.accId;
   };
 
@@ -42,15 +44,8 @@ class CheckoutUtils {
   
   // Checkout API!
   async onCheckout(data){
-    // First check if the data is in the collectionInstance of upcomingCheckout, If yes, remove the model!
-    var userModel = CollectionInstance.getCollections('widgetTileCollections');
-    var userModelExists = _.find(userModel.data.upcomingCheckout, function(obj){
-      return obj._id === data.userid;
-    });
-    if(userModelExists){
-      CollectionInstance.removeCollections('widgetTileCollections', userModelExists, 'upcomingCheckout');
-    }
-    var result = await axios.post(`${this.baseUrl}/deleteuser`, data);
+    data.lodgeId = this.options.accId;
+    var result = await checkoutFormValue(data);
     return result;
   };
   

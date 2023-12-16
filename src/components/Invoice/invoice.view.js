@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
+import _ from 'lodash';
 import brewDate from 'brew-date';
 import TableHead from "../table.view/table.head.view";
 import TableCell from "../table.view/table.cell.view";
 import MetadataTable from '../metadata.table.view/metadata.table.view';
 import NetProfitView from '../vouchers/net.profit.view';
 import { getStorage } from "../../Controller/Storage/Storage";
+import {convertQueryParamsIntoObjects} from "../common.functions/node.convertor";
 
 const Invoice = (props) => {
 
@@ -37,16 +39,29 @@ const Invoice = (props) => {
     
     // Common customer details!
     function customerDetails(){
-      return(
-        <div className = "invoice-total">
-          <p>
-            Customer Name: {props.node.customerDetails.customername}
-          </p>
-          <p>
-            Phone Number: {props.node.customerDetails.phonenumber}
-          </p>
-        </div>
-      )
+      if(props.node.isQueryParams === 'true'){
+          return (
+              <div className="invoice-total">
+                  <p>
+                      Customer Name: {props.node.customername}
+                  </p>
+                  <p>
+                      Phone Number: {props.node.phonenumber}
+                  </p>
+              </div>
+          )
+      } else {
+          return (
+              <div className="invoice-total">
+                  <p>
+                      Customer Name: {props.node.customerDetails.customername}
+                  </p>
+                  <p>
+                      Phone Number: {props.node.customerDetails.phonenumber}
+                  </p>
+              </div>
+          )
+      }
     }
     
     // Receipt details!
@@ -62,13 +77,20 @@ const Invoice = (props) => {
     
     // Common description table!
     function _showDescriptionTable(){
+      if(props.node.isQueryParams === 'true'){
+          props.node.headerValue = _.split(props.node.headerValue, ',');
+          if(!Array.isArray(props.node.cellValues)){
+              props.node.cellValues = convertQueryParamsIntoObjects(props.node.cellValues);
+          }
+      }
+      console.log(props.node)
       return(
-        <div className = "invoice-total">
-          <p>
-            Description Table:
-          </p>
-          <MetadataTable data = {props.node} />
-        </div>
+          <div className = "invoice-total">
+              <p>
+                  Description Table:
+              </p>
+              <MetadataTable data = {props.node} />
+          </div>
       )
     }
     
@@ -369,7 +391,7 @@ const Invoice = (props) => {
               )}
               
               {/* Receipt Generation */}
-              {props.node.isReceipt && (
+              {(props.node.isReceipt || props.node.isReceipt === 'true') && (
                 <div className = "container invoice" style = {{height: window.innerHeight}}>
                   {renderInvoiceHeader()}
                   <div className = "invoice-header">

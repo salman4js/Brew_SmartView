@@ -175,7 +175,7 @@ const PaymentTracker = (props) => {
   async function generateReceipt(){
     const checkboxSelection = JSON.parse(getStorage("selectedItem"));
     const data = {};
-    data['paymentIds'] = checkboxSelection;
+    data['nodes'] = checkboxSelection;
     data['isPrebook'] = getState();
     const result = await getPaymentDetails(splitedIds[0], data);
     if(result.data.success){

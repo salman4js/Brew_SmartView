@@ -30,7 +30,7 @@ var commandsConstant = Object.freeze({
 
     PropertySearchKey: Object.freeze({
         user: ['afterCheckin', 'upcomingCheckout', 'upcomingPrebook'],
-        _id: ['afterCheckedout', 'afterCleaned']
+        _id: ['afterCheckedout', 'afterCleaned', 'inCleaning']
     }),
 
     ROOM_TRANSFER: Object.freeze({
@@ -72,12 +72,12 @@ var commandsConstant = Object.freeze({
     }),
 
     isCommandsEnabled: Object.freeze({
-        goToLocation: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned'],
+        goToLocation: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned', 'inCleaning'],
         roomTransfer: ['afterCheckin', 'upcomingCheckout'],
         favoritesCheckin: ['favorites'],
         bookingHistory: ['history'],
         moreDetails: ['history'],
-        generateReceipt: ['paymentTrackerView']
+        generateReceipt: ['paymentTrackerView', 'logTable']
     })
 });
 

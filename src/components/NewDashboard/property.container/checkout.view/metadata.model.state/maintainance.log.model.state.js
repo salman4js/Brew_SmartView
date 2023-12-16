@@ -4,10 +4,11 @@ var MetadataModelState = {
     placeholder: "Add New Log Price",
     name: 'price',
     attribute: 'textField',
+    validationRegex: /^(0|[1-9]\d*)$/,
     isRequired: true,
     inlineToast: {
       isShow: false,
-      inlineMessage: 'Please provide a valid input.'
+      inlineMessage: 'Please provide a valid price. Price should be in number format.'
     },
   }, {
     value: undefined,

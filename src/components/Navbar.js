@@ -234,7 +234,7 @@ const Navbar = (props) => {
     
     // Should render universal message!
     function shouldRenderUniversalMessage(){
-      return globalMessage.status === 'SHOW' ? true : false
+      return globalMessage.status === 'SHOW'
     };
     
     // Fetch preference and update global collection instance!
