@@ -139,12 +139,16 @@ class TableView extends React.Component {
 
   // Update the checkbox selection.
   _updateCheckboxSelection(value, checkBoxIndex){
-    if(value){
-      this.state.metadataTableState.checkboxSelection.push(checkBoxIndex);
+    if(checkBoxIndex){
+      if(value){
+        this.state.metadataTableState.checkboxSelection.push(checkBoxIndex);
+      } else {
+        _.remove(this.state.metadataTableState.checkboxSelection, function(index){
+          return index === checkBoxIndex;
+        });
+      }
     } else {
-      _.remove(this.state.metadataTableState.checkboxSelection, function(index){
-        return index === checkBoxIndex;
-      });
+      this.state.metadataTableState.checkboxSelection = [];
     }
     // Update the toolbar padding style settings for menu action items.
     this.state.metadataTableState.checkboxSelection.length > 0 ? this.panelFieldState[0].style.paddingLeft = 0
@@ -223,6 +227,7 @@ class TableView extends React.Component {
         dashboardController: (opts) => this.props.dashboardController(opts),
         onRoomTransfer: (opts) => this.props.onRoomTransfer(opts),
         triggerTableLoader: (value, keepLoader) => this._toggleTableLoader(value, keepLoader),
+        updateCheckboxSelection: (value, checkboxIndex) => this._updateCheckboxSelection(value, checkboxIndex),
         triggerCustomModel: (options) => this._prepareCustomModal(options),
         collapseCustomModal: () => this.onCloseCustomModal(),
         validateStateFields: () => this.validateAbstractedStateFields(),

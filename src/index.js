@@ -9,6 +9,17 @@ import { Provider } from 'react-redux';
 // Redux store with all reducers combined!
 const store = createStore(allReducers);
 
+// Registering Service Worker.
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+        .then((registration) => {
+            console.warn('Service Worker registered with scope:', registration.scope);
+        })
+        .catch((error) => {
+            console.error('Service Worker registration failed:', error);
+        });
+}
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

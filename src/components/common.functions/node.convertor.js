@@ -42,6 +42,22 @@ export function extractQueryParams(){
   return extractedParams;
 };
 
+// Convert query params into objects
+// Sometimes, when we have to send objects in the URL, we convert it into string and have a separator for objects
+// This method is helpful when we want to convert the query params back into the objects.
+export function convertQueryParamsIntoObjects(values, separator){
+  // Default separator would be '--';
+  var resultArr = [],
+      sep = separator !== undefined ? separator : '--',
+      arr = _.split(values, sep);
+  arr.map((val) => {
+    if(val.length !== 0 && val !== '[object Object]'){
+      resultArr.push(JSON.parse(val));
+    }
+  });
+  return resultArr;
+};
+
 // Get current logged-in user.
 export function getCurrentUser(){
   return getStorage('loggedInUser');

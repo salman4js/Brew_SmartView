@@ -108,6 +108,16 @@ export function _updateWidgetTileCollections(modelName, data, action){
   CollectionInstance.updateModel('widgetTileCollections', modelName, widgetTileCollections);
 };
 
+// Update widget tile model count for upcomingCheckout and upcomingPrebook.
+export function _updateWidgetTileCount(widgetTileModel, action){
+  // Get the widgetTileModel.
+  var widgetTileCollections = _.clone(CollectionInstance.getModel('widgetTileCollections', 'widgetTileModelCount'));
+  if(action === 'INC') widgetTileCollections[widgetTileModel]++;
+  if(action === 'DEC') widgetTileCollections[widgetTileModel]--;
+  // When the widgetTileModel Count is updated, Update the entire widgetTileModelCount in the collection instance.
+  CollectionInstance.updateModel('widgetTileCollections', 'widgetTileModelCount', widgetTileCollections);
+};
+
 
 
 

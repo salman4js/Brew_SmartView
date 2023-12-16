@@ -150,10 +150,6 @@ const PropertyContainer = (props) => {
                        dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
 
-    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.receipt){
-      return <InvoiceView node = {props.invoiceOptions.receiptOptions}/>
-    };
-
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){
       return renderCustomHTMLContent(props.htmlContent.customHtmlContent, props.htmlContent.replacements);
     };

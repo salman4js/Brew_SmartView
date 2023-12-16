@@ -122,6 +122,24 @@ const Login = () => {
     }
   }
 
+  // Register the service worker for push notifications!
+  function _registerPushNotifications(){
+    const options = {
+      messageTitle: 'Notification From Livixius',
+      messageBody: '1 Customer has to checkout within an hour',
+      timings: [] // Populate this timing key with the actual checkout time for the current date. (Present Day)
+    };
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.warn('Notification granted for Livixius!');
+      }
+    });
+
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage(options);
+    }
+  }
+
   const processData = async (e) => {
     e.preventDefault();
     
@@ -175,6 +193,8 @@ const Login = () => {
               CollectionInstance.setCollections('widgetTileCollections', res.data.preferences);
               await checkConfig(res.data.hostId, res.data.lodgename); // Check for config matrix
               await checkOptions(res.data.hostId, res.data.lodgename); // Check for the config cabinets!
+              // Before navigating the user to the corresponding dashboards, Register the service worker for push notifications.
+              _registerPushNotifications();
               navigateUser(res.data.hostId, res.data.lodgename, res.data.redirect, res.data.hasMultipleLogins, res.data.multipleLogins, res.data.preferences); // Navigate to the dashboard
             }
           } else {

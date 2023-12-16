@@ -1,38 +1,52 @@
 const axios = require('axios');
 const Variables = require("../../../Variables");
 const {shouldAddToCollections, addToCollections, removeModelsFromCollections,
-   _updateRoomListCollection, _updateWidgetTileCollections} = require('../../dashboard.utils.helper/form.utils.helper');
+   _updateRoomListCollection, _updateWidgetTileCollections,  _updateWidgetTileCount} = require('../../dashboard.utils.helper/form.utils.helper');
 
 // Checkin form values!
 export async function checkInFormValue(data){
   // Check if the checkin customer details has to be added in the upcomingCheckout widget collection!
-  var addCollections = shouldAddToCollections(data, 'check-in');
+  var updateCollections = shouldAddToCollections(data, 'check-in');
   var result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/adduserrooms`, data);
   // After the data has been synced with the server, Add the user collection to the global.collections!
-  addCollections && addToCollections('upcomingCheckout', result.data.updatedUserModel);
+  updateCollections && addToCollections('upcomingCheckout', result.data.updatedUserModel);
+  updateCollections && _updateWidgetTileCount('upcomingCheckout', 'INC');
   // If the checkin is happening from prebook side, delete the upcoming prebook collection.
   data.prebook && removeModelsFromCollections('upcomingPrebook', data);
+  return result;
+};
+
+// Checkout form values!
+export async function checkoutFormValue(data){
+  data._id = data.userid; // To blend in with _updateWidgetTileCollections method.
+  var result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteuser`, data);
+  result.data.success && _updateWidgetTileCollections('upcomingCheckout', data, 'DELETE');
+  result.data.success && _updateWidgetTileCount('upcomingCheckout', 'DEC');
+  result.data.success && _updateWidgetTileCount('history', 'INC');
   return result;
 };
 
 // Prebook form values!
 export async function prebookFormValue(data){
   // Check if the prebook customer details has to be added in the upcomingPrebook widget collection!
-  var addCollections = shouldAddToCollections(data, 'pre-book');
+  var updateCollections = shouldAddToCollections(data, 'pre-book');
   const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/addprebookuserrooms`, data);
   // After the data has been synced with the server, Add the user collection to the global.collections!
-  addCollections && addToCollections('upcomingPrebook', result.data.updatedUserModel); // This is for the default.view (New dashboard tile view)
+  updateCollections && addToCollections('upcomingPrebook', result.data.updatedUserModel); // This is for the default.view (New dashboard tile view)
+  updateCollections && _updateWidgetTileCount('upcomingPrebook', 'INC');
   // Add the prebookuser into the room model prebook user array in the room colletions!
-  var data = {roomId: result.data.updatedUserModel.room, prebookUserId: result.data.updatedUserModel._id, prebookDateofCheckin: data.prebookdateofcheckin};
-  _updateRoomListCollection(data, 'ADD', 'pre-book'); // this is to update the roomsListCollection to keep the data in sync for the filter.table (Room transfer).
+  var options = {roomId: result.data.updatedUserModel.room, prebookUserId: result.data.updatedUserModel._id, prebookDateofCheckin: data.prebookdateofcheckin};
+  _updateRoomListCollection(options, 'ADD', 'pre-book'); // this is to update the roomsListCollection to keep the data in sync for the filter.table (Room transfer).
   return result;
 };
 
 // Remove prebook data for the room model.
 export async function removePrebookData(data){
+  var updateCollection = shouldAddToCollections(data, 'pre-book');
   const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteprebookuserrooms`, data);
   result.data.success && _updateRoomListCollection(data, 'DELETE', 'pre-book');
   result.data.success && _updateWidgetTileCollections('upcomingPrebook', result.data.updatedPrebookModel, 'DELETE');
+  updateCollection && result.data.success && _updateWidgetTileCount('upcomingPrebook', 'DEC');
   return result;
 };
 
