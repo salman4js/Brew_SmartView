@@ -111,11 +111,22 @@ export function _updateWidgetTileCollections(modelName, data, action){
 // Update widget tile model count for upcomingCheckout and upcomingPrebook.
 export function _updateWidgetTileCount(widgetTileModel, action){
   // Get the widgetTileModel.
-  var widgetTileCollections = _.clone(CollectionInstance.getModel('widgetTileCollections', 'widgetTileModelCount'));
+  var widgetTileCollections = _.clone(CollectionInstance.getModel('widgetTileCollections', 'widgetTileModelCount')),
+      updateCount = true;
   if(action === 'INC') widgetTileCollections[widgetTileModel]++;
-  if(action === 'DEC') widgetTileCollections[widgetTileModel]--;
+  if(action === 'DEC') {
+    // Added this check here to prevent widgetTileModelCount goes to below zero.
+    /**
+      REASON: When we do checkout, we always have the current checkout date which is nothing but the today's date,
+      so there is no way yet to verify with the widgetTileModel's datesBetween params to check if the widgetTileModelCount has to be updated or not.
+      common check to all the widgetTileModel to prevent going below zero (Negative Value).
+     **/
+    if((widgetTileCollections[widgetTileModel]--) === 0){
+      updateCount = false;
+    }
+  }
   // When the widgetTileModel Count is updated, Update the entire widgetTileModelCount in the collection instance.
-  CollectionInstance.updateModel('widgetTileCollections', 'widgetTileModelCount', widgetTileCollections);
+  updateCount && CollectionInstance.updateModel('widgetTileCollections', 'widgetTileModelCount', widgetTileCollections);
 };
 
 

@@ -237,7 +237,7 @@ class FilterTable extends TableView {
       if(obj.prebookDateofCheckin.length > 0){
         for(var i = 0; i < obj.prebookDateofCheckin.length; i++){
           var inBetweenDates = brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), obj.prebookDateofCheckin[i]);
-          if(!inBetweenDates.includes(filterData.checkinDate)){
+          if(inBetweenDates.length > 0 && !inBetweenDates.includes(filterData.checkinDate)){
             return true; 
           }
         }
@@ -352,7 +352,7 @@ class FilterTable extends TableView {
   // Perform transfer action!
   async _performTransfer(){
     this.onCloseCustomModal();
-    this._toggleTableLoader(true); // Enable the loader!
+    this._toggleTableLoader(true, true); // Enable the loader!
     // Get the user model by the userId.
     var checkoutDetails = this.getCheckoutDetails(), // This user model contains checkoutDetails, so that the user can be checkedout.
       checkinRoomDetails = this.prepareCheckinRoomDetails(),

@@ -60,7 +60,8 @@ export function convertQueryParamsIntoObjects(values, separator){
 
 // Get current logged-in user.
 export function getCurrentUser(){
-  return getStorage('loggedInUser');
+  // When multiple receptionist login is not enabled, 'loggedInUser' in the session storage would be 'null'.
+  return getStorage('loggedInUser') || 'Manager';
 };
 
 // Extract data from the state handlers. This is usefull when states are holding their view's sub view function.
