@@ -80,6 +80,11 @@ const SidepanelWrapper = (props, ref) => {
   function _updateFilterData(filterData){
     setSidepanel(prevState => ({...prevState, listFilter: filterData}))
   };
+
+  // Is filter applied!
+  function isFilterApplied(){
+    return sidepanel.listFilter && sidepanel.listFilter.length > 0;
+  };
   
   // Update sidepanel height!
   function updateSidePanelHeight(value){
@@ -310,17 +315,31 @@ const SidepanelWrapper = (props, ref) => {
     if(props.selectedModelData.roomModel !== undefined){ // this condition is added here because when we click on cancel on the property container 
       // The opts which gets send to the dashboardController function is reloadSidepanel silent: true to avoid making an api call for cancel operation!
       // That time the props.selectedModelData.roomModel will be undefined.
-      var currentModelData = sidepanel.childData,
-        updatedModelId = props.selectedModelData.roomModel._id,
-        updatableIndex;
-      currentModelData.map((key,index) => {
+      var isListFilterApplied = isFilterApplied(),
+          currentModelData = sidepanel.childData,
+          currentListFilterData = sidepanel.listFilter,
+          updatedModelId = props.selectedModelData.roomModel._id,
+          updatableIndex,
+          updatableFilterIndex;
+      // Find the changed data index through the changed model roomId for side panel's child data
+      currentModelData.map((key, index) => {
         if(key._id === updatedModelId){
           updatableIndex = index;
         };
       });
+      // Find the changed data index through the changed model roomId for side panel's list filter data
+      isListFilterApplied && currentListFilterData.map((key, index) => {
+        if(key._id === updatedModelId){
+          updatableFilterIndex = index;
+        }
+      });
       // Update the data at the calculated index!
       currentModelData[updatableIndex] = props.selectedModelData.roomModel;
       setSidepanel(prevState => ({...prevState, childData: currentModelData})); // Update the child data!
+      if(isListFilterApplied){
+        currentListFilterData[updatableFilterIndex] = props.selectedModelData.roomModel;
+        setSidepanel(prevState => ({...prevState, listFilter: currentListFilterData})); // Update the list filter data!
+      }
     }
   };
   
