@@ -16,7 +16,7 @@ const ProgressPanel = (props) => {
     } else {
       return(
         <span className = "progresspanel-message brew-cursor">
-          {props.data.message}
+          {props.data}
         </span>
       );
     }

@@ -51,6 +51,13 @@ const EditRoom = () => {
         }
     }
 
+    // Check for occupied room only, filter out the dirty, inCleaning rooms.
+    function checkForCheckedInRooms(model){
+        if(model.roomStatusConstant === 'afterCheckin'){
+            return true;
+        }
+    }
+
     // Navigate back to login screen incase of session expires!
     function navigateToLogin() {
         clearStorage(); // Clear out the session storage!
@@ -113,12 +120,14 @@ const EditRoom = () => {
                                                 return value.roomno.toLowerCase().includes(searchConfig.search.toLowerCase()) || value.suiteName.toLowerCase().includes(searchConfig.search.toLowerCase());
                                             }
                                         }).map((item, key) => {
-                                            return (
-                                                <HomeRoom showFullDetails = {showFullDetails} floorNo = {item.floorNo} edit={true} lodgeName={splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
-                                                    roomid={item._id} id={id} lodgeid={splitedIds[0]} price={item.price} isPrebook = {false}
-                                                    prebook={item.preBooked} prevalid={item.preValid} discount={item.discount} advance = {item.advancePrice}
-                                                 />
-                                            )
+                                            if(checkForCheckedInRooms(item)){
+                                                return (
+                                                    <HomeRoom showFullDetails = {showFullDetails} floorNo = {item.floorNo} edit={true} lodgeName={splitedIds[1]} extraBedPrice={item.extraBedPrice} extraBeds={item.extraCount} roomno={item.roomno} engaged={item.isOccupied} roomtype={item.suiteName} bedcount={item.bedCount}
+                                                              roomid={item._id} id={id} lodgeid={splitedIds[0]} price={item.price} isPrebook = {false}
+                                                              prebook={item.preBooked} prevalid={item.preValid} discount={item.discount} advance = {item.advancePrice}
+                                                    />
+                                                )
+                                            }
                                         })
                                     }
                                 </div>
