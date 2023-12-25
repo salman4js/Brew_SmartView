@@ -172,6 +172,7 @@ const DashboardWrapper = (props, ref) => {
       _.assign(roomCollections[indexToUpdate], opts.updatedModel);
     };
     CollectionInstance.updateCollections('roomsListCollection', roomCollections);
+    setPropertyDetails(prevState => ({...prevState, roomCollection: roomCollections})); // When the room model update is completed, Update the state property of the room collections.
   };
   
   // Reload and persist room status view!

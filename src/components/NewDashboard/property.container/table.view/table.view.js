@@ -231,9 +231,17 @@ class TableView extends React.Component {
         triggerCustomModel: (options) => this._prepareCustomModal(options),
         collapseCustomModal: () => this.onCloseCustomModal(),
         validateStateFields: () => this.validateAbstractedStateFields(),
+        removeFromTableCollection: (model) => this.removeFromTableCollection(model),
         updateSelectedModel: (roomModel, dashboardMode, userModel) => this.props.updateSelectedModel(roomModel, dashboardMode, userModel)
       }
     }
+  };
+
+  // Remove from table collection in case of moveToNextState operation.
+  removeFromTableCollection(selectedModel){
+    _.remove(this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant], function(tableModel){
+      return tableModel._id === selectedModel._id;
+    });
   };
   
   // Get room constant collection!
