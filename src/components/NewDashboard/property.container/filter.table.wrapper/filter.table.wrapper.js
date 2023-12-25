@@ -13,8 +13,7 @@ import {
   nodeConvertor,
   validateFieldData,
   updateMultipleMetadataFields,
-  getCurrentUser,
-  getFieldsData
+  getCurrentUser
 } from '../../../common.functions/node.convertor';
 import {getTimeDate} from '../../../common.functions/common.functions';
 import CheckoutUtils from '../checkout.view/checkout.form.utils';
