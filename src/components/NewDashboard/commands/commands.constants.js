@@ -43,6 +43,10 @@ var commandsConstant = Object.freeze({
        moreDetails: 'More Details'
     }),
 
+    MOVE_TO_NEXT_STATE: Object.freeze({
+       moveToNextState: 'Move To Next State'
+    }),
+
     GENERATE_RECEIPT: Object.freeze({
         dashboardMode: 'receiptGeneration',
        generateReceipt: 'Generate Receipt'
@@ -77,7 +81,8 @@ var commandsConstant = Object.freeze({
         favoritesCheckin: ['favorites'],
         bookingHistory: ['history'],
         moreDetails: ['history'],
-        generateReceipt: ['paymentTrackerView', 'logTable']
+        generateReceipt: ['paymentTrackerView', 'logTable'],
+        moveToNextState: ['afterCheckedout', 'inCleaning']
     })
 });
 

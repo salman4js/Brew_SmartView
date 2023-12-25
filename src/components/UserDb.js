@@ -47,7 +47,7 @@ const UserDb = () => {
                 .then(res => {
                     if (res.data.success) {
                         setLoading(false);
-                        setData(res.data.data);
+                        setData(res.data.data.result);
                     } else {
                         setLoading(false);
                         localStorage.clear();

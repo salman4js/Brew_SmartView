@@ -8,7 +8,14 @@ import {
   filterTableCheckInActionCellView, favoritesCheckInFormView
 } from './filter.table.wrapper.template';
 import filterTableConstants from './filter.table.wrapper.constants';
-import {filterKeysInObj, nodeConvertor, validateFieldData, updateMultipleMetadataFields, getCurrentUser} from '../../../common.functions/node.convertor';
+import {
+  filterKeysInObj,
+  nodeConvertor,
+  validateFieldData,
+  updateMultipleMetadataFields,
+  getCurrentUser,
+  getFieldsData
+} from '../../../common.functions/node.convertor';
 import {getTimeDate} from '../../../common.functions/common.functions';
 import CheckoutUtils from '../checkout.view/checkout.form.utils';
 import {checkInFormValue} from '../checkin.view/checkin.form.utils';
@@ -270,7 +277,7 @@ class FilterTable extends TableView {
       this.editPropertiesFieldData.timePeriod && this._calculateHourlyPrice();
       filteredUserModel['updatePrice'] = this.editPropertiesFieldData.updatePrice;
       filteredUserModel['extraBeds'] = this.editPropertiesFieldData.extraBeds;
-      filteredUserModel['oldRoomPrice'] = this.stayTimePeriodPrice;
+      this.editPropertiesFieldData.timePeriod && (filteredUserModel['oldRoomPrice'] = this.stayTimePeriodPrice);
     }
     // When we do transfer operation, we have to track who performed transfer operation.
     // Checkin-By would remain as the user who checked-in the guest initially.

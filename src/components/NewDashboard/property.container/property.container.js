@@ -9,7 +9,6 @@ import StatusTableView from './table.view/table.view';
 import FilterTable from './filter.table.wrapper/filter.table.wrapper';
 import LogTable from './log.table.wrapper/log.table.wrapper';
 import PaymentTrackerWrapper from "./payment.tracker.view/payment.tracker.wrapper";
-import InvoiceView from "../../Invoice/invoice.view";
 import propertyContainerConstants from './property.container.constants';
 import { extractStateValue, renderCustomHTMLContent } from '../../common.functions/node.convertor';
 
