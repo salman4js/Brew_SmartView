@@ -21,17 +21,19 @@ export function addToCollections(modelName, updatedModel){
   var widgetCollection = CollectionInstance.getCollections('widgetTileCollections'),
     models = widgetCollection?.data?.[modelName]
   if(models && addToCollections){
-    models.push(updatedModel); // Get the updatedUserModel from the server and then update the upcomingCheckout collection model.
+    // Using unshift because we want to add the updatedModel to the beginning of the collections,
+    // So that the new updated model will be added in the top of the table in thw widgetTile.
+    models.unshift(updatedModel); // Get the updatedUserModel from the server and then update the upcomingCheckout collection model.
     CollectionInstance.setCollections('widgetTileCollections', models, modelName);
   };
 };
 
 // remove model from collections
-export function removeModelsFromCollections(modelName, data){
+export function removeModelsFromCollections(modelName, data, options){
   var collections = CollectionInstance.getCollections('widgetTileCollections');
   var prebookUserModel = _.find(collections?.data[modelName], function(obj){ // When the user refreshes the page, the collectionInstance data will be lost.
     // So added a null check to prevent the code from breaking.
-    return obj._id === data.userId;
+    return obj[options.keyToCompare] === data[options.keyToSearch];
   });
   if(prebookUserModel){
     CollectionInstance.removeCollections('widgetTileCollections', prebookUserModel, modelName);
@@ -87,7 +89,8 @@ export function _updateRoomListCollection(data, action, performer){
 };
 
 // Update widgetTileCollections data based on the model --> this method handles for all widgetTileCollections.
-export function _updateWidgetTileCollections(modelName, data, action){
+// As of now, when the action is UPDATE, Condition param will take only one condition.
+export function _updateWidgetTileCollections(modelName, data, action, condition){
   // Get the widgettile collections.
   var widgetTileCollections = _.clone(CollectionInstance.getModel('widgetTileCollections', modelName));
   if(action === 'DELETE'){
@@ -103,6 +106,11 @@ export function _updateWidgetTileCollections(modelName, data, action){
       return obj._id === data._id;
     });
     widgetTileCollections.push(data); // Add the newly edited data into the widgetTileCollection.
+  };
+  if(action === 'UPDATE'){
+    // Find the index to be updated first and then update it.
+    var indexToBeUpdated = _.findIndex(widgetTileCollections, condition);
+    _.set(widgetTileCollections, indexToBeUpdated, data);
   };
   // When the prebook is being deleted, delete that entry from the widgetTileCollection also.
   CollectionInstance.updateModel('widgetTileCollections', modelName, widgetTileCollections);

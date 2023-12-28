@@ -8,7 +8,7 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import Variables from './Variables';
 import brewDate from 'brew-date';
-import formatDate from './PreBook/Date_Format/DateFormatter';
+import { formatDate } from "./common.functions/common.functions";
 import Table from './Table';
 import InlineToast from './InlineToast/Inline.toast.view';
 import DatePicker from 'react-datepicker';
