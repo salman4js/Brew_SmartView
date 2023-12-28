@@ -10,7 +10,7 @@ import ModalValue from './ValueToast/ModalValue';
 import CheckinModal from '../CheckinModal/checkin.modal';
 import Card from './Cabinets/Cards/Card';
 import bwt from 'brew-date';
-import formatDate from '../PreBook/Date_Format/DateFormatter';
+import {formatDate} from "../common.functions/common.functions";
 import { getRoomList } from '../paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import CollectionInstance from '../../global.collection/widgettile.collection/widgettile.collection';
 // Importing Link react module

@@ -11,8 +11,11 @@ export async function checkInFormValue(data){
   // After the data has been synced with the server, Add the user collection to the global.collections!
   updateCollections && addToCollections('upcomingCheckout', result.data.updatedUserModel);
   updateCollections && _updateWidgetTileCount('upcomingCheckout', 'INC');
+  // Update the widgetTileCount for history tile and also, add the entry into the history widgetTileModel.
+  result.data.success && _updateWidgetTileCount('history', 'INC');
+  result.data.success && addToCollections('history', result.data.updatedUserModel);
   // If the checkin is happening from prebook side, delete the upcoming prebook collection.
-  data.prebook && removeModelsFromCollections('upcomingPrebook', data);
+  data.prebook && removeModelsFromCollections('upcomingPrebook', data, {keyToCompare: '_id', keyToSearch: 'userId'});
   return result;
 };
 
@@ -22,7 +25,7 @@ export async function checkoutFormValue(data){
   var result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteuser`, data);
   result.data.success && _updateWidgetTileCollections('upcomingCheckout', data, 'DELETE');
   result.data.success && _updateWidgetTileCount('upcomingCheckout', 'DEC');
-  result.data.success && _updateWidgetTileCount('history', 'INC');
+  result.data.success && _updateWidgetTileCollections('history', result.data.deletedUserModel, 'UPDATE', {'_id': result.data.deletedUserModel.userid});
   return result;
 };
 
