@@ -1,3 +1,5 @@
+import {getStorage} from "../../Controller/Storage/Storage";
+
 const brewDate = require("brew-date");
 const axios = require("axios");
 const Variables = require("../Variables");
@@ -12,6 +14,11 @@ export function handleTimeFormat(time) {
 export function getLodgeId(){
   return storage.getStorage("loggedInID");
 }
+
+// Get GST mode, If its inclusive it will return false else true.
+export function getIsExclusive(){
+  return JSON.parse(getStorage('isExclusive'));
+};
 
 // Convert mm/dd/yyy intp dd/mm/yyyy
 export function convertFormat(date){

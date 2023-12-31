@@ -15,7 +15,7 @@ import {
   updateMultipleMetadataFields,
   getCurrentUser
 } from '../../../common.functions/node.convertor';
-import {getTimeDate} from '../../../common.functions/common.functions';
+import {getTimeDate, getIsExclusive} from '../../../common.functions/common.functions';
 import CheckoutUtils from '../checkout.view/checkout.form.utils';
 import {checkInFormValue} from '../checkin.view/checkin.form.utils';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
@@ -305,7 +305,8 @@ class FilterTable extends TableView {
     // This here represents specially room transfer details only!
     selectedRoomModel['isRoomTransfered'] = true;
     selectedRoomModel['oldRoomNo'] = this.roomDetails.currentRoom;
-    selectedRoomModel['oldRoomPrice'] = this.state.data?.userModel.amount + this.state.data?.userModel.stayGst;
+    // When adding the old room price into the selected room model, GST mode has to be taken into account.
+    selectedRoomModel['oldRoomPrice'] = this.state.data?.userModel.amount + (getIsExclusive() ? this.state.data?.userModel.stayGst : 0);
     selectedRoomModel['oldRoomStayDays'] = this.state.data?.userModel.stayeddays;
     return selectedRoomModel;
   };
@@ -369,7 +370,9 @@ class FilterTable extends TableView {
     if(checkoutResult.data.success){
       this.props.dashboardController({reloadSidepanel: {silent: true},
         updateUserCollection: {id: checkoutResult.data.updatedModel._id, action: 'CHECK-OUT'}, updatedModel: checkoutResult.data.updatedModel});
-      // When the checkout is successfull, do the checkin!
+      // Add the history id in the params to support rest for room transfer history operation.
+      checkinRoomDetails['historyId'] = checkoutResult.data.deletedUserModel._id;
+      // When the checkout is successfully done, do the checkin!
       var checkinDetails = await checkInFormValue(checkinRoomDetails);
       if(checkinDetails.data.success){
         this.props.dashboardController({reloadSidepanel: {silent: true},

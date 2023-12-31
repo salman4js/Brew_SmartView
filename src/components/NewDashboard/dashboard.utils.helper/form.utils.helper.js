@@ -2,6 +2,19 @@ import CollectionInstance from '../../../global.collection/widgettile.collection
 const _ = require('lodash');
 const brewDate = require('brew-date');
 
+// check for payment tracker data.
+export function checkForPaymentTrackerData(data, action){
+  var amountFor = {'check-in': 'Initial-Checkin', 'check-out': 'While CheckOut'};
+  var defaults = {amountFor: amountFor[action], amount: '0'};
+  if(!data.amountFor) {
+    data.amountFor = defaults.amountFor;
+  }
+  if(!data.amount) {
+    data.amount = defaults.amount;
+  }
+  return data;
+};
+
 // Function to check if we need to add the usermodel to the collection instance!
 export function shouldAddToCollections(data, action){
   var dateSelection = {
@@ -89,8 +102,8 @@ export function _updateRoomListCollection(data, action, performer){
 };
 
 // Update widgetTileCollections data based on the model --> this method handles for all widgetTileCollections.
-// As of now, when the action is UPDATE, Condition param will take only one condition.
-export function _updateWidgetTileCollections(modelName, data, action, condition){
+// Conditions param will take only condition in the form of array of objects.
+export function _updateWidgetTileCollections(modelName, data, action, conditions){
   // Get the widgettile collections.
   var widgetTileCollections = _.clone(CollectionInstance.getModel('widgetTileCollections', modelName));
   if(action === 'DELETE'){
@@ -109,10 +122,16 @@ export function _updateWidgetTileCollections(modelName, data, action, condition)
   };
   if(action === 'UPDATE'){
     // Find the index to be updated first and then update it.
-    var indexToBeUpdated = _.findIndex(widgetTileCollections, condition);
-    _.set(widgetTileCollections, indexToBeUpdated, data);
+    // Conditions param can take array of objects as an input, If any one of the condition matches, It will exit out of the loop.
+    for(let i = 0; i <= conditions.length -1; i++){
+      var indexToBeUpdated = _.findIndex(widgetTileCollections, conditions[i]);
+      if(indexToBeUpdated !== -1){
+        _.set(widgetTileCollections, indexToBeUpdated, data);
+        break;
+      }
+    }
   };
-  // When the prebook is being deleted, delete that entry from the widgetTileCollection also.
+  // When prebook is being deleted, delete that entry from the widgetTileCollection also.
   CollectionInstance.updateModel('widgetTileCollections', modelName, widgetTileCollections);
 };
 

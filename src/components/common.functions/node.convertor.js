@@ -384,11 +384,11 @@ function replacePlaceholders(htmlContent, replacements){
     return result;
 };
 
-export function renderCustomHTMLContent(htmlContent, replacements){
+export function renderCustomHTMLContent(htmlContent, replacements, propertyContainerHeight){
   // Replace placeholders in the HTML content
   const dynamicHTML = replacePlaceholders(htmlContent, replacements);
   return (
-      <div dangerouslySetInnerHTML={{ __html: dynamicHTML }}></div>
+      <div style = {{height: propertyContainerHeight, overflow: 'auto'}} dangerouslySetInnerHTML={{ __html: dynamicHTML }}></div>
   );
 };
 
