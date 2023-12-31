@@ -150,7 +150,7 @@ const PropertyContainer = (props) => {
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){
-      return renderCustomHTMLContent(props.htmlContent.customHtmlContent, props.htmlContent.replacements);
+      return renderCustomHTMLContent(props.htmlContent.customHtmlContent, props.htmlContent.replacements, props.propertyContainerHeight);
     };
   };
 

@@ -17,7 +17,13 @@ import { getAllPaymentTracker, getRoomList } from '../paymentTracker/payment.tra
 import { Link, useParams } from "react-router-dom";
 import {setStorage, getStorage, removeItemStorage} from '../../Controller/Storage/Storage'
 import { globalMessage, commonLabel, activityLoader } from '../common.functions/common.functions.view';
-import { nodeConvertor, validateFieldData, _clearData, _enableInlineToast, checkboxSelection, handleCommands } from '../common.functions/node.convertor';
+import {
+  nodeConvertor,
+  validateFieldData,
+  _clearData,
+  checkboxSelection,
+  handleCommands,
+} from '../common.functions/node.convertor';
 import {formatCustomIntoDateFormat, convertFormat, convertServerFormat } from '../common.functions/common.functions';
 import changeScreen from '../Action';
 
@@ -800,7 +806,7 @@ const VoucherView = () => {
   // Get the filtered model based on the filter query!
   function updateTableCellData(result, selectedId){
     if(result.data.success){
-      _triggerTableLoader(false);  
+      _triggerTableLoader(false);
       setTableView(prevState => ({...prevState, cellValues: result.data.message, headerValue: result.data.tableHeaders, infoMessage: result.data.infoMessage, selectedVoucherId: selectedId}));
     }
   }

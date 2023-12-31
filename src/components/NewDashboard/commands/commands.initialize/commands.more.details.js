@@ -18,11 +18,30 @@ class CommandsMoreDetails {
     };
 
     execute(){
+      this.status.eventHelpers.triggerTableLoader(true, true);
       // Selected node id will be passed here, we have to fetch the data for the selected node id.
-      this.fetchCustomHtmlContent().then((result) => {
-          this._prepareDashboardControllerOptions(result);
-          this.status.eventHelpers.dashboardController(this.dashboardController);
+      this.fetchHistoryDataForSelectedNodes().then(() => {
+          this.fetchCustomHtmlContent().then((result) => {
+              this._prepareDashboardControllerOptions(result);
+              this.status.eventHelpers.triggerTableLoader(false);
+              this.status.eventHelpers.dashboardController(this.dashboardController);
+          });
       });
+    };
+
+    // Fetch data for the selected history node.
+    fetchHistoryDataForSelectedNodes(){
+        var options = {
+            accId: this.status.params.accIdAndName[0],
+            selectedNodes: this.status.nodes[0] // For more details command, selected nodes is always going to be only one.
+        }
+        return CommandsConnector.fetchSelectedHistoryNode(options).then((result) => {
+           if(result.data.success){
+               this.selectedNodeData = result.data.message[0]
+           }
+        }).catch(() => {
+           console.warn('Failed to fetch data for selected nodes!');
+        });
     };
 
     // Fetch dynamic html content based on the signatureOption's roomConstantKey.
@@ -49,7 +68,7 @@ class CommandsMoreDetails {
           customHtmlContent: {
               content: htmlContent
           },
-          replacements: {}
+          replacements: this.selectedNodeData
       }
     };
 };

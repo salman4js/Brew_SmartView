@@ -1,5 +1,5 @@
 var filterTableConstants = Object.freeze({
-  userModelRequiredKey: ['username', 'phonenumber', 'aadharcard', 'address', 'channel', 'adults', 'childrens'],
+  userModelRequiredKey: ['username', 'phonenumber', 'aadharcard', 'address', 'channel', 'adults', 'childrens', 'checkinBy'],
   channelManager: 'Walk-In',
   tableInfoMessage: Object.freeze({
     ZERO_STATE_MESSAGE: 'You have no records for this table!',

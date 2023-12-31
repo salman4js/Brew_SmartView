@@ -13,6 +13,11 @@ class CommandsConnector {
         return await axios.post(`${Variables.Variables.hostId}/${options.lodgeId}/exporttocsv`, options);
     };
 
+    // Fetch selected history node data.
+    static async fetchSelectedHistoryNode(options){
+      return await axios.get(`${Variables.Variables.hostId}/${options.accId}/${options.roomId}/${options.selectedNodes}/historynode`)
+    };
+
     static async _getCustomHTMLContent(options){
         var checkoutUtils = new CheckoutUtils(options);
         return await checkoutUtils._getHTMLContent(options);
