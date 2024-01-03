@@ -6,6 +6,7 @@ import Feed from '../Configure_Transport/Feed_tMode/Feed';
 import axios from 'axios';
 import Loading from '../Loading';
 import {nodeConvertor} from '../common.functions/node.convertor';
+import MetadataFields from "../fields/metadata.fields.view";
 import { Link, useParams } from "react-router-dom";
 import { addRoomStatus } from '../room.status.utils/room.status.utils';
 // Importing Config Matrix!
@@ -235,6 +236,17 @@ const Client = () => {
       },
       onChange: (isEnabled, node) => updateCustomHtmlContentConfig(isEnabled, node)
   });
+
+    // Custom HTML template configuration.
+    const [customHistoryTemplate, setCustomHistoryTemplate] = useState([
+        {
+            value: undefined,
+            placeholder: "Custom History Template",
+            name: 'customTemplate',
+            rows: '10',
+            attribute: 'textAreaField'
+        }
+    ]);
   
   // RefundTracker state handler!
   const [refundTracker, setRefundTracker] = useState({
@@ -514,7 +526,20 @@ const Client = () => {
     // Handle Extra bed state 
     function handleExtra(value){
         setIsExtra(value);
-    }
+    };
+
+    // Update custom template data!
+    async function _updateCustomTemplate(){
+      var fieldData = getFieldData(customHistoryTemplate);
+      setLoading(true);
+      fieldData['templateName'] = 'history';
+      var result = await axios.post(`${Variables.hostId}/${splitedIds[0]}/savecustomtemplate`, fieldData);
+      if(result.data.status){
+          setLoading(false);
+          setSuccess(!success);
+          setSuccessText("Custom Template updated");
+      }
+    };
 
     // Change Matrix config data!
     function changeMatrix() {
@@ -782,6 +807,15 @@ const Client = () => {
                                       )
                                     })}
                                     <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Config Room Status</button>
+                                </div>
+                            </div>
+                            <div className="card modal-gap" style={{width: "50vh", height: '40vh'}}>
+                                <div className="card-header text-center" style={{color: "black"}}>
+                                    History Preview Custom Template
+                                </div>
+                                <div className = 'card-body'>
+                                    <MetadataFields data = {customHistoryTemplate} updateData = {(updatedData) => setCustomHistoryTemplate(updatedData)}/>
+                                    <button className = 'btn btn-primary btn-center-config-matrix' onClick = {() => _updateCustomTemplate()}> Update Custom Template </button>
                                 </div>
                             </div>
                             {/* Success Handler */}

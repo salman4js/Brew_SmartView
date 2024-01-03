@@ -23,6 +23,10 @@ class CommandsConnector {
         return await checkoutUtils._getHTMLContent(options);
     };
 
+    static async _getCustomHTMLContentFromDB(options){
+      return await axios.get(`${Variables.Variables.hostId}/${options.accId}/${options.templateName}/getcustomtemplate`);
+    };
+
     static async moveToNextState(options){
       return await moveToNextState(options);
     };

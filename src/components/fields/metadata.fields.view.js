@@ -7,6 +7,7 @@ import CheckBox from './checkBoxField/checkbox.field.view';
 import ButtonField from './buttonField/button.field.view';
 import LabelField from './labelField/label.field.view';
 import StepperField from './stepperField/stepper.field.view';
+import TextareaField from "./textareafield.view/textareafield.view";
 
 const MetadataFields = (props) => {
 
@@ -111,6 +112,14 @@ const MetadataFields = (props) => {
                 <TextField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}
                   toggleButtonValue = {() => toggleButtonValue()}
                  />
+              );
+            }
+
+            if (field.attribute === 'textAreaField' && field.restrictShow !== true) {
+              return (
+                  <TextareaField data = {field} index = {index} handleInputChange = {(index, event, attribute) => handleInputChange(index, event, attribute)}
+                             toggleButtonValue = {() => toggleButtonValue()}
+                  />
               );
             }
             

@@ -1,4 +1,5 @@
 var commandsConstant = Object.freeze({
+    LOCAL_SERVER: 'localhost',
     goToLocationCommand: 'Go to room',
     roomTransferCommand: 'Transfer Guest',
 
