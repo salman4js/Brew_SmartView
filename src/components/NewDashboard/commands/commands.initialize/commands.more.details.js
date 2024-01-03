@@ -1,5 +1,6 @@
 import lang from "../commands.constants";
 import CommandsConnector from "../commands.connector";
+import {getBaseUrl, getParsedUrl} from "../../../common.functions/node.convertor";
 
 class CommandsMoreDetails {
     constructor(signatureOptions){
@@ -22,7 +23,7 @@ class CommandsMoreDetails {
       // Selected node id will be passed here, we have to fetch the data for the selected node id.
       this.fetchHistoryDataForSelectedNodes().then(() => {
           this.fetchCustomHtmlContent().then((result) => {
-              this._prepareDashboardControllerOptions(result);
+              this._prepareDashboardControllerOptions(result); // Custom template for a widget template would be always one.
               this.status.eventHelpers.triggerTableLoader(false);
               this.status.eventHelpers.dashboardController(this.dashboardController);
           });
@@ -51,13 +52,24 @@ class CommandsMoreDetails {
     fetchCustomHtmlContent(){
         var options = {
             accId: this.status.params.accIdAndName[0],
-            filename: this.customHtmlContentFileName
+            filename: this.customHtmlContentFileName,
+            templateName: this.status.roomConstantKey
+        };
+        // Check if the server is running on local, If yes, get the html content from the local server
+        // Or get the HTML content from the database.
+        if(getParsedUrl().hostname !== lang.LOCAL_SERVER){
+            return CommandsConnector._getCustomHTMLContentFromDB(options).then((result) => {
+                return result.data.data[0].customTemplate;
+            }).catch(() => {
+               console.warn('Error occurred while fetching the dynamic html content');
+            });
+        } else {
+            return CommandsConnector._getCustomHTMLContent(options).then((result) => {
+                return result;
+            }).catch(() => {
+                console.warn('Error occurred while fetching the dynamic html content');
+            });
         }
-        return CommandsConnector._getCustomHTMLContent(options).then((result) => {
-            return result;
-        }).catch(() => {
-            console.warn('Error occurred while fetching the dynamic html content');
-        })
     };
 
     // Prepare dashboard controller options.
