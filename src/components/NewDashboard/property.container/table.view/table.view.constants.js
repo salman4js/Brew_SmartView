@@ -1,5 +1,7 @@
 var tableViewConstants = Object.freeze({
 
+  tablePerspectiveConstant: 'table-view',
+
   PropertyStatusTableHeader: Object.freeze({
     afterCheckedout: ['Floor No', 'Room No', 'Room type', 'Bed Count', 'Extra Bed Price Per Day', 'Price Per Day'],
     afterCleaned: ['Floor No', 'Room No', 'Room type', 'Bed Count', 'Extra Bed Price Per Day', 'Price Per Day'],

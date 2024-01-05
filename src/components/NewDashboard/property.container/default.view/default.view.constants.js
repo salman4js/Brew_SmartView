@@ -7,7 +7,8 @@ var defaultViewConstants = Object.freeze({
   }),
 
   RECEP_LEVEL_WIDGETS: ['upcomingCheckout', 'upcomingPrebook', 'favorites'],
-  MANAGER_LEVEL_WIDGETS: ['upcomingCheckout', 'upcomingPrebook', 'favorites', 'history']
+  MANAGER_LEVEL_WIDGETS: ['upcomingCheckout', 'upcomingPrebook', 'favorites', 'history'],
+  defaultViewPerspectiveConstant: 'default-view'
 });
 
 export default defaultViewConstants;

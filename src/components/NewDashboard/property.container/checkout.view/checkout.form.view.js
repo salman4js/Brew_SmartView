@@ -496,9 +496,10 @@ class CheckOutView extends React.Component {
       var options = {
         navigateToStatusTableView: true,
         selectedRoomConstant: checkoutViewConstants.ROOM_TRANSFER.filteredRoomStatusConstant,
-        dashboardMode: checkoutViewConstants.ROOM_TRANSFER.dashboardMode
+        dashboardMode: checkoutViewConstants.ROOM_TRANSFER.dashboardMode,
+        isRoomTransferCommand: true
       };
-      this.props.onRoomTransfer(options);
+      this.props.dashboardController(options);
     };
     
     // Window print for invoice and bill!

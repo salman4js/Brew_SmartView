@@ -21,7 +21,7 @@ const DashboardWrapper = (props, ref) => {
     userStatusMap: undefined,
     selectedRoomConstant: undefined,
     filteredData: undefined,
-    filterTableOptions: undefined
+    filterTableOptions: undefined,
   });
 
   // Custom html content state handler!
@@ -39,6 +39,13 @@ const DashboardWrapper = (props, ref) => {
     roomStatus: undefined,
     isFetched: false,
     userCollection: undefined
+  });
+
+  // Custom state based router handler!
+  const [customStateRouter, setCustomStateRouter] = useState({
+    stateModel: [], // This will contain the state router property-container name for routing.
+    tableModel: [],
+    dashboardModel: []
   });
   
   // Function to update property details!
@@ -96,7 +103,6 @@ const DashboardWrapper = (props, ref) => {
   // On room transfer!
   function onRoomTransfer(opts){
     sidePanelRef.current._setFilterPanel(true);
-    _updateDashboardWrapper(opts);
   };
   
   // On form cancel operation!
@@ -105,25 +111,69 @@ const DashboardWrapper = (props, ref) => {
     // to the default form mode widget-table!
     opts && _updateDashboardWrapper(opts);
   };
-  
+
+  // Update state router!
+  function _updateStateRouter(opts) {
+    if (opts.currentRouter) {
+      setCustomStateRouter((prevState) => {
+        let newStateModel = [...prevState.stateModel];
+        let newTableModel = [...prevState.tableModel];
+        let newDashboardModel = [...prevState.dashboardModel];
+        switch (opts.action) {
+          case "ADD":
+            newStateModel.push(opts.currentRouter);
+            newTableModel.push(opts.currentTableMode);
+            newDashboardModel.push(opts.currentDashboardMode);
+            break;
+          case "REMOVE":
+            newStateModel = newStateModel.filter(item => item !== opts.currentRouter);
+            newTableModel = newTableModel.filter(item => item !== opts.currentTableMode);
+            newDashboardModel = newDashboardModel.filter(item => item !== opts.currentDashboardMode);
+            break;
+          default:
+            break;
+        }
+        return {
+          ...prevState,
+          stateModel: newStateModel,
+          tableModel: newTableModel,
+          dashboardModel: newDashboardModel
+        };
+      });
+    }
+  };
+
   // Update dashboard wrapper!
   function _updateDashboardWrapper(opts){
+    // Update the state router before proceeding with dashboard controller.
+    _updateStateRouter(opts.routerOptions);
     opts.reloadSidepanel && _reloadSidepanel(opts);
     opts.navigateToStatusTableView && _navigateToStatusTableView(opts);
     opts.navigateToPropertyContainer && _navigateToPropertyContainer();
-    opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need 
+    opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need
     // updated room model to updated it to the latest value
     opts.updatedModel && _updateRoomModel(opts);
     opts.goToLocation && updateSelectedModel(opts.roomModel);
+    opts.isRoomTransferCommand && onRoomTransfer(opts);
     opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
     opts.updateUserCollection && _updateUserCollection(opts.updateUserCollection, opts.ignoreUpdateOfDefaultView);
   };
-  
+
   // Navigate to status table view!
-  function _navigateToStatusTableView(opts){
-    setSelectedModel(prevState => ({...prevState, dashboardMode: opts.dashboardMode, widgetTileModelCount: opts.widgetTileModelCount,
-    widgetTileModel: opts.widgetTileModel, userStatusMap: opts.userStatusMap, selectedRoomConstant: opts.selectedRoomConstant,
-      filterTableOptions: opts.filterTableOptions}));
+  function _navigateToStatusTableView(opts) {
+    setSelectedModel(prevState => {
+      const updatedState = {};
+      // Loop over the keys in opts and update state properties accordingly
+      Object.keys(prevState).forEach((key) => {
+        if (opts.hasOwnProperty(key)) {
+          updatedState[key] = opts[key];
+        } else {
+          // If the key is not in opts, keep the existing value
+          updatedState[key] = prevState[key];
+        }
+      });
+      return updatedState;
+    });
   };
 
   // Navigate the perspective to custom html content by updating the html content and the dashboard mode.
@@ -177,8 +227,12 @@ const DashboardWrapper = (props, ref) => {
   
   // Reload and persist room status view!
   function _reloadAndPersistStatusView(updatedModel){
-    var dashboardMode = getFormMode(updatedModel.roomStatusConstant);
-    setSelectedModel(prevState => ({...prevState, dashboardMode: dashboardMode}));
+    if(updatedModel){
+      var dashboardMode = getFormMode(updatedModel.roomStatusConstant);
+      setSelectedModel(prevState => ({...prevState, dashboardMode: dashboardMode}));
+    } else {
+      _navigateToPropertyContainer();
+    }
   };
   
   // On cancel checkout prompt!
@@ -203,10 +257,10 @@ const DashboardWrapper = (props, ref) => {
         </div>
         <div className = "flex-2">
           <div className = "dashboard-property-container">
-            <PropertyContainer data = {selectedModel} htmlContent = {htmlContent} propertyContainerHeight = {props.modalAssistData.height} propertyDetails = {propertyDetails}
-            onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
+            <PropertyContainer data = {selectedModel} htmlContent = {htmlContent} propertyContainerHeight = {props.modalAssistData.height} stateRouter = {customStateRouter}
+            propertyDetails = {propertyDetails} onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
             updateSelectedModel = {(roomModel, dashboardMode, userModel) => updateSelectedModel(roomModel, dashboardMode, userModel)}
-            onCheckout = {(value) => onCheckout(value)} onRoomTransfer = {(opts) => onRoomTransfer(opts)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
+            onCheckout = {(value) => onCheckout(value)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
           </div>
         </div>
       </div>
