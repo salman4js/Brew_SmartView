@@ -92,8 +92,9 @@ const PropertyContainer = (props) => {
     var options = {
       navigateToStatusTableView: true,
       selectedRoomConstant: propertyContainerConstants.TABLE_HEADERS[panelFieldOptions.panelFieldDropdown], // Here, selectedRoomConstant represents table header for the table view.
-      // Incase of room transfer view, the table header value is being overriden in the filter.table.wrapper
-      dashboardMode: panelFieldOptions.panelFieldDropdown
+      // In case of room transfer view, the table header value is being overriden in the filter.table.wrapper
+      dashboardMode: panelFieldOptions.panelFieldDropdown,
+      routerOptions: {currentRouter: propertyContainerConstants.propertyContainerPerspectiveConstant, action: 'ADD'}
     };
     props.dashboardController(options);
   };
@@ -113,7 +114,7 @@ const PropertyContainer = (props) => {
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.read){
-      return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} onRoomTransfer = {(opts) => props.onRoomTransfer(opts)}
+      return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} dashboardController = {(opts) => props.dashboardController(opts)}
       updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)}
       cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} afterCheckout = {(opts) => props.onCancel(opts)} />
     };
@@ -130,23 +131,23 @@ const PropertyContainer = (props) => {
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView){
       return <StatusTableView data = {props.data}  params = {props.params} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
-      dashboardController = {(opts) => props.dashboardController(opts)} onRoomTransfer = {(opts) => props.onRoomTransfer(opts)}
-                              updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)}/>
+      dashboardController = {(opts) => props.dashboardController(opts)} stateRouter = {props.stateRouter}
+      updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)}/>
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
-      return <FilterTable data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
+      return <FilterTable data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} stateRouter = {props.stateRouter}
       dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.logTableView){
       return <LogTable data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
-      dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+      stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.paymentTrackerView){
       return <PaymentTrackerWrapper data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
-                       dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+      stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){
@@ -223,7 +224,7 @@ const PropertyContainer = (props) => {
   
   // On Cancel!
   function onCancel(){
-    var opts = {reloadSidepanel: {silent: true}};
+    var opts = {reloadSidepanel: {silent: true}, currentRouter: 'property-container'};
     props.onCancel(opts); // this will trigger the cancel operation on checkin form...
   };
   

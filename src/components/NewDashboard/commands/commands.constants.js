@@ -41,7 +41,13 @@ var commandsConstant = Object.freeze({
 
     MORE_DETAILS: Object.freeze({
        dashboardMode: 'customHtmlView',
-       moreDetails: 'More Details'
+       moreDetails: 'More Details',
+       replacementsForEmptyData: {
+           stayedDays: 'Not Checked-Out Yet',
+           bill: 'Not Checked-Out Yet',
+           stayGst: 'Not Checked-Out Yet',
+           oldRoomNo: 'Not Checked-Out Yet'
+       }
     }),
 
     MOVE_TO_NEXT_STATE: Object.freeze({

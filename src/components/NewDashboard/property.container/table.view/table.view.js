@@ -8,7 +8,7 @@ import {validateFieldData} from "../../../common.functions/node.convertor";
 import MetadataFields from '../../../fields/metadata.fields.view';
 
 class TableView extends React.Component {
-  
+
   constructor(props){
     super(props);
     this.widgetTileModel = {
@@ -96,6 +96,17 @@ class TableView extends React.Component {
       customModalBodyViewOptions: undefined, // This value should get populated to use custom modal's body view.
     };
     this.params = props.params;
+    this.stateRouter = props.stateRouter;
+    /**
+     Router options for the table view. Options that has to be passed to the dashboard controller defines the previous perspective.
+     Those options based on the last router will be defined as the object here.
+     **/
+    this.routerOptions = {
+      'default-view': {reloadSidepanel: {silent: true}, navigateToPropertyContainer: true},
+      'property-container': {reloadSidepanel: {silent: true}, persistStatusView:true, updatedModel: this.widgetTileModel.data.roomModel},
+      'table-view': {reloadSidepanel: {silent: true}, navigateToStatusTableView: true, dashboardMode: this.stateRouter.dashboardModel[this.stateRouter.dashboardModel.length - 1],
+        selectedRoomConstant: this.stateRouter.tableModel[this.stateRouter.tableModel.length - 1]}
+    };
     this.paginationConstants = tableViewConstants.paginationConstants;
     this.propertyStatusTableHeader = tableViewConstants.PropertyStatusTableHeader;
     this.propertyStatusRequiredKey = tableViewConstants.PropertyStatusRequiredKey;
@@ -126,10 +137,32 @@ class TableView extends React.Component {
   setupEvents(){
     this.templateHelpersData.options.onBack = this.onBackClick.bind(this);
   };
-  
+
+  // Get last router history of current state router.
+  getLastRouterHistory(){
+    return this.stateRouter.stateModel[this.stateRouter.stateModel.length - 1];
+  };
+
+  // Save router parameters!
+  _updateRouterModel(opts, action){ // This action params lets the dashboard container know whether to remove the last visited path in the state router or not.
+    opts['routerOptions'] = {};
+    opts.routerOptions['currentRouter'] = tableViewConstants.tablePerspectiveConstant;
+    opts.routerOptions['currentTableMode'] = this.widgetTileModel.data.selectedRoomConstant;
+    opts.routerOptions['currentDashboardMode'] = this.widgetTileModel.data.dashboardMode;
+    opts.routerOptions['action'] = action;
+  };
+
   // Handle back action triggered on left side controller!
   onBackClick(){
-    this.props.dashboardController({reloadSidepanel: {silent: true}, navigateToPropertyContainer:true});
+    var opts = this.routerOptions[this.getLastRouterHistory()];
+    this._updateRouterModel(opts, 'REMOVE');
+    this.props.dashboardController(opts);
+  };
+
+  // Dashboard Controller Method.
+  dashboardController(opts){
+    this._updateRouterModel(opts, 'ADD');
+    this.props.dashboardController(opts);
   };
 
   // Reset checkbox selection!
@@ -224,8 +257,7 @@ class TableView extends React.Component {
       params: this.params,
       nodes: this.state.metadataTableState.checkboxSelection,
       eventHelpers: {
-        dashboardController: (opts) => this.props.dashboardController(opts),
-        onRoomTransfer: (opts) => this.props.onRoomTransfer(opts),
+        dashboardController: (opts) => this.dashboardController(opts),
         triggerTableLoader: (value, keepLoader) => this._toggleTableLoader(value, keepLoader),
         updateCheckboxSelection: (value, checkboxIndex) => this._updateCheckboxSelection(value, checkboxIndex),
         triggerCustomModel: (options) => this._prepareCustomModal(options),
@@ -318,7 +350,7 @@ class TableView extends React.Component {
   // Get the table headers for the selected widget tile!
   getTableHeaders() {
     this.state.metadataTableState.headerValue = undefined; // Set the initial value
-    if(this.widgetTileModel.data.userStatusMap !== undefined){
+    if(this.widgetTileModel.data.userStatusMap !== undefined && !this.roomConstant){
       this.roomConstant = _.findKey(this.widgetTileModel.data.userStatusMap, function(value) { // Using lodash function here to get the key by its value!
           return value === this.widgetTileModel.data.selectedRoomConstant;
       }.bind(this));

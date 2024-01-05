@@ -67,7 +67,7 @@ class CommandsRoomTransfer extends CheckoutFormView{
     setBillingInformation() {
         this.state.billingInfo.gstPrice = this.gstPrice;
         super.prepareUserCheckoutDetails();
-        this.status.eventHelpers.onRoomTransfer(this.transferOptions);
+        this.status.eventHelpers.dashboardController(this.transferOptions);
     };
 
     // Prepare options for filter.table to perform room transfer.
@@ -76,7 +76,8 @@ class CommandsRoomTransfer extends CheckoutFormView{
         this.transferOptions = {
             navigateToStatusTableView: true,
             selectedRoomConstant: lang.ROOM_TRANSFER.filteredRoomStatusConstant,
-            dashboardMode: lang.ROOM_TRANSFER.dashboardMode
+            dashboardMode: lang.ROOM_TRANSFER.dashboardMode,
+            isRoomTransferCommand: true
         };
     };
 }

@@ -101,8 +101,8 @@ class DefaultView extends React.Component {
   // On widget tile click handler!
   onWidgetTileClick(value){
     this.props.dashboardController({navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel,
-      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount,
-      dashboardMode: 'statusTableView', userStatusMap: this.propertyStatusMap, selectedRoomConstant: value});
+      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, routerOptions: {currentRouter: defaultViewConstants.defaultViewPerspectiveConstant,
+        action: 'ADD'}, dashboardMode: 'statusTableView', userStatusMap: this.propertyStatusMap, selectedRoomConstant: value});
   };
 
   // Card body child view list item function!

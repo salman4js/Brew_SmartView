@@ -30,7 +30,8 @@ var propertyContainerConstants = Object.freeze({
   // Panel field not required dashboardMode constants array!
   IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView'],
   ALLOW_PANEL_FIELD: ['edit', 'read'],
-  IGNORE_PANEL_FIELD_DROPDOWN: ['statusTableView', 'roomStatus', 'customHtmlView']
+  IGNORE_PANEL_FIELD_DROPDOWN: ['statusTableView', 'roomStatus', 'customHtmlView'],
+  propertyContainerPerspectiveConstant: 'property-container'
 });
 
 export default propertyContainerConstants;

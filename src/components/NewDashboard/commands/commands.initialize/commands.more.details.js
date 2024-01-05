@@ -20,6 +20,7 @@ class CommandsMoreDetails {
 
     execute(){
       this.status.eventHelpers.triggerTableLoader(true, true);
+      this.selectedNodeData = lang.MORE_DETAILS.replacementsForEmptyData; // This is to handle replacements in the content for the empty data.
       // Selected node id will be passed here, we have to fetch the data for the selected node id.
       this.fetchHistoryDataForSelectedNodes().then(() => {
           this.fetchCustomHtmlContent().then((result) => {
@@ -38,7 +39,7 @@ class CommandsMoreDetails {
         }
         return CommandsConnector.fetchSelectedHistoryNode(options).then((result) => {
            if(result.data.success){
-               this.selectedNodeData = result.data.message[0]
+               Object.assign(this.selectedNodeData, result.data.message[0]);
            }
         }).catch(() => {
            console.warn('Failed to fetch data for selected nodes!');
