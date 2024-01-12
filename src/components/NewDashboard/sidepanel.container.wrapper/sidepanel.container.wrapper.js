@@ -53,7 +53,7 @@ const SidepanelWrapper = (props, ref) => {
   }, {
     value: new Date(),
     placeholder: "Date of Checkout",
-    name: 'checkinDate',
+    name: 'checkOutDate',
     attribute: 'dateField',
     isRequired: true,
     style: {
@@ -190,7 +190,7 @@ const SidepanelWrapper = (props, ref) => {
   // Apply filter for the user filtered data!
   function _applyFilter(){
     var filterData = nodeConvertor(filterState);
-    filterData.checkinDate = formatDate(filterData.checkinDate);
+    filterData.checkOutDate = formatDate(filterData.checkOutDate);
     props.updateFilterData(filterData);
   };
   

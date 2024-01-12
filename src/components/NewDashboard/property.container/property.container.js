@@ -18,8 +18,30 @@ const PropertyContainer = (props) => {
 
   // Table view template initializer.
   var TableViewTemplate = new TableViewTemplateHelpers(
-      {options: {onBack: ()=> props.dashboardController({reloadSidepanel: {silent: true}, navigateToPropertyContainer:true}),
-      selectedRoomConstant: propertyContainerConstants.WIDGET_CONSTANTS[props.data.dashboardMode]}})
+      {options: {onBack: ()=> onBackClick(),
+          selectedRoomConstant: propertyContainerConstants.WIDGET_CONSTANTS[props.data.dashboardMode]}});
+
+  // On back click on table toolbar view for property container.
+  function onBackClick(){
+    props.routerController()._notifyStateRouter({routerOptions: {action: 'DELETE'}}).then((result) => {
+      props.dashboardController(getRouterOptions(result));
+    })
+  };
+
+  // Get the router options!
+  function getRouterOptions(stateRouter){
+    var extendedTableOptions = {reloadSidepanel: {silent: true}, navigateToStatusTableView: true, dashboardMode: stateRouter.dashboardModel[stateRouter.dashboardModel.length - 1],
+      selectedRoomConstant: stateRouter.tableModel[stateRouter.tableModel.length - 1]};
+    var options = {
+      'default-view': {reloadSidepanel: {silent: true}, navigateToPropertyContainer: true},
+      'property-container': {reloadSidepanel: {silent: true}, persistStatusView:true, updatedModel: props.data.roomModel},
+      'table-view': extendedTableOptions,
+      'filter-table-view': extendedTableOptions,
+      'payment-tracker-table-view': extendedTableOptions,
+      'log-table-view': extendedTableOptions
+    };
+    return options[stateRouter.stateModel[stateRouter.stateModel.length -  1]];
+  };
   
   // Get panel field data!
   function getPanelFieldData(){
@@ -109,45 +131,45 @@ const PropertyContainer = (props) => {
   // Render property model!
   function _renderPropertyModel(){
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit){
-      return <CheckInForm height = {props.propertyContainerHeight} data = {props.data} params = {props.params} 
-      afterFormSave = {(opts) => props.onCancel(opts)} />
+      return <CheckInForm height = {props.propertyContainerHeight} data = {props.data} params = {props.params} routerController = {(opts) => props.routerController(opts)}
+      afterFormSave = {(opts) => props.onCancel(opts)} routerOptions = {(opts) => getRouterOptions(opts)} dashboardController = {(opts) => props.dashboardController(opts)} />
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.read){
       return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} dashboardController = {(opts) => props.dashboardController(opts)}
-      updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)}
-      cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} afterCheckout = {(opts) => props.onCancel(opts)} />
+      updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)} routerOptions = {(opts) => getRouterOptions(opts)}
+      cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} routerController = {(opts) => props.routerController(opts)} />
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.roomStatus){
       return <RoomStatusView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
-      dashboardController = {(opts) => props.dashboardController(opts)} />
+      dashboardController = {(opts) => props.dashboardController(opts)} routerController = {(opts) => props.routerController(opts)} />
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.default){
       return <DefaultView data = {props.propertyDetails} params = {props.params} height = {props.propertyContainerHeight}
-      dashboardController = {(opts) => props.dashboardController(opts)} />
+      dashboardController = {(opts) => props.dashboardController(opts)} routerController = {(opts) => props.routerController(opts)} />
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView){
-      return <StatusTableView data = {props.data}  params = {props.params} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
-      dashboardController = {(opts) => props.dashboardController(opts)} stateRouter = {props.stateRouter}
+      return <StatusTableView data = {props.data}  params = {props.params} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+      dashboardController = {(opts) => props.dashboardController(opts)} stateRouter = {props.stateRouter} routerController = {(opts) => props.routerController(opts)}
       updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)}/>
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
-      return <FilterTable data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} stateRouter = {props.stateRouter}
-      dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+      return <FilterTable data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} stateRouter = {props.stateRouter} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+      dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} routerController = {(opts) => props.routerController(opts)} />
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.logTableView){
-      return <LogTable data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
-      stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+      return <LogTable data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+      routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.paymentTrackerView){
-      return <PaymentTrackerWrapper data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight}
-      stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+      return <PaymentTrackerWrapper data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+      routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){
@@ -224,8 +246,7 @@ const PropertyContainer = (props) => {
   
   // On Cancel!
   function onCancel(){
-    var opts = {reloadSidepanel: {silent: true}, currentRouter: 'property-container'};
-    props.onCancel(opts); // this will trigger the cancel operation on checkin form...
+    return onBackClick();
   };
   
   // On Save!

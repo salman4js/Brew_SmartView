@@ -1,12 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
-import CardView from '../../../CardView/card.view/card.view';
 import defaultViewConstants from './default.view.constants';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 import { getRoomStatusConstants, getGreetings } from '../../../common.functions/common.functions';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 import BlockActions from '../../../fields/block.actions.view/block.actions.view';
 import { templateHelpers, widgetTileTemplateHelpers, widgetTileBodyTemplateHelpers } from './default.view.template';
+import propertyContainerConstants from "../property.container.constants";
 
 
 class DefaultView extends React.Component {
@@ -32,6 +32,8 @@ class DefaultView extends React.Component {
       recep: defaultViewConstants.RECEP_LEVEL_WIDGETS,
       manager: defaultViewConstants.MANAGER_LEVEL_WIDGETS
     };
+    this.routerController = () => this.props.routerController();
+    this.isStateRouterNotified = false;
     this.isLoggedInAsRecep =  JSON.parse(getStorage("loggedInAsRecep"));
     this.configurableWidgetTiles = defaultViewConstants.CONFIGURABLE_WIDGET_TILE;
     this.propertyDetailsModel = {}; // Keeping the propertyDetailsModel outside of the state to avoid triggering change event!
@@ -86,12 +88,28 @@ class DefaultView extends React.Component {
     });
   };
 
+  // Notify the state router that the perspective is ready!
+  notifyStateRouter(){
+    var opts = {
+      routerOptions: {
+          currentRouter: defaultViewConstants.defaultViewPerspectiveConstant,
+          action: 'ADD',
+          currentDashboardMode: propertyContainerConstants.DASHBOARD_MODE.default,
+          currentTableMode: ''
+      }
+    };
+    this.routerController()._notifyStateRouter(opts);
+    this.isStateRouterNotified = true;
+  };
+
   // Render widget view after data fetched and the status count has been computed!
   renderWidgetTile(){
+    // Before render the widgetTiles, Set the greetins message!
+    this.setGreetings();
     // Check if the data is loaded!
     if(this.state.data.isFetched && this.state.isComputed){
-      // Before render the widgetTiles, Set the greetins message!
-      this.setGreetings();
+      // Update the state router when the default view perspective is ready!
+      !this.isStateRouterNotified && this.notifyStateRouter();
       return this.showWidgetTiles();
     } else {
       return <BlockActions />
@@ -101,8 +119,7 @@ class DefaultView extends React.Component {
   // On widget tile click handler!
   onWidgetTileClick(value){
     this.props.dashboardController({navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel,
-      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, routerOptions: {currentRouter: defaultViewConstants.defaultViewPerspectiveConstant,
-        action: 'ADD'}, dashboardMode: 'statusTableView', userStatusMap: this.propertyStatusMap, selectedRoomConstant: value});
+      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: 'statusTableView', userStatusMap: this.propertyStatusMap, selectedRoomConstant: value});
   };
 
   // Card body child view list item function!

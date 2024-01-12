@@ -1,4 +1,5 @@
 var filterTableConstants = Object.freeze({
+  filterTablePerspectiveConstant: 'filter-table-view',
   userModelRequiredKey: ['username', 'phonenumber', 'aadharcard', 'address', 'channel', 'adults', 'childrens', 'checkinBy'],
   channelManager: 'Walk-In',
   tableInfoMessage: Object.freeze({

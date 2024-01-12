@@ -116,7 +116,7 @@ const EditPrebookRoomItem = (props) => {
     fieldData.paymentTracker['room'] = props.data.roomid;
     fieldData.paymentTracker['amount'] = enteredAmount.prebookAdvance; // Amount paid now! 
     fieldData.paymentTracker['isPrebook'] = true;
-    fieldData.paymentTracker['lodge'] = props.data.lodgeId;
+    fieldData.paymentTracker['lodgeId'] = props.data.lodgeId;
     fieldData.paymentTracker['amountFor'] = paymentTracker.amountFor;
     fieldData.paymentTracker['dateTime'] = brewDate.getFullDate("dd/mmm") + " " + brewDate.timeFormat(brewDate.getTime());
     fieldData.paymentTracker['callPaymentTracker'] = isAdvPropChanged(); // If its true, then the advance field has been changed

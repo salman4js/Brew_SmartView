@@ -100,6 +100,7 @@ class FilterTable extends TableView {
       which gets the application to unresponsive state.
       and thats why added this flag to prevent that.
     **/
+    this.tablePerspectiveConstant = filterTableConstants.filterTablePerspectiveConstant;
     this.params = props.params;
     this.filterActionTableHeaderValue = 'Actions';
     this.checkoutUtils = new CheckoutUtils({accId: props.params?.accIdAndName[0]});
@@ -242,9 +243,9 @@ class FilterTable extends TableView {
     _.remove(this.filteredModel[this.props.data.selectedRoomConstant], function(obj){
       if(obj.prebookDateofCheckin.length > 0){
         for(var i = 0; i < obj.prebookDateofCheckin.length; i++){
-          var inBetweenDates = brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), obj.prebookDateofCheckin[i]);
-          if(inBetweenDates.length > 0 && !inBetweenDates.includes(filterData.checkinDate)){
-            return true; 
+          // Filter date of checkout should be always lesser than the prebook date of checkin!
+          if(new Date(filterData.checkOutDate) >= new Date(obj.prebookDateofCheckin[i])){
+            return true;
           }
         }
       }
@@ -298,7 +299,7 @@ class FilterTable extends TableView {
     selectedRoomModel['channel'] = filterTableConstants.channelManager;
     selectedRoomModel['isPrebook'] = false;
     selectedRoomModel['checkin'] = brewDate.getFullDate("yyyy/mm/dd");
-    selectedRoomModel['checkout'] = this.state.data?.filteredData.checkinDate;
+    selectedRoomModel['checkout'] = this.state.data?.filteredData.checkOutDate;
     selectedRoomModel['checkinTime'] = timeDate.getTime;
     selectedRoomModel['checkoutTime'] = timeDate.getTime;
     selectedRoomModel['dateTime'] = brewDate.getFullDate("dd/mmm") +  " " + brewDate.timeFormat(brewDate.getTime());
@@ -408,14 +409,9 @@ class FilterTable extends TableView {
     var customModalOptions = {
       header: header,
       centered: false,
-      onHide: this._doneOnTransfer.bind(this)
+      onHide: this.onBackClick.bind(this) // Call the super onBackClick method to update the state router model.
     };
     this._prepareCustomModal(customModalOptions);
-  };
-  
-  // After transfer operation is done (Success or Error)
-  _doneOnTransfer(){
-    this.props.dashboardController({navigateToPropertyContainer: true}); // Navigate to default view!
   };
   
   // Set the table header state!

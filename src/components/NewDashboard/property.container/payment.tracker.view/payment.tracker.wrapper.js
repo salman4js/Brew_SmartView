@@ -29,6 +29,7 @@ class PaymentTrackerWrapper extends TableView {
                 ]
             }
         };
+        this.tablePerspectiveConstant = lang.paymentTrackerPerspectiveConstant;
         this.shouldFetch = true;
         this.params = this.props.params;
     };

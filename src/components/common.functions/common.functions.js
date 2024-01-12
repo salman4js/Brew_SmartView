@@ -34,7 +34,7 @@ export function convertFormat(date){
 export function convertServerFormat(date){
   try{
     const result = date.split("/");
-    return `${result[2]}/${result[0]}/${result[1]}`
+    return `${result[2]}/${result[1]}/${result[0]}`
   } catch(err){
     return date;
   }

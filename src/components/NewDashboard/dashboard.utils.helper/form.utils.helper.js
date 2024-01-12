@@ -85,6 +85,7 @@ export function _updateRoomListCollection(data, action, performer){
       if(performer === 'pre-book'){
         filteredModel.prebookuser.push(data.prebookUserId);
         filteredModel.prebookDateofCheckin.push(data.prebookDateofCheckin);
+        filteredModel.prebookDateofCheckout.push(data.prebookDateofCheckout);
       } else {
         roomListCollection.push(data);
       };

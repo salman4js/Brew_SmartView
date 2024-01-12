@@ -2,13 +2,12 @@ import React from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getStyle } from '../../common.functions/common.functions'
-import {formatCustomIntoDateFormat, convertFormat} from '../../common.functions/common.functions'
 
 const DateField = (props) => {
   
   // Get selected date in the date-picker understandable format!
   function getSelectedDate(){
-    return props.data.value !== undefined ? new Date(formatCustomIntoDateFormat(convertFormat(props.data.value))) : new Date()
+    return props.data.value !== undefined ? new Date(props.data.value) : new Date();
   }
   
   // Get max date!

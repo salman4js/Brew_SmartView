@@ -3,6 +3,7 @@ import { getRoomStatusConstants } from '../../../common.functions/common.functio
 import { moveToNextState } from '../../../room.status.utils/room.status.utils';
 import { activityLoader } from '../../../common.functions/common.functions.view';
 import { templateHelpers } from './room.status.template';
+import propertyContainerConstants from "../property.container.constants";
 
 class RoomStatusView extends React.Component {
   
@@ -13,12 +14,16 @@ class RoomStatusView extends React.Component {
           height: props.height,
           isLoading: false
       };
+      this.routerController = this.props.routerController();
+      this.isStateRouterNotified = false;
   };
   
   // Template helper function!
   templateHelpers(){
     var statusOptions = this.getStatusOptions();
     if(!this.state.isLoading){
+      // Notify the state router that the perspective is ready!
+      !this.isStateRouterNotified && this._notifyStateRouter();
       return templateHelpers(statusOptions);
     } else {
       var opts = {
@@ -28,6 +33,20 @@ class RoomStatusView extends React.Component {
       }
       return activityLoader(opts);
     }
+  };
+
+  // Update the state router when the perspective is ready!
+  _notifyStateRouter(){
+      var opts = {
+        routerOptions: {
+          currentRouter: propertyContainerConstants.propertyContainerPerspectiveConstant,
+          action: 'ADD',
+          currentTableMode: this.getCurrentStatusConstant(),
+          currentDashboardMode: propertyContainerConstants.DASHBOARD_MODE.roomStatus
+        }
+      };
+      this.routerController._notifyStateRouter(opts);
+      this.isStateRouterNotified = true
   };
   
   // Loader controller!
