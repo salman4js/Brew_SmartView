@@ -51,7 +51,8 @@ var commandsConstant = Object.freeze({
     }),
 
     MOVE_TO_NEXT_STATE: Object.freeze({
-       moveToNextState: 'Move To Next State'
+        moveToNextState: 'Move To Next State',
+        currentRouter: 'custom-html-view'
     }),
 
     GENERATE_RECEIPT: Object.freeze({

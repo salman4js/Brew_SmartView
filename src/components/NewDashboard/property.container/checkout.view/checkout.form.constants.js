@@ -58,7 +58,9 @@ var checkoutViewConstants = Object.freeze({
   }),
   MAINTAINANCE_LOG: Object.freeze({
     logDialogHeader: 'Add New Maintainance Log'
-  })
+  }),
+  checkoutViewPerspectiveConstant: 'property-container',
+  checkoutFailureError: 'Checkout failed, please try again!'
 });
 
 export default checkoutViewConstants;

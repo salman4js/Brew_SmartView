@@ -43,7 +43,8 @@ export async function prebookFormValue(data){
   updateCollections && addToCollections('upcomingPrebook', result.data.updatedUserModel); // This is for the default.view (New dashboard tile view)
   updateCollections && _updateWidgetTileCount('upcomingPrebook', 'INC');
   // Add the prebookuser into the room model prebook user array in the room colletions!
-  var options = {roomId: result.data.updatedUserModel.room, prebookUserId: result.data.updatedUserModel._id, prebookDateofCheckin: data.prebookdateofcheckin};
+  var options = {roomId: result.data.updatedUserModel.room, prebookUserId: result.data.updatedUserModel._id,
+    prebookDateofCheckin: data.prebookdateofcheckin, prebookDateofCheckout: data.prebookdateofcheckout};
   _updateRoomListCollection(options, 'ADD', 'pre-book'); // this is to update the roomsListCollection to keep the data in sync for the filter.table (Room transfer).
   return result;
 };

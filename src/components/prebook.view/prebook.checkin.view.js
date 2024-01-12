@@ -2,11 +2,11 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import Variables from '../Variables';
 import Navbar from '../Navbar';
-import Loading from '../Loading';
 import Modals from '../Modals';
 import HomeRoom from '../HomeRoom';
 import brewDate from 'brew-date';
 import changeScreen from '../Action';
+import { getRoomList } from '../paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import { getStorage, clearStorage, defaultStorage } from '../../Controller/Storage/Storage';
 import { getCurrentOS } from '../common.functions/common.functions';
 import DatePicker from 'react-datepicker';
@@ -138,7 +138,18 @@ const PrebookCheckin = () => {
       const checkTime = brewDate.timeFormat(new Date(value).toLocaleTimeString());
       setPicker(prevState => ({...prevState, checkoutDateTime: value, checkoutTime: checkTime}))
     }
-  }
+  };
+
+  // Error handling for room list collection fetch!
+  function errorHandlingForFetchAction(){
+    stopLoader(false);
+    setErrorHandler({
+      show: true,
+      message: "Error occured in fetching all the available rooms...",
+      header: false,
+      headerText: false
+    })
+  };
   
   // Fetch all rooms!
   function getAllRooms(){
@@ -150,26 +161,17 @@ const PrebookCheckin = () => {
         clearStorage(); // clear storage and navigate back to login page!
         changeScreen();
     } else {
-        axios.post(`${Variables.hostId}/${splitedIds[0]}/false/roomlodge`, {
-            headers: {
-                "x-access-token": localStorage.getItem("token"),
-            }
-        })
-            .then(res => {
-                if (res.data.success) {
-                    setRoom(prevState => ({...prevState, allRooms: res.data.message}));
-                    setOptions(res.data.channels);
-                    stopLoader(false);
-                } else {
-                  stopLoader(false);
-                  setErrorHandler({
-                    show: true,
-                    message: "Error occured in fetching all the available rooms...",
-                    header: false,
-                    headerText: false
-                  })
-                }
-            })
+        getRoomList(splitedIds[0]).then((res) => {
+          if(res.data.success){
+            setRoom(prevState => ({...prevState, allRooms: res.data.message}));
+            setOptions(res.data.channels);
+            stopLoader(false);
+          } else {
+            errorHandlingForFetchAction();
+          }
+        }).catch(() => {
+          errorHandlingForFetchAction();
+        });
     }
   }
   

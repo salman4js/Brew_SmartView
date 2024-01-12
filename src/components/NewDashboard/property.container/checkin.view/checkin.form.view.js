@@ -8,7 +8,7 @@ import { activityLoader } from '../../../common.functions/common.functions.view'
 import {getStayedDays, determineGSTPercent, getTimeDate, formatDate} from '../../../common.functions/common.functions';
 import { nodeConvertor, validateFieldData, getFieldsData, updateMetadataFields, getCurrentUser } from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
-
+import propertyContainerConstants from "../property.container.constants";
 
 const CheckinForm = (props) => {
   
@@ -20,7 +20,8 @@ const CheckinForm = (props) => {
   // Property container state handler!
   const [propertyContainer, setPropertyContainer] = useState({
     isLoading: false,
-    customModal: false
+    customModal: false,
+    isStateRouterNotified: false
   });
 
   // Custom modal state handler!
@@ -53,6 +54,7 @@ const CheckinForm = (props) => {
       label: "Date of Check-In",
       name: 'checkin',
       attribute: 'dateField',
+      dateFormat: 'MMMM d, yyyy',
       isRequired: true,
       inlineToast: {
         isShow: false,
@@ -69,6 +71,7 @@ const CheckinForm = (props) => {
       placeholder: "Checkout Date",
       label: "Date of Check-Out",
       name: 'checkout',
+      dateFormat: 'MMMM d, yyyy',
       attribute: 'dateField',
       isRequired: true,
       inlineToast: {
@@ -305,9 +308,24 @@ const CheckinForm = (props) => {
     setPropertyContainer(prevState => ({...prevState, customModal: value}));
     setCustomModalState(prevState => ({...prevState, show: value, customData: customData}));
   }
+
+  // Notify the state router of the checkin perspective loaded.
+  function _notifyStateRouter(){
+    var opts = {
+      routerOptions: {
+        currentRouter: 'property-container',
+        action: 'ADD',
+        currentTableMode: 'afterCleaned',
+        currentDashboardMode: propertyContainerConstants.DASHBOARD_MODE.edit
+      }
+    };
+    props.routerController()._notifyStateRouter(opts);
+    setPropertyContainer(prevState => ({...prevState, isStateRouterNotified: true}));
+  };
   
   // Checkin form view!
   function _checkinFormView(){
+    !propertyContainer.isStateRouterNotified && _notifyStateRouter();
     if(propertyContainer.isLoading){
       var opts = {
         color: "black",
@@ -354,7 +372,7 @@ const CheckinForm = (props) => {
       updateDefaultFormValue(formValue); // This will change the formValue directly.
       const serverResult = await checkInFormValue(finalFormValue);
       if(serverResult.data.success){
-        _triggerCustomModal(true, {updatedRoomModel: serverResult.data.updatedModel, updatedUserModel: serverResult.data.updatedUserModel});
+        _triggerCustomModal(true, {updatedRoomModel: serverResult.data.updatedModel, updatedUserModel: serverResult.data.updatedUserModel, isSuccessToast: true});
         _toggleLoader(false);
       };
     };
@@ -381,12 +399,18 @@ const CheckinForm = (props) => {
   function onCloseCustomModal(valueFromCustomModal){
     _triggerCustomModal(false);
     _updateDashboardPropertyContainer(valueFromCustomModal);
+    if(valueFromCustomModal.isSuccessToast){
+      props.routerController()._notifyStateRouter({routerOptions: {action: 'DELETE'}}).then((result) => {
+        props.dashboardController(props.routerOptions(result));
+      })
+    };
   };
   
   // Update dashboard property container!
   function _updateDashboardPropertyContainer(customData){
-    props.afterFormSave({reloadSidepanel: {silent: true}, navigateToPropertyContainer: true, persistStatusView: false, 
-      updatedModel: customData.updatedRoomModel, updateUserCollection: {updatedUserModel: customData.updatedUserModel, action: 'CHECK-IN'}});
+    props.afterFormSave({reloadSidepanel: {silent: true}, persistStatusView: false, widgetTileModel: {objectIdToBeUpdated: customData.updatedRoomModel._id,
+        selectedConstant: [props.data.userStatusMap[props.data.roomModel.roomStatusConstant]], action: 'REMOVE', keysToCompare: ['_id']},
+      updatedModel: customData.updatedRoomModel, updateUserCollection: {updatedUserModel: customData.updatedUserModel, action: 'CHECK-IN'}})
   };
   
   // Get exclude dates and append it on date of checkout!

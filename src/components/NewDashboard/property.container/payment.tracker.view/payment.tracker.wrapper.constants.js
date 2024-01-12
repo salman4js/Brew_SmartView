@@ -3,7 +3,8 @@ var paymentTrackerConstants = Object.freeze({
         ZERO_FILTER_MESSAGE: 'No data has been logged yet for this guest.',
         TABLE_HEADER: 'Payment Tracker',
         PROPERTY_STATUS_KEY: 'paymentTrackerView'
-    })
+    }),
+    paymentTrackerPerspectiveConstant: 'payment-tracker-table-view'
 });
 
 export default paymentTrackerConstants;

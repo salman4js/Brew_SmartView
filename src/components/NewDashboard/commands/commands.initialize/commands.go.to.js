@@ -41,7 +41,7 @@ class CommandsGoTo {
         // Get the targeted room model from the collections.
         // Go to location command will always single node, hence targetedModel will also be only one.
         var targetedModel = CollectionInstance.whereInCollections('roomsListCollection', undefined, this.searchKey, this.status.nodes[0]);
-        this.controlOptions = {goToLocation: true, roomModel: targetedModel[0]};
+        this.controlOptions = {goToLocation: true, roomModel: targetedModel[0], originatingTableView: {constantKey: this.status.roomConstantKey, userStatus: this.status.selectedRoomConstant}};
     };
 }
 

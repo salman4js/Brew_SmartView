@@ -1,6 +1,6 @@
 import lang from "../commands.constants";
 import CommandsConnector from "../commands.connector";
-import {getBaseUrl, getParsedUrl} from "../../../common.functions/node.convertor";
+import {getParsedUrl} from "../../../common.functions/node.convertor";
 
 class CommandsMoreDetails {
     constructor(signatureOptions){
@@ -26,6 +26,8 @@ class CommandsMoreDetails {
           this.fetchCustomHtmlContent().then((result) => {
               this._prepareDashboardControllerOptions(result); // Custom template for a widget template would be always one.
               this.status.eventHelpers.triggerTableLoader(false);
+              // This preview perspective doesn't have a dedicated perspective, so we have to add the currentRouterOptions to the stateRouter in commands.
+              this._notifyStateRouter();
               this.status.eventHelpers.dashboardController(this.dashboardController);
           });
       });
@@ -71,6 +73,19 @@ class CommandsMoreDetails {
                 console.warn('Error occurred while fetching the dynamic html content');
             });
         }
+    };
+
+    // Since the preview doesn't really have a dedicated perspective of its own, We need to update the stateRouter model from the command model.
+    _notifyStateRouter(){
+        var opts = {
+            routerOptions: {
+                currentRouter: lang.MORE_DETAILS.currentRouter,
+                currentTableMode: this.status.selectedRoomConstant,
+                currentDashboardMode: lang.MORE_DETAILS.dashboardMode,
+                action: 'ADD'
+            }
+        };
+        this.status.eventHelpers.routerController()._notifyStateRouter(opts);
     };
 
     // Prepare dashboard controller options.

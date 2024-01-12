@@ -22,6 +22,8 @@ const DashboardWrapper = (props, ref) => {
     selectedRoomConstant: undefined,
     filteredData: undefined,
     filterTableOptions: undefined,
+    originatingTableView: undefined // This is to get the originating table view in other perspective view.
+    // If the perspective view was opened from the table view through commands.
   });
 
   // Custom html content state handler!
@@ -83,11 +85,17 @@ const DashboardWrapper = (props, ref) => {
   });
 
   // Update the selected model from the side panel wrapper!
-  function updateSelectedModel(roomModel, dashboardMode, userModel, htmlContent){
+  function updateSelectedModel(roomModel, dashboardMode, userModel){
     onFormCancel(); // this will clear out the form data, so that the newly selected roomModel will load.
     // When dashboardMode is undefined, get the dashboardMode from the roomModel data.
     dashboardMode = !dashboardMode ? getFormMode(roomModel.roomStatusConstant) : dashboardMode;
-    setSelectedModel(prevState => ({...prevState, roomModel: roomModel, dashboardMode: dashboardMode, userModel: userModel}));
+    setSelectedModel(prevState => ({...prevState, roomModel: roomModel, dashboardMode: dashboardMode, userModel: userModel }));
+  };
+
+  // Update the state for goToLocation command action.
+  function goToLocation(opts){
+    var dashboardMode = getFormMode(opts.roomModel.roomStatusConstant);
+    setSelectedModel(prevState => ({...prevState, roomModel: opts.roomModel, dashboardMode: dashboardMode, originatingTableView: opts.originatingTableView}));
   };
   
   // Onform save triggered!
@@ -114,46 +122,73 @@ const DashboardWrapper = (props, ref) => {
 
   // Update state router!
   function _updateStateRouter(opts) {
-    if (opts.currentRouter) {
-      setCustomStateRouter((prevState) => {
-        let newStateModel = [...prevState.stateModel];
-        let newTableModel = [...prevState.tableModel];
-        let newDashboardModel = [...prevState.dashboardModel];
-        switch (opts.action) {
-          case "ADD":
-            newStateModel.push(opts.currentRouter);
-            newTableModel.push(opts.currentTableMode);
-            newDashboardModel.push(opts.currentDashboardMode);
-            break;
-          case "REMOVE":
-            newStateModel = newStateModel.filter(item => item !== opts.currentRouter);
-            newTableModel = newTableModel.filter(item => item !== opts.currentTableMode);
-            newDashboardModel = newDashboardModel.filter(item => item !== opts.currentDashboardMode);
-            break;
-          default:
-            break;
-        }
-        return {
-          ...prevState,
-          stateModel: newStateModel,
-          tableModel: newTableModel,
-          dashboardModel: newDashboardModel
-        };
-      });
+    return new Promise((resolve, reject) => {
+      if (opts) {
+        setCustomStateRouter((prevState) => {
+          let newStateModel = [...prevState.stateModel];
+          let newTableModel = [...prevState.tableModel];
+          let newDashboardModel = [...prevState.dashboardModel];
+          switch (opts.action) {
+            case "ADD":
+              if(!newStateModel.includes(opts.currentRouter)){
+                newStateModel.push(opts.currentRouter);
+                opts.currentTableMode && newTableModel.push(opts.currentTableMode);
+                opts.currentDashboardMode && newDashboardModel.push(opts.currentDashboardMode);
+              }
+              break;
+            case "REMOVE":
+              newStateModel = newStateModel.filter(item => item !== opts.currentRouter);
+              newTableModel = newTableModel.filter(item => item !== opts.currentTableMode);
+              newDashboardModel = newDashboardModel.filter(item => item !== opts.currentDashboardMode);
+              break;
+            case "DELETE":
+              newStateModel.pop();
+              newTableModel.pop();
+              newDashboardModel.pop();
+              break;
+            default:
+              break;
+          }
+          resolve({stateModel: newStateModel, tableModel: newTableModel, dashboardModel: newDashboardModel});
+          return {
+            ...prevState,
+            stateModel: newStateModel,
+            tableModel: newTableModel,
+            dashboardModel: newDashboardModel
+          };
+        });
+      };
+    })
+  };
+
+  // Get last router history from state router.
+  function getLastRouterHistory(){
+    return customStateRouter.stateModel[customStateRouter.stateModel.length - 1];
+  };
+
+  // Update state router model.
+  async function _notifyStateRouter(opts){
+    return opts.routerOptions && await _updateStateRouter(opts.routerOptions);
+  };
+
+  // State router controller!
+  function _routerController(opts){
+    return {
+      _notifyStateRouter: async (opts) => await _notifyStateRouter(opts),
+      _getLastRouterHistory: () => getLastRouterHistory()
     }
   };
 
   // Update dashboard wrapper!
   function _updateDashboardWrapper(opts){
-    // Update the state router before proceeding with dashboard controller.
-    _updateStateRouter(opts.routerOptions);
     opts.reloadSidepanel && _reloadSidepanel(opts);
     opts.navigateToStatusTableView && _navigateToStatusTableView(opts);
     opts.navigateToPropertyContainer && _navigateToPropertyContainer();
     opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need
     // updated room model to updated it to the latest value
     opts.updatedModel && _updateRoomModel(opts);
-    opts.goToLocation && updateSelectedModel(opts.roomModel);
+    opts.widgetTileModel && _updateWidgetTileModel(opts.widgetTileModel);
+    opts.goToLocation && goToLocation(opts);
     opts.isRoomTransferCommand && onRoomTransfer(opts);
     opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
     opts.updateUserCollection && _updateUserCollection(opts.updateUserCollection, opts.ignoreUpdateOfDefaultView);
@@ -224,6 +259,41 @@ const DashboardWrapper = (props, ref) => {
     CollectionInstance.updateCollections('roomsListCollection', roomCollections);
     setPropertyDetails(prevState => ({...prevState, roomCollection: roomCollections})); // When the room model update is completed, Update the state property of the room collections.
   };
+
+  // Update widget tile model collection!
+  function _updateWidgetTileModel(opts){
+    return new Promise((resolve) => {
+      if(opts.objectIdToBeUpdated){ // When clicking on widgetTile from default.view, would trigger this method.
+        // So to prevent updating the state, has the condition here to look up for the objectIdToBeUpdated.
+        setSelectedModel(prevState => {
+          const newState = { ...prevState };
+          // Ensure that the widgetTileModel exists in the state
+          if (!newState.widgetTileModel) {
+            // Ideally this should not at all happen.
+            newState.widgetTileModel = {};
+          }
+          _.forEach(opts.selectedConstant, (constant) => {
+            _.forEach(opts.keysToCompare, (key) => {
+              const objectIndex = _.findIndex(newState.widgetTileModel[constant], function(model){
+                return model[key] === opts.objectIdToBeUpdated;
+              });
+              if (objectIndex !== -1) {
+                switch (opts.action) {
+                  case "REMOVE":
+                    newState.widgetTileModel[constant] = _.filter(newState.widgetTileModel[constant], (model, index) => index !== objectIndex);
+                    break;
+                  default:
+                    break;
+                }
+              }
+            });
+          });
+          resolve(newState);
+          return newState;
+        });
+      }
+    })
+  };
   
   // Reload and persist room status view!
   function _reloadAndPersistStatusView(updatedModel){
@@ -258,7 +328,8 @@ const DashboardWrapper = (props, ref) => {
         <div className = "flex-2">
           <div className = "dashboard-property-container">
             <PropertyContainer data = {selectedModel} htmlContent = {htmlContent} propertyContainerHeight = {props.modalAssistData.height} stateRouter = {customStateRouter}
-            propertyDetails = {propertyDetails} onSave = {(value) => onFormSave(value)} onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
+            routerController = {(opts) => _routerController(opts)} propertyDetails = {propertyDetails} onSave = {(value) => onFormSave(value)}
+            onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
             updateSelectedModel = {(roomModel, dashboardMode, userModel) => updateSelectedModel(roomModel, dashboardMode, userModel)}
             onCheckout = {(value) => onCheckout(value)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
           </div>

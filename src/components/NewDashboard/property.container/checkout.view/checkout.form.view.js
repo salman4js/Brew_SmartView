@@ -12,6 +12,7 @@ import { activityLoader } from '../../../common.functions/common.functions.view'
 import { getTimeDate, determineGSTPercent } from '../../../common.functions/common.functions';
 import { getBaseUrl, formQueryParams, nodeConvertor, validateFieldData, updateMetadataFields, getCurrentUser} from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
+import propertyContainerConstants from "../property.container.constants";
 
 
 class CheckOutView extends React.Component {
@@ -40,6 +41,8 @@ class CheckOutView extends React.Component {
           onHide: this.onCloseCustomModal.bind(this),
           header: undefined,
           centered: true,
+          isSuccessToast: false,
+          isErrorToast: false,
           restrictBody: true,
           modalSize: "medium",
           footerEnabled: false,
@@ -56,16 +59,18 @@ class CheckOutView extends React.Component {
         maintainanceLog: MetadataModelState.maintainanceLogInput,
         htmlContent: {
             content: undefined,
-            filename: props.params.accIdAndName[1] + '.html'
+            filename: props.params.accIdAndName[1] + '-bill.html'
         }
       };
       this.propertyController = {
         reloadSidepanel: false,
-        navigateToPropertyContainer: false,
         persistStatusView: false,
+        widgetTileModel: undefined,
         updatedModel: undefined,
         updateUserCollection: undefined
       };
+      this.routerController = props.routerController;
+      this.isStateRouterNotified = false;
       this.checkoutUtils = new CheckoutUtils({accId: props.params.accIdAndName[0]});
     };
     
@@ -83,6 +88,20 @@ class CheckOutView extends React.Component {
       };
       this.setCustomModal(alertMessageOptions);
     };
+
+    // Notify the state router model when the perspective is ready!
+    _notifyStateRouter(){
+      var opts = {
+          routerOptions: {
+              currentRouter: checkoutViewConstants.checkoutViewPerspectiveConstant,
+              action: 'ADD',
+              currentTableMode: this.state.data.roomModel.roomStatusConstant,
+              currentDashboardMode: propertyContainerConstants.DASHBOARD_MODE.read
+          }
+      };
+      this.routerController()._notifyStateRouter(opts);
+      this.isStateRouterNotified = true;
+    };
     
     templateHelpers(){
       if(this.state.isFetched){
@@ -91,6 +110,8 @@ class CheckOutView extends React.Component {
         // Add current time to the userModel!
         this.state.userModel['currentTime'] = getTimeDate().getTime;
         this.state.userModel['currentCheckoutDate'] = this.getTodayDate(); // Have this to update checkout date in bill preview, currently it shows user model date of checkout!
+        // Update the state router model when the perspective is ready!
+        !this.isStateRouterNotified && this._notifyStateRouter();
         return templateHelpers(this.state, this.configOptions);
       } else {
         var opts = {
@@ -169,8 +190,8 @@ class CheckOutView extends React.Component {
     // Update property container controller!
     _updatePropertyController(opts){
       this.propertyController.reloadSidepanel = opts.reloadSidepanel;
-      this.propertyController.navigateToPropertyContainer = opts.navigateToPropertyContainer;
       this.propertyController.persistStatusView = opts.persistStatusView;
+      this.propertyController.widgetTileModel = opts.widgetTileModel;
       this.propertyController.updatedModel = opts.updatedModel;
       this.propertyController.updateUserCollection = opts.updateUserCollection;
     };
@@ -184,6 +205,8 @@ class CheckOutView extends React.Component {
           show: opts.show,
           header: opts.header,
           centered: opts.centered,
+          isSuccessToast: opts.isSuccessToast,
+          isErrorToast: opts.isErrorToast,
           restrictBody: opts.restrictBody,
           showBodyItemView: opts.showBodyItemView,
           footerEnabled: opts.footerEnabled,
@@ -194,15 +217,20 @@ class CheckOutView extends React.Component {
     
     // On close custom modal!
     onCloseCustomModal(){
-      this.setState(prevState => ({
-        ...prevState,
-        customModal: {
-          ...prevState.customModal,
-          show: false
+        this.setState(prevState => ({
+            ...prevState,
+            customModal: {
+            ...prevState.customModal,
+            show: false
+            }
+        }));
+        // Update the selectedModel onCheckout value in dashboard wrapper!
+        this.props.cancelCheckoutPrompt(this.propertyController);
+        if(this.state.customModal.isSuccessToast){
+          this.routerController()._notifyStateRouter({routerOptions: {action: 'DELETE'}}).then((result) => {
+             this.props.dashboardController(this.props.routerOptions(result));
+          });
         }
-      }));
-      // Update the selectedModel onCheckout value in dashboard wrapper!
-      this.props.cancelCheckoutPrompt(this.propertyController);
     };
     
     _toggleLoader(value){
@@ -249,12 +277,12 @@ class CheckOutView extends React.Component {
         return this.errorAlertContainerData();
       }
     };
-    
+
     // Alert container renderer!
     renderAlertContainer(){
       if(this.state.isFetched){
         var getAlertContainerLang = this.getAlertContainerLang();
-        return <PropertyAlertContainer data = {getAlertContainerLang} />
+        return <PropertyAlertContainer data = {getAlertContainerLang} viewRefHeight = {(alertContainerHeight) => this._updateState((this.state.height - alertContainerHeight), 'height')} />
       }
     };
     
@@ -431,16 +459,22 @@ class CheckOutView extends React.Component {
     // Perform checkout!
     async performCheckout(){
       // Form up the params!
-      var data = this.checkoutDetails;
-      var result = await this.checkoutUtils.onCheckout(data);
+      var data = this.checkoutDetails,
+          modalData,
+          result = await this.checkoutUtils.onCheckout(data);
       if(result.data.success){
-        this._updatePropertyController({reloadSidepanel: {silent: true}, persistStatusView: false, navigateToPropertyContainer: true, 
+          this._toggleLoader(false);
+          this._updatePropertyController({reloadSidepanel: {silent: true}, persistStatusView: false, widgetTileModel: {objectIdToBeUpdated: result.data.updatedModel._id,
+                  selectedConstant: [this.props.data.userStatusMap[this.props.data.roomModel.roomStatusConstant], this.props.data.originatingTableView.userStatus],
+                  action: 'REMOVE', keysToCompare: ['_id', 'room']}, // After clearing the data from the
+              // widget tile model, clear the model from the room status model too to keep the data in sync.
           updateUserCollection: {id: result.data.updatedModel._id, action: 'CHECK-OUT'}, updatedModel: result.data.updatedModel});
-        var data = {header: result.data.message, isCentered: false, isRestrictBody: true, 
+          modalData = {header: result.data.message, isCentered: false, isRestrictBody: true, isSuccessToast: true,
         isFooterEnabled: false};
-        this._toggleLoader(false);
-        this.setCustomModal(data);
+      } else {
+          modalData = {header: checkoutViewConstants.checkoutFailureError, isCentered: false, isRestrictBody: true, isErrorToast: true, isFooterEnabled: true};
       }
+      this.setCustomModal(modalData);
     };
     
     // Form the object to send it as the query params to window print handler!
@@ -653,6 +687,8 @@ class CheckOutView extends React.Component {
         show: true,
         header: data.header,
         centered: data.isCentered,
+        isSuccessToast: data.isSuccessToast,
+        isErrorToast: data.isErrorToast,
         restrictBody: data.isRestrictBody,
         showBodyItemView: data.bodyItemView,
         footerEnabled: data.isFooterEnabled,

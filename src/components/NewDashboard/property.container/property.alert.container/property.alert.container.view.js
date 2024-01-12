@@ -5,6 +5,8 @@ class PropertyAlertContainer extends React.Component {
   constructor(props){
     super(props);
     this.state = props.data;
+    this.viewRef = React.createRef();
+    this.viewRefHeight = props.viewRefHeight;
   };
   
   getClassName(status){
@@ -45,9 +47,23 @@ class PropertyAlertContainer extends React.Component {
       )
     })
   };
-  
+
+  // Update the height in the parent component!
+  sendViewHeightToParentView(){
+    // Add extra +5 in the clientHeight for better view.
+    this.viewRefHeight((this.viewRef.current.clientHeight) + 5);
+  };
+
+  componentDidMount() {
+    this.sendViewHeightToParentView();
+  };
+
   render(){
-    return this.renderAlertContainer();
+    return (
+        <div ref = {this.viewRef}>
+          {this.renderAlertContainer()}
+        </div>
+    )
   }
 };
 

@@ -30,6 +30,7 @@ class LogTable extends TableView {
           ]
         }
     };
+    this.tablePerspectiveConstant = logTableConstants.logTablePerspectiveConstant;
     this.shouldFetch = true;
     this.params = this.props.params;
     this.logTableUtils = new LogTableUtils({accId: this.params.accIdAndName[0], userId: this.state.data.userModel.userid});

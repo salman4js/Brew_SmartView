@@ -1,20 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import _ from 'lodash';
-import retrieveDate from '../../PreBook_Date_Spike/DateCorrector';
 import EditPrebookRoomItem from '../../edit.room.view/edit.prebook.room.view/edit.prebook.room.item.view';
 import { addRefundTracker, checkinPrebookGuest } from './prebook.components.utils/prebook.components.utils';
-import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
 import { removePrebookData } from '../../NewDashboard/property.container/checkin.view/checkin.form.utils';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import GuestRegistration from '../../GRC/grc.view';
-import axios from "axios";
 import brewDate from 'brew-date';
 import Modal from "react-bootstrap/Modal";
-import Variables from '../../Variables';
 import Button from "react-bootstrap/Button";
-import {universalLang} from '../../universalLang/universalLang';
 import {getStorage, setStorage} from '../../../Controller/Storage/Storage';
-import { handleTimeFormat, compareTime, convert12to24, getTimeDate, refreshPage } from '../../common.functions/common.functions.js';
+import { convert12to24, getTimeDate } from '../../common.functions/common.functions.js';
 
 
 const Prebook_component = (props) => {
@@ -161,7 +155,6 @@ const Prebook_component = (props) => {
         aadharcard: props.aadhar,
         prebookId: props.prebookuser,
         lodgeId: props.lodgeid,
-        roomno: props.roomno,
         roomid: props.roomid
     }
     

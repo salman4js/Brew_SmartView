@@ -107,6 +107,9 @@ class TableView extends React.Component {
       'table-view': {reloadSidepanel: {silent: true}, navigateToStatusTableView: true, dashboardMode: this.stateRouter.dashboardModel[this.stateRouter.dashboardModel.length - 1],
         selectedRoomConstant: this.stateRouter.tableModel[this.stateRouter.tableModel.length - 1]}
     };
+    this.routerController = () => this.props.routerController();
+    this.isStateRouterNotified = false;
+    this.tablePerspectiveConstant = tableViewConstants.tablePerspectiveConstant;
     this.paginationConstants = tableViewConstants.paginationConstants;
     this.propertyStatusTableHeader = tableViewConstants.PropertyStatusTableHeader;
     this.propertyStatusRequiredKey = tableViewConstants.PropertyStatusRequiredKey;
@@ -138,31 +141,12 @@ class TableView extends React.Component {
     this.templateHelpersData.options.onBack = this.onBackClick.bind(this);
   };
 
-  // Get last router history of current state router.
-  getLastRouterHistory(){
-    return this.stateRouter.stateModel[this.stateRouter.stateModel.length - 1];
-  };
-
-  // Save router parameters!
-  _updateRouterModel(opts, action){ // This action params lets the dashboard container know whether to remove the last visited path in the state router or not.
-    opts['routerOptions'] = {};
-    opts.routerOptions['currentRouter'] = tableViewConstants.tablePerspectiveConstant;
-    opts.routerOptions['currentTableMode'] = this.widgetTileModel.data.selectedRoomConstant;
-    opts.routerOptions['currentDashboardMode'] = this.widgetTileModel.data.dashboardMode;
-    opts.routerOptions['action'] = action;
-  };
-
   // Handle back action triggered on left side controller!
   onBackClick(){
-    var opts = this.routerOptions[this.getLastRouterHistory()];
-    this._updateRouterModel(opts, 'REMOVE');
-    this.props.dashboardController(opts);
-  };
-
-  // Dashboard Controller Method.
-  dashboardController(opts){
-    this._updateRouterModel(opts, 'ADD');
-    this.props.dashboardController(opts);
+    // Before navigating back to the last router instance, Delete the current router / last router from the stateRouter model first.
+    this.routerController()._notifyStateRouter({routerOptions: {action: 'DELETE'}}).then((result) => {
+      this.props.dashboardController(this.routerOptions[result.stateModel[result.stateModel.length - 1]]);
+    });
   };
 
   // Reset checkbox selection!
@@ -230,11 +214,27 @@ class TableView extends React.Component {
     this.widgetTileModel.paginationData.count = this.isPaginationRequired ? widgetTileModelCount : 0;
     this._adjustHeightForPagination();
   };
+
+  // Notify the state router when the perspective is ready!
+  notifyStateRouter(){
+    var opts = {
+      routerOptions: {
+        currentRouter: this.tablePerspectiveConstant,
+        currentTableMode: this.widgetTileModel.data.selectedRoomConstant,
+        currentDashboardMode: this.widgetTileModel.data.dashboardMode,
+        action: 'ADD'
+      }
+    };
+    this.routerController()._notifyStateRouter(opts);
+    this.isStateRouterNotified = true;
+  };
   
   // Organize and prepare the required table data!
   prepareTableData(){
     if(this.widgetTileModel.data !== undefined){
-      this.getWidgetTileTableCollectionData(); // Get the widget tile collection data for the table cell values!
+      this.getWidgetTileTableCollectionData().then(() => {
+        !this.isStateRouterNotified && this.notifyStateRouter();
+      }); // Get the widget tile collection data for the table cell values!
     };
   };
   
@@ -257,7 +257,8 @@ class TableView extends React.Component {
       params: this.params,
       nodes: this.state.metadataTableState.checkboxSelection,
       eventHelpers: {
-        dashboardController: (opts) => this.dashboardController(opts),
+        dashboardController: (opts) => this.props.dashboardController(opts),
+        routerController: () => this.routerController(),
         triggerTableLoader: (value, keepLoader) => this._toggleTableLoader(value, keepLoader),
         updateCheckboxSelection: (value, checkboxIndex) => this._updateCheckboxSelection(value, checkboxIndex),
         triggerCustomModel: (options) => this._prepareCustomModal(options),
@@ -281,7 +282,8 @@ class TableView extends React.Component {
     if(!this.roomConstant) this.getTableHeaders(); // Sometimes when the component is being rendered and when the component
     // is being updated, this.roomConstant becomes undefined, so if its undefined get the room-constant before proceeding.
     if(this.roomConstant !== 'afterCheckin'){
-      return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant] || await this.setExpandedTableView();
+      return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant]
+          || (_.isFunction(this.setExpandedTableView) ? await this.setExpandedTableView() : []);
     } else {
       return this.widgetTileModel.propertyDetails.userCollection;
     }
