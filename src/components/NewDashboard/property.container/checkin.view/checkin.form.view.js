@@ -6,7 +6,13 @@ import MetadataFields from '../../../fields/metadata.fields.view';
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
 import {getStayedDays, determineGSTPercent, getTimeDate, formatDate} from '../../../common.functions/common.functions';
-import { nodeConvertor, validateFieldData, getFieldsData, updateMetadataFields, getCurrentUser } from '../../../common.functions/node.convertor';
+import {
+  nodeConvertor,
+  validateFieldData,
+  getFieldsData,
+  updateMetadataFields,
+  getCurrentUser
+} from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 import propertyContainerConstants from "../property.container.constants";
 
@@ -195,6 +201,7 @@ const CheckinForm = (props) => {
       name: 'advance',
       validation: _isAdvanceRestricted(),
       validationRegex: /^(0|[1-9]\d*)$/,
+      condition: undefined,
       attribute: 'textField',
       restrictShow: false,
       isRequired: false,
@@ -214,6 +221,7 @@ const CheckinForm = (props) => {
       name: 'discount',
       validation: true,
       validationRegex: /^(0|[1-9]\d*)$/,
+      condition: undefined,
       attribute: 'textField',
       restrictShow: false,
       isRequired: false,
@@ -278,14 +286,18 @@ const CheckinForm = (props) => {
   // Get advance amount limit!
   function _restrictAdvanceAmount(totalAmount){
     var nodeValue = {isShow: true, inlineMessage: `Advance amount cannot be greater than ${totalAmount}`};
-    updateMetadataFields('advance', nodeValue, customizableFields, setCustomizableFields);
+    updateMetadataFields('advance', nodeValue, customizableFields, setCustomizableFields).then(() => {
+      updateMetadataFields('advance', {condition: {validationStatement: '>=', validationValue: totalAmount}}, customizableFields, setCustomizableFields);
+    });
   };
-  
+
   // Get discount amount limit!
   function _restrictDiscountAmount(totalAmount){
     var restrictedDiscount = totalAmount * (3 / 4);
     var nodeValue = {isShow: true, inlineMessage: `Discount amount cannot be greater than ${restrictedDiscount}`};
-    updateMetadataFields('discount', nodeValue, customizableFields, setCustomizableFields);
+    updateMetadataFields('discount', nodeValue, customizableFields, setCustomizableFields).then(() => {
+      updateMetadataFields('discount', {condition: {validationStatement: '>=', validationValue: restrictedDiscount}}, customizableFields, setCustomizableFields);
+    });
   };
   
   // Check customizable fields!
