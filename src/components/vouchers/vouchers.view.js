@@ -597,7 +597,7 @@ const VoucherView = () => {
         
         // Update tablePreview data for outflow
         setTablePreviewViewForOutflow(prevState => ({...prevState, cellValues: result.data.data.tableReport,
-          headerValue: ['Voucher Name', 'Payment', 'Receipt'], tableLoader: false}));
+          headerValue: result.data.data.tableHeader.outflow, tableLoader: false}));
       }
     }
   };
