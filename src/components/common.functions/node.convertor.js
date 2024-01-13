@@ -102,7 +102,8 @@ function _validateData(status, setStatus){
     var tempResult = [];
     if(Array.isArray(status)){
       status.map((options, index) => {
-        tempResult.push((options?.isRequired || options?.validation) ? checkFieldValue(options.value, options.defaultValue, options.name, options.validationRegex) : {isValid: true})
+        tempResult.push((options?.isRequired || options?.validation) ?
+            checkFieldValue(options.value, options.defaultValue, options.name, options.validationRegex, options.condition) : {isValid: true})
       })
       result = tempResult;
     } else {
@@ -142,18 +143,28 @@ export function validateFieldData(status, setStatus) {
 };
 
 // Check for valid field data...
-export function checkFieldValue(value, defaultValue, statusName, validationRegex){
+export function checkFieldValue(value, defaultValue, statusName, validationRegex, condition){
   var validationRequired = (validationRegex !== undefined);
   if(value !== undefined && value !== ""){
-    return validationRequired ? validateMetadataFields(value, statusName, validationRegex) : {isValid: true, statusName: statusName};
+    return validationRequired ? validateMetadataFields(value, statusName, validationRegex, condition) : {isValid: true, statusName: statusName};
   } else {
     return validationRequired ? validateMetadataFields(defaultValue, statusName, validationRegex) : {isValid: false, statusName: statusName};
   }
 };
 
+// Check for condition statement!
+function checkForConditionStatement(value, condition){
+  var validationValue = condition.validationValue,
+      validationStatement = condition.validationStatement;
+  // Form condition statement.
+  var conditionStatement = `${validationValue}${validationStatement}${value}`;
+  return eval(conditionStatement);
+};
+
 // Validation for metadata fields!
-function validateMetadataFields(value, statusName, validationRegex){
-  return validationRegex.test(value) ? {isValid: true, statusName: statusName} : {isValid: false, statusName: statusName};
+function validateMetadataFields(value, statusName, validationRegex, condition){
+  if(!condition) return validationRegex.test(value) ? {isValid: true, statusName: statusName} : {isValid: false, statusName: statusName};
+  if(condition) return validationRegex.test(value) && checkForConditionStatement(value, condition) ? {isValid: true, statusName: statusName} : {isValid: false, statusName: statusName};
 };
 
 // Enable inline toast message for input field!
