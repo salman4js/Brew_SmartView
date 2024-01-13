@@ -1,8 +1,8 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
-import {useSelector, useDispatch} from 'react-redux';
+import { useDispatch} from 'react-redux';
 import {useCheckboxSelection} from '../global.state/global.state.manager'
-import {addValue, removeValue, getValue, removeAllValue} from '../../global.state/actions/index';
+import {addValue, removeValue, removeAllValue} from '../../global.state/actions/index';
 import { _renderNavbar } from '../common.functions/common.functions.view';
 import ModalAssist from '../modal.assist/modal.assist.view';
 import CustomModal from '../CustomModal/custom.modal.view';
@@ -14,7 +14,7 @@ import InvoiceView from '../Invoice/invoice.view';
 import MetadataFields from '../fields/metadata.fields.view';
 import { getVouchersList, getNetProfitPreview, addVouchersList, getVoucherModelList, addVoucherModelList, editVoucherModelList, deleteVoucherModelList, getPrevVoucherModel } from './vouchers.utils.js';
 import { getAllPaymentTracker, getRoomList } from '../paymentTracker/payment.tracker.utils/payment.tracker.utils';
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {setStorage, getStorage, removeItemStorage} from '../../Controller/Storage/Storage'
 import { globalMessage, commonLabel, activityLoader } from '../common.functions/common.functions.view';
 import {
@@ -24,7 +24,7 @@ import {
   checkboxSelection,
   handleCommands,
 } from '../common.functions/node.convertor';
-import {formatCustomIntoDateFormat, convertFormat, convertServerFormat } from '../common.functions/common.functions';
+import {formatCustomIntoDateFormat, convertServerFormat } from '../common.functions/common.functions';
 import changeScreen from '../Action';
 
 
@@ -587,17 +587,17 @@ const VoucherView = () => {
       if(result.data.success){
         // Update netprofit preview data!
         setNetProfit(prevState => ({...prevState, isLoading: false, 
-          paymentTrackerSum: result.data.data.paymentTrackerSum, voucherPaymentSum: result.data.data.vouchersPayment, 
-        voucherReceiptSum: result.data.data.vouchersReceipt, paymentTrackerTaxableAmount: result.data.data.paymentTrackerTotalTaxable,
-        netProfit: result.data.data.netProfit, netProfitWithoutLivixius: result.data.data.netProfitForVouchers, netProfitStatus: result.data.data.netProfitStatus}));
+          paymentTrackerSum: result.data.data.inflowDetails.totalAmount, voucherPaymentSum: result.data.data.outflowDetails.totalPayment,
+        voucherReceiptSum: result.data.data.outflowDetails.totalReceipt, paymentTrackerTaxableAmount: result.data.data.inflowDetails.totalTaxableAmount,
+        netProfit: result.data.data.netProfitStatus, netProfitStatus: result.data.data.netProfitStatus > 0 ? 'PROFIT' : "LOSS"}));
         
         // Update tablePreview data for inflow
         setTablePreviewViewForInflow(prevState => ({...prevState, cellValues: result.data.data.individualVoucherReportForPayment, 
           headerValue: result.data.data.individualVoucherReportTableHeader, tableLoader: false}));
         
         // Update tablePreview data for outflow
-        setTablePreviewViewForOutflow(prevState => ({...prevState, cellValues: result.data.data.individualVoucherReportForReceipt, 
-          headerValue: result.data.data.individualVoucherReportTableHeader, tableLoader: false}));
+        setTablePreviewViewForOutflow(prevState => ({...prevState, cellValues: result.data.data.tableReport,
+          headerValue: ['Voucher Name', 'Payment', 'Receipt'], tableLoader: false}));
       }
     }
   };
