@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { editPrebookDetails } from '../../NewDashboard/property.container/checkin.view/checkin.form.utils';
 import brewDate from 'brew-date';
-import Variables from '../../Variables';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import MetadataFields from '../../fields/metadata.fields.view';
-import {formatCustomIntoDateFormat, convertFormat, convertServerFormat} from '../../common.functions/common.functions';
+import {formatCustomIntoDateFormat, convertServerFormat} from '../../common.functions/common.functions';
 import {nodeConvertor} from '../../common.functions/node.convertor';
 import {universalLang} from '../../universalLang/universalLang';
 
