@@ -95,12 +95,12 @@ const DashboardWrapper = (props, ref) => {
   // Update the state for goToLocation command action.
   function goToLocation(opts){
     var dashboardMode = getFormMode(opts.roomModel.roomStatusConstant);
-    setSelectedModel(prevState => ({...prevState, roomModel: opts.roomModel, dashboardMode: dashboardMode, originatingTableView: opts.originatingTableView}));
+    setSelectedModel(prevState => ({...prevState, roomModel: opts.roomModel, userModel: opts.userModel, dashboardMode: dashboardMode, originatingTableView: opts.originatingTableView}));
   };
   
   // Onform save triggered!
   function onFormSave(value){
-    setSelectedModel(prevState => ({...prevState, onFormSave: value}))
+    setSelectedModel(prevState => ({...prevState, onFormSave: value}));
   };
   
   // On checkout triggered!
@@ -109,7 +109,7 @@ const DashboardWrapper = (props, ref) => {
   };
   
   // On room transfer!
-  function onRoomTransfer(opts){
+  function onRoomTransfer(){
     sidePanelRef.current._setFilterPanel(true);
   };
   
