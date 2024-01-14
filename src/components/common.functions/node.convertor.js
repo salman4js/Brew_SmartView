@@ -396,11 +396,17 @@ function replacePlaceholders(htmlContent, replacements){
 };
 
 export function renderCustomHTMLContent(htmlContent, replacements, propertyContainerHeight){
-  // Replace placeholders in the HTML content
-  const dynamicHTML = replacePlaceholders(htmlContent, replacements);
-  return (
-      <div style = {{height: propertyContainerHeight, overflow: 'auto'}} dangerouslySetInnerHTML={{ __html: dynamicHTML }}></div>
-  );
+  if(htmlContent.content){
+    // Replace placeholders in the HTML content
+    const dynamicHTML = replacePlaceholders(htmlContent, replacements);
+    return (
+        <div style = {{height: propertyContainerHeight, overflow: 'auto'}} dangerouslySetInnerHTML={{ __html: dynamicHTML }}></div>
+    );
+  } else {
+    return (
+        <div style = {{height: propertyContainerHeight, overflow: 'auto', color: 'black'}}> No Custom HTML Content Found. </div>
+    )
+  }
 };
 
 // Download the content into the filesystem.
