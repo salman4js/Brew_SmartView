@@ -1,6 +1,6 @@
 import lang from "../commands.constants";
 import CommandsConnector from "../commands.connector";
-import {downloadContent} from "../../../common.functions/node.convertor";
+import {downloadContent, getParsedUrl} from "../../../common.functions/node.convertor";
 
 class CommandsExportToExcel {
     constructor(signatureOptions) {
@@ -26,7 +26,8 @@ class CommandsExportToExcel {
     };
 
     enabled(){
-      return !lang.isCommandsEnabled.bookingHistory.includes(this.status.roomConstantKey);
+      // Enable export to excel only for local build since export to excel doesn't work on actual build due to hosted server restrictions!
+      return !(lang.isCommandsEnabled.bookingHistory.includes(this.status.roomConstantKey) && lang.LOCAL_SERVER === getParsedUrl().hostname);
     };
 
     execute(){
