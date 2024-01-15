@@ -730,7 +730,7 @@ class CheckOutView extends React.Component {
           <div>
             {this.renderAlertContainer()}
           </div>
-          <div className = "dashboard-container-fields-view" style = {{height: this.state.height}}>
+          <div>
             {this.templateHelpers()}
           </div>
           {this.state.customModal.show && this._renderCustomModal()}

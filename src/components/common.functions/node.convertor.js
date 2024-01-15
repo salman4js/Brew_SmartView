@@ -402,6 +402,8 @@ export function renderCustomHTMLContent(htmlContent, replacements, propertyConta
     return (
         <div style = {{height: propertyContainerHeight, overflow: 'auto'}} dangerouslySetInnerHTML={{ __html: dynamicHTML }}></div>
     );
+  } else if(htmlContent.rollBackTemplateView){
+    return htmlContent.rollBackTemplateView;
   } else {
     return (
         <div style = {{height: propertyContainerHeight, overflow: 'auto', color: 'black'}}> No Custom HTML Content Found. </div>

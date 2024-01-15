@@ -1,6 +1,8 @@
 import lang from "../commands.constants";
 import CommandsConnector from "../commands.connector";
+import {templateHelpers} from "../../property.container/checkout.view/checkout.form.template";
 import {getParsedUrl} from "../../../common.functions/node.convertor";
+import {getStorage} from "../../../../Controller/Storage/Storage";
 
 class CommandsMoreDetails {
     constructor(signatureOptions){
@@ -12,6 +14,7 @@ class CommandsMoreDetails {
           onClick: () => this.execute()
       };
       this.customHtmlContentFileName = this.status.params.accIdAndName[1] + '-' + this.status.roomConstantKey + '.html';
+      this.defaultMoreDetailsTemplate = false;
     };
 
     enabled(){
@@ -48,6 +51,11 @@ class CommandsMoreDetails {
         });
     };
 
+    // Check if custom history preview is configured or not.
+    isCustomTemplateConfigured(){
+      return JSON.parse(getStorage('customHtmlForHistoryPreview'));
+    };
+
     // Fetch dynamic html content based on the signatureOption's roomConstantKey.
     // This method will fetch dynamic html content from the server based on the table mode we are currently in.
     // So that this command can be used by multiple table room constants.
@@ -58,20 +66,29 @@ class CommandsMoreDetails {
             filename: this.customHtmlContentFileName,
             templateName: this.status.roomConstantKey
         };
-        // Check if the server is running on local, If yes, get the html content from the local server
-        // Or get the HTML content from the database.
-        if(getParsedUrl().hostname !== lang.LOCAL_SERVER){
-            return CommandsConnector._getCustomHTMLContentFromDB(options).then((result) => {
-                return result.data.data[0].customTemplate;
-            }).catch(() => {
-               console.warn('Error occurred while fetching the dynamic html content');
-            });
+        if(this.isCustomTemplateConfigured()){
+            // Check if the server is running on local, If yes, get the html content from the local server
+            // Or get the HTML content from the database.
+            if(getParsedUrl().hostname !== lang.LOCAL_SERVER){
+                return CommandsConnector._getCustomHTMLContentFromDB(options).then((result) => {
+                    return result.data.data[0].customTemplate;
+                }).catch(() => {
+                    console.warn('Error occurred while fetching the dynamic html content');
+                });
+            } else {
+                return CommandsConnector._getCustomHTMLContent(options).then((result) => {
+                    return result;
+                }).catch(() => {
+                    console.warn('Error occurred while fetching the dynamic html content');
+                });
+            }
         } else {
-            return CommandsConnector._getCustomHTMLContent(options).then((result) => {
-                return result;
-            }).catch(() => {
-                console.warn('Error occurred while fetching the dynamic html content');
-            });
+            // Rollback to the default history view which is checkout.view.template.
+            // This function should return a promise. In the above condition, we have .then functions.
+            return new Promise((resolve) => {
+                this.defaultMoreDetailsTemplate = true;
+                resolve(null);
+            })
         }
     };
 
@@ -88,6 +105,22 @@ class CommandsMoreDetails {
         this.status.eventHelpers.routerController()._notifyStateRouter(opts);
     };
 
+    // Populate replacements object based on the rollBackTemplateView view format.
+    populateReplacements(replacements){
+        replacements['currentCheckoutDate'] = replacements.dateofcheckout;
+        replacements['currentTime'] = replacements.checkoutTime;
+        replacements['extraBedCount'] = replacements.extraBeds;
+        replacements['stayeddays'] = replacements.stayedDays;
+        replacements['roomPrice'] = replacements.bill;
+        replacements['roomPricePerStays'] = replacements.totalAmount;
+        replacements['gstPrice'] = replacements.stayGst;
+        replacements['advanceAmount'] = replacements.advance;
+        replacements['discountAmount'] = replacements.discount;
+        replacements['withoutGST'] = replacements.bill;
+        replacements['totalPrice'] = replacements.totalAmount;
+        return replacements;
+    };
+
     // Prepare dashboard controller options.
     _prepareDashboardControllerOptions(htmlContent){
       this.dashboardController = {
@@ -97,6 +130,12 @@ class CommandsMoreDetails {
               content: htmlContent
           },
           replacements: this.selectedNodeData
+      }
+      if(this.defaultMoreDetailsTemplate){
+          // Populate replacements object to blend in with checkout.view.template.
+          this.dashboardController.replacements['isNegativeValue'] = Number(this.selectedNodeData.totalAmount) <= 0;
+          this.dashboardController.replacements = this.populateReplacements(this.dashboardController.replacements);
+          this.dashboardController.customHtmlContent['rollBackTemplateView'] =  templateHelpers({}, {}, this.dashboardController.replacements);
       }
     };
 };

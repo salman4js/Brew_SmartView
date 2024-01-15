@@ -40,7 +40,9 @@ var commandsConstant = Object.freeze({
     }),
 
     MORE_DETAILS: Object.freeze({
+       currentRouter: 'custom-view',
        dashboardMode: 'customHtmlView',
+       defaultDashboardMode: 'historyPreview',
        moreDetails: 'More Details',
        replacementsForEmptyData: {
            stayedDays: 'Not Checked-Out Yet',
