@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import sidepanelConstants from "./sidepanel.container.constants";
+import PropertyContainerConstants from "../property.container/property.container.constants";
 import SidepanelContainerSearchView from "./sidepanel.container.search.view";
 import { getAvailableRoomTypes, getUserModel } from './sidepanel.container.utils';
 import { getRoomList } from '../../paymentTracker/payment.tracker.utils/payment.tracker.utils';
@@ -254,7 +255,8 @@ const SidepanelWrapper = (props, ref) => {
   // Trigger custom modal!
   function _toggleCustomModal(data, e, value){
     e && e.stopPropagation();
-    setCustomModal(prevState => ({...prevState, show: value, customData: data}));
+    // setCustomModal(prevState => ({...prevState, show: value, customData: data}));
+    props.dashboardController({dashboardMode: PropertyContainerConstants.DASHBOARD_MODE.propertyReadView, roomModel: data, goToLocation: true});
   };
   
   // Render custom modal!

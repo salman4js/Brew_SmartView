@@ -94,7 +94,7 @@ const DashboardWrapper = (props, ref) => {
 
   // Update the state for goToLocation command action.
   function goToLocation(opts){
-    var dashboardMode = getFormMode(opts.roomModel.roomStatusConstant);
+    var dashboardMode = opts.dashboardMode || getFormMode(opts.roomModel.roomStatusConstant);
     setSelectedModel(prevState => ({...prevState, roomModel: opts.roomModel, userModel: opts.userModel, dashboardMode: dashboardMode, originatingTableView: opts.originatingTableView}));
   };
   
@@ -322,7 +322,7 @@ const DashboardWrapper = (props, ref) => {
       <div className = "sidepanel-wrapper">
         <div className = "flex-1">
           <SidepanelWrapper ref = {sidePanelRef} controller = {propertyController} data = {props.modalAssistData} params = {props.params} selectedModelData = {selectedModel}
-          selectedModel = {(roomModel, dashboardMode) => updateSelectedModel(roomModel, dashboardMode)} updateFilterData = {(value) => _updateFilterData(value)} 
+          dashboardController = {(opts) => _updateDashboardWrapper(opts)} selectedModel = {(roomModel, dashboardMode) => updateSelectedModel(roomModel, dashboardMode)} updateFilterData = {(value) => _updateFilterData(value)}
           updatePropertyDetails = {(roomCollection, availability, roomStatus, userCollection) => _updatePropertyDetails(roomCollection, availability, roomStatus, userCollection)} />
         </div>
         <div className = "flex-2">

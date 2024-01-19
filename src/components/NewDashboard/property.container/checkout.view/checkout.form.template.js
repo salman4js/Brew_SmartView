@@ -32,7 +32,7 @@ function populateReplacementObject(state){
   };
 };
 
-export function templateHelpers(state, configOptions, replacements) {
+export function templateHelpers(state, configOptions, replacements, propertyContainerHeight) {
   var userModel = state.userModel || replacements,
       billingInfo = state.billingInfo || replacements,
       templateHelperLabel = state.templateConstants || checkoutViewConstants,
@@ -40,7 +40,7 @@ export function templateHelpers(state, configOptions, replacements) {
   replacements = replacements || populateReplacementObject(state);
 
   if(state?.htmlContent?.content){
-      return renderCustomHTMLContent(htmlContent, replacements);
+      return renderCustomHTMLContent(htmlContent, replacements, propertyContainerHeight);
   } else {
     return (
         <div className = "dashboard-container-fields-view">
