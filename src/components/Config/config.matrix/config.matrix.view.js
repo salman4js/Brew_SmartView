@@ -176,6 +176,14 @@ const ConfigMatrix = (props) => {
                     {props.customHtmlConfiguration.historyPreview.label}
                 </label>
             </div>
+            <div className="form-check">
+                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                       checked={props.customHtmlConfiguration.propertyReadRoom.isEnabled}
+                       onChange={() => props.customHtmlConfiguration.onChange(!props.customHtmlConfiguration.propertyReadRoom.isEnabled, 'propertyReadRoom')}/>
+                <label className="form-check-label dashboard-input" htmlFor="flexCheckDefault" style={{color: "black"}}>
+                    {props.customHtmlConfiguration.propertyReadRoom.label}
+                </label>
+            </div>
             <div className="modal-gap"></div>
             <div className="table-view-bill-line"></div>
             <div className="form-check">

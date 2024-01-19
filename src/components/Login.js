@@ -74,7 +74,8 @@ const Login = () => {
             'is-linked-with-vouchers': res.data.object.linkVouchersWithLivixius,
             'showFullDetails': res.data.object.showFullDetails,
             'customHtmlForBillPreview': res.data.object?.customHtmlContent?.billPreview?.isEnabled,
-            'customHtmlForHistoryPreview': res.data.object?.customHtmlContent?.historyPreview?.isEnabled
+            'customHtmlForHistoryPreview': res.data.object?.customHtmlContent?.historyPreview?.isEnabled,
+            'customHtmlForPropertyRead': res.data.object?.customHtmlContent?.propertyReadRoom?.isEnabled
           };
           
           defaultStorage(data);

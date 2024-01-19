@@ -400,7 +400,7 @@ export function renderCustomHTMLContent(htmlContent, replacements, propertyConta
     // Replace placeholders in the HTML content
     const dynamicHTML = replacePlaceholders(htmlContent, replacements);
     return (
-        <div style = {{height: propertyContainerHeight, overflow: 'auto'}} dangerouslySetInnerHTML={{ __html: dynamicHTML }}></div>
+        <div style = {{height: propertyContainerHeight, overflow: 'auto', width: '100%'}} dangerouslySetInnerHTML={{ __html: dynamicHTML }}></div>
     );
   } else if(htmlContent.rollBackTemplateView){
     return htmlContent.rollBackTemplateView;

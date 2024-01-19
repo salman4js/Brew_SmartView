@@ -230,11 +230,15 @@ const Client = () => {
             label: "Select custom html content for bill preview",
             isEnabled: undefined,
         },
-      historyPreview: {
-          label: "Select custom html content for history preview",
-          isEnabled: undefined,
-      },
-      onChange: (isEnabled, node) => updateCustomHtmlContentConfig(isEnabled, node)
+        historyPreview: {
+            label: "Select custom html content for history preview",
+            isEnabled: undefined,
+        },
+        propertyReadRoom: {
+            label: "Select custom html content for property read",
+            isEnabled: undefined
+        },
+        onChange: (isEnabled, node) => updateCustomHtmlContentConfig(isEnabled, node)
   });
 
     // Custom HTML template configuration.
@@ -242,6 +246,28 @@ const Client = () => {
         {
             value: undefined,
             placeholder: "Custom History Template",
+            name: 'customTemplate',
+            rows: '10',
+            attribute: 'textAreaField'
+        }
+    ]);
+
+    // Custom Bill preview configuration
+    const [customBillPreview, setCustomBillPreview] = useState([
+        {
+            value: undefined,
+            placeholder: "Custom Bill preview Template",
+            name: 'customTemplate',
+            rows: '10',
+            attribute: 'textAreaField'
+        }
+    ]);
+
+    // Custom Property Read View Template Configuration
+    const [customPropertyReadTemplate, setCustomPropertyReadTemplate] = useState([
+        {
+            value: undefined,
+            placeholder: "Custom Property Read preview Template",
             name: 'customTemplate',
             rows: '10',
             attribute: 'textAreaField'
@@ -529,10 +555,10 @@ const Client = () => {
     };
 
     // Update custom template data!
-    async function _updateCustomTemplate(){
-      var fieldData = getFieldData(customHistoryTemplate);
+    async function _updateCustomTemplate(templateName, metadataField){
+      var fieldData = getFieldData(metadataField);
       setLoading(true);
-      fieldData['templateName'] = 'history';
+      fieldData['templateName'] = templateName;
       var result = await axios.post(`${Variables.hostId}/${splitedIds[0]}/savecustomtemplate`, fieldData);
       if(result.data.status){
           setLoading(false);
@@ -738,90 +764,136 @@ const Client = () => {
                         <div className='col'>
                             {
                                 error ? (
-                                    <Error error={error} errorText={errorText} />
+                                    <Error error={error} errorText={errorText}/>
                                 ) : (
                                     <div>
                                     </div>
                                 )
                             }
-                            <div class="card" style={{ width: "50vh", height: '50vh' }}>
-                                <div class="card-header text-center" style={{ color: "black" }}>
-                                    Config -  Matrix
+                            <div class="card" style={{width: "50vh", height: '50vh'}}>
+                                <div class="card-header text-center" style={{color: "black"}}>
+                                    Config - Matrix
                                 </div>
                                 <div class="card-body">
-                                    <ConfigMatrix updatePrice = {updatePrice} isGst = {isGst} handleGST = {() => handleGST()} isHourly = {isHourly} handleHourly = {() => handleHourly()} 
-                                    handleChannel = {() => handleChannel()} isChannel = {isChannel} handlePrice = {() => handlePrice()} isExtra = {isExtra} handleExtra = {(value) => handleExtra(value)}
-                                    extraModel = {extraModel} gstMode = {gstMode} insights = {insights} specific = {specific} optDelete = {optDelete} 
-                                    extraBed = {extraBed} grcHandler = {grcHandler} redirectTo = {redirect} updateRedirectTo = {setRedirect} multipleLogin = {multipleLogin}
-                                    invoiceConfig = {invoiceConfig} universalMessage = {universalMessage} updateUniversalMessage = {setUniversalMessage} refundTracker = {refundTracker}
-                                    linkVouchersWithLivixius = {linkWithLivixius} restrictAdvance = {restrictAdvance} editableOptions = {editableOptions} showFullDetails = {showFullDetails}
-                                                  customHtmlConfiguration = {customHtmlConfiguration}/>
-                                    <br />
-                                    <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Update Changes</button>
+                                    <ConfigMatrix updatePrice={updatePrice} isGst={isGst} handleGST={() => handleGST()}
+                                                  isHourly={isHourly} handleHourly={() => handleHourly()}
+                                                  handleChannel={() => handleChannel()} isChannel={isChannel}
+                                                  handlePrice={() => handlePrice()} isExtra={isExtra}
+                                                  handleExtra={(value) => handleExtra(value)}
+                                                  extraModel={extraModel} gstMode={gstMode} insights={insights}
+                                                  specific={specific} optDelete={optDelete}
+                                                  extraBed={extraBed} grcHandler={grcHandler} redirectTo={redirect}
+                                                  updateRedirectTo={setRedirect} multipleLogin={multipleLogin}
+                                                  invoiceConfig={invoiceConfig} universalMessage={universalMessage}
+                                                  updateUniversalMessage={setUniversalMessage}
+                                                  refundTracker={refundTracker}
+                                                  linkVouchersWithLivixius={linkWithLivixius}
+                                                  restrictAdvance={restrictAdvance} editableOptions={editableOptions}
+                                                  showFullDetails={showFullDetails}
+                                                  customHtmlConfiguration={customHtmlConfiguration}/>
+                                    <br/>
+                                    <button className="btn btn-primary btn-center-config-matrix"
+                                            onClick={() => changeMatrix()}>Update Changes
+                                    </button>
                                 </div>
                             </div>
-                            <div class="card" style={{ width: "50vh", height: '50vh', marginTop: "10px", marginBottom: "10px" }}>
-                                <div class="card-header text-center" style={{ color: "black" }}>
-                                    Config -  Room Status
+                            <div class="card"
+                                 style={{width: "50vh", height: '50vh', marginTop: "10px", marginBottom: "10px"}}>
+                                <div class="card-header text-center" style={{color: "black"}}>
+                                    Config - Room Status
                                 </div>
                                 <div class="card-body">
-                                    <p className = "text-center" style = {{color: "black"}}>
-                                      Question to configure room status!
+                                    <p className="text-center" style={{color: "black"}}>
+                                        Question to configure room status!
                                     </p>
-                                    <p className = "text-center" style = {{color: "black"}}>
-                                      When the room has been checkedout, what status should the room move into?
-                                    </p>
-                                    {roomStatus.name && roomStatus.name.map((opts, index) => {
-                                      return(
-                                        <Feed name={opts.statusName} id={opts._id} 
-                                        onSelect={(id, name) => updateRoomStatus(id, name, 'afterCheckedout')} highlight = {true} selected = {roomStatus.afterCheckedout} />
-                                      )
-                                    })}
-                                    <p className = "text-center" style = {{color: "black"}}>
-                                      When the room is in dirty state, what status should the room move into?
+                                    <p className="text-center" style={{color: "black"}}>
+                                        When the room has been checkedout, what status should the room move into?
                                     </p>
                                     {roomStatus.name && roomStatus.name.map((opts, index) => {
-                                      return(
-                                        <Feed name={opts.statusName} id={opts._id} 
-                                        onSelect={(id, name) => updateRoomStatus(id, name, 'inCleaning')} highlight = {true} selected = {roomStatus.inCleaning} />
-                                      )
+                                        return (
+                                            <Feed name={opts.statusName} id={opts._id}
+                                                  onSelect={(id, name) => updateRoomStatus(id, name, 'afterCheckedout')}
+                                                  highlight={true} selected={roomStatus.afterCheckedout}/>
+                                        )
                                     })}
-                                    <p className = "text-center" style = {{color: "black"}}>
-                                      When the room has been cleaned, what status should the room move into?
+                                    <p className="text-center" style={{color: "black"}}>
+                                        When the room is in dirty state, what status should the room move into?
                                     </p>
                                     {roomStatus.name && roomStatus.name.map((opts, index) => {
-                                      return(
-                                        <Feed name={opts.statusName} id={opts._id} 
-                                        onSelect={(id, name) => updateRoomStatus(id, name, 'afterCleaned')}
-                                        highlight = {true} selected = {roomStatus.afterCleaning} />
-                                      )
+                                        return (
+                                            <Feed name={opts.statusName} id={opts._id}
+                                                  onSelect={(id, name) => updateRoomStatus(id, name, 'inCleaning')}
+                                                  highlight={true} selected={roomStatus.inCleaning}/>
+                                        )
                                     })}
-                                    <p className = "text-center" style = {{color: "black"}}>
-                                      When the room has been checkedin, what status should the room move into?
+                                    <p className="text-center" style={{color: "black"}}>
+                                        When the room has been cleaned, what status should the room move into?
                                     </p>
                                     {roomStatus.name && roomStatus.name.map((opts, index) => {
-                                      return(
-                                        <Feed name={opts.statusName} id={opts._id} 
-                                        onSelect={(id, name) => updateRoomStatus(id, name, 'afterCheckin')}
-                                        highlight = {true} selected = {roomStatus.afterCheckin} />
-                                      )
+                                        return (
+                                            <Feed name={opts.statusName} id={opts._id}
+                                                  onSelect={(id, name) => updateRoomStatus(id, name, 'afterCleaned')}
+                                                  highlight={true} selected={roomStatus.afterCleaning}/>
+                                        )
                                     })}
-                                    <button className="btn btn-primary btn-center-config-matrix" onClick={() => changeMatrix()}>Config Room Status</button>
+                                    <p className="text-center" style={{color: "black"}}>
+                                        When the room has been checkedin, what status should the room move into?
+                                    </p>
+                                    {roomStatus.name && roomStatus.name.map((opts, index) => {
+                                        return (
+                                            <Feed name={opts.statusName} id={opts._id}
+                                                  onSelect={(id, name) => updateRoomStatus(id, name, 'afterCheckin')}
+                                                  highlight={true} selected={roomStatus.afterCheckin}/>
+                                        )
+                                    })}
+                                    <button className="btn btn-primary btn-center-config-matrix"
+                                            onClick={() => changeMatrix()}>Config Room Status
+                                    </button>
                                 </div>
                             </div>
+                            {/* History Custom Template Preview */}
                             <div className="card modal-gap" style={{width: "50vh", height: '40vh'}}>
                                 <div className="card-header text-center" style={{color: "black"}}>
                                     History Preview Custom Template
                                 </div>
-                                <div className = 'card-body'>
-                                    <MetadataFields data = {customHistoryTemplate} updateData = {(updatedData) => setCustomHistoryTemplate(updatedData)}/>
-                                    <button className = 'btn btn-primary btn-center-config-matrix' onClick = {() => _updateCustomTemplate()}> Update Custom Template </button>
+                                <div className='card-body'>
+                                    <MetadataFields data={customHistoryTemplate}
+                                                    updateData={(updatedData) => setCustomHistoryTemplate(updatedData)}/>
+                                    <button className='btn btn-primary btn-center-config-matrix'
+                                            onClick={() => _updateCustomTemplate('history', customHistoryTemplate)}> Update Custom Template
+                                    </button>
+                                </div>
+                            </div>
+                            {/* Bill Custom Template Preview */}
+                            <div className="card modal-gap" style={{width: "50vh", height: '40vh'}}>
+                                <div className="card-header text-center" style={{color: "black"}}>
+                                    Bill Preview Custom Template
+                                </div>
+                                <div className='card-body'>
+                                    <MetadataFields data={customBillPreview}
+                                                    updateData={(updatedData) => setCustomBillPreview(updatedData)}/>
+                                    <button className='btn btn-primary btn-center-config-matrix'
+                                            onClick={() => _updateCustomTemplate('bill-preview', customBillPreview)}> Update Custom Template
+                                    </button>
+                                </div>
+                            </div>
+                            {/* Property Read Custom Template Preview */}
+                            <div className="card modal-gap" style={{width: "50vh", height: '40vh'}}>
+                                <div className="card-header text-center" style={{color: "black"}}>
+                                    Property Read Preview Custom Template
+                                </div>
+                                <div className='card-body'>
+                                    <MetadataFields data={customPropertyReadTemplate}
+                                                    updateData={(updatedData) => setCustomPropertyReadTemplate(updatedData)}/>
+                                    <button className='btn btn-primary btn-center-config-matrix'
+                                            onClick={() => _updateCustomTemplate('property-read-room', customPropertyReadTemplate)}> Update Custom Template
+                                    </button>
                                 </div>
                             </div>
                             {/* Success Handler */}
                             {
                                 success ? (
-                                    <Success show={success} text={successText} handleClose={successHandler} />
+                                    <Success show={success} text={successText} handleClose={successHandler}/>
                                 ) : (
                                     <div>
 

@@ -8,6 +8,8 @@ var propertyContainerConstants = Object.freeze({
     filterTableView: 'filterTableView',
     logTableView: 'logTableView',
     paymentTrackerView: 'paymentTrackerView',
+    propertyReadView: 'propertyReadView',
+    propertyEditView: 'propertyEditView',
     customHTMLView: 'customHtmlView',
   }),
   TABLE_HEADERS: Object.freeze({
@@ -22,10 +24,12 @@ var propertyContainerConstants = Object.freeze({
     cancelButton: 'Cancel',
     checkinButton: 'Check-In',
     checkoutButton: 'Other Options',
-    transferButton: 'Transfer Room'
+    transferButton: 'Transfer Room',
+    editButton: 'Edit Properties'
   }),
   WIDGET_CONSTANTS: Object.freeze({
-    customHtmlView: 'History Preview'
+    customHtmlView: 'History Preview',
+    propertyReadView: 'Edit Room Properties'
   }),
   // Panel field not required dashboardMode constants array!
   IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView'],

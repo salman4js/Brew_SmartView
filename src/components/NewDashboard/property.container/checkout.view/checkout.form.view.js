@@ -112,7 +112,7 @@ class CheckOutView extends React.Component {
         this.state.userModel['currentCheckoutDate'] = this.getTodayDate(); // Have this to update checkout date in bill preview, currently it shows user model date of checkout!
         // Update the state router model when the perspective is ready!
         !this.isStateRouterNotified && this._notifyStateRouter();
-        return templateHelpers(this.state, this.configOptions);
+        return templateHelpers(this.state, this.configOptions, undefined, this.state.height);
       } else {
         var opts = {
           color: "black",
@@ -700,7 +700,9 @@ class CheckOutView extends React.Component {
     // Fetch the corresponding html file content.
     fetchHTMLContent(){
         var options = {
-            filename: this.state.htmlContent.filename // TODO: Change this into dynamic name.
+            filename: this.state.htmlContent.filename, // TODO: Change this into dynamic name.
+            accId: this.state.params.accIdAndName[0],
+            templateName: checkoutViewConstants.constantKey
         };
         this.checkoutUtils._getHTMLContent(options).then((result) => {
             this.setState({htmlContent: {content: result}});

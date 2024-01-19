@@ -1,6 +1,8 @@
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 import { checkoutFormValue } from "../checkin.view/checkin.form.utils";
-import { filterKeysInArr } from '../../../common.functions/node.convertor';
+import {filterKeysInArr, getParsedUrl} from '../../../common.functions/node.convertor';
+import lang from '../../commands/commands.constants'
+import CommandsConnector from "../../commands/commands.connector";
 const axios = require('axios');
 const Variables = require("../../../Variables");
 const _ = require('lodash');
@@ -14,15 +16,21 @@ class CheckoutUtils {
 
   // Get dynamic HTML content.
   _getHTMLContent(options) {
-    var filePath = options.filepath !== undefined ? options.filepath : 'DynamicHTMLContent';
-    return fetch(`${this.baseUrl}/${filePath}/${options.filename}`)
-        .then(response => {
-          if (!response.ok) {
-            // Check for HTTP errors (status code outside the range 200-299)
-            return false;
-          }
-          return response.text();
+    if(getParsedUrl().hostname !== lang.LOCAL_SERVER){
+      return CommandsConnector._getCustomHTMLContentFromDB(options).then((result) => {
+          return result.data.data[0]?.customTemplate;
         });
+    } else {
+      var filePath = options.filepath !== undefined ? options.filepath : 'DynamicHTMLContent';
+      return fetch(`${this.baseUrl}/${filePath}/${options.filename}`)
+          .then(response => {
+            if (!response.ok) {
+              // Check for HTTP errors (status code outside the range 200-299)
+              return false;
+            }
+            return response.text();
+          });
+    }
   };
 
   // Fetch customer details!

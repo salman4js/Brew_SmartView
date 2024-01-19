@@ -11,6 +11,8 @@ import LogTable from './log.table.wrapper/log.table.wrapper';
 import PaymentTrackerWrapper from "./payment.tracker.view/payment.tracker.wrapper";
 import propertyContainerConstants from './property.container.constants';
 import { extractStateValue, renderCustomHTMLContent } from '../../common.functions/node.convertor';
+import PropertyReadView from "./property.base.view/property.read.view/property.read.view";
+import PropertyEditView from "./property.base.view/property.edit.view/property.edit.view";
 
 const PropertyContainer = (props) => {
   // Panel fields state handler!
@@ -163,14 +165,22 @@ const PropertyContainer = (props) => {
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.logTableView){
-      return <LogTable data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+      return <LogTable data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.paymentTrackerView){
-      return <PaymentTrackerWrapper data = {props.data} data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+      return <PaymentTrackerWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
+
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyReadView){
+      return <PropertyReadView data = {props.data} height = {props.propertyContainerHeight} routerController = {(opts) => props.routerController(opts)} params = {props.params} />
+    };
+
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyEditView){
+      return <PropertyEditView />
+    }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){
       return renderCustomHTMLContent(props.htmlContent.customHtmlContent, props.htmlContent.replacements, props.propertyContainerHeight);
@@ -209,8 +219,14 @@ const PropertyContainer = (props) => {
         onClick: onCancel,
         attribute: 'buttonField'
     }];
+
+    var propertyReadViewModel = [{
+      btnValue: propertyContainerConstants.BUTTON_FIELDS.editButton,
+      onClick: switchToPropertyEditMode,
+      attribute: 'buttonField'
+    }]
     
-    return {checkinFormModel, checkoutFormModel, roomStatusFormModel, emptyFormModel};
+    return {checkinFormModel, checkoutFormModel, roomStatusFormModel, emptyFormModel, propertyReadViewModel};
   };
 
   // Get panel field right side data!
@@ -227,6 +243,9 @@ const PropertyContainer = (props) => {
     }
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.default){
       return formModels.checkinFormModel;
+    }
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyReadView){
+      return formModels.propertyReadViewModel;
     }
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView || props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
       return formModels.emptyFormModel;
@@ -247,6 +266,16 @@ const PropertyContainer = (props) => {
   // On Cancel!
   function onCancel(){
     return onBackClick();
+  };
+
+  // Switch to property edit mode,
+  function switchToPropertyEditMode(){
+    var options = {
+      roomModel: props.data.roomModel,
+      goToLocation: true,
+      dashboardMode: propertyContainerConstants.DASHBOARD_MODE.propertyEditView
+    }
+    props.dashboardController(options);
   };
   
   // On Save!
