@@ -1,7 +1,10 @@
 import {templateHelpers} from "./property.read.template";
 import propertyReadViewConstants from "./property.read.view.constants";
 import PropertyBaseView from "../property.base.view";
-import {renderCustomHTMLContent} from "../../../../common.functions/node.convertor";
+import {
+    createReplacementsDataFromMetadataFields,
+    renderCustomHTMLContent
+} from "../../../../common.functions/node.convertor";
 import {getStorage} from "../../../../../Controller/Storage/Storage";
 
 class PropertyReadView extends PropertyBaseView {
@@ -12,12 +15,15 @@ class PropertyReadView extends PropertyBaseView {
             isTemplateFieldOptionsPopulated: false,
             templateFieldOptions: [],
         };
-        this.templateLabel = propertyReadViewConstants.TEMPLATE_LABEL;
         this.params = this.props.params;
         this.roomConstantKey = propertyReadViewConstants.CUSTOM_TEMPLATE_CONSTANT;
         this.customTemplateFileName = this.params.accIdAndName[1] + '-' + this.roomConstantKey + '.html';
         this.customHtmlContent = {
             content: undefined
+        };
+        this.templateHelpersData = {
+            VIEW_HEADER: propertyReadViewConstants.VIEW_HEADER,
+            height: this.props.height
         }
     };
 
@@ -27,7 +33,13 @@ class PropertyReadView extends PropertyBaseView {
 
     templateHelpers(){
       if(this.state.isTemplateFieldOptionsPopulated){
-          return this.isCustomPropertyReadConfigured() ? renderCustomHTMLContent(this.customHtmlContent, this.state.data, this.props.height) : templateHelpers(this.state.templateFieldOptions, propertyReadViewConstants);
+          if(this.isCustomPropertyReadConfigured()){
+              // Convert property state data into replacements data.
+              var replacementsData = createReplacementsDataFromMetadataFields(this.state.data);
+              return renderCustomHTMLContent(this.customHtmlContent, replacementsData, this.props.height);
+          } else {
+              return templateHelpers(this.state.templateFieldOptions, this.templateHelpersData);
+          }
       } else {
           return this._triggerActivityLoader();
       }
@@ -35,12 +47,12 @@ class PropertyReadView extends PropertyBaseView {
 
     async populateTemplateFieldOptsObject(){
         this.state.templateFieldOptions = [];
-        var templateLabelKeys = Object.keys(this.templateLabel);
+        var templateLabelKeys = Object.keys(this.state.data);
         for(const key in this.state.data){
            if(templateLabelKeys.includes(key)){
              var templateFieldOptions = {};
-             templateFieldOptions['templateLabel'] = this.templateLabel[key];
-             templateFieldOptions['templateValue'] =  Array.isArray(this.state.data[key]) ? this.state.data[key].length : this.state.data[key];
+             templateFieldOptions['templateLabel'] = this.state.data[key].label;
+             templateFieldOptions['templateValue'] =  Array.isArray(this.state.data[key].value) ? this.state.data[key].value.length : this.state.data[key].value;
              this.state.templateFieldOptions.push(templateFieldOptions);
            }
        };

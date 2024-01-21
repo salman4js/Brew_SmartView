@@ -317,6 +317,50 @@ export function getFieldsData(field, name){
   return result;
 };
 
+// Create an array of metadata field state based on the object passed.
+/**
+ * This method is useful to create metadataField states
+ * It will take only object with key and value of required state fields.
+ **/
+export function createMetadataFields(obj, metadataAttribute, metadataFields){
+  var metadataFieldArray = [];
+  Object.keys(obj).forEach((key) => {
+    var fieldObj = _.clone(metadataFields);
+    fieldObj['name'] = key;
+    fieldObj['value'] = obj[key];
+    fieldObj['placeholder'] = metadataAttribute[key].placeholder;
+    fieldObj['label'] = metadataAttribute[key].label;
+    fieldObj['readOnly'] = metadataAttribute[key].readOnly;
+    fieldObj['attribute'] = metadataAttribute[key].attribute ? metadataAttribute[key].attribute : fieldObj.attribute;
+    if(isListField(fieldObj.attribute)){
+      fieldObj['options'] = metadataAttribute[key].options;
+    }
+    fieldObj['isRequired'] = metadataAttribute[key].isRequired;
+    fieldObj['inlineToast'] = metadataAttribute[key].inlineToast;
+    metadataFieldArray.push(fieldObj);
+  });
+  return metadataFieldArray;
+};
+
+// Function to check if the field is actually textField.
+export function isTextField(attribute){
+  return attribute === 'textField';
+};
+
+// Function to check if the field is actually listField.
+export function isListField(attribute){
+  return attribute === 'listField';
+};
+
+// Create replacements data for custom html content with metadata field state.
+export function createReplacementsDataFromMetadataFields(metadataFieldState){
+  var replacementsObj = {};
+  metadataFieldState.map((field) => {
+    replacementsObj[field.name] = field.value;
+  });
+  return replacementsObj;
+};
+
 // Remove unwanted data from the objects!
 export function removeKeysInObj(obj, unwantedData){
   unwantedData.map((data) => {

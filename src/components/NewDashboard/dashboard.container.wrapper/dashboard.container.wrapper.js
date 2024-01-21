@@ -22,8 +22,9 @@ const DashboardWrapper = (props, ref) => {
     selectedRoomConstant: undefined,
     filteredData: undefined,
     filterTableOptions: undefined,
-    originatingTableView: undefined // This is to get the originating table view in other perspective view.
+    originatingTableView: undefined, // This is to get the originating table view in other perspective view.
     // If the perspective view was opened from the table view through commands.
+    propertyData: undefined
   });
 
   // Custom html content state handler!
@@ -95,7 +96,8 @@ const DashboardWrapper = (props, ref) => {
   // Update the state for goToLocation command action.
   function goToLocation(opts){
     var dashboardMode = opts.dashboardMode || getFormMode(opts.roomModel.roomStatusConstant);
-    setSelectedModel(prevState => ({...prevState, roomModel: opts.roomModel, userModel: opts.userModel, dashboardMode: dashboardMode, originatingTableView: opts.originatingTableView}));
+    setSelectedModel(prevState => ({...prevState, roomModel: opts.roomModel, userModel: opts.userModel,
+      dashboardMode: dashboardMode, originatingTableView: opts.originatingTableView, propertyData: opts.propertyData}));
   };
   
   // Onform save triggered!

@@ -1,6 +1,6 @@
 export function templateHelpers(fieldOptions, templateHelpers){
   return(
-      <div className = "dashboard-container-fields-view">
+      <div className = "dashboard-container-fields-view" style = {{height: templateHelpers.height}}>
           <div className = "dashboard-container-fields-header">
               {templateHelpers.VIEW_HEADER}
           </div>

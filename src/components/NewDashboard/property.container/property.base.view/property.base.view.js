@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import {activityLoader} from "../../../common.functions/common.functions.view";
 import propertyBaseConstants from "./property.base.constants";
 import lang from '../../commands/commands.constants'
@@ -77,7 +78,7 @@ class PropertyBaseView extends React.Component {
 
     _updateComponentState(state, nextFunction){
         this.setState({[state.key]: state.value}, async () => {
-            await nextFunction();
+            _.isFunction(nextFunction) && await nextFunction();
         })
     };
 
@@ -87,8 +88,8 @@ class PropertyBaseView extends React.Component {
     };
 
     componentDidUpdate(prevProps, prevState){
-        if(this.props.data.roomModel._id !== this.state?.data?._id){
-            this._updateComponentState({key: 'data', value: this.props.data.roomModel}, this.populateTemplateFieldOptsObject.bind(this));
+        if(this.props.data.propertyData !== this.state?.data){
+            this._updateComponentState({key: 'data', value: this.props.data.propertyData}, this.populateTemplateFieldOptsObject.bind(this));
         }
     };
 
