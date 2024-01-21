@@ -45,7 +45,7 @@ class TextField extends React.Component {
   // Get value for the input field!
   getValue(){
     if(this.props.data.value !== undefined){
-      return this.props.data.value;
+      return Array.isArray(this.props.data.value) ? this.props.data.value.length : this.props.data.value;
     } else if(this.props.data.defaultValue !== undefined){
       return  this.props.data.defaultValue;
     } else {
@@ -70,7 +70,8 @@ class TextField extends React.Component {
               <label style={{ color: "black" }}> {this.props.data.label} </label>
           )}
           <input type={this.getType()} className="form-control" aria-describedby="input-field" value = {this.getValue()}
-                 placeholder={this.getValueForPlaceholder()} onKeyDown = {(event) => this.handleEvents(event)} onChange = {(event) => this.checkLimit(event)} />
+                 placeholder={this.getValueForPlaceholder()} onKeyDown = {(event) => this.handleEvents(event)}
+                 onChange = {(event) => this.checkLimit(event)} readOnly = {this.props.data.readOnly}/>
           {this.props.data?.inlineToast !== undefined && (
               this._showInlineToast()
           )}

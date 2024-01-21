@@ -179,7 +179,7 @@ const PropertyContainer = (props) => {
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyEditView){
-      return <PropertyEditView />
+      return <PropertyEditView  data = {props.data} height = {props.propertyContainerHeight} routerController = {(opts) => props.routerController(opts)} params = {props.params} />
     }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){
@@ -224,9 +224,15 @@ const PropertyContainer = (props) => {
       btnValue: propertyContainerConstants.BUTTON_FIELDS.editButton,
       onClick: switchToPropertyEditMode,
       attribute: 'buttonField'
+    }];
+
+    var propertyEditViewModel = [{
+      btnValue: propertyContainerConstants.BUTTON_FIELDS.saveButton,
+      onClick: null,
+      attribute: 'buttonField'
     }]
     
-    return {checkinFormModel, checkoutFormModel, roomStatusFormModel, emptyFormModel, propertyReadViewModel};
+    return {checkinFormModel, checkoutFormModel, roomStatusFormModel, emptyFormModel, propertyReadViewModel, propertyEditViewModel};
   };
 
   // Get panel field right side data!
@@ -246,6 +252,9 @@ const PropertyContainer = (props) => {
     }
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyReadView){
       return formModels.propertyReadViewModel;
+    }
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyEditView){
+      return formModels.propertyEditViewModel;
     }
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView || props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
       return formModels.emptyFormModel;
@@ -273,6 +282,7 @@ const PropertyContainer = (props) => {
     var options = {
       roomModel: props.data.roomModel,
       goToLocation: true,
+      propertyData: props.data.propertyData,
       dashboardMode: propertyContainerConstants.DASHBOARD_MODE.propertyEditView
     }
     props.dashboardController(options);

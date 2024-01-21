@@ -25,11 +25,13 @@ var propertyContainerConstants = Object.freeze({
     checkinButton: 'Check-In',
     checkoutButton: 'Other Options',
     transferButton: 'Transfer Room',
-    editButton: 'Edit Properties'
+    editButton: 'Edit Properties',
+    saveButton: 'Save Properties'
   }),
   WIDGET_CONSTANTS: Object.freeze({
     customHtmlView: 'History Preview',
-    propertyReadView: 'Edit Room Properties'
+    propertyReadView: 'Room Properties',
+    propertyEditView: 'Edit Room Properties'
   }),
   // Panel field not required dashboardMode constants array!
   IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView'],

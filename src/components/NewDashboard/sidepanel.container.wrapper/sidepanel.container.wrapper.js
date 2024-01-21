@@ -1,18 +1,26 @@
 import React, {useState, useEffect} from 'react';
+import _ from "lodash";
 import sidepanelConstants from "./sidepanel.container.constants";
 import PropertyContainerConstants from "../property.container/property.container.constants";
 import SidepanelContainerSearchView from "./sidepanel.container.search.view";
 import { getAvailableRoomTypes, getUserModel } from './sidepanel.container.utils';
 import { getRoomList } from '../../paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import { getStatusCodeColor, formatDate } from '../../common.functions/common.functions';
-import { updateMetadataFields, nodeConvertor } from '../../common.functions/node.convertor';
+import {
+  updateMetadataFields,
+  nodeConvertor,
+  createMetadataFields,
+  filterKeysInObj
+} from '../../common.functions/node.convertor';
 import { activityLoader } from '../../common.functions/common.functions.view';
 import CustomModal from '../../CustomModal/custom.modal.view';
 import MetadataTableView from '../../metadata.table.view/metadata.table.view';
 import MetadataFields from '../../fields/metadata.fields.view';
+import metadataFieldTemplatestate from "../../fields/metadata.field.templatestate";
 import PanelView from '../../SidePanelView/panel.view';
 import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view';
+import {roomType} from "../../room.type.view/src/room.type.model";
 
 const SidepanelWrapper = (props, ref) => {
 
@@ -134,8 +142,8 @@ const SidepanelWrapper = (props, ref) => {
     return (
         <>
           {_renderSearchBarView()}
-          {!sidepanel.listFilter && sidepanel.parentData.map((options) => {
-            return <CollectionView data = {options.suiteType} showCollectionChildView = {() => _renderPanelItemViewCollection(options.suiteType)}/>
+          {!sidepanel.listFilter && _getRoomTypes().map((suiteType) => {
+            return <CollectionView data = {suiteType} showCollectionChildView = {() => _renderPanelItemViewCollection(suiteType)}/>
           })}
           {sidepanel.listFilter && (sidepanel.listFilter.length !== 0) && sidepanel.listFilter.map((options) => {
             options['allowSubData'] = true;
@@ -255,8 +263,14 @@ const SidepanelWrapper = (props, ref) => {
   // Trigger custom modal!
   function _toggleCustomModal(data, e, value){
     e && e.stopPropagation();
+    var requiredKeys, propertyData, metadataFieldState, propertyConstants;
+    metadataFieldState = _.clone(metadataFieldTemplatestate.metadataFieldState);
+    propertyConstants = _.clone(sidepanelConstants.TEMPLATE_LABEL);
+    propertyConstants.suiteName.options = _getRoomTypes();
+    requiredKeys = Object.keys(propertyConstants);
+    propertyData = createMetadataFields(filterKeysInObj(_.clone(data), requiredKeys), sidepanelConstants.TEMPLATE_LABEL, metadataFieldState);
     // setCustomModal(prevState => ({...prevState, show: value, customData: data}));
-    props.dashboardController({dashboardMode: PropertyContainerConstants.DASHBOARD_MODE.propertyReadView, roomModel: data, goToLocation: true});
+    props.dashboardController({dashboardMode: PropertyContainerConstants.DASHBOARD_MODE.propertyReadView, roomModel: data, propertyData: propertyData, goToLocation: true});
   };
   
   // Render custom modal!
@@ -305,6 +319,15 @@ const SidepanelWrapper = (props, ref) => {
       props.updatePropertyDetails(result.data.message, result.data.countAvailability, result.data.roomStatus, userModel); // Send the property details to the dashboard container!
       _toggleLoader(false);
     }
+  };
+
+  // Returns only the room types in the form of array!
+  function _getRoomTypes(){
+    var roomTypeArr = [];
+    sidepanel.parentData.map((data) => {
+      roomTypeArr.push(data.suiteType);
+    });
+    return roomTypeArr;
   };
   
   // Reset client side data to its original data value!

@@ -14,7 +14,51 @@ var sidepanelConstants = Object.freeze({
     }),
     tableHeader: Object.freeze({
         MORE_DETAILS_HEADER: ['Floor No', 'Bed Count', 'Ext Bed Rate', 'Room Price']
-    })
+    }),
+    TEMPLATE_LABEL: Object.freeze({
+        roomno: {
+            placeholder: 'Room No',
+            label: 'Room No'
+        },
+        isOccupied: {
+            placeholder: 'Currently Occupied',
+            label: 'Currently Occupied',
+            readOnly: true
+        },
+        floorNo: {
+            placeholder: 'Floor No',
+            label: 'Floor No'
+        },
+        price: {
+            placeholder: 'Price Per Day',
+            label: 'Price Per Day'
+        },
+        extraBedPrice: {
+            placeholder: 'Extra Bed Price',
+            label: 'Extra Bed Price',
+            readOnly: true
+        },
+        suiteName: {
+            placeholder: 'Room Type',
+            label: 'Room Type',
+            attribute: 'listField',
+            options: undefined
+        },
+        prebookuser: {
+            placeholder: 'Number of Guest Prebook',
+            label: 'Number of Guest Prebook',
+            readOnly: true
+        },
+        bedCount: {
+            placeholder: 'Bed Count',
+            label: 'Bed Count'
+        },
+        roomStatus: {
+            placeholder: 'Bed Count',
+            label: 'Bed Count',
+            readOnly: true
+        }
+    }),
 });
 
 export default sidepanelConstants;

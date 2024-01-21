@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import { getStyle } from '../../common.functions/common.functions'
 
 const ListField = (props) => {
@@ -19,8 +18,8 @@ const ListField = (props) => {
   function getValue(opts){
     return opts.actualValue !== undefined ? opts.actualValue : opts.value;
   };
-  
-  return(
+
+  return (
     <div className = "modal-gap" style = {{width: props.data.width, padding: props.data.padding}}>
       {props.data.label && (
         <label className = "metadata-label" style = {getStyle(props.data.style)}> {props.data.label} </label>
@@ -28,13 +27,28 @@ const ListField = (props) => {
       <select className = "form-control" onChange = {(event) => inputChange(event)}>
         <option value="" disabled selected>{getSelected()}</option>
         {props.data?.options?.map((opts, key) => {
-          return(
-            <option value = {getValue(opts)}>{opts.value}</option>
-          )
+          if(!opts.value && Array.isArray(props.data.options)){
+            var convertedOpts = convertIntoListFieldOptions(opts);
+            return(
+                <option value = {getValue(convertedOpts)}>{convertedOpts.value}</option>
+            )
+          } else {
+            return(
+                <option value = {getValue(opts)}>{opts.value}</option>
+            )
+          }
         })}
       </select>
     </div>
   )
 }
+
+// Convert normal array into listField options!
+export function convertIntoListFieldOptions(option){
+  return {
+    value: option,
+    actualValue: option
+  }
+};
 
 export default ListField;
