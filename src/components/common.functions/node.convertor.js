@@ -1,5 +1,6 @@
 import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
 import {getStorage} from "../../Controller/Storage/Storage";
+
 const saveAs = require('file-saver');
 const axios = require('axios');
 const storage = require("../../Controller/Storage/Storage");
@@ -40,6 +41,20 @@ export function extractQueryParams(){
     extractedParams[key] = value;
   }
   return extractedParams;
+};
+
+// This method returns query params with URLSearchParams instance!
+export function getQueryParams(){
+  return new URLSearchParams(window.location.search);
+}
+
+// Function to update query parameters
+export function updateQueryParams(params) {
+  const queryParams = getQueryParams();
+  params.forEach((value, key) => {
+    queryParams.set(key, value);
+  });
+  return queryParams.toString();
 };
 
 // Convert query params into objects

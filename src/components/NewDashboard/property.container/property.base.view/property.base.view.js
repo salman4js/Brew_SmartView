@@ -11,8 +11,13 @@ import CommandsConnector from "../../commands/commands.connector";
 class PropertyBaseView extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            propertyDataCallBackFunc: undefined
+        }
+        this.params = this.props.params;
         this.isStateRouterNotified = false;
         this.routerController = this.props.routerController;
+        this.model = undefined; // This model will be holding the current selected model entire state data.
     };
 
     templateHelpers(){
@@ -34,6 +39,17 @@ class PropertyBaseView extends React.Component {
 
     _getCurrentViewMode(){
         return propertyBaseConstants.VIEW_CONSTANT;
+    };
+
+    _getPropertyErrorMessage(){
+      return propertyBaseConstants.PROPERTY_ERROR_MSG[this.model.selectedRoomConstant];
+    };
+
+    _addMandatoryFieldData(fieldData, additionalData){
+        Object.keys(additionalData).forEach((key) => {
+            fieldData[key] = additionalData[key];
+        });
+        return fieldData;
     };
 
     // Notify the state router when the perspective is ready!
@@ -71,6 +87,13 @@ class PropertyBaseView extends React.Component {
         }
     };
 
+    setPropertyDataCallBackFunc(callBackFunc){
+      this._updateComponentState({key: 'propertyDataCallBackFunc', value: callBackFunc}, () => {
+          this._toggleComponentLoader(false);
+          this.saveEditedModel && this.saveEditedModel();
+      })
+    };
+
     _toggleComponentLoader(val){
         this.state.isTemplateFieldOptionsPopulated = val;
         this.setState({isTemplateFieldOptionsPopulated: val})
@@ -89,8 +112,14 @@ class PropertyBaseView extends React.Component {
 
     componentDidUpdate(prevProps, prevState){
         if(this.props.data.propertyData !== this.state?.data){
+            this.model = this.props.data;
             this._updateComponentState({key: 'data', value: this.props.data.propertyData}, this.populateTemplateFieldOptsObject.bind(this));
-        }
+        };
+
+        // Listen for save event.
+        if(this.props.data.propertyDataCallBackFunc !== this.state?.propertyDataCallBackFunc){
+          this.setPropertyDataCallBackFunc && this.setPropertyDataCallBackFunc(this.props.data.propertyDataCallBackFunc);
+        };
     };
 
 }
