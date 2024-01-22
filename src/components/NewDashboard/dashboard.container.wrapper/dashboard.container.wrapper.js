@@ -24,7 +24,8 @@ const DashboardWrapper = (props, ref) => {
     filterTableOptions: undefined,
     originatingTableView: undefined, // This is to get the originating table view in other perspective view.
     // If the perspective view was opened from the table view through commands.
-    propertyData: undefined
+    propertyData: undefined,
+    propertyDataCallBackFunc: undefined
   });
 
   // Custom html content state handler!
@@ -97,7 +98,13 @@ const DashboardWrapper = (props, ref) => {
   function goToLocation(opts){
     var dashboardMode = opts.dashboardMode || getFormMode(opts.roomModel.roomStatusConstant);
     setSelectedModel(prevState => ({...prevState, roomModel: opts.roomModel, userModel: opts.userModel,
-      dashboardMode: dashboardMode, originatingTableView: opts.originatingTableView, propertyData: opts.propertyData}));
+      dashboardMode: dashboardMode, originatingTableView: opts.originatingTableView, selectedRoomConstant: opts.selectedRoomConstant,
+      propertyData: opts.propertyData, propertyDataCallBackFunc: opts.propertyDataCallBackFunc}));
+  };
+
+  // On edit properties from property.edit.view.
+  function onEditProperties(opts){
+    setSelectedModel(prevState => ({...prevState, propertyDataCallBackFunc: opts.propertyDataCallBackFunc}));
   };
   
   // Onform save triggered!
@@ -191,6 +198,7 @@ const DashboardWrapper = (props, ref) => {
     opts.updatedModel && _updateRoomModel(opts);
     opts.widgetTileModel && _updateWidgetTileModel(opts.widgetTileModel);
     opts.goToLocation && goToLocation(opts);
+    opts.onEditProperties && onEditProperties(opts);
     opts.isRoomTransferCommand && onRoomTransfer(opts);
     opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
     opts.updateUserCollection && _updateUserCollection(opts.updateUserCollection, opts.ignoreUpdateOfDefaultView);

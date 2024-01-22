@@ -36,8 +36,8 @@ const RoomsUpdate = (props) => {
         const data = {
             floorNo: floorNo,
             roomno: roomno,
-            bedcount: bedcount,
-            suitename: suitetype,
+            bedCount: bedcount,
+            suiteName: suitetype,
             roomStatusConstant: 'customState',
             roomStatus: roomState,
             roomId: props.roomid,

@@ -15,9 +15,8 @@ class PropertyReadView extends PropertyBaseView {
             isTemplateFieldOptionsPopulated: false,
             templateFieldOptions: [],
         };
-        this.params = this.props.params;
         this.roomConstantKey = propertyReadViewConstants.CUSTOM_TEMPLATE_CONSTANT;
-        this.customTemplateFileName = this.params.accIdAndName[1] + '-' + this.roomConstantKey + '.html';
+        this.customTemplateFileName = this.props.params.accIdAndName[1] + '-' + this.roomConstantKey + '.html';
         this.customHtmlContent = {
             content: undefined
         };

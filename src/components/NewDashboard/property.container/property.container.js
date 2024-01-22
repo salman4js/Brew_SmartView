@@ -1,7 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import MetadataFields from '../../fields/metadata.fields.view';
 import TableViewTemplateHelpers from "./table.view/table.view.template";
 import CheckInForm from './checkin.view/checkin.form.view';
+import {editRoomModel} from "./checkin.view/checkin.form.utils";
 import CheckOutView from './checkout.view/checkout.form.view';
 import RoomStatusView from './room.status.view/room.status.view';
 import DefaultView from './default.view/default.view';
@@ -10,11 +12,22 @@ import FilterTable from './filter.table.wrapper/filter.table.wrapper';
 import LogTable from './log.table.wrapper/log.table.wrapper';
 import PaymentTrackerWrapper from "./payment.tracker.view/payment.tracker.wrapper";
 import propertyContainerConstants from './property.container.constants';
-import { extractStateValue, renderCustomHTMLContent } from '../../common.functions/node.convertor';
+import {
+  extractQueryParams,
+  extractStateValue, getQueryParams,
+  renderCustomHTMLContent,
+  updateQueryParams
+} from '../../common.functions/node.convertor';
 import PropertyReadView from "./property.base.view/property.read.view/property.read.view";
 import PropertyEditView from "./property.base.view/property.edit.view/property.edit.view";
 
 const PropertyContainer = (props) => {
+
+  // URL router options.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   // Panel fields state handler!
   const [panelField, setPanelField] = useState([]);
 
@@ -85,6 +98,19 @@ const PropertyContainer = (props) => {
   // Should show panel dropdown for panel field.
   function shouldShowPanelDropdown(){
     return !propertyContainerConstants.IGNORE_PANEL_FIELD_DROPDOWN.includes(props.data.dashboardMode);
+  };
+
+  // Update the url query params!
+  function _updateQueryParams(options){
+    // Get the current query parameters
+    const currentParams = getQueryParams();
+    // Update the specified key with the new value
+    currentParams.set(options.key, options.value);
+    // Construct the new URL with updated search parameters
+    const newUrl = `${window.location.pathname}?${updateQueryParams(currentParams)}`;
+    // Use navigate to replace the current URL
+    navigate(newUrl, { replace: true });
+
   };
 
   // Get panel field dropdown values!
@@ -228,7 +254,8 @@ const PropertyContainer = (props) => {
 
     var propertyEditViewModel = [{
       btnValue: propertyContainerConstants.BUTTON_FIELDS.saveButton,
-      onClick: null,
+      onClick: onEditProperties,
+      disabled: (props.data?.roomModel?.isOccupied === "true"),
       attribute: 'buttonField'
     }]
     
@@ -283,7 +310,20 @@ const PropertyContainer = (props) => {
       roomModel: props.data.roomModel,
       goToLocation: true,
       propertyData: props.data.propertyData,
+      selectedRoomConstant: propertyContainerConstants.PROPERTY_VIEW.propertyRoom,
       dashboardMode: propertyContainerConstants.DASHBOARD_MODE.propertyEditView
+    }
+    _updateQueryParams({key: 'selectedModel', value: props.data.roomModel._id});
+    _updateQueryParams({key: 'isEditable', value: props.data.roomModel.isOccupied !== "true"});
+    props.dashboardController(options);
+  };
+
+  // On Edit properties, Send the control to the property.edit.view along with the function that has to get called.
+  function onEditProperties(){
+    var options = {
+      onEditProperties: true,
+      propertyDataCallBackFunc: (data) => editRoomModel(data) // Second parameter is the key
+      // which contains the actual model so that the key can be extracted.
     }
     props.dashboardController(options);
   };
@@ -297,6 +337,17 @@ const PropertyContainer = (props) => {
   function shouldShowPanelField(){
     return !propertyContainerConstants.IGNORE_PANEL_FIELD.includes(props.data.dashboardMode);
   };
+
+  // Should show modal alert!
+  function _shouldRenderModalAlert(){
+    return false;
+  };
+
+  // Render modal alert!
+  function _renderModelAlert(){
+    var tableTemplateHelpers = new TableViewTemplateHelpers();
+    return tableTemplateHelpers._renderCustomModal({show: true, centered: false, restrictBody: true});
+  };
   
   // Force update when the props change!
   useEffect(() => {
@@ -306,6 +357,7 @@ const PropertyContainer = (props) => {
   
   return(
     <>
+      {_shouldRenderModalAlert() && _renderModelAlert()}
       {shouldShowPanelField() && (
         <MetadataFields data = {panelField} updateData = {(updatedData) => _updatePanelFieldData(updatedData)} />
       )}
