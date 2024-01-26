@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import MetadataFields from '../../fields/metadata.fields.view';
 import TableViewTemplateHelpers from "./table.view/table.view.template";
 import CheckInForm from './checkin.view/checkin.form.view';
-import {editRoomModel} from "./checkin.view/checkin.form.utils";
+import {formUtils} from "./checkin.view/checkin.form.utils";
 import CheckOutView from './checkout.view/checkout.form.view';
 import RoomStatusView from './room.status.view/room.status.view';
 import DefaultView from './default.view/default.view';
@@ -14,22 +13,27 @@ import PaymentTrackerWrapper from "./payment.tracker.view/payment.tracker.wrappe
 import propertyContainerConstants from './property.container.constants';
 import {
   extractQueryParams,
-  extractStateValue, getQueryParams,
+  extractStateValue,
   renderCustomHTMLContent,
-  updateQueryParams
 } from '../../common.functions/node.convertor';
 import PropertyReadView from "./property.base.view/property.read.view/property.read.view";
 import PropertyEditView from "./property.base.view/property.edit.view/property.edit.view";
 
 const PropertyContainer = (props) => {
 
-  // URL router options.
-  const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-
   // Panel fields state handler!
   const [panelField, setPanelField] = useState([]);
+
+  // Custom modal state handler!
+  const [customModal, setCustomModal] = useState({
+    show: false,
+    onHide: () => _updateCustomModalOptions({show:false}),
+    header: undefined,
+    centered: false,
+    restrictBody: undefined,
+    footerEnabled: false,
+    footerButtons: undefined
+  })
 
   // Table view template initializer.
   var TableViewTemplate = new TableViewTemplateHelpers(
@@ -98,19 +102,6 @@ const PropertyContainer = (props) => {
   // Should show panel dropdown for panel field.
   function shouldShowPanelDropdown(){
     return !propertyContainerConstants.IGNORE_PANEL_FIELD_DROPDOWN.includes(props.data.dashboardMode);
-  };
-
-  // Update the url query params!
-  function _updateQueryParams(options){
-    // Get the current query parameters
-    const currentParams = getQueryParams();
-    // Update the specified key with the new value
-    currentParams.set(options.key, options.value);
-    // Construct the new URL with updated search parameters
-    const newUrl = `${window.location.pathname}?${updateQueryParams(currentParams)}`;
-    // Use navigate to replace the current URL
-    navigate(newUrl, { replace: true });
-
   };
 
   // Get panel field dropdown values!
@@ -205,7 +196,8 @@ const PropertyContainer = (props) => {
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyEditView){
-      return <PropertyEditView  data = {props.data} height = {props.propertyContainerHeight} routerController = {(opts) => props.routerController(opts)} params = {props.params} />
+      return <PropertyEditView  data = {props.data} height = {props.propertyContainerHeight} routerController = {(opts) => props.routerController(opts)}
+      dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} modalOptions = {(options, nextFunc) => _updateCustomModalOptions(options, nextFunc)}/>
     }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){
@@ -308,21 +300,21 @@ const PropertyContainer = (props) => {
   function switchToPropertyEditMode(){
     var options = {
       roomModel: props.data.roomModel,
+      userModel: props.data.userModel,
       goToLocation: true,
       propertyData: props.data.propertyData,
       selectedRoomConstant: propertyContainerConstants.PROPERTY_VIEW.propertyRoom,
       dashboardMode: propertyContainerConstants.DASHBOARD_MODE.propertyEditView
     }
-    _updateQueryParams({key: 'selectedModel', value: props.data.roomModel._id});
-    _updateQueryParams({key: 'isEditable', value: props.data.roomModel.isOccupied !== "true"});
     props.dashboardController(options);
   };
 
   // On Edit properties, Send the control to the property.edit.view along with the function that has to get called.
   function onEditProperties(){
+    var funcMethodKey = extractQueryParams().method;
     var options = {
       onEditProperties: true,
-      propertyDataCallBackFunc: (data) => editRoomModel(data) // Second parameter is the key
+      propertyDataCallBackFunc: (data) => formUtils()[funcMethodKey](data) // Second parameter is the key
       // which contains the actual model so that the key can be extracted.
     }
     props.dashboardController(options);
@@ -338,15 +330,31 @@ const PropertyContainer = (props) => {
     return !propertyContainerConstants.IGNORE_PANEL_FIELD.includes(props.data.dashboardMode);
   };
 
+  // Update custom modal options!
+  function _updateCustomModalOptions(opts, nextFunc){
+    setCustomModal(prevState => ({...prevState,
+      show: opts.show,
+      header: opts.header,
+      onHide: () => opts.onHide(),
+      restrictBody: opts.restrictBody,
+      centered: opts.centered,
+      footerEnabled: opts.footerEnabled,
+      footerButtons: opts.footerButtons
+    }));
+    if(nextFunc){
+      nextFunc();
+    }
+  };
+
   // Should show modal alert!
   function _shouldRenderModalAlert(){
-    return false;
+    return customModal.show;
   };
 
   // Render modal alert!
   function _renderModelAlert(){
     var tableTemplateHelpers = new TableViewTemplateHelpers();
-    return tableTemplateHelpers._renderCustomModal({show: true, centered: false, restrictBody: true});
+    return tableTemplateHelpers._renderCustomModal(customModal);
   };
   
   // Force update when the props change!

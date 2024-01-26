@@ -95,6 +95,14 @@ export async function deleteRoomModel(data){
   return result;
 };
 
+// Club all the above function and make it accessible to other parts of the program through unique key.
+export function formUtils(){
+  return{
+    'edit-room-model': (options) => editRoomModel(options),
+    'edit-user-model': (options) => editOccupiedUserModel(options)
+  }
+};
+
 
 
 

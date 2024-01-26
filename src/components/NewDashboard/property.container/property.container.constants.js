@@ -34,7 +34,8 @@ var propertyContainerConstants = Object.freeze({
     propertyEditView: 'Edit Room Properties'
   }),
   PROPERTY_VIEW: Object.freeze({
-    propertyRoom: 'property-room'
+    propertyRoom: 'property-room',
+    propertyUser: 'property-user'
   }),
   // Panel field not required dashboardMode constants array!
   IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView'],

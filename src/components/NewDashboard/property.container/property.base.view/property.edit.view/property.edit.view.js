@@ -1,7 +1,7 @@
 import {templateHelpers} from "./property.edit.template";
 import PropertyBaseView from "../property.base.view";
-import propertyEditViewConstants from "./property.edit.view.constants";
 import {extractQueryParams, nodeConvertor} from "../../../../common.functions/node.convertor";
+import propertyBaseConstants from "../property.base.constants";
 
 class PropertyEditView extends PropertyBaseView {
     constructor(props) {
@@ -12,11 +12,11 @@ class PropertyEditView extends PropertyBaseView {
             templateFieldOptions: []
         };
         this.templateHelpersData = {
-            VIEW_HEADER: propertyEditViewConstants.VIEW_HEADER,
+            VIEW_HEADER: propertyBaseConstants.EDIT_VIEW_HEADER[this.props.data.selectedRoomConstant],
             height: this.props.height,
             isEditable: () => this.isEditableModel(),
             getPropertyErrMsg: () => this._getPropertyErrorMessage()
-        }
+        };
     };
 
     populateTemplateFieldOptsObject(){
@@ -29,11 +29,15 @@ class PropertyEditView extends PropertyBaseView {
 
     saveEditedModel(){
         // Get the metadataField values.
-        var fieldData = nodeConvertor(this.state.data);
+        var fieldData = nodeConvertor(this.state.data),
+        // Get unique key and selected model from the url.
+            selectedModelFromUrl = extractQueryParams();
         // Add mandatory data into the fieldData.
-        this._addMandatoryFieldData(fieldData, {roomId: extractQueryParams().selectedModel, lodgeId: this.params.accIdAndName[0]});
-        this.state.propertyDataCallBackFunc(fieldData).then(() => {
+        this._addMandatoryFieldData(fieldData, {[selectedModelFromUrl.uniqueId]: selectedModelFromUrl.selectedModel, lodgeId: this.params.accIdAndName[0]});
+        this.state.propertyDataCallBackFunc(fieldData).then((result) => {
+            var modalOptions = this._prepareModalOptions(result);
             this._toggleComponentLoader(true);
+            this._triggerCustomModal(modalOptions);
         })
     };
 

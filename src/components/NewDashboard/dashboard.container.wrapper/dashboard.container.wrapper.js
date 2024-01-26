@@ -1,11 +1,15 @@
 import React, { useState, useRef } from 'react';
 import _ from 'lodash';
+import {useNavigate} from "react-router-dom";
 import SidepanelWrapper from '../sidepanel.container.wrapper/sidepanel.container.wrapper';
 import PropertyContainer from '../property.container/property.container';
 import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
-
+import {getQueryParams, updateQueryParams} from "../../common.functions/node.convertor";
 
 const DashboardWrapper = (props, ref) => {
+
+  // URL router options.
+  const navigate = useNavigate();
   
   var sidePanelRef = useRef(null);
   
@@ -102,6 +106,20 @@ const DashboardWrapper = (props, ref) => {
       propertyData: opts.propertyData, propertyDataCallBackFunc: opts.propertyDataCallBackFunc}));
   };
 
+  // Update the url query params!
+  function _updateQueryParams(params){
+    params.map((options) => {
+      // Get the current query parameters
+      const currentParams = getQueryParams();
+      // Update the specified key with the new value
+      currentParams.set(options.key, options.value);
+      // Construct the new URL with updated search parameters
+      const newUrl = `${window.location.pathname}?${updateQueryParams(currentParams)}`;
+      // Use navigate to replace the current URL
+      navigate(newUrl, { replace: true });
+    });
+  };
+
   // On edit properties from property.edit.view.
   function onEditProperties(opts){
     setSelectedModel(prevState => ({...prevState, propertyDataCallBackFunc: opts.propertyDataCallBackFunc}));
@@ -190,7 +208,8 @@ const DashboardWrapper = (props, ref) => {
 
   // Update dashboard wrapper!
   function _updateDashboardWrapper(opts){
-    opts.reloadSidepanel && _reloadSidepanel(opts);
+    opts?.reloadSidepanel && _reloadSidepanel(opts);
+    opts.queryParams && _updateQueryParams(opts.queryParams);
     opts.navigateToStatusTableView && _navigateToStatusTableView(opts);
     opts.navigateToPropertyContainer && _navigateToPropertyContainer();
     opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need
