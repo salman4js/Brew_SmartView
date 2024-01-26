@@ -152,6 +152,10 @@ class CheckOutView extends React.Component {
     getIsAdvanceRestricted(){
       return JSON.parse(getStorage('isAdvanceRestricted'));
     };
+
+    getIsDateOfCheckinEditable(){
+      return JSON.parse(getStorage('isCheckinDateEditable'));
+    };
     
     getIsExclusive(){
       return JSON.parse(getStorage('isExclusive'));
@@ -547,11 +551,22 @@ class CheckOutView extends React.Component {
 
     // Trigger edit customer details from this checkout.form.view.
     _triggerEditCustomerDetails(){
-        var requiredKeys, propertyData, metadataFieldState, propertyConstants;
+        var requiredKeys, propertyData, metadataFieldState, propertyConstants, userModel;
+        userModel = _.clone(this.state.userModel);
+        userModel['amountFor'] = undefined; userModel['dateTime'] = undefined; userModel['updatedAdvance'] = undefined; userModel['roomId'] = undefined;
         metadataFieldState = _.clone(metadataFieldTemplatestate.metadataFieldState);
         propertyConstants = _.clone(checkoutViewConstants.TEMPLATE_LABEL_FOR_EDIT_CUSTOMER_DETAILS);
+        // Check if date of checkin editable is configured or not...
+        if(!this.getIsDateOfCheckinEditable()){
+            delete propertyConstants['dateofcheckin'];
+        }
+        // Required data for edit customer details...
+        propertyConstants.room.value = this.state.userModel.room;
+        propertyConstants.updatedAdvance.value = this.state.userModel.advance;
+        propertyConstants['roomId'] = propertyConstants.room;
+        // End of required data for edit customer details...
         requiredKeys = Object.keys(propertyConstants);
-        propertyData = createMetadataFields(filterKeysInObj(_.clone(this.state.userModel), requiredKeys), propertyConstants, metadataFieldState);
+        propertyData = createMetadataFields(filterKeysInObj(userModel, requiredKeys), propertyConstants, metadataFieldState);
         this.onCloseCustomModal(); // Close the custom modal to prevent unexpected behaviour.
         this.props.dashboardController({dashboardMode: propertyContainerConstants.DASHBOARD_MODE.propertyReadView,
             queryParams: [{key: 'selectedModel', value: this.state.userModel._id}, {key: 'isEditable', value: 'true'}, {key: 'method', value: 'edit-user-model'},

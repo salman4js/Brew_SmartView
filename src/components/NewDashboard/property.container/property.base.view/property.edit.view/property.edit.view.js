@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {templateHelpers} from "./property.edit.template";
 import PropertyBaseView from "../property.base.view";
 import {extractQueryParams, nodeConvertor} from "../../../../common.functions/node.convertor";
@@ -33,6 +34,9 @@ class PropertyEditView extends PropertyBaseView {
             if(options.conversionRequired){
                 stateFields[options.name] = options.conversionMethod(stateFields[options.name]);
             }
+            if(options.addWith){
+                stateFields[options.name] = Number(options.value) + Number(stateFields[options.addWith]);
+            }
         })
     };
 
@@ -48,7 +52,7 @@ class PropertyEditView extends PropertyBaseView {
             var modalOptions = this._prepareModalOptions(result);
             this._toggleComponentLoader(true);
             this._triggerCustomModal(modalOptions);
-        })
+        });
     };
 
     templateHelpers(){

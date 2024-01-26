@@ -303,7 +303,7 @@ const PropertyContainer = (props) => {
       userModel: props.data.userModel,
       goToLocation: true,
       propertyData: props.data.propertyData,
-      selectedRoomConstant: propertyContainerConstants.PROPERTY_VIEW.propertyRoom,
+      selectedRoomConstant: props.data.roomModel !== undefined ? propertyContainerConstants.PROPERTY_VIEW.propertyRoom : propertyContainerConstants.PROPERTY_VIEW.propertyUser,
       dashboardMode: propertyContainerConstants.DASHBOARD_MODE.propertyEditView
     }
     props.dashboardController(options);

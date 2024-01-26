@@ -5,12 +5,14 @@ export function templateHelpers(fieldOptions, templateHelpers){
               {templateHelpers.VIEW_HEADER}
           </div>
           {fieldOptions && fieldOptions.map((options) => {
-              return (
-                  <div className='modal-gap'>
-                      <label style={{color: 'black'}}> {options.templateLabel} </label>
-                      <p style={{color: 'black'}}> {options.templateValue} </p>
-                  </div>
-              )
+              if(!options.restrictShow){
+                  return (
+                      <div className='modal-gap'>
+                          <label style={{color: 'black'}}> {options.templateLabel} </label>
+                          <p style={{color: 'black'}}> {options.templateValue} </p>
+                      </div>
+                  )
+              }
           })}
       </div>
   )

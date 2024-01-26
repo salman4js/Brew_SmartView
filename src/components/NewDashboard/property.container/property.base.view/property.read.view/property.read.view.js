@@ -53,6 +53,7 @@ class PropertyReadView extends PropertyBaseView {
              var templateFieldOptions = {};
              templateFieldOptions['templateLabel'] = this.state.data[key].label;
              templateFieldOptions['templateValue'] =  Array.isArray(this.state.data[key].value) ? this.state.data[key].value.length : this.state.data[key].value;
+             templateFieldOptions['restrictShow'] = this.state.data[key].restrictShow;
              this.state.templateFieldOptions.push(templateFieldOptions);
            }
        };

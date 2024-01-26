@@ -1,4 +1,6 @@
 import { formatDate } from "../../../common.functions/common.functions";
+import {universalLang} from "../../../universalLang/universalLang";
+import brewDate from "brew-date";
 
 var checkoutViewConstants = Object.freeze({
   TEMPLATE_LABEL_CUSTOMER_DETAILS: Object.freeze({
@@ -73,7 +75,8 @@ var checkoutViewConstants = Object.freeze({
     },
     advance: {
       placeholder: 'Advance Amount',
-      label: 'Advance Amount'
+      label: 'Advance Amount',
+      isChanged: false
     },
     adults: {
       placeholder: 'Adults',
@@ -106,6 +109,27 @@ var checkoutViewConstants = Object.freeze({
       style: {
         width: '500px'
       },
+    },
+    updatedAdvance: {
+      value: undefined,
+      attribute: 'textField',
+      restrictShow: true,
+      addWith: 'advance'
+    },
+    room: {
+      value: undefined,
+      attribute: 'textField',
+      restrictShow: true
+    },
+    amountFor: {
+      value: universalLang.editCustomerDetailsAdvance,
+      attribute: 'textField',
+      restrictShow: true
+    },
+    dateTime: {
+      value: brewDate.getFullDate('dd/mmm') + " " + brewDate.timeFormat(brewDate.getTime()),
+      attribute: 'textField',
+      restrictShow: true
     }
   }),
   checkoutViewPerspectiveConstant: 'property-container',

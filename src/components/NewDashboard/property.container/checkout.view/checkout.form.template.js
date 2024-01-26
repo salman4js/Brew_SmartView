@@ -27,7 +27,7 @@ function populateReplacementObject(state){
     'advanceAmount': state.billingInfo.advanceAmount,
     'discountAmount': state.billingInfo.discountAmount,
     'withoutGST': state.billingInfo.withoutGST,
-    'totalPrice': state.billingInfo.totalPrice + 'Rs',
+    'totalPrice': state.billingInfo.totalPrice,
     'totalPrice + oldRoomPrice': state.billingInfo.totalPrice + state.userModel.oldRoomPrice + 'Rs',
   };
 };
