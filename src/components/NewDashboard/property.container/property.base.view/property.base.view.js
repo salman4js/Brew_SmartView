@@ -3,7 +3,7 @@ import _ from 'lodash';
 import {activityLoader} from "../../../common.functions/common.functions.view";
 import propertyBaseConstants from "./property.base.constants";
 import lang from '../../commands/commands.constants'
-import {getParsedUrl} from "../../../common.functions/node.convertor";
+import {extractQueryParams, getParsedUrl} from "../../../common.functions/node.convertor";
 import CommandsConnector from "../../commands/commands.connector";
 
 
@@ -39,8 +39,10 @@ class PropertyBaseView extends React.Component {
     };
 
     _prepareModalOptions(options){
-        var modalOptions = _.clone(propertyBaseConstants.PROPERTY_SAVE_MODAL_OPTS[this.model.selectedRoomConstant]);
-        modalOptions.onHideOptions.updatedModel = options.data.updatedData;
+        var modalOptions = _.clone(propertyBaseConstants.PROPERTY_SAVE_MODAL_OPTS[this.model.selectedRoomConstant]),
+        // Get response model key.
+            urlStates = extractQueryParams();
+        modalOptions.onHideOptions[urlStates.clientModelKey] = options.data[urlStates.serverModelKey];
         modalOptions.header = options.data.message;
         modalOptions.onHide = () => this._updateCustomModal({show: false}, () => this.props.dashboardController(modalOptions.onHideOptions));
         return modalOptions;

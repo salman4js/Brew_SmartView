@@ -79,6 +79,14 @@ const DashboardWrapper = (props, ref) => {
         return obj.room === options.id; // Comparing obj room id because in updatedRoomModel user reference will be null after checkout!
       });
     };
+    // By using the roomId, Update the particular user reference from the userCollection.
+    // Widget collection would have been updated by form.utils.helper
+    if(options.action === 'EDIT'){
+      var indexToBeUpdated = _.findIndex(userCollection, {_id: options.updatedUserModel._id});
+      if(indexToBeUpdated !== -1){
+        _.assign(userCollection[indexToBeUpdated], options.updatedUserModel);
+      }
+    }
     setPropertyDetails(prevState => ({...prevState, userCollection: userCollection}));
     CollectionInstance.updateCollections('userCollections', userCollection);
   };
@@ -121,6 +129,7 @@ const DashboardWrapper = (props, ref) => {
   };
 
   // On edit properties from property.edit.view.
+  // This method will assign the callback function in the selectedModel.
   function onEditProperties(opts){
     setSelectedModel(prevState => ({...prevState, propertyDataCallBackFunc: opts.propertyDataCallBackFunc}));
   };
@@ -220,7 +229,7 @@ const DashboardWrapper = (props, ref) => {
     opts.onEditProperties && onEditProperties(opts);
     opts.isRoomTransferCommand && onRoomTransfer(opts);
     opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
-    opts.updateUserCollection && _updateUserCollection(opts.updateUserCollection, opts.ignoreUpdateOfDefaultView);
+    (opts.updateUserCollection || opts.updatedUserModel) && _updateUserCollection((opts.updateUserCollection || opts), opts.ignoreUpdateOfDefaultView);
   };
 
   // Navigate to status table view!
