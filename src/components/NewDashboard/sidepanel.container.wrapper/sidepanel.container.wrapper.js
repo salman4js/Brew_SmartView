@@ -270,7 +270,8 @@ const SidepanelWrapper = (props, ref) => {
     propertyData = createMetadataFields(filterKeysInObj(_.clone(data), requiredKeys), sidepanelConstants.TEMPLATE_LABEL, metadataFieldState);
     // setCustomModal(prevState => ({...prevState, show: value, customData: data}));
     props.dashboardController({dashboardMode: PropertyContainerConstants.DASHBOARD_MODE.propertyReadView,
-      queryParams: [{key: 'selectedModel', value: data._id}, {key: 'isEditable', value: data.isOccupied !== "true"}, {key: 'method', value: 'edit-room-model'}, {key: 'uniqueId', value: 'roomId'}],
+      queryParams: [{key: 'selectedModel', value: data._id}, {key: 'isEditable', value: data.isOccupied !== "true"}, {key: 'method', value: 'edit-room-model'},
+        {key: 'uniqueId', value: 'roomId'}, {key: 'clientModelKey', value: 'updatedModel'}, {key: 'serverModelKey', value: 'updatedData'}],
       selectedRoomConstant: PropertyContainerConstants.PROPERTY_VIEW.propertyRoom, roomModel: data, propertyData: propertyData, goToLocation: true});
   };
   

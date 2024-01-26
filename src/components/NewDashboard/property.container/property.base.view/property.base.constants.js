@@ -20,7 +20,7 @@ var propertyBaseConstants = Object.freeze({
             footerEnabled: false,
             header: undefined,
             onHide: undefined,
-            onHideOptions: {reloadSidepanel: {silent: true}, updatedModel: true}
+            onHideOptions: {reloadSidepanel: {silent: true}, action: 'EDIT'}
         }
     })
 });

@@ -350,6 +350,9 @@ export function createMetadataFields(obj, metadataAttribute, metadataFields){
     if(isListField(fieldObj.attribute)){
       fieldObj['options'] = metadataAttribute[key].options;
     }
+    if(isDateField(fieldObj.attribute)){
+      fieldObj['style'] = metadataAttribute[key].style;
+    }
     fieldObj['isRequired'] = metadataAttribute[key].isRequired;
     fieldObj['inlineToast'] = metadataAttribute[key].inlineToast;
     metadataFieldArray.push(fieldObj);
@@ -361,6 +364,11 @@ export function createMetadataFields(obj, metadataAttribute, metadataFields){
 export function isTextField(attribute){
   return attribute === 'textField';
 };
+
+// Function to check if the field actually dateField.
+export function isDateField(attribute){
+  return attribute === 'dateField';
+}
 
 // Function to check if the field is actually listField.
 export function isListField(attribute){

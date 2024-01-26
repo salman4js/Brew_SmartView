@@ -555,7 +555,7 @@ class CheckOutView extends React.Component {
         this.onCloseCustomModal(); // Close the custom modal to prevent unexpected behaviour.
         this.props.dashboardController({dashboardMode: propertyContainerConstants.DASHBOARD_MODE.propertyReadView,
             queryParams: [{key: 'selectedModel', value: this.state.userModel._id}, {key: 'isEditable', value: 'true'}, {key: 'method', value: 'edit-user-model'},
-                {key: 'uniqueId', value: 'userId'}],
+                {key: 'uniqueId', value: 'userId'}, {key: 'clientModelKey', value: 'updatedUserModel'}, {key: 'serverModelKey', value: 'updatedUserModel'}],
             selectedRoomConstant: propertyContainerConstants.PROPERTY_VIEW.propertyUser, userModel: this.state.userModel, propertyData: propertyData, goToLocation: true});
     };
     

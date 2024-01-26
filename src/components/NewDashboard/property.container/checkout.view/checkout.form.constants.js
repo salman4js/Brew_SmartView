@@ -88,12 +88,18 @@ var checkoutViewConstants = Object.freeze({
     dateofcheckin: {
       placeholder: 'Date of Check-In',
       label: 'Date of Check-In',
-      attribute: 'dateField'
+      attribute: 'dateField',
+      style: {
+        width: '500px'
+      },
     },
     dateofcheckout: {
       placeholder: 'Date of Check-Out',
       label: 'Date of Check-Out',
-      attribute: 'dateField'
+      attribute: 'dateField',
+      style: {
+        width: '500px'
+      },
     }
   }),
   checkoutViewPerspectiveConstant: 'property-container',
