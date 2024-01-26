@@ -20,8 +20,6 @@ import metadataFieldTemplatestate from "../../fields/metadata.field.templatestat
 import PanelView from '../../SidePanelView/panel.view';
 import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view';
-import {roomType} from "../../room.type.view/src/room.type.model";
-import propertyContainerConstants from "../property.container/property.container.constants";
 
 const SidepanelWrapper = (props, ref) => {
 
@@ -272,7 +270,8 @@ const SidepanelWrapper = (props, ref) => {
     propertyData = createMetadataFields(filterKeysInObj(_.clone(data), requiredKeys), sidepanelConstants.TEMPLATE_LABEL, metadataFieldState);
     // setCustomModal(prevState => ({...prevState, show: value, customData: data}));
     props.dashboardController({dashboardMode: PropertyContainerConstants.DASHBOARD_MODE.propertyReadView,
-      selectedRoomConstant: propertyContainerConstants.PROPERTY_VIEW.propertyRoom, roomModel: data, propertyData: propertyData, goToLocation: true});
+      queryParams: [{key: 'selectedModel', value: data._id}, {key: 'isEditable', value: data.isOccupied !== "true"}, {key: 'method', value: 'edit-room-model'}, {key: 'uniqueId', value: 'roomId'}],
+      selectedRoomConstant: PropertyContainerConstants.PROPERTY_VIEW.propertyRoom, roomModel: data, propertyData: propertyData, goToLocation: true});
   };
   
   // Render custom modal!

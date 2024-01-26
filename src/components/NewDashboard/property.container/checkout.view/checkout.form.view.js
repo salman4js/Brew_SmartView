@@ -1,8 +1,10 @@
 import React from 'react';
+import _ from "lodash";
 import brewDate from 'brew-date';
 import CheckoutUtils from './checkout.form.utils';
 import checkoutViewConstants from './checkout.form.constants';
 import MetadataModelState from './metadata.model.state/maintainance.log.model.state';
+import metadataFieldTemplatestate from "../../../fields/metadata.field.templatestate";
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import MetadataFields from '../../../fields/metadata.fields.view';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
@@ -10,10 +12,17 @@ import { templateHelpers } from './checkout.form.template';
 import PropertyAlertContainer from '../property.alert.container/property.alert.container.view';
 import { activityLoader } from '../../../common.functions/common.functions.view';
 import { getTimeDate, determineGSTPercent } from '../../../common.functions/common.functions';
-import { getBaseUrl, formQueryParams, nodeConvertor, validateFieldData, updateMetadataFields, getCurrentUser} from '../../../common.functions/node.convertor';
+import {
+    getBaseUrl,
+    formQueryParams,
+    nodeConvertor,
+    validateFieldData,
+    updateMetadataFields,
+    getCurrentUser,
+    createMetadataFields, filterKeysInObj
+} from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 import propertyContainerConstants from "../property.container.constants";
-
 
 class CheckOutView extends React.Component {
     
@@ -535,6 +544,20 @@ class CheckOutView extends React.Component {
       };
       this.props.dashboardController(options);
     };
+
+    // Trigger edit customer details from this checkout.form.view.
+    _triggerEditCustomerDetails(){
+        var requiredKeys, propertyData, metadataFieldState, propertyConstants;
+        metadataFieldState = _.clone(metadataFieldTemplatestate.metadataFieldState);
+        propertyConstants = _.clone(checkoutViewConstants.TEMPLATE_LABEL_FOR_EDIT_CUSTOMER_DETAILS);
+        requiredKeys = Object.keys(propertyConstants);
+        propertyData = createMetadataFields(filterKeysInObj(_.clone(this.state.userModel), requiredKeys), propertyConstants, metadataFieldState);
+        this.onCloseCustomModal(); // Close the custom modal to prevent unexpected behaviour.
+        this.props.dashboardController({dashboardMode: propertyContainerConstants.DASHBOARD_MODE.propertyReadView,
+            queryParams: [{key: 'selectedModel', value: this.state.userModel._id}, {key: 'isEditable', value: 'true'}, {key: 'method', value: 'edit-user-model'},
+                {key: 'uniqueId', value: 'userId'}],
+            selectedRoomConstant: propertyContainerConstants.PROPERTY_VIEW.propertyUser, userModel: this.state.userModel, propertyData: propertyData, goToLocation: true});
+    };
     
     // Window print for invoice and bill!
     windowPrint(){
@@ -616,6 +639,12 @@ class CheckOutView extends React.Component {
       }, {
           btnValue: checkoutViewConstants.BUTTON_FIELDS.getInvoice,
           onClick: this.updatePrintingDetailsPref.bind(this, {invoice: false, tInvoice: true}),
+          isDark: true,
+          occupyFullSpace: true,
+          attribute: 'buttonField'
+      }, {
+          btnValue: checkoutViewConstants.BUTTON_FIELDS.editCustomerDetails,
+          onClick: this._triggerEditCustomerDetails.bind(this),
           isDark: true,
           occupyFullSpace: true,
           attribute: 'buttonField'

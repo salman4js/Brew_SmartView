@@ -50,6 +50,7 @@ var checkoutViewConstants = Object.freeze({
   BUTTON_FIELDS: Object.freeze({
     getBill: 'Get Bill',
     getInvoice: 'Get Invoice',
+    editCustomerDetails: 'Edit Customer Details',
     maintainanceLog: 'Add Maintainance Log',
     roomTransfer: 'Tranfer Room',
     checkout: 'Checkout',
@@ -58,6 +59,42 @@ var checkoutViewConstants = Object.freeze({
   }),
   MAINTAINANCE_LOG: Object.freeze({
     logDialogHeader: 'Add New Maintainance Log'
+  }),
+  TEMPLATE_LABEL_FOR_EDIT_CUSTOMER_DETAILS: Object.freeze({
+    username: {
+      placeholder: 'Customer Name',
+      label: 'Customer Name'
+    },
+    phonenumber: {
+      placeholder: 'Phone Number',
+      label: 'Phone Number'
+    },
+    advance: {
+      placeholder: 'Advance Amount',
+      label: 'Advance Amount'
+    },
+    adults: {
+      placeholder: 'Adults',
+      label: 'Adults'
+    },
+    childrens: {
+      placeholder: 'Children',
+      label: 'Children'
+    },
+    aadharcard: {
+      placeholder: 'ID Number',
+      label: 'ID Number'
+    },
+    dateofcheckin: {
+      placeholder: 'Date of Check-In',
+      label: 'Date of Check-In',
+      attribute: 'dateField'
+    },
+    dateofcheckout: {
+      placeholder: 'Date of Check-Out',
+      label: 'Date of Check-Out',
+      attribute: 'dateField'
+    }
   }),
   checkoutViewPerspectiveConstant: 'property-container',
   checkoutFailureError: 'Checkout failed, please try again!',

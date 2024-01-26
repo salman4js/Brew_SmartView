@@ -6,6 +6,7 @@ import {
     renderCustomHTMLContent
 } from "../../../../common.functions/node.convertor";
 import {getStorage} from "../../../../../Controller/Storage/Storage";
+import propertyBaseConstants from "../property.base.constants";
 
 class PropertyReadView extends PropertyBaseView {
     constructor(props) {
@@ -21,7 +22,7 @@ class PropertyReadView extends PropertyBaseView {
             content: undefined
         };
         this.templateHelpersData = {
-            VIEW_HEADER: propertyReadViewConstants.VIEW_HEADER,
+            VIEW_HEADER: propertyBaseConstants.READ_VIEW_HEADER[this.props.data.selectedRoomConstant],
             height: this.props.height
         }
     };

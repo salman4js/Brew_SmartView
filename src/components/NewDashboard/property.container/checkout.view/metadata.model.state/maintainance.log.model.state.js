@@ -1,3 +1,4 @@
+// This is metadataModelState for checkout.form.view used for Maintenance Log.
 var MetadataModelState = {
   maintainanceLogInput: [{
     value: undefined,

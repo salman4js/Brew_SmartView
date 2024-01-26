@@ -17,6 +17,7 @@ class PropertyBaseView extends React.Component {
         this.params = this.props.params;
         this.isStateRouterNotified = false;
         this.routerController = this.props.routerController;
+        this._updateCustomModal = this.props.modalOptions;
         this.model = undefined; // This model will be holding the current selected model entire state data.
     };
 
@@ -35,6 +36,18 @@ class PropertyBaseView extends React.Component {
 
     _getPerspectiveConstant(){
         return propertyBaseConstants.PERSPECTIVE_CONSTANT;
+    };
+
+    _prepareModalOptions(options){
+        var modalOptions = _.clone(propertyBaseConstants.PROPERTY_SAVE_MODAL_OPTS[this.model.selectedRoomConstant]);
+        modalOptions.onHideOptions.updatedModel = options.data.updatedData;
+        modalOptions.header = options.data.message;
+        modalOptions.onHide = () => this._updateCustomModal({show: false}, () => this.props.dashboardController(modalOptions.onHideOptions));
+        return modalOptions;
+    };
+
+    _triggerCustomModal(options){
+        this._updateCustomModal(options);
     };
 
     _getCurrentViewMode(){
