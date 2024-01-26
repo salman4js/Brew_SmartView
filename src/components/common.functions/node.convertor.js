@@ -343,18 +343,9 @@ export function createMetadataFields(obj, metadataAttribute, metadataFields){
     var fieldObj = _.clone(metadataFields);
     fieldObj['name'] = key;
     fieldObj['value'] = obj[key];
-    fieldObj['placeholder'] = metadataAttribute[key].placeholder;
-    fieldObj['label'] = metadataAttribute[key].label;
-    fieldObj['readOnly'] = metadataAttribute[key].readOnly;
-    fieldObj['attribute'] = metadataAttribute[key].attribute ? metadataAttribute[key].attribute : fieldObj.attribute;
-    if(isListField(fieldObj.attribute)){
-      fieldObj['options'] = metadataAttribute[key].options;
-    }
-    if(isDateField(fieldObj.attribute)){
-      fieldObj['style'] = metadataAttribute[key].style;
-    }
-    fieldObj['isRequired'] = metadataAttribute[key].isRequired;
-    fieldObj['inlineToast'] = metadataAttribute[key].inlineToast;
+    Object.keys(metadataAttribute[key]).forEach((k) => {
+      fieldObj[k] = metadataAttribute[key][k];
+    });
     metadataFieldArray.push(fieldObj);
   });
   return metadataFieldArray;

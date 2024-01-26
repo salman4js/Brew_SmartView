@@ -8,7 +8,6 @@ var metadataFieldTemplatestate = Object.freeze({
         readOnly: undefined,
         attribute: 'textField', // Default set to textField, this will change according to the field set.
         isRequired: true,
-        options: undefined,
         inlineToast: {
             isShow: false,
             inlineMessage: 'Please provide a valid input.'

@@ -1,3 +1,5 @@
+import { formatDate } from "../../../common.functions/common.functions";
+
 var checkoutViewConstants = Object.freeze({
   TEMPLATE_LABEL_CUSTOMER_DETAILS: Object.freeze({
     customerDetailsHeaders: 'Customer Details',
@@ -89,6 +91,8 @@ var checkoutViewConstants = Object.freeze({
       placeholder: 'Date of Check-In',
       label: 'Date of Check-In',
       attribute: 'dateField',
+      conversionRequired: true,
+      conversionMethod: (value) => formatDate(value),
       style: {
         width: '500px'
       },
@@ -97,6 +101,8 @@ var checkoutViewConstants = Object.freeze({
       placeholder: 'Date of Check-Out',
       label: 'Date of Check-Out',
       attribute: 'dateField',
+      conversionRequired: true,
+      conversionMethod: (value) => formatDate(value),
       style: {
         width: '500px'
       },
