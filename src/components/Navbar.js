@@ -28,7 +28,7 @@ const Navbar = (props) => {
     
     // Get dashboard version from the storage!
     var dashboardVersion =  CollectionInstance.getModel('widgetTileCollections', 'dashboardVersion');
-    
+
     // Custom styles for checkbox field!
     const customCheckboxStyle = {
       color: 'black',
@@ -436,7 +436,7 @@ const Navbar = (props) => {
                                       })
                                   }
                                   {!loggedInAsRecep && <Link className='nav-link dropdown-item' to={`/${props.id}/addrooms`} style={{ color: "black" }}> Add Rooms </Link>}
-                                  {!loggedInAsRecep && <Link className='nav-link dropdown-item' to={`/${props.id}/updaterooms`} style={{ color: "black" }}> Update Rooms </Link>}
+                                  {(!loggedInAsRecep && !dashboardVersion) && <Link className='nav-link dropdown-item' to={`/${props.id}/updaterooms`} style={{ color: "black" }}> Update Rooms </Link>}
                               </div>
                           </li>
                           <div className = "nav-link dropdown brew-cursor" onClick = {() => _toggleStepperWizard(true)}>
@@ -515,7 +515,9 @@ const Navbar = (props) => {
                                           </div>
                                       </ul>
                                   </li>
-                                  <Link className='nav-link dropdown-item' to={`/${props.id}/editroom`} style={{ color: "black" }}> Edit Customer Details </Link>
+                                  {(!loggedInAsRecep && !dashboardVersion) && (
+                                      <Link className='nav-link dropdown-item' to={`/${props.id}/editroom`} style={{ color: "black" }}> Edit Customer Details </Link>
+                                  )}
                                   {isLinkedWithVouchers() && (
                                     <Link className='nav-link dropdown-item' to={`/${props.id}/vouchers`} style={{ color: "black" }}> Vouchers Tracker </Link>
                                   )}

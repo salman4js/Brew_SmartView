@@ -30,8 +30,8 @@ var propertyContainerConstants = Object.freeze({
   }),
   WIDGET_CONSTANTS: Object.freeze({
     customHtmlView: 'History Preview',
-    propertyReadView: 'Room Properties',
-    propertyEditView: 'Edit Room Properties'
+    propertyReadView: '',
+    propertyEditView: ''
   }),
   PROPERTY_VIEW: Object.freeze({
     propertyRoom: 'property-room',
