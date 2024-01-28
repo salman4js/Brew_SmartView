@@ -1,3 +1,5 @@
+import CommandsTableFilterSettings from "../../commands/commands.initialize/commands.table.filter.settings";
+
 var tableViewConstants = Object.freeze({
 
   tablePerspectiveConstant: 'table-view',
@@ -11,6 +13,8 @@ var tableViewConstants = Object.freeze({
     upcomingPrebook: ['Floor No', 'Room No', 'Guest Name', 'Guest Phone Number', 'Date of Checkin', 'Date of Checkout'],
     favorites: ['Guest Name', "Phone Number", 'Guest Identification Number'],
     history: ['Guest Name', 'Phone Number', 'Guest ID Number', 'Address', 'Date of Checkin',
+      'Time of Checkin', 'Date of Checkout', 'Time of Checkout', 'Total Amount'],
+    filterHistory: ['Guest Name', 'Phone Number', 'Guest ID Number', 'Address', 'Date of Checkin',
       'Time of Checkin', 'Date of Checkout', 'Time of Checkout', 'Total Amount'],
     logTable: ['Log Type', 'Log Comments', 'Log Paid', 'Log Date & Time', 'Log Price'],
     paymentTrackerView: ['Amount', 'Amount For', 'Date & Time', 'Mode']
@@ -26,6 +30,8 @@ var tableViewConstants = Object.freeze({
     favorites: ['_id', 'username', 'phonenumber', 'aadharcard'],
     history: ['_id', 'username', 'phonenumber', 'aadharcard', 'address', 'dateofcheckin',
       'checkinTime', 'dateofcheckout', 'checkoutTime', 'totalAmount'],
+    filterHistory: ['_id', 'username', 'phonenumber', 'aadharcard', 'address', 'dateofcheckin',
+      'checkinTime', 'dateofcheckout', 'checkoutTime', 'totalAmount'],
     logTable: ['_id', 'priceType', 'priceLog', 'isPaid', 'dateTime', 'price'],
     paymentTrackerView: ['paymentTrackerId', 'amount', 'amountFor', 'dateTime', 'isPrebook']
   }),
@@ -40,11 +46,41 @@ var tableViewConstants = Object.freeze({
       objRules: {
         '' : 'Not Checked-Out Yet'
       }
+    },
+    filterHistory: {
+      keyToConvert: ['dateofcheckout', 'checkoutTime', 'totalAmount'],
+      objRules: {
+        '' : 'Not Checked-Out Yet'
+      }
     }
   }),
 
+  filterConstantKeys: {
+    history: "filterHistory"
+  },
+
   fetchableWidgetTiles: Object.freeze({
-    history: (details) => `${details.baseUrl}/${details.accId}/${details.paginationData.skipCount}/${details.paginationData.limitCount}/userdb1`
+    history: (details) => `${details.baseUrl}/${details.accId}/${details.paginationData.skipCount}/${details.paginationData.limitCount}/userdb1`,
+    // filterHistory doesn't require pagination params since it violates the process of filtering the data from the database.
+    filterHistory: (details) => {
+      let url = `${details.baseUrl}/${details.accId}/0/0/userdb1`;
+      // Check a condition and add query parameters accordingly
+      if (details.query) {
+        url += '?';
+        Object.keys(details.query).forEach((query) => {
+          url += `${query}=${details.query[query]}&`;
+        });
+      }
+      return url;
+    }
+  }),
+
+  tableRightToolbarEnabledFunc: Object.freeze({
+    history: (roomConstantKey) => CommandsTableFilterSettings.enabled(roomConstantKey),
+  }),
+
+  tableRightToolbarExecuteFunc: Object.freeze({
+    history: (options) => CommandsTableFilterSettings.execute(options)
   }),
 
   paginationConstants: Object.freeze({

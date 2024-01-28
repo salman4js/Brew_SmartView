@@ -115,6 +115,9 @@ class TableView extends React.Component {
     this.propertyStatusRequiredKey = tableViewConstants.PropertyStatusRequiredKey;
     this.convertableConstants = tableViewConstants.convertableConstants;
     this.fetchableWidgets = tableViewConstants.fetchableWidgetTiles;
+    this.nextNodeOptions = {};
+    this.tableRightToolbarEnabledFunc = tableViewConstants.tableRightToolbarEnabledFunc;
+    this.tableRightToolbarExecuteFunc = tableViewConstants.tableRightToolbarExecuteFunc;
     this.tableViewTemplate = new TableViewTemplateHelpers();
   };
   
@@ -202,7 +205,7 @@ class TableView extends React.Component {
   async validateAbstractedStateFields(){
     var isValid = await validateFieldData(this.state.customModalBodyViewOptions, (validatedData) => this.setState({customModalBodyViewOptions: validatedData}));
     if(isValid.length === 0){
-      return nodeConvertor(this.state.customModalBodyViewOptions, ['value']);
+      return nodeConvertor(this.state.customModalBodyViewOptions);
     }
   };
 
@@ -248,12 +251,25 @@ class TableView extends React.Component {
     this.state.metadataTableState.keepLoader = keepLoader;
     this._updateMetadataTableState();
   };
+
+  // Check if the table filter mode is enabled for the roomConstantKey.
+  checkForTableFilterMode(){
+    return this.roomConstant && this.tableRightToolbarEnabledFunc[this.roomConstant] && this.tableRightToolbarEnabledFunc[this.roomConstant](this.roomConstant);
+  };
+
+  // Execute action when table filter model triggered.
+  onFilterTableModeClicked(){
+    // When the filter action is triggered, initialize the custom modal with the table dialog options from command table filter settings.
+    this._prepareCustomModal(this.tableRightToolbarExecuteFunc[this.roomConstant](this.templateHelpersData.options));
+  };
   
   // Template helpers data!
   prepareTemplateHelpersData(){
     this.templateHelpersData.options = {
       selectedRoomConstant: this.widgetTileModel.data.selectedRoomConstant,
       roomConstantKey: this.roomConstant,
+      allowTableFilterMode: this.checkForTableFilterMode(),
+      onClickTableFilterMode: () => this.onFilterTableModeClicked(),
       params: this.params,
       nodes: this.state.metadataTableState.checkboxSelection,
       eventHelpers: {
@@ -262,6 +278,7 @@ class TableView extends React.Component {
         triggerTableLoader: (value, keepLoader) => this._toggleTableLoader(value, keepLoader),
         updateCheckboxSelection: (value, checkboxIndex) => this._updateCheckboxSelection(value, checkboxIndex),
         triggerCustomModel: (options) => this._prepareCustomModal(options),
+        prepareNextNodeOptions: (options) => this._prepareNextNodeOptions(options),
         collapseCustomModal: () => this.onCloseCustomModal(),
         validateStateFields: () => this.validateAbstractedStateFields(),
         removeFromTableCollection: (model) => this.removeFromTableCollection(model),
@@ -289,10 +306,32 @@ class TableView extends React.Component {
     }
   };
 
+  // Prepare nextNodeOptions from the other parts of the program so that the url can be structured accordingly.
+  _prepareNextNodeOptions(options){
+    this.nextNodeOptions['baseUrl'] = Variables.hostId;
+    this.nextNodeOptions['accId'] = this.params.accIdAndName[0];
+    this.nextNodeOptions['paginationData'] = this.widgetTileModel.paginationData
+    if(options){
+      this.widgetTileModel.paginationData.getNextNode = true; // Set it to true so when the re-render happens,
+      // getWidgetTileTableCollectionData method will be able to fetch the next node with search query params.
+      this.nextNodeOptions['query'] = {};
+      Object.keys(options).forEach((opts) => {
+        this.nextNodeOptions.query[opts] = options[opts];
+      })
+    }
+  };
+
   // Fetch next nodes only for fetchable widgets.
   async fetchNextNode(){
-    var options = {baseUrl: Variables.hostId, accId: this.params.accIdAndName[0], paginationData: this.widgetTileModel.paginationData};
-    this.nextNode = await fetch(this.fetchableWidgets[this.roomConstant](options));
+    this._prepareNextNodeOptions();
+    // Check if this method is invoked by table filter, If yes, change the roomConstantKey into Filter room constant key.
+    // So that the pagination can be handled accordingly.
+    if(this.nextNodeOptions.query){
+      if(tableViewConstants.filterConstantKeys[this.roomConstant]){
+        this.roomConstant = tableViewConstants.filterConstantKeys[this.roomConstant];
+      }
+    }
+    this.nextNode = await fetch(this.fetchableWidgets[this.roomConstant](this.nextNodeOptions));
     this.nextNodeData = await this.nextNode.json();
     this.rawRoomModel = this.nextNodeData.data.result;
     // Commented this line because when we change it to false, NextNode will not get fetched when the data changes,

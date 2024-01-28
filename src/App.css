@@ -1182,6 +1182,10 @@ td {
   font-weight: bold
 }
 
+.brew-tabletemplate-left-toolbar{
+  padding-right: 10px;
+}
+
 .metadata-table-view-dashboard-container{
   overflow: auto;
 }
