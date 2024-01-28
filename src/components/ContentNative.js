@@ -127,7 +127,7 @@ const ContentNative = () => {
         if (!token) {
             setData(false)
         } else {
-            axios.post(`${Variables.hostId}/${splitedIds[0]}/userdb`, {
+            axios.get(`${Variables.hostId}/${splitedIds[0]}/15/30/userdb1`, {
                 headers: {
                     "x-access-token": localStorage.getItem("token"),
                 }
@@ -135,7 +135,7 @@ const ContentNative = () => {
                 .then(res => {
                     if (res.data.success) {
                         setLoading(false);
-                        setData(res.data.message);
+                        setData(res.data.data.result);
                     } else {
                         setLoading(false);
                         localStorage.clear();

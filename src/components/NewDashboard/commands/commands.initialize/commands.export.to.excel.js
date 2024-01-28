@@ -44,7 +44,7 @@ class CommandsExportToExcel {
     // Get the export dialog options.
     getExportDialogOptions(){
         this.dialogOptions = {
-            centered: true,
+                centered: true,
                 restrictBody: false,
                 renderCustomBodyView: true,
                 customBodyViewOptions: this.exportDialogFieldOptions,
@@ -62,7 +62,7 @@ class CommandsExportToExcel {
     // On click on export, validate the filename and initiate the export process.
     onExport(){
         this.status.eventHelpers.validateStateFields().then((result) => {
-            this.exportFileName = result.value + '.csv';
+            this.exportFileName = result.excelFileName + '.csv';
             this.initiateExport();
         });
     };
