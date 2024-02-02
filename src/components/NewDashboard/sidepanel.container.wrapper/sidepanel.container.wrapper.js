@@ -9,7 +9,7 @@ import { getStatusCodeColor, formatDate } from '../../common.functions/common.fu
 import {
   updateMetadataFields,
   nodeConvertor,
-  createMetadataFields,
+  createMetadataFieldsWithBaseObj,
   filterKeysInObj
 } from '../../common.functions/node.convertor';
 import { activityLoader } from '../../common.functions/common.functions.view';
@@ -267,7 +267,7 @@ const SidepanelWrapper = (props, ref) => {
     propertyConstants = _.clone(sidepanelConstants.TEMPLATE_LABEL);
     propertyConstants.suiteName.options = _getRoomTypes();
     requiredKeys = Object.keys(propertyConstants);
-    propertyData = createMetadataFields(filterKeysInObj(_.clone(data), requiredKeys), sidepanelConstants.TEMPLATE_LABEL, metadataFieldState);
+    propertyData = createMetadataFieldsWithBaseObj(filterKeysInObj(_.clone(data), requiredKeys), sidepanelConstants.TEMPLATE_LABEL, metadataFieldState);
     // setCustomModal(prevState => ({...prevState, show: value, customData: data}));
     props.dashboardController({dashboardMode: PropertyContainerConstants.DASHBOARD_MODE.propertyReadView,
       queryParams: [{key: 'selectedModel', value: data._id}, {key: 'isEditable', value: data.isOccupied !== "true"}, {key: 'method', value: 'edit-room-model'},

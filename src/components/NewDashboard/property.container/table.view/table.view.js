@@ -2,10 +2,16 @@ import React from 'react';
 import _ from 'lodash';
 import TableViewTemplateHelpers from './table.view.template';
 import Variables from "../../../Variables";
-import {filterKeysInObj, arrangeObj, convertObjectValue, nodeConvertor} from '../../../common.functions/node.convertor';
-import  tableViewConstants  from './table.view.constants';
-import {validateFieldData} from "../../../common.functions/node.convertor";
+import {
+  arrangeObj,
+  convertObjectValue, filterArrayOfObjectsWithSearchObjects,
+  filterKeysInObj,
+  nodeConvertor,
+  validateFieldData
+} from '../../../common.functions/node.convertor';
+import tableViewConstants from './table.view.constants';
 import MetadataFields from '../../../fields/metadata.fields.view';
+import TableFilterSettingsDialog from "../../dialogs/table.filter.settings/table.filter.settings.dialog";
 
 class TableView extends React.Component {
 
@@ -115,9 +121,7 @@ class TableView extends React.Component {
     this.propertyStatusRequiredKey = tableViewConstants.PropertyStatusRequiredKey;
     this.convertableConstants = tableViewConstants.convertableConstants;
     this.fetchableWidgets = tableViewConstants.fetchableWidgetTiles;
-    this.nextNodeOptions = {};
-    this.tableRightToolbarEnabledFunc = tableViewConstants.tableRightToolbarEnabledFunc;
-    this.tableRightToolbarExecuteFunc = tableViewConstants.tableRightToolbarExecuteFunc;
+    this.filterOptions = {};
     this.tableViewTemplate = new TableViewTemplateHelpers();
   };
   
@@ -211,7 +215,8 @@ class TableView extends React.Component {
 
   // Enable pagination view if the limit set to pagination exceeds.
   _checkAndEnablePaginationView(convertedCollection){
-    var widgetTileModelCount = this.widgetTileModel.data.widgetTileModelCount?.[this.roomConstant] || convertedCollection.length;
+    var widgetTileModelCount = this.filterInitiated ? convertedCollection.length :
+        (this.widgetTileModel.data.widgetTileModelCount?.[this.roomConstant] || convertedCollection.length);
     this.isPaginationRequired = widgetTileModelCount > this.paginationConstants.PAGINATION_DEFAULT_LIMIT;
     this.widgetTileModel.allowPagination = this.isPaginationRequired;
     this.widgetTileModel.paginationData.count = this.isPaginationRequired ? widgetTileModelCount : 0;
@@ -254,13 +259,14 @@ class TableView extends React.Component {
 
   // Check if the table filter mode is enabled for the roomConstantKey.
   checkForTableFilterMode(){
-    return this.roomConstant && this.tableRightToolbarEnabledFunc[this.roomConstant] && this.tableRightToolbarEnabledFunc[this.roomConstant](this.roomConstant);
+    return this.roomConstant && TableFilterSettingsDialog && TableFilterSettingsDialog.enabled(this.roomConstant);
   };
 
   // Execute action when table filter model triggered.
-  onFilterTableModeClicked(){
+  onFilterTableIconClicked(){
+    this.filterInitiated = true;
     // When the filter action is triggered, initialize the custom modal with the table dialog options from command table filter settings.
-    this._prepareCustomModal(this.tableRightToolbarExecuteFunc[this.roomConstant](this.templateHelpersData.options));
+    this._prepareCustomModal(TableFilterSettingsDialog.execute(this.templateHelpersData.options));
   };
   
   // Template helpers data!
@@ -269,7 +275,7 @@ class TableView extends React.Component {
       selectedRoomConstant: this.widgetTileModel.data.selectedRoomConstant,
       roomConstantKey: this.roomConstant,
       allowTableFilterMode: this.checkForTableFilterMode(),
-      onClickTableFilterMode: () => this.onFilterTableModeClicked(),
+      onClickTableFilterMode: () => this.onFilterTableIconClicked(),
       params: this.params,
       nodes: this.state.metadataTableState.checkboxSelection,
       eventHelpers: {
@@ -278,7 +284,7 @@ class TableView extends React.Component {
         triggerTableLoader: (value, keepLoader) => this._toggleTableLoader(value, keepLoader),
         updateCheckboxSelection: (value, checkboxIndex) => this._updateCheckboxSelection(value, checkboxIndex),
         triggerCustomModel: (options) => this._prepareCustomModal(options),
-        prepareNextNodeOptions: (options) => this._prepareNextNodeOptions(options),
+        prepareFilterOptions: (options) => this._prepareFilterOptions(options),
         collapseCustomModal: () => this.onCloseCustomModal(),
         validateStateFields: () => this.validateAbstractedStateFields(),
         removeFromTableCollection: (model) => this.removeFromTableCollection(model),
@@ -293,11 +299,16 @@ class TableView extends React.Component {
       return tableModel._id === selectedModel._id;
     });
   };
+
+  // Client side filtering --> Filter the data based on the filter model passed which filterOptions query.
+  clientSideFilter(){
+    if(this.filterOptions.query){
+      this.rawRoomModel = filterArrayOfObjectsWithSearchObjects(this.rawRoomModel, this.filterOptions.query);
+    }
+  };
   
   // Get room constant collection!
   async getRoomConstantCollection(){
-    if(!this.roomConstant) this.getTableHeaders(); // Sometimes when the component is being rendered and when the component
-    // is being updated, this.roomConstant becomes undefined, so if its undefined get the room-constant before proceeding.
     if(this.roomConstant !== 'afterCheckin'){
       return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant]
           || (_.isFunction(this.setExpandedTableView) ? await this.setExpandedTableView() : []);
@@ -306,32 +317,25 @@ class TableView extends React.Component {
     }
   };
 
-  // Prepare nextNodeOptions from the other parts of the program so that the url can be structured accordingly.
-  _prepareNextNodeOptions(options){
-    this.nextNodeOptions['baseUrl'] = Variables.hostId;
-    this.nextNodeOptions['accId'] = this.params.accIdAndName[0];
-    this.nextNodeOptions['paginationData'] = this.widgetTileModel.paginationData
+  // Prepare filter options from the other parts of the program so that the url can be structured accordingly.
+  _prepareFilterOptions(options){
+    this.filterOptions['baseUrl'] = Variables.hostId;
+    this.filterOptions['accId'] = this.params.accIdAndName[0];
+    this.filterOptions['paginationData'] = this.widgetTileModel.paginationData
     if(options){
       this.widgetTileModel.paginationData.getNextNode = true; // Set it to true so when the re-render happens,
       // getWidgetTileTableCollectionData method will be able to fetch the next node with search query params.
-      this.nextNodeOptions['query'] = {};
+      this.filterOptions['query'] = {};
       Object.keys(options).forEach((opts) => {
-        this.nextNodeOptions.query[opts] = options[opts];
+        this.filterOptions.query[opts] = options[opts];
       })
     }
   };
 
   // Fetch next nodes only for fetchable widgets.
   async fetchNextNode(){
-    this._prepareNextNodeOptions();
-    // Check if this method is invoked by table filter, If yes, change the roomConstantKey into Filter room constant key.
-    // So that the pagination can be handled accordingly.
-    if(this.nextNodeOptions.query){
-      if(tableViewConstants.filterConstantKeys[this.roomConstant]){
-        this.roomConstant = tableViewConstants.filterConstantKeys[this.roomConstant];
-      }
-    }
-    this.nextNode = await fetch(this.fetchableWidgets[this.roomConstant](this.nextNodeOptions));
+    this._prepareFilterOptions();
+    this.nextNode = await fetch(this.fetchableWidgets[this.roomConstant](this.filterOptions));
     this.nextNodeData = await this.nextNode.json();
     this.rawRoomModel = this.nextNodeData.data.result;
     // Commented this line because when we change it to false, NextNode will not get fetched when the data changes,
@@ -342,12 +346,20 @@ class TableView extends React.Component {
 
   // Check for fetchable widgets.
   isFetchableWidget(){
+    if(!this.roomConstant) this.getTableHeaders(); // Sometimes when the component is being rendered and when the component
+    // is being updated, this.roomConstant becomes undefined, so if its undefined get the room-constant before proceeding.
     return Object.keys(this.fetchableWidgets).includes(this.roomConstant);
   };
 
   // Filter the converted collection for pagination.
   filterCollection(collection){
-    this.filteredCollection = collection.slice(this.widgetTileModel.paginationData.skipCount, this.widgetTileModel.paginationData.limitCount);
+    // When the filter happens in page 2 or so, This method tries to filter the collection irrespective of the collection length.
+    // Let's say we are in page 2, That time skipCount and limitCount will be 15 and 30 and our search result is just 2.
+    // To avoid that problem, Only if the collection length is greater than default limit, do the slicing of the collection.
+    this.filteredCollection = collection;
+    if(collection.length >= this.paginationConstants.PAGINATION_DEFAULT_LIMIT){
+      this.filteredCollection = collection.slice(this.widgetTileModel.paginationData.skipCount, this.widgetTileModel.paginationData.limitCount);
+    }
     this.state.metadataTableState.tableLoader && !this.state.metadataTableState.keepLoader && this._toggleTableLoader(false);
   };
 
@@ -368,9 +380,14 @@ class TableView extends React.Component {
   async getWidgetTileTableCollectionData(){
     this.filterEnabled = false;
     var convertedCollection = [];
-    this.rawRoomModel = await this.getRoomConstantCollection();
-    this.getTableHeaders(); // Get the table headers!
     this.shouldFetchForWidget = this.widgetTileModel.paginationData.getNextNode && this.isFetchableWidget(); // Check for fetchable widgets.
+    if (this.isFetchableWidget() && !this.filterInitiated) {
+      this.rawRoomModel = await this.getRoomConstantCollection();
+    } else if (!this.isFetchableWidget()) {
+      this.rawRoomModel = await this.getRoomConstantCollection();
+      this.filterInitiated && this.clientSideFilter();
+    }
+    this.getTableHeaders(); // Get the table headers!
     this.shouldFetchForWidget && await this.fetchNextNode();
     if(this.rawRoomModel){
       this.rawRoomModel.map((data) => {
@@ -380,21 +397,26 @@ class TableView extends React.Component {
         var arrangedObj = arrangeObj(convertedModel, this.propertyStatusRequiredKey[this.roomConstant]);
         arrangedObj = this._checkForConvertableConstant(arrangedObj);
         convertedCollection.push(arrangedObj);
-      });  
+      });
     };
     this.filterCollection(convertedCollection);
     this.state.metadataTableState.cellValues = this.filteredCollection;
     this._checkAndEnablePaginationView(convertedCollection);
     this.filterEnabled && this._setFilterTableState();
+    this.widgetTileModel.paginationData.getNextNode = false;
+  };
+
+  _getRoomConstantKey(){
+    this.roomConstant = _.findKey(this.widgetTileModel.data.userStatusMap, function(value) { // Using lodash function here to get the key by its value!
+      return value === this.widgetTileModel.data.selectedRoomConstant;
+    }.bind(this));
   };
   
   // Get the table headers for the selected widget tile!
   getTableHeaders() {
     this.state.metadataTableState.headerValue = undefined; // Set the initial value
     if(this.widgetTileModel.data.userStatusMap !== undefined && !this.roomConstant){
-      this.roomConstant = _.findKey(this.widgetTileModel.data.userStatusMap, function(value) { // Using lodash function here to get the key by its value!
-          return value === this.widgetTileModel.data.selectedRoomConstant;
-      }.bind(this));
+      this._getRoomConstantKey();
       this.state.metadataTableState.headerValue = this.propertyStatusTableHeader[this.roomConstant];
     } else {
       this.state.metadataTableState.headerValue = this.propertyStatusTableHeader[this.roomConstant];
