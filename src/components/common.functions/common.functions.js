@@ -1,14 +1,10 @@
 import {getStorage} from "../../Controller/Storage/Storage";
+import {getParsedUrl} from "./node.convertor";
 
 const brewDate = require("brew-date");
 const axios = require("axios");
 const Variables = require("../Variables");
 const storage = require("../../Controller/Storage/Storage")
-
-// Handle checkin time format!
-export function handleTimeFormat(time) {
-    return brewDate.timeFormat(time);
-}
 
 // get current lodgeId!
 export function getLodgeId(){
@@ -77,12 +73,6 @@ export function compareTime(time1, time2){
     return undefined;
   }
 }
-
-// get today's date in date object!
-export function loadDate(){
-  return new Date();
-}
-
 
 // Get number of days stayed based on the current data!
 export function getStayedDays(checkinDate, checkoutDate){
@@ -208,6 +198,12 @@ export function formatDate(date) {
 // Determine GST!
 export function determineGSTPercent(price){
   return price > 7500 ? 0.18 : 0.12;
+};
+
+// Check for secure connections.
+export function _checkForSecureConnections(){
+  var localServer = 'localhost';
+  return getParsedUrl().hostname === localServer;
 };
 
 // Get greetings!

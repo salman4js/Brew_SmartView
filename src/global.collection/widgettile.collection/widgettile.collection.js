@@ -195,6 +195,14 @@ class Collections { // Design pattern --> Singleton class!
     });
   };
 
+  // Filter the data in the collection by using the passed regular expression(searchPattern).
+  filterCollections(collectionName, searchKey, searchValue, searchPattern){
+    var collection = CollectionInstance.getCollections(collectionName).data;
+    return _.filter(collection, function(model){
+      return model[searchKey] && searchValue && searchPattern.test(model[searchKey]);
+    });
+  };
+
   // Delete the collections by the collection name.
   deleteCollections(collectionName){
     delete widgetTileModelSchema.collections[collectionName];

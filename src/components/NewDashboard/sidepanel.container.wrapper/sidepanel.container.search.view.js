@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import MetadataFields from "../../fields/metadata.fields.view";
 import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
-import {nodeConvertor, updateMetadataFields, filterCollections} from "../../common.functions/node.convertor";
+import {nodeConvertor, updateMetadataFields } from "../../common.functions/node.convertor";
 
 class SidepanelContainerSearchView extends React.Component {
     constructor(props) {
@@ -54,11 +54,11 @@ class SidepanelContainerSearchView extends React.Component {
             // When the search string is number, which means the user is searching with the room number.
             // In that case, find the room model and then from the room model id, find the user-model,
             // from the user-model, add only customer-name into the room model and return it,
-            this.filteredCollection = _.clone(filterCollections('roomsListCollection', 'roomno',
+            this.filteredCollection = _.clone(CollectionInstance.filterCollections('roomsListCollection', 'roomno',
                 this.search.searchString, new RegExp(`^${this.search.searchString}\\d*`)));
             this.addGuestDetails();
         } else {
-            this.filteredCollection = _.clone(filterCollections('userCollections', 'username',
+            this.filteredCollection = _.clone(CollectionInstance.filterCollections('userCollections', 'username',
                 this.search.searchString, new RegExp(`^${this.search.searchString}\\d*`, 'i')));
             this.addRoomDetails();
         }

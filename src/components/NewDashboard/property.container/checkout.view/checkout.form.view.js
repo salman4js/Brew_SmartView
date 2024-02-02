@@ -19,7 +19,7 @@ import {
     validateFieldData,
     updateMetadataFields,
     getCurrentUser,
-    createMetadataFields, filterKeysInObj
+    createMetadataFieldsWithBaseObj, filterKeysInObj
 } from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 import propertyContainerConstants from "../property.container.constants";
@@ -566,7 +566,7 @@ class CheckOutView extends React.Component {
         propertyConstants['roomId'] = propertyConstants.room;
         // End of required data for edit customer details...
         requiredKeys = Object.keys(propertyConstants);
-        propertyData = createMetadataFields(filterKeysInObj(userModel, requiredKeys), propertyConstants, metadataFieldState);
+        propertyData = createMetadataFieldsWithBaseObj(filterKeysInObj(userModel, requiredKeys), propertyConstants, metadataFieldState);
         this.onCloseCustomModal(); // Close the custom modal to prevent unexpected behaviour.
         this.props.dashboardController({dashboardMode: propertyContainerConstants.DASHBOARD_MODE.propertyReadView,
             queryParams: [{key: 'selectedModel', value: this.state.userModel._id}, {key: 'isEditable', value: 'true'}, {key: 'method', value: 'edit-user-model'},

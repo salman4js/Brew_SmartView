@@ -29,20 +29,6 @@ var commandsConstant = Object.freeze({
         dialogPlaceholder: 'Enter the name of the excel file'
     },
 
-    TABLE_FILTER: {
-        tableFilterLabel: 'Filter Options',
-        footerButtons: {
-          primaryBtn: 'Filter',
-          secondaryBtn: 'Cancel'
-        },
-        dialogOptionsLabelAndPlaceholder: {
-          checkoutBy: 'Checkout By',
-          checkinBy: 'Checkin By',
-          username: 'Customer Name'
-        },
-        tableFilterAllowedKeys: ['history']
-    },
-
     PropertySearchKey: Object.freeze({
         user: ['afterCheckin', 'upcomingCheckout', 'upcomingPrebook'],
         _id: ['afterCheckedout', 'afterCleaned', 'inCleaning']

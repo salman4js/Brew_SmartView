@@ -128,7 +128,6 @@ function _validateData(status, setStatus){
   })
 };
 
-
 // Validate the field data...
 export function validateFieldData(status, setStatus) {
   return new Promise((resolve, reject) => {
@@ -332,12 +331,20 @@ export function getFieldsData(field, name){
   return result;
 };
 
+// Filter any array of objects by comparing the every object with the search object.
+export function filterArrayOfObjectsWithSearchObjects(dataArray, searchObject){
+  const resultArray = _.filter(dataArray, (item) => {
+    return _.every(searchObject, (value, key) => _.isEqual(item[key], value));
+  });
+  return resultArray;
+};
+
 // Create an array of metadata field state based on the object passed.
 /**
  * This method is useful to create metadataField states
  * It will take only object with key and value of required state fields.
  **/
-export function createMetadataFields(obj, metadataAttribute, metadataFields){
+export function createMetadataFieldsWithBaseObj(obj, metadataAttribute, metadataFields){
   var metadataFieldArray = [];
   Object.keys(obj).forEach((key) => {
     var fieldObj = _.clone(metadataFields);
@@ -430,14 +437,6 @@ export function convertObjectValue(arr, key, objRules){
     };
   });
   return arr;
-};
-
-// Filter the data in the collection by using the passed regular expression(searchPattern).
-export function filterCollections(collectionName, searchKey, searchValue, searchPattern){
-  var collection = CollectionInstance.getCollections(collectionName).data;
-  return _.filter(collection, function(model){
-    return model[searchKey] && searchValue && searchPattern.test(model[searchKey]);
-  });
 };
 
 // This method is a helper function for renderCustomHTMLContent to replace the values with the fetched values.

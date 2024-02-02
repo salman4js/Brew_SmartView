@@ -8,6 +8,7 @@ import axios from 'axios';
 import Modals from "./Modals";
 import { defaultStorage, setStorage } from '../Controller/Storage/Storage';
 import CollectionInstance from '../global.collection/widgettile.collection/widgettile.collection';
+import {_checkForSecureConnections} from "./common.functions/common.functions";
 
 const Login = () => {
 
@@ -228,11 +229,14 @@ const Login = () => {
   // When the route changes to login in any circumstances,
   // delete the entire collection to keep the data in sync.
   function _updateGlobalCollections(){
-    CollectionInstance.deleteAllCollections();
-    return;
+    return CollectionInstance.deleteAllCollections();
   };
   
   useEffect(() => {
+    // Check for local host instance, If its local host, block the request.
+    if(_checkForSecureConnections()){
+      setLoading(true);
+    }
     localStorage.clear();
     _updateGlobalCollections();
   }, [])
