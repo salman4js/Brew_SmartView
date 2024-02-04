@@ -1,4 +1,3 @@
-import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
 import {getStorage} from "../../Controller/Storage/Storage";
 
 const saveAs = require('file-saver');
@@ -91,7 +90,7 @@ export function extractStateValue(state, value){
 
 // Convert the data into server understandable format!
 export function nodeConvertor(status, fieldProp){ // fieldProp will take array as an input,
-  // whatever values are there in the fieldProp will returned in the result object.
+  // whatever values are there in the fieldProp will be returned in the result object.
   var valuesArr = fieldProp !== undefined ? fieldProp : [];
   const result = {};
   status.map((options, index) => {
@@ -100,11 +99,9 @@ export function nodeConvertor(status, fieldProp){ // fieldProp will take array a
     } else {
       result[options.name] = options.value !== undefined ? options.value : options.defaultValue;
     }
-    
     // Send any required field value other the 'name' if asked!
     for(var value of valuesArr){
-      var fieldValue = options[value];
-      result[value] = fieldValue;
+      result[value] = options[value];
     };
   })
   return result;

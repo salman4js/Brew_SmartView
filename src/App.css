@@ -931,6 +931,22 @@ td {
   color: black;
 }
 
+.metadata-command-facets{
+  margin-left: 20px;
+  background-color: #e7f8f8;
+  align-items: center;
+  border-radius: 3px;
+  font-size: 14px;
+  border: 1px solid #33c6c8;
+}
+
+.metadata-command-facets-container{
+  padding-left: 0.5em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  height: calc(2.5em / 1.5 * 100%);
+}
+
 .metadata-command-fields:hover{
   background-color: #f1f1f1
 }

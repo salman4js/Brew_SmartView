@@ -9,7 +9,8 @@ const CommnadHelper = (props) => {
         {props.data?.map((options, index) => {
           if(!options.disabled){
             return(
-              <span className = "metadata-command-fields brew-cursor" onClick = {() => options.onClick(options)}>
+              <span className = {props.options?.isFacets ? 'metadata-command-fields metadata-command-facets brew-cursor' : "metadata-command-fields brew-cursor"}
+                    onClick = {() => options.onClick(options)}>
                 {options.value}
               </span>
             )
@@ -20,7 +21,7 @@ const CommnadHelper = (props) => {
   }
   
   return(
-    <div className = "metadata-command-helper">
+    <div className = {props.options?.isFacets ? 'metadata-command-facets-container' : "metadata-command-helper"}>
       {_showCommands()}
     </div>
   )

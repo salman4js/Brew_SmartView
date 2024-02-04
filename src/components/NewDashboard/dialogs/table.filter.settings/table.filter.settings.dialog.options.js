@@ -107,7 +107,7 @@ function afterCheckinFilterOptions(){
         isRequired: false
     }, {
         value: undefined,
-        placeholder: lang.TABLE_FILTER_DIALOG.afterCheckin.dialogOptionsLabelAndPlaceholder.idNumber,
+        placeholder: lang.TABLE_FILTER_DIALOG.afterCheckin.dialogOptionsLabelAndPlaceholder.checkinBy,
         name: 'aadharcard',
         attribute: 'textField',
         isRequired: false

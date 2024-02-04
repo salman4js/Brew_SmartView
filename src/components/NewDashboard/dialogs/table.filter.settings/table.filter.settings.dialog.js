@@ -14,11 +14,13 @@ class CommandsTableFilterSettings {
 
     onFilter(){
         // Get the state value from customBodyViewOptions.
-        this.status.eventHelpers.validateStateFields().then((result) => {
+        this.status.eventHelpers.validateStateFields({fieldProp: ['placeholder']}).then((result) => {
             // When filtering some state field values could be undefined, Have to remove all those undefined values before making a request.
-            result = _.omitBy(result, _.isNil)
+            var filterParam = _.omitBy(result.node, _.isNil);
+            // Prepare facets options.
+            this.status.eventHelpers.prepareFacetOptions({filterParam, fieldProp: result.fieldProp});
             this.status.eventHelpers.triggerTableLoader(true, false);
-            this.status.eventHelpers.prepareFilterOptions(result);
+            this.status.eventHelpers.prepareFilterOptions(filterParam);
             this.status.eventHelpers.collapseCustomModal();
         });
     };
