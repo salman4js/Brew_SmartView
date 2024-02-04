@@ -134,7 +134,6 @@ class TableView extends React.Component {
   templateHelpers(){
     this.prepareTemplateHelpersData();
     this.prepareTableData(); // When the table data is ready, Call the metadata table view!
-    this.setupEvents();
     return this.tableViewTemplate.tableViewTemplateHelper(this.state.metadataTableState, this.widgetTileModel);
   };
   
@@ -152,11 +151,6 @@ class TableView extends React.Component {
   // To render the custom modal, use _prepareCustomModal method and to render custom modal body view, Use the flag renderCustomBodyView!
   _renderCustomModalBodyView(){
     return <MetadataFields data = {this.state.customModalBodyViewOptions} updateData = {(updatedData) => this.setState({customModalBodyViewOptions: updatedData})}/>
-  };
-  
-  // Set up events for any actions!
-  setupEvents(){
-    this.templateHelpersData.options.onBack = this.onBackClick.bind(this);
   };
 
   // Handle back action triggered on left side controller!
@@ -307,7 +301,6 @@ class TableView extends React.Component {
 
   // Execute action when table filter model triggered.
   onFilterTableIconClicked(){
-    this.filterInitiated = true;
     // When the filter action is triggered, initialize the custom modal with the table dialog options from command table filter settings.
     this._prepareCustomModal(TableFilterSettingsDialog.execute(this.templateHelpersData.options));
   };
@@ -318,6 +311,7 @@ class TableView extends React.Component {
       selectedRoomConstant: this.widgetTileModel.data.selectedRoomConstant,
       roomConstantKey: this.roomConstant,
       allowTableFilterMode: this.checkForTableFilterMode(),
+      onBack: () => this.onBackClick(),
       onClickTableFilterMode: () => this.onFilterTableIconClicked(),
       params: this.params,
       nodes: this.state.metadataTableState.checkboxSelection,
@@ -391,6 +385,7 @@ class TableView extends React.Component {
        this._restoreFilterOptions();
        return;
       }
+      this.filterInitiated = true;
       this.widgetTileModel.paginationData.getNextNode = true; // Set it to true so when the re-render happens,
       // getWidgetTileTableCollectionData method will be able to fetch the next node with search query params.
       this.filterOptions['query'] = {};
@@ -549,7 +544,7 @@ class TableView extends React.Component {
     return(
       <>
         <MetadataFields data = {this.panelFieldState} />
-        {this.state.facets.isFacetsEnabled && this._renderFacetsPanel()}
+        {this.state.facets?.isFacetsEnabled && this._renderFacetsPanel()}
         {this.templateHelpers()}
         {this.state.customModal?.show && this._renderCustomModal()}
       </>

@@ -33,13 +33,13 @@ const SidepanelWrapper = (props, ref) => {
     selectedId: [],
     listFilter: undefined
   });
-  
+
   // Sidepanel view state handler!
   const [sidepanelView, setSidepanelView] = useState({
     roomListTreePanel: true, // By default, roomListTreePanel is true!
     filterRoomPanel: false
   });
-  
+
   // Filter input metadata fields!
   const [filterState, setFilterState] = useState([{
     value: undefined,
@@ -73,7 +73,7 @@ const SidepanelWrapper = (props, ref) => {
     },
     callBackAfterUpdate: _applyFilter
   }]);
-  
+
   // Custom modal state handler!
   const [customModal, setCustomModal] = useState({
     show: false,
@@ -93,17 +93,17 @@ const SidepanelWrapper = (props, ref) => {
   function isFilterApplied(){
     return sidepanel.listFilter && sidepanel.listFilter.length > 0;
   };
-  
+
   // Update sidepanel height!
   function updateSidePanelHeight(value){
     setSidepanel(prevState => ({...prevState, height: value}))
   };
-  
+
   // toggle side panel loader!
   function _toggleLoader(value){
     setSidepanel(prevState => ({...prevState, isLoading: value}));
   };
-  
+
   // Sidepanel child view!
   function sidepanelChildView(){
     if(sidepanel.isLoading){
@@ -112,7 +112,7 @@ const SidepanelWrapper = (props, ref) => {
       return childViewMainContent();
     }
   };
-  
+
   // Sidepanel chid view main content!
   function childViewMainContent(){
     if(sidepanelView.roomListTreePanel){
@@ -121,13 +121,13 @@ const SidepanelWrapper = (props, ref) => {
       return filterPanelView();
     }
   };
-  
+
   // Sidepanel filter state view!
   function filterPanelView(){
     return(
-      <div className = 'sidepanel-filter-panel'>
-        <MetadataFields data = {filterState} updateData = {setFilterState}/>
-      </div>
+        <div className = 'sidepanel-filter-panel'>
+          <MetadataFields data = {filterState} updateData = {setFilterState}/>
+        </div>
     )
   };
 
@@ -135,7 +135,7 @@ const SidepanelWrapper = (props, ref) => {
   function _renderSearchBarView(){
     return <SidepanelContainerSearchView updateFilterData = {(filterData) => _updateFilterData(filterData)} />
   }
-  
+
   // Sidepanel room list tree view!
   function roomListTreeView(){
     return (
@@ -155,12 +155,12 @@ const SidepanelWrapper = (props, ref) => {
         </>
     )
   };
-  
+
   // Render custom inline menu for item panel collection!
   function _renderCustomInlineMenu(data){
     return(
-      <span style = {{marginBottom: '2px'}} onClick = {(e) => _toggleCustomModal(data, e, true)}>
-        <span className = "inline-menu" style = {{border: '2px solid black', 
+        <span style = {{marginBottom: '2px'}} onClick = {(e) => _toggleCustomModal(data, e, true)}>
+        <span className = "inline-menu" style = {{border: '2px solid black',
           backgroundColor: "lightblue", color: 'black', padding: '0px 2px 0px 2px'}}>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
             <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
@@ -169,7 +169,7 @@ const SidepanelWrapper = (props, ref) => {
       </span>
     )
   };
-  
+
   // Get form mode based on room status constant!
   function getFormMode(model) {
     const status = model.roomStatusConstant;
@@ -180,8 +180,8 @@ const SidepanelWrapper = (props, ref) => {
     } else {
       return sidepanelConstants.formMode.ROOM_STATUS_MODE;
     }
-  };  
-  
+  };
+
   // Enabled filter panel!
   function _setFilterPanel(value){
     // Generate options and update filterpanel data.
@@ -189,19 +189,19 @@ const SidepanelWrapper = (props, ref) => {
     updateMetadataFields('suiteType', {options: filterPanelDropdownOptions}, filterState, setFilterState);
     _toggleSidepanelView(!value, value);
   };
-  
+
   // Enable tree panel!
   function _setTreePanel(value){
     _toggleSidepanelView(value, !value);
   };
-  
+
   // Apply filter for the user filtered data!
   function _applyFilter(){
     var filterData = nodeConvertor(filterState);
     filterData.checkOutDate = formatDate(filterData.checkOutDate);
     props.updateFilterData(filterData);
   };
-  
+
   // Toggle between sidepanel view!
   function _toggleSidepanelView(roomListTree, filterPanel){
     // Choose header and change panel state!
@@ -216,12 +216,12 @@ const SidepanelWrapper = (props, ref) => {
     _updateSelectedIdList(uId);
     props.selectedModel(model, dashboardMode);
   };
-  
+
   // Highlight selected ID!
   function _updateSelectedIdList(id){
     setSidepanel(prevState => ({...prevState, selectedId: [...prevState.selectedId, id]}));
   };
-  
+
   // Render panel item view collection!
   function _renderPanelItemViewCollection(selectedType){
     return sidepanel.childData.map((options) => {
@@ -236,11 +236,11 @@ const SidepanelWrapper = (props, ref) => {
     // Determine the status color code!
     var statusColorCode = getStatusCodeColor(options.roomStatusConstant);
     return <PanelItemView data = {options.roomno} _id = {options._id} showIndentationArrow = {true} subData = {options.customerName}
-                   allowSubData = {options.allowSubData} showInlineMenu = {true} customInlineMenu = {true} colorCode = {statusColorCode}
-                   onClick = {(uId) => panelItemOnClick(uId, options)} selectedItem = {sidepanel.selectedId}
-                   _renderCustomInlineMenu = {() => _renderCustomInlineMenu(options)} />
+                          allowSubData = {options.allowSubData} showInlineMenu = {true} customInlineMenu = {true} colorCode = {statusColorCode}
+                          onClick = {(uId) => panelItemOnClick(uId, options)} selectedItem = {sidepanel.selectedId}
+                          _renderCustomInlineMenu = {() => _renderCustomInlineMenu(options)} />
   };
-  
+
   // Get side panel loader options!
   function getLoaderOpts(){
     return{
@@ -249,16 +249,16 @@ const SidepanelWrapper = (props, ref) => {
       textCenter: true
     }
   };
-  
+
   // Side panel custom modal body item view!
   function customModalBodyItemView(){
     var data = customModal.customData,
-      headerValue = sidepanelConstants.tableHeader.MORE_DETAILS_HEADER,
-      cellValues = [{_id: 'dummyInstance', floorNo: data.floorNo, bedCount: data.bedCount, extraBedPrice: data.extraBedPrice, roomPrice: data.price}],
-      tableData = {headerValue, cellValues, tableCellWidth: "180px"};
-    return <MetadataTableView data = {tableData} /> 
+        headerValue = sidepanelConstants.tableHeader.MORE_DETAILS_HEADER,
+        cellValues = [{_id: 'dummyInstance', floorNo: data.floorNo, bedCount: data.bedCount, extraBedPrice: data.extraBedPrice, roomPrice: data.price}],
+        tableData = {headerValue, cellValues, tableCellWidth: "180px"};
+    return <MetadataTableView data = {tableData} />
   };
-  
+
   // Trigger custom modal!
   function _toggleCustomModal(data, e, value){
     e && e.stopPropagation();
@@ -274,12 +274,12 @@ const SidepanelWrapper = (props, ref) => {
         {key: 'uniqueId', value: 'roomId'}, {key: 'clientModelKey', value: 'updatedModel'}, {key: 'serverModelKey', value: 'updatedData'}],
       selectedRoomConstant: PropertyContainerConstants.PROPERTY_VIEW.propertyRoom, roomModel: data, propertyData: propertyData, goToLocation: true});
   };
-  
+
   // Render custom modal!
   function _renderCustomModal(){
     return <CustomModal modalData = {customModal} showBodyItemView = {customModalBodyItemView} />
   };
-  
+
   // Prepare filter panel options!
   function prepareFilterPanelOptions(parentData){
     var result = [];
@@ -291,7 +291,7 @@ const SidepanelWrapper = (props, ref) => {
     };
     return result;
   };
-  
+
   // Fetch the available room types!
   async function fetchRoomsTypes(){
     _toggleLoader(true);
@@ -310,7 +310,7 @@ const SidepanelWrapper = (props, ref) => {
       return result.data.message;
     };
   };
-  
+
   // Fetch the available rooms list!
   async function fetchRoomsLists(){
     var options = {getWidgetTileCollection: true};
@@ -331,12 +331,12 @@ const SidepanelWrapper = (props, ref) => {
     });
     return roomTypeArr;
   };
-  
+
   // Reset client side data to its original data value!
   function _resetClientData(){
     setSidepanel(prevState => ({...prevState, height: undefined, selectedId: []}));
   };
-  
+
   // Update the child model on every silent true state update!
   function updateModel(){
     if(props.selectedModelData.roomModel !== undefined){ // this condition is added here because when we click on cancel on the property container 
@@ -369,7 +369,7 @@ const SidepanelWrapper = (props, ref) => {
       }
     }
   };
-  
+
   // Expose child function to the parent component!
   React.useImperativeHandle(ref, () => ({
     _setFilterPanel, _setTreePanel
@@ -377,7 +377,7 @@ const SidepanelWrapper = (props, ref) => {
 
   // Update the sidepanel height when props.data.height changes!
   useEffect(() => {
-    if(!props.controller.reloadSidepanel.silent){ 
+    if(!props.controller.reloadSidepanel.silent){
       fetchRoomsTypes();
     } else {
       updateModel();
@@ -385,17 +385,17 @@ const SidepanelWrapper = (props, ref) => {
     _resetClientData();
     updateSidePanelHeight(props.data.height);
   }, [props.data.height, props.controller.reloadSidepanel]);
-  
+
   // Panel View!
   function _renderPanelView(){
     return(
-      <>
-        {customModal.show && _renderCustomModal()}
-        <PanelView data = {sidepanel} childView = {() => sidepanelChildView()} />
-      </>
+        <>
+          {customModal.show && _renderCustomModal()}
+          <PanelView data = {sidepanel} childView = {() => sidepanelChildView()} />
+        </>
     )
   }
-  
+
   return _renderPanelView();
 }
 
