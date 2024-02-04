@@ -1,6 +1,7 @@
 import MetadataTable from '../../../metadata.table.view/metadata.table.view';
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import PaginationView from "./pagination.view/pagination.view";
+import FacetView from "./facet.view/facet.view";
 import TableToolbarView from "../../table.toolbar.view/table.toolbar.view";
 import React from "react";
 
@@ -40,6 +41,10 @@ class TableViewTemplateHelpers {
     // Render table toolbar menu action items.
     renderMenuActionItems() {
         return <TableToolbarView options={this.data.options}/>
+    };
+
+    _renderFacetContainer(facetOptions){
+        return <FacetView data = {facetOptions}/>
     };
 
     // Table view template helpers!

@@ -4,7 +4,7 @@ import TableViewTemplateHelpers from './table.view.template';
 import Variables from "../../../Variables";
 import {
   arrangeObj,
-  convertObjectValue, filterArrayOfObjectsWithSearchObjects,
+  convertObjectValue, extractStateValue, filterArrayOfObjectsWithSearchObjects,
   filterKeysInObj,
   nodeConvertor,
   validateFieldData
@@ -24,6 +24,8 @@ class TableView extends React.Component {
       propertyDetails: props.propertyDetails,
       allowPagination: false,
       isHeightAdjustedForPagination: false,
+      isHeightAdjustedForFacets: false,
+      facetOptions: undefined,
       paginationData: {
         count: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_COUNT,
         skipCount: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_SKIP_COUNT,
@@ -82,6 +84,10 @@ class TableView extends React.Component {
           }
         ],
       },
+      facets: {
+        isFacetsEnabled: false,
+        facetsHeight: undefined
+      },
       customModal: {
         show: false,
         onHide: this.onCloseCustomModal.bind(this),
@@ -135,6 +141,11 @@ class TableView extends React.Component {
   // Render custom modal!
   _renderCustomModal(){
     return this.tableViewTemplate._renderCustomModal(this.state.customModal);
+  };
+
+  // Render Facets Panel!
+  _renderFacetsPanel(){
+    return this.tableViewTemplate._renderFacetContainer(this.widgetTileModel.facetOptions);
   };
 
   // Table view allows other components or commands model to render custom modal body view.
@@ -203,13 +214,34 @@ class TableView extends React.Component {
     }
   };
 
+  _adjustHeightForFacets(){
+    if(this.state.facets.isFacetsEnabled && this.state.facets.facetsHeight && !this.widgetTileModel.isHeightAdjustedForFacets){
+      this.widgetTileModel.height = this.widgetTileModel.height - this.state.facets.facetsHeight;
+      this.widgetTileModel.isHeightAdjustedForFacets = true;
+    } else if (this.widgetTileModel.isHeightAdjustedForFacets && !this.state.facets.facetsHeight){
+      this.widgetTileModel.height = this.props.height;
+      this.widgetTileModel.isHeightAdjustedForFacets = false;
+    }
+  };
+
+  // Get the height of the facet panel container from the facet view.
+  _setHeightForFacets(options){
+    if(!this.widgetTileModel.isHeightAdjustedForFacets && options.facetsHeight){
+      this._updateComponentState({key: 'facets', value: {isFacetsEnabled: true, facetsHeight: options.facetsHeight}}, this._adjustHeightForFacets.bind(this));
+    }
+    if(this.widgetTileModel.isHeightAdjustedForFacets && !options.facetsHeight){
+      this._updateComponentState({key: 'facets', value: {isFacetsEnabled: false, facetsHeight: options.facetsHeight}}, this._adjustHeightForFacets.bind(this));
+    }
+  };
+
   // Validate state fields, this state fields would be from the non-component file such as commands model.
   // Fields cannot be validated by node convertor if it's not a component file,
   // so table.view allows to render custom modal body view and validate the fields passed by the non-component file.
-  async validateAbstractedStateFields(){
+  async validateAbstractedStateFields(options){
     var isValid = await validateFieldData(this.state.customModalBodyViewOptions, (validatedData) => this.setState({customModalBodyViewOptions: validatedData}));
     if(isValid.length === 0){
-      return nodeConvertor(this.state.customModalBodyViewOptions);
+      return options.fieldProp ? {node: nodeConvertor(this.state.customModalBodyViewOptions), fieldProp: extractStateValue(this.state.customModalBodyViewOptions, options.fieldProp)}
+          : nodeConvertor(this.state.customModalBodyViewOptions);
     }
   };
 
@@ -257,6 +289,17 @@ class TableView extends React.Component {
     this._updateMetadataTableState();
   };
 
+  _setFacetState(val, height){
+    this.state.facets.isFacetsEnabled = val;
+    this._updateComponentState({key: 'facets', value: {isFacetsEnabled: val, facetsHeight: height}});
+  };
+
+  _updateComponentState(state, nextFunction){
+    this.setState({ [state.key]: state.value }, async () => {
+      _.isFunction(nextFunction) && await nextFunction();
+    })
+  };
+
   // Check if the table filter mode is enabled for the roomConstantKey.
   checkForTableFilterMode(){
     return this.roomConstant && TableFilterSettingsDialog && TableFilterSettingsDialog.enabled(this.roomConstant);
@@ -285,8 +328,9 @@ class TableView extends React.Component {
         updateCheckboxSelection: (value, checkboxIndex) => this._updateCheckboxSelection(value, checkboxIndex),
         triggerCustomModel: (options) => this._prepareCustomModal(options),
         prepareFilterOptions: (options) => this._prepareFilterOptions(options),
+        prepareFacetOptions: (options) => this._prepareFacetOptions(options),
         collapseCustomModal: () => this.onCloseCustomModal(),
-        validateStateFields: () => this.validateAbstractedStateFields(),
+        validateStateFields: (options) => this.validateAbstractedStateFields(options),
         removeFromTableCollection: (model) => this.removeFromTableCollection(model),
         updateSelectedModel: (roomModel, dashboardMode, userModel) => this.props.updateSelectedModel(roomModel, dashboardMode, userModel)
       }
@@ -317,12 +361,36 @@ class TableView extends React.Component {
     }
   };
 
+  _prepareFacetOptions(options){
+    // When creating facet options, attach table view event also so that when facet has been cleared,
+    // Facet view can let the table view know that the facet has been cleared.
+    // Facets will get enabled when filter action is triggered.
+    this._setFacetState(true); // And table has to know about the facets data,
+    // So facets has to come from originating place of filter.
+    options['originatingView'] = {};
+    options.originatingView.prepareFilterOptions =  (options) => this.templateHelpersData.options.eventHelpers.prepareFilterOptions(options);
+    options.originatingView._toggleTableLoader = (value, keepLoader) => this.templateHelpersData.options.eventHelpers.triggerTableLoader(value, keepLoader);
+    options.originatingView._setHeightForFacets = (options) => this._setHeightForFacets(options);
+    this.widgetTileModel.facetOptions = options;
+  };
+
+  // Restore filter options flag, When filter options is empty object.
+  _restoreFilterOptions(){
+    this.filterInitiated = false;
+    this.widgetTileModel.isHeightAdjustedForPagination = false;
+    this.filterOptions.query && delete this.filterOptions.query;
+  };
+
   // Prepare filter options from the other parts of the program so that the url can be structured accordingly.
   _prepareFilterOptions(options){
     this.filterOptions['baseUrl'] = Variables.hostId;
     this.filterOptions['accId'] = this.params.accIdAndName[0];
     this.filterOptions['paginationData'] = this.widgetTileModel.paginationData
     if(options){
+      if(_.isEmpty(options)){
+       this._restoreFilterOptions();
+       return;
+      }
       this.widgetTileModel.paginationData.getNextNode = true; // Set it to true so when the re-render happens,
       // getWidgetTileTableCollectionData method will be able to fetch the next node with search query params.
       this.filterOptions['query'] = {};
@@ -481,6 +549,7 @@ class TableView extends React.Component {
     return(
       <>
         <MetadataFields data = {this.panelFieldState} />
+        {this.state.facets.isFacetsEnabled && this._renderFacetsPanel()}
         {this.templateHelpers()}
         {this.state.customModal?.show && this._renderCustomModal()}
       </>
