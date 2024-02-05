@@ -1,17 +1,20 @@
 import lang from "../dialog.constants";
+import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 
 function historyTableFilterOptions(){
     return [{
         value: undefined,
         placeholder: lang.TABLE_FILTER_DIALOG.history.dialogOptionsLabelAndPlaceholder.checkoutBy,
         name: 'checkoutBy',
-        attribute: 'textField',
+        attribute: 'listField',
+        options: CollectionInstance.getAttribute('multipleLogins', 'username'),
         isRequired: false
     }, {
         value: undefined,
         placeholder: lang.TABLE_FILTER_DIALOG.history.dialogOptionsLabelAndPlaceholder.checkinBy,
         name: 'checkinBy',
-        attribute: 'textField',
+        attribute: 'listField',
+        options: CollectionInstance.getAttribute('multipleLogins', 'username'),
         isRequired: false
     }, {
         value: undefined,
@@ -27,7 +30,8 @@ function afterCleanedFilterOptions(){
         value: undefined,
         placeholder: lang.TABLE_FILTER_DIALOG.afterCleaned.dialogOptionsLabelAndPlaceholder.roomNo,
         name: 'roomno',
-        attribute: 'textField',
+        attribute: 'listField',
+        options: CollectionInstance.getAttribute('roomsListCollection', 'roomno'),
         isRequired: false
     }, {
         value: undefined,
@@ -39,7 +43,8 @@ function afterCleanedFilterOptions(){
         value: undefined,
         placeholder: lang.TABLE_FILTER_DIALOG.afterCleaned.dialogOptionsLabelAndPlaceholder.suiteType,
         name: 'suiteName',
-        attribute: 'textField',
+        attribute: 'listField',
+        options: CollectionInstance.getAttribute('roomTypes', 'suiteType'),
         isRequired: false
     }, {
         value: undefined,
@@ -61,7 +66,8 @@ function afterCheckinFilterOptions(){
         value: undefined,
         placeholder: lang.TABLE_FILTER_DIALOG.afterCheckin.dialogOptionsLabelAndPlaceholder.roomNo,
         name: 'roomno',
-        attribute: 'textField',
+        attribute: 'listField',
+        options: CollectionInstance.getAttribute('roomsListCollection', 'roomno'),
         isRequired: false
     }, {
         value: undefined,
@@ -73,7 +79,8 @@ function afterCheckinFilterOptions(){
         value: undefined,
         placeholder: lang.TABLE_FILTER_DIALOG.afterCheckin.dialogOptionsLabelAndPlaceholder.suiteType,
         name: 'suiteName',
-        attribute: 'textField',
+        attribute: 'listField',
+        options: CollectionInstance.getAttribute('roomTypes', 'suiteType'),
         isRequired: false
     }, {
         value: undefined,
@@ -103,11 +110,12 @@ function afterCheckinFilterOptions(){
         value: undefined,
         placeholder: lang.TABLE_FILTER_DIALOG.afterCheckin.dialogOptionsLabelAndPlaceholder.checkinBy,
         name: 'checkinBy',
-        attribute: 'textField',
+        attribute: 'listField',
+        options: CollectionInstance.getAttribute('multipleLogins', 'username'),
         isRequired: false
     }, {
         value: undefined,
-        placeholder: lang.TABLE_FILTER_DIALOG.afterCheckin.dialogOptionsLabelAndPlaceholder.checkinBy,
+        placeholder: lang.TABLE_FILTER_DIALOG.afterCheckin.dialogOptionsLabelAndPlaceholder.idNumber,
         name: 'aadharcard',
         attribute: 'textField',
         isRequired: false

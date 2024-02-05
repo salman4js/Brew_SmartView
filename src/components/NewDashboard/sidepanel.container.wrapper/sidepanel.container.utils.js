@@ -5,6 +5,9 @@ const Variables = require("../../Variables");
 // Get available room types!
 export async function getAvailableRoomTypes(lodgeId){
   const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/allroomtype`);
+  if(result.data.success){
+    CollectionInstance.setCollections('roomTypes', result.data.message);
+  };
   return result;
 };
 

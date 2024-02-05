@@ -67,7 +67,7 @@ class Collections { // Design pattern --> Singleton class!
       });
     } else {
       isArray = false;
-      isDataAdded = collectionData[modelName] !== undefined ? true : false;
+      isDataAdded = collectionData[modelName] !== undefined;
     }
     return {isDataAdded, isArray};
   };
