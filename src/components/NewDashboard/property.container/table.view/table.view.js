@@ -4,7 +4,9 @@ import TableViewTemplateHelpers from './table.view.template';
 import Variables from "../../../Variables";
 import {
   arrangeObj,
-  convertObjectValue, extractStateValue, filterArrayOfObjectsWithSearchObjects,
+  convertObjectValue,
+  extractStateValue,
+  filterArrayOfObjectsWithSearchObjects,
   filterKeysInObj,
   nodeConvertor,
   validateFieldData
@@ -351,7 +353,8 @@ class TableView extends React.Component {
       return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant]
           || (_.isFunction(this.setExpandedTableView) ? await this.setExpandedTableView() : []);
     } else {
-      return this.widgetTileModel.propertyDetails.userCollection;
+      // Create a shallow copy of the array before reversing
+      return [...this.widgetTileModel.propertyDetails.userCollection].reverse();
     }
   };
 

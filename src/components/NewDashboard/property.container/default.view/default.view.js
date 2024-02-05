@@ -195,7 +195,7 @@ class DefaultView extends React.Component {
       this.getWidgetTileCollections();
       var roomStatusConstants = getRoomStatusConstants(),
         cardViewCollectionProps = [],
-        tempData = []; // This is to verify the non added room status constant, and add them to the card body view with the count 0!
+        tempData = []; // This is to verify the non-added room status constant, and add them to the card body view with the count 0!
       this.state.data.roomCollection.map((model) => {
         var cardViewProps = this.getCardViewProps();
         roomStatusConstants.map((status) => {

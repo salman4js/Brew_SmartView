@@ -313,7 +313,7 @@ const SidepanelWrapper = (props, ref) => {
 
   // Fetch the available rooms list!
   async function fetchRoomsLists(){
-    var options = {getWidgetTileCollection: true};
+    var options = {getWidgetTileCollection: true, getMultipleLoginUsers: true};
     const result = await getRoomList(props.params.accIdAndName[0], options);
     if(result.data.success){
       setSidepanel(prevState => ({...prevState, childData: result.data.message}));

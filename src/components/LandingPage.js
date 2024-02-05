@@ -115,7 +115,7 @@ const LandingPage = () => {
         if (!token) {
             setRoom(false)
         } else {
-            var result = await getRoomList(splitedIds[0], true);
+            var result = await getRoomList(splitedIds[0], {getWidgetTileCollection: true});
             if(result.data.success){
               setLoading(false);
               setRoom(result.data.message)
