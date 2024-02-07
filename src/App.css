@@ -921,6 +921,20 @@ td {
   overflow: auto;
 }
 
+.commands-selected-model-container{
+  padding: 0 5px 0 5px;
+  font-weight: bold;
+}
+
+.commands-selected-model-container-count{
+  border-radius: 50%;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: white;
+  font-weight: bold;
+  background-color: #1b1e21;
+}
+
 .metadata-command-helper{
   background-color: #dddd;
   border: 1px solid white;

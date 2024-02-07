@@ -50,7 +50,7 @@ const MetadataFields = (props) => {
     } else if(typeof dependentValueField === 'string'){
       return [dependentValueField]; // in case of string, convert the string into array then return it.
     } else {
-      throw new Error('dependentvalue is not in supported format')
+      throw new Error('dependent value is not in supported format')
     }
   };
 

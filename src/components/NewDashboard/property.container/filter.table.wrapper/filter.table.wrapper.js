@@ -36,6 +36,16 @@ class FilterTable extends TableView {
         selectedRoomId: undefined,
         isCheckboxSelected: false,
         enableCheckbox: false,
+        checkbox: [
+          {
+            select: (value, checkBoxIndex) => this._updateCheckboxSelection(value, checkBoxIndex),
+            value: false,
+            attribute: "checkBoxField",
+            enableCellCheckbox: true,
+            enableHeaderCheckbox: true,
+            selectedCheckboxIndex: []
+          }
+        ],
         tableCellWidth : "590px",
         showPanelField: false
       },

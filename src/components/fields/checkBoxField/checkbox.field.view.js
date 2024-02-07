@@ -13,6 +13,15 @@ const CheckBox = (props) => {
       props.data.select && props.data.select(value, props.checkboxIndex) // Send the checkbox value to the parent component!
       props.data.updateValue && props.handleInputChange && props.handleInputChange(props.index, value, props.data.attribute)
     }
+
+    // Is checkbox already selected.
+    function isCheckboxSelected(){
+        if(props.checkboxIndex && props.data.selectedCheckboxIndex){
+            return props.data.selectedCheckboxIndex.includes(props.checkboxIndex);
+        } else {
+            return checkbox.isChecked;
+        }
+    }
     
     // Update the entire checkbox state1
     function updateCheckboxState(){
@@ -35,13 +44,13 @@ const CheckBox = (props) => {
               {props.data.label}
             </label>
           )}
-          <input class="text-center" style = {{marginTop: "6px", float: 'right'}} type="checkbox" value="" checked={checkbox.isChecked} 
-          onChange = {() => _toggleCheckbox(!checkbox.isChecked)} />
+          <input class="text-center" style = {{marginTop: "6px", float: 'right'}} type="checkbox" value="" checked={isCheckboxSelected()}
+          onChange = {() => _toggleCheckbox(!isCheckboxSelected())} />
         </>
       ) : (
         <>
-          <input class="text-center" style = {{marginTop: "6px"}} type="checkbox" value="" checked={checkbox.isChecked} 
-          onChange = {() => _toggleCheckbox(!checkbox.isChecked)} />
+          <input class="text-center" style = {{marginTop: "6px"}} type="checkbox" value="" checked={isCheckboxSelected()}
+          onChange = {() => _toggleCheckbox(!isCheckboxSelected())} />
           {props.data.label && (
             <label className = "form-check-label metadata-checkbox-label" style = {{color: props.data.labelColor}}>
               {props.data.label}
