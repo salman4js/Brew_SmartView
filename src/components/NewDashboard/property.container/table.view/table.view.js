@@ -73,7 +73,6 @@ class TableView extends React.Component {
         selectedRoomId: undefined,
         isCheckboxSelected: false,
         enableCheckbox: true,
-        checkboxSelection: [],
         tableCellWidth : "590px",
         showPanelField: false,
         checkbox: [
@@ -82,7 +81,8 @@ class TableView extends React.Component {
             value: false,
             attribute: "checkBoxField",
             enableCellCheckbox: true,
-            enableHeaderCheckbox: true
+            enableHeaderCheckbox: true,
+            selectedCheckboxIndex: []
           }
         ],
       },
@@ -96,6 +96,7 @@ class TableView extends React.Component {
         header: undefined,
         centered: true,
         restrictBody: true,
+        customComponent: undefined,
         showBodyItemView: undefined,
         modalSize: "medium",
         footerEnabled: false,
@@ -121,6 +122,8 @@ class TableView extends React.Component {
       'table-view': {reloadSidepanel: {silent: true}, navigateToStatusTableView: true, dashboardMode: this.stateRouter.dashboardModel[this.stateRouter.dashboardModel.length - 1],
         selectedRoomConstant: this.stateRouter.tableModel[this.stateRouter.tableModel.length - 1]}
     };
+    this.selectedCheckboxIndex = []; // Keep local track of selected checkbox value,
+    // So that when the table renders again because of pagination, We can populate the selectedCheckboxIndex into state again.
     this.routerController = () => this.props.routerController();
     this.isStateRouterNotified = false;
     this.tablePerspectiveConstant = tableViewConstants.tablePerspectiveConstant;
@@ -151,8 +154,13 @@ class TableView extends React.Component {
 
   // Table view allows other components or commands model to render custom modal body view.
   // To render the custom modal, use _prepareCustomModal method and to render custom modal body view, Use the flag renderCustomBodyView!
+  // <MetadataFields data = {this.state.customModalBodyViewOptions} updateData = {(updatedData) => this.setState({customModalBodyViewOptions: updatedData})}/>
   _renderCustomModalBodyView(){
-    return <MetadataFields data = {this.state.customModalBodyViewOptions} updateData = {(updatedData) => this.setState({customModalBodyViewOptions: updatedData})}/>
+    if(this.state.customModal.customComponent){
+      return this.state.customModal.customComponent;
+    } else {
+      return <MetadataFields data = {this.state.customModalBodyViewOptions} updateData = {(updatedData) => this.setState({customModalBodyViewOptions: updatedData})}/>
+    }
   };
 
   // Handle back action triggered on left side controller!
@@ -165,24 +173,35 @@ class TableView extends React.Component {
 
   // Reset checkbox selection!
   _resetCheckboxSelection(){
-    this.state.metadataTableState.checkboxSelection = [];
+    this.state.metadataTableState.checkbox[0].selectedCheckboxIndex = [];
+  };
+
+  // Restore checkbox selection when the page changes.
+  _restoreCheckboxSelection(options){
+    if(options?.checkboxSelection){
+      this.selectedCheckboxIndex = options.checkboxSelection;
+    }
+    this.state.metadataTableState.checkbox[0].selectedCheckboxIndex = this.selectedCheckboxIndex;
   };
 
   // Update the checkbox selection.
   _updateCheckboxSelection(value, checkBoxIndex){
     if(checkBoxIndex){
+      // Check for any checkbox selection, If there is any, Populate it in the state.
+      this._restoreCheckboxSelection();
       if(value){
-        this.state.metadataTableState.checkboxSelection.push(checkBoxIndex);
+        this.state.metadataTableState.checkbox[0].selectedCheckboxIndex.push(checkBoxIndex);
       } else {
-        _.remove(this.state.metadataTableState.checkboxSelection, function(index){
+        _.remove(this.state.metadataTableState.checkbox[0].selectedCheckboxIndex, function(index){
           return index === checkBoxIndex;
         });
       }
     } else {
-      this.state.metadataTableState.checkboxSelection = [];
+      this.state.metadataTableState.checkbox[0].selectedCheckboxIndex = [];
     }
+    this.selectedCheckboxIndex = this.state.metadataTableState.checkbox[0].selectedCheckboxIndex;
     // Update the toolbar padding style settings for menu action items.
-    this.state.metadataTableState.checkboxSelection.length > 0 ? this.panelFieldState[0].style.paddingLeft = 0
+    this.state.metadataTableState.checkbox[0].selectedCheckboxIndex.length > 0 ? this.panelFieldState[0].style.paddingLeft = 0
         : this.panelFieldState[0].style.paddingLeft = 10 // Custom panel field requires a custom style property.
     this._updateMetadataTableState();
   };
@@ -236,7 +255,7 @@ class TableView extends React.Component {
   async validateAbstractedStateFields(options){
     var isValid = await validateFieldData(this.state.customModalBodyViewOptions, (validatedData) => this.setState({customModalBodyViewOptions: validatedData}));
     if(isValid.length === 0){
-      return options.fieldProp ? {node: nodeConvertor(this.state.customModalBodyViewOptions), fieldProp: extractStateValue(this.state.customModalBodyViewOptions, options.fieldProp)}
+      return options?.fieldProp ? {node: nodeConvertor(this.state.customModalBodyViewOptions), fieldProp: extractStateValue(this.state.customModalBodyViewOptions, options.fieldProp)}
           : nodeConvertor(this.state.customModalBodyViewOptions);
     }
   };
@@ -303,6 +322,7 @@ class TableView extends React.Component {
 
   // Execute action when table filter model triggered.
   onFilterTableIconClicked(){
+    this.isFilterDialogOpened = true; // Need to keep track of this flag to prevent changing the table data to empty when re-renders happens through customModalBodyViewOptions.
     // When the filter action is triggered, initialize the custom modal with the table dialog options from command table filter settings.
     this._prepareCustomModal(TableFilterSettingsDialog.execute(this.templateHelpersData.options));
   };
@@ -316,17 +336,20 @@ class TableView extends React.Component {
       onBack: () => this.onBackClick(),
       onClickTableFilterMode: () => this.onFilterTableIconClicked(),
       params: this.params,
-      nodes: this.state.metadataTableState.checkboxSelection,
+      nodes: this.state.metadataTableState.checkbox[0].selectedCheckboxIndex,
       eventHelpers: {
         dashboardController: (opts) => this.props.dashboardController(opts),
         routerController: () => this.routerController(),
         triggerTableLoader: (value, keepLoader) => this._toggleTableLoader(value, keepLoader),
         updateCheckboxSelection: (value, checkboxIndex) => this._updateCheckboxSelection(value, checkboxIndex),
+        restoreOrUpdateCheckboxSelection: (options) => this._restoreCheckboxSelection(options),
         triggerCustomModel: (options) => this._prepareCustomModal(options),
         prepareFilterOptions: (options) => this._prepareFilterOptions(options),
         prepareFacetOptions: (options) => this._prepareFacetOptions(options),
         collapseCustomModal: () => this.onCloseCustomModal(),
         validateStateFields: (options) => this.validateAbstractedStateFields(options),
+        getTableCollection: (options) => this._getTableCollection(options),
+        getTableHeaders: () => this.getTableHeaders(),
         removeFromTableCollection: (model) => this.removeFromTableCollection(model),
         updateSelectedModel: (roomModel, dashboardMode, userModel) => this.props.updateSelectedModel(roomModel, dashboardMode, userModel)
       }
@@ -338,6 +361,19 @@ class TableView extends React.Component {
     _.remove(this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant], function(tableModel){
       return tableModel._id === selectedModel._id;
     });
+  };
+
+  // Get table data from the table collection. If nodes collection not provided, It will return all the table collections.
+  async _getTableCollection(options){
+    var filteredTableCollection;
+    if(options?.nodes){
+      filteredTableCollection = _.filter(this.rawRoomModel, function(tableModel){
+        return options.nodes.includes(tableModel._id);
+      });
+      return this.refineTableCollection(filteredTableCollection);
+    } else {
+      return this.refineTableCollection(this.rawRoomModel);
+    }
   };
 
   // Client side filtering --> Filter the data based on the filter model passed which filterOptions query.
@@ -374,8 +410,23 @@ class TableView extends React.Component {
   // Restore filter options flag, When filter options is empty object.
   _restoreFilterOptions(){
     this.filterInitiated = false;
+    this.isFilterDialogOpened = false;
     this.widgetTileModel.isHeightAdjustedForPagination = false;
     this.filterOptions.query && delete this.filterOptions.query;
+  };
+
+  // Check if the next node has to be fetched and set the getNextNode flag accordingly.
+  checkAndSetFetchNextNode(){
+    if(this.isFetchableWidget()){
+      this.widgetTileModel.paginationData.getNextNode = this.widgetTileModel.paginationData.skipCount > 0;
+    } else {
+      this.widgetTileModel.paginationData.getNextNode = false;
+    }
+  };
+
+  // Check if any of the model has been selected.
+  isTableRowSelected(){
+    return this.state.metadataTableState.checkbox[0].selectedCheckboxIndex.length > 0;
   };
 
   // Prepare filter options from the other parts of the program so that the url can be structured accordingly.
@@ -386,7 +437,8 @@ class TableView extends React.Component {
     if(options){
       if(_.isEmpty(options)){
        this._restoreFilterOptions();
-       return;
+       this.checkAndSetFetchNextNode();
+        return;
       }
       this.filterInitiated = true;
       this.widgetTileModel.paginationData.getNextNode = true; // Set it to true so when the re-render happens,
@@ -396,6 +448,7 @@ class TableView extends React.Component {
         this.filterOptions.query[opts] = options[opts];
       })
     }
+    this.isFilterDialogOpened = false; // When _prepareFilterOptions method being executed, it means that the filter modal has been closed.
   };
 
   // Fetch next nodes only for fetchable widgets.
@@ -407,7 +460,6 @@ class TableView extends React.Component {
     // Commented this line because when we change it to false, NextNode will not get fetched when the data changes,
     // For example, When we perform export to excel command, when the modal renders, getWidgetTileTableCollectionData function will execute, that time
     // getNextNode will be false, so that only the initial 15 data will persist which will cause the length of filteredCollection to zero.
-    // this.widgetTileModel.paginationData.getNextNode = false;
   };
 
   // Check for fetchable widgets.
@@ -441,13 +493,27 @@ class TableView extends React.Component {
       return convertedModel;
     }
   };
+
+  // Refining table data collections!
+  refineTableCollection(tableCollection){
+    var convertedCollection = [];
+    tableCollection.map((tableModel) => {
+      var clonedData = _.clone(tableModel);
+      var convertedModel = filterKeysInObj(clonedData, this.propertyStatusRequiredKey[this.roomConstant]);
+      var arrangedObj = arrangeObj(convertedModel, this.propertyStatusRequiredKey[this.roomConstant]);
+      convertedCollection.push(this._checkForConvertableConstant(arrangedObj));
+    });
+    return convertedCollection;
+  };
   
   // Get the widget tile model data for the table!
   async getWidgetTileTableCollectionData(){
     this.filterEnabled = false;
-    var convertedCollection = [];
+    var convertedCollection;
     this.shouldFetchForWidget = this.widgetTileModel.paginationData.getNextNode && this.isFetchableWidget(); // Check for fetchable widgets.
-    if (this.isFetchableWidget() && !this.filterInitiated) {
+    if (this.isFetchableWidget() && (!this.filterInitiated && !this.isFilterDialogOpened && !this.isTableRowSelected())) {
+      // We check for any table row is selected when selecting a checkboxes to prevent unnecessary data changed in rawRoomModel
+      // and to prevent unwanted re-renders.
       this.rawRoomModel = await this.getRoomConstantCollection();
     } else if (!this.isFetchableWidget()) {
       this.rawRoomModel = await this.getRoomConstantCollection();
@@ -456,15 +522,9 @@ class TableView extends React.Component {
     this.getTableHeaders(); // Get the table headers!
     this.shouldFetchForWidget && await this.fetchNextNode();
     if(this.rawRoomModel){
-      this.rawRoomModel.map((data) => {
-        // Clone the data before filtering the keys as it would change the original data which would cause some trouble in the roomCollection!
-        var clonedData = _.clone(data);
-        var convertedModel = filterKeysInObj(clonedData, this.propertyStatusRequiredKey[this.roomConstant]);
-        var arrangedObj = arrangeObj(convertedModel, this.propertyStatusRequiredKey[this.roomConstant]);
-        arrangedObj = this._checkForConvertableConstant(arrangedObj);
-        convertedCollection.push(arrangedObj);
-      });
+      convertedCollection = await this._getTableCollection();
     };
+    this._restoreCheckboxSelection();
     this.filterCollection(convertedCollection);
     this.state.metadataTableState.cellValues = this.filteredCollection;
     this._checkAndEnablePaginationView(convertedCollection);
@@ -487,6 +547,7 @@ class TableView extends React.Component {
     } else {
       this.state.metadataTableState.headerValue = this.propertyStatusTableHeader[this.roomConstant];
     };
+    return this.state.metadataTableState.headerValue;
   };
   
   // Prepare custom modal state data!
@@ -495,6 +556,9 @@ class TableView extends React.Component {
     if(options.renderCustomBodyView && options.customBodyViewOptions){
       this.setState({customModalBodyViewOptions: options.customBodyViewOptions});
     };
+    if(options.renderCustomBodyView && options.customComponent){
+      this.state.customModal.customComponent = options.customComponent;
+    }
     this.state.customModal.show = true;
     this.state.customModal.centered = options.centered !== undefined ? options.centered : true;
     this.state.customModal.onHide = options.onHide !== undefined ? options.onHide : this.state.customModal.onHide;
@@ -532,10 +596,10 @@ class TableView extends React.Component {
     this.tableViewTemplateHelpers = new TableViewTemplateHelpers(this.templateHelpersData);
     // If the checkbox selection is greater than 0,
     // then render tha table menu action items.
-    if(!this.state.metadataTableState.checkboxSelection) {
+    if(!this.state.metadataTableState.checkbox[0].selectedCheckboxIndex) {
       return this._renderLeftSideController();
     }
-    if(this.state.metadataTableState.checkboxSelection.length === 0){
+    if(this.state.metadataTableState.checkbox[0].selectedCheckboxIndex.length === 0){
       return this._renderLeftSideController();
     } else {
       return this.tableViewTemplateHelpers.renderMenuActionItems();

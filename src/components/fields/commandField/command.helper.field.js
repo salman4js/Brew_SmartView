@@ -11,7 +11,7 @@ const CommnadHelper = (props) => {
             return(
               <span className = {props.options?.isFacets ? 'metadata-command-fields metadata-command-facets brew-cursor' : "metadata-command-fields brew-cursor"}
                     onClick = {() => options.onClick(options)}>
-                {options.value}
+                {options.icon ? options.icon() : options.value}
               </span>
             )
           }

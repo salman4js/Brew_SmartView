@@ -29,6 +29,15 @@ var commandsConstant = Object.freeze({
         dialogPlaceholder: 'Enter the name of the excel file'
     },
 
+    SELECTED_MODELS: {
+      selectedModelsLabel: 'Selected Entries',
+      footerButtons: {
+          primaryBtn: 'Apply',
+          secondaryBtn: 'Cancel'
+      },
+      allowToExecute: ['history']
+    },
+
     PropertySearchKey: Object.freeze({
         user: ['afterCheckin', 'upcomingCheckout', 'upcomingPrebook'],
         _id: ['afterCheckedout', 'afterCleaned', 'inCleaning']

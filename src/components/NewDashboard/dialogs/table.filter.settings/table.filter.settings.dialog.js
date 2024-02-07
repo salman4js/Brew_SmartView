@@ -2,7 +2,7 @@ import lang from "../dialog.constants";
 import dialogFilterOptions from "./table.filter.settings.dialog.options";
 import _ from 'lodash';
 
-class CommandsTableFilterSettings {
+class TableFilterSettingsDialog {
 
     constructor(signatureOptions) {
         this.status = signatureOptions;
@@ -47,9 +47,9 @@ class CommandsTableFilterSettings {
     };
 
     static execute(signatureOptions) {
-        const instance = new CommandsTableFilterSettings(signatureOptions);
+        const instance = new TableFilterSettingsDialog(signatureOptions);
         return instance.getDialogOptions(); // return the options from the instance
     };
 }
 
-export default CommandsTableFilterSettings;
+export default TableFilterSettingsDialog;

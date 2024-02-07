@@ -61,6 +61,7 @@ class CommandsExportToExcel {
 
     // On click on export, validate the filename and initiate the export process.
     onExport(){
+        this.status.eventHelpers.triggerTableLoader(true, true);
         this.status.eventHelpers.validateStateFields().then((result) => {
             this.exportFileName = result.excelFileName + '.csv';
             this.initiateExport();
@@ -84,6 +85,8 @@ class CommandsExportToExcel {
             result.data.filename = params.fileName;
             downloadContent(result.data);
             this.status.eventHelpers.collapseCustomModal();
+            this.status.eventHelpers.updateCheckboxSelection(false)
+            this.status.eventHelpers.triggerTableLoader(false);
         }).catch((error) => {
 
         });
