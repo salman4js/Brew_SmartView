@@ -346,6 +346,7 @@ class TableView extends React.Component {
         triggerCustomModel: (options) => this._prepareCustomModal(options),
         prepareFilterOptions: (options) => this._prepareFilterOptions(options),
         prepareFacetOptions: (options) => this._prepareFacetOptions(options),
+        refineTableCollection: (tableCol) => this.refineTableCollection(tableCol),
         collapseCustomModal: () => this.onCloseCustomModal(),
         validateStateFields: (options) => this.validateAbstractedStateFields(options),
         getTableCollection: (options) => this._getTableCollection(options),

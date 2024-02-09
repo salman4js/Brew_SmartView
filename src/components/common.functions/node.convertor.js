@@ -484,6 +484,27 @@ export function downloadContent(options){
   }
 };
 
+// CSV file preparer.
+export function prepareCSV(options){
+  // Empty array for storing the values
+  const csvRows = [];
+  // As for making csv format, headers must be
+  // separated by comma and pushing it into array
+  csvRows.push(options.header.join(','));
+  // Pushing Object values into the array with
+  // comma separation
+  // Looping through the data values and make
+  // sure to align values with respect to headers
+  for (const row of options.rows) {
+    const values = options.headerRefKeys.map(e => {
+      return row[e]
+    })
+    csvRows.push(values.join(','))
+  }
+  // returning the array joining with new line
+  return csvRows.join('\n')
+};
+
 // Refresh the entire page when needed!
 export function domRefresh(){
   window.location.reload();
