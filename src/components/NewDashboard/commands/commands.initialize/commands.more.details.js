@@ -7,7 +7,7 @@ import {getStorage} from "../../../../Controller/Storage/Storage";
 class CommandsMoreDetails {
     constructor(signatureOptions){
       this.status = signatureOptions;
-      this.isDisabled = this.enabled();
+      this.isDisabled = !this.enabled();
       this.defaults = {
           value: lang.MORE_DETAILS.moreDetails,
           disabled: this.isDisabled,
@@ -18,7 +18,7 @@ class CommandsMoreDetails {
     };
 
     enabled(){
-        return !lang.isCommandsEnabled.moreDetails.includes(this.status.roomConstantKey);
+        return lang.isCommandsEnabled.moreDetails.includes(this.status.roomConstantKey) && this.status.nodes.length === 1;
     };
 
     execute(){
@@ -40,7 +40,7 @@ class CommandsMoreDetails {
     fetchHistoryDataForSelectedNodes(){
         var options = {
             accId: this.status.params.accIdAndName[0],
-            selectedNodes: this.status.nodes[0] // For more details command, selected nodes is always going to be only one.
+            selectedNodes: this.status.nodes
         }
         return CommandsConnector.fetchSelectedHistoryNode(options).then((result) => {
            if(result.data.success){

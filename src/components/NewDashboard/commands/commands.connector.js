@@ -15,7 +15,8 @@ class CommandsConnector {
 
     // Fetch selected history node data.
     static async fetchSelectedHistoryNode(options){
-      return await axios.get(`${Variables.Variables.hostId}/${options.accId}/${options.roomId}/${options.selectedNodes}/historynode`)
+      // selectedNodes takes array of selected nodes ids.
+      return await axios.get(`${Variables.Variables.hostId}/${options.accId}/${options.roomId}/${JSON.stringify(options.selectedNodes)}/historynode`)
     };
 
     static async _getCustomHTMLContent(options){

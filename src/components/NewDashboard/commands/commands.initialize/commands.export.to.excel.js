@@ -1,6 +1,7 @@
 import lang from "../commands.constants";
 import CommandsConnector from "../commands.connector";
-import {downloadContent, getParsedUrl} from "../../../common.functions/node.convertor";
+import {_checkForSecureConnections} from "../../../common.functions/common.functions";
+import {downloadContent, prepareCSV} from "../../../common.functions/node.convertor";
 
 class CommandsExportToExcel {
     constructor(signatureOptions) {
@@ -27,12 +28,16 @@ class CommandsExportToExcel {
 
     enabled(){
       // Enable export to excel only for local build since export to excel doesn't work on actual build due to hosted server restrictions!
-      return !(lang.isCommandsEnabled.bookingHistory.includes(this.status.roomConstantKey) && lang.LOCAL_SERVER === getParsedUrl().hostname);
+      return !(lang.isCommandsEnabled.bookingHistory.includes(this.status.roomConstantKey) && this.isLocalServer());
     };
 
     execute(){
       this.getColumnConfiguration();
       this._promptConfirmationDialog();
+    };
+
+    isLocalServer(){
+        return _checkForSecureConnections();
     };
 
     // Prompt confirmation dialog to get the name of the file to be downloaded.
@@ -64,12 +69,12 @@ class CommandsExportToExcel {
         this.status.eventHelpers.triggerTableLoader(true, true);
         this.status.eventHelpers.validateStateFields().then((result) => {
             this.exportFileName = result.excelFileName + '.csv';
-            this.initiateExport();
+            !this.isLocalServer() ? this.initiateServerExport() : this.initiateClientExport();
         });
     };
 
-    // Initiate the export to excel process.
-    initiateExport(){
+    // Initiate the export to excel process on server
+    initiateServerExport(){
         // TODO: Get the filename from the user.
         var params = {
             lodgeId: this.status.params.accIdAndName[0],
@@ -78,18 +83,63 @@ class CommandsExportToExcel {
             headerValue: this.configuredColumns,
             nodes: this.status.nodes
         };
-        //TODO: Show progress panel when the export operation is in progress.
+        // TODO: Show progress panel when the export operation is in progress.
         CommandsConnector.onExportToExcel(params).then((result) => {
             // REST will return the file content downloadable url.
             // Fetch the file from that downloadable url.
             result.data.filename = params.fileName;
             downloadContent(result.data);
-            this.status.eventHelpers.collapseCustomModal();
-            this.status.eventHelpers.updateCheckboxSelection(false)
-            this.status.eventHelpers.triggerTableLoader(false);
+            this._resetTable();
         }).catch((error) => {
-
+            console.warn(error);
         });
+    };
+
+    // Initiate the export to excel process on client side
+    initiateClientExport(){
+        var options = {
+            accId: this.status.params.accIdAndName[0],
+            selectedNodes: this.status.nodes
+        }
+        this._prepareClientSideExportCSVHeader();
+        // To initiate the export to excel data on client side, We need to fetch the history nodes data from the server.
+        CommandsConnector.fetchSelectedHistoryNode(options).then((result) => {
+            if(result.data.success){
+                var csvData = prepareCSV({header: this.clientSideCSVHeader,
+                    rows: this.getRefinedTableRows(result.data.message),
+                    headerRefKeys: this.clientSideCSVHeaderRefKeys});
+                var blob = new Blob([csvData], {type: 'text/csv'});
+                downloadContent({content: blob, fileName: this.exportFileName});
+            }
+            this._resetTable();
+        });
+    };
+
+    // If there is a comma separated value in CSV data, then data discrepancy would happen.
+    getRefinedTableRows(tableCols) {
+        var filteredTableCol = this.status.eventHelpers.refineTableCollection(tableCols);
+        filteredTableCol.forEach((tableCol) => {
+            Object.keys(tableCol).forEach((key) => {
+                if (tableCol[key].indexOf(',') !== -1) {
+                    tableCol[key] = '"' + tableCol[key] + '"';
+                }
+            });
+        });
+        return filteredTableCol;
+    };
+
+    _resetTable(){
+        this.status.eventHelpers.collapseCustomModal();
+        this.status.eventHelpers.updateCheckboxSelection(false)
+        this.status.eventHelpers.triggerTableLoader(false);
+    };
+
+    _prepareClientSideExportCSVHeader(){
+      this.clientSideCSVHeader = []; this.clientSideCSVHeaderRefKeys = [];
+      this.configuredColumns.map((col) => {
+          this.clientSideCSVHeader.push(col.title);
+          this.clientSideCSVHeaderRefKeys.push(col.id);
+      });
     };
 
     // Get the configured customization.
