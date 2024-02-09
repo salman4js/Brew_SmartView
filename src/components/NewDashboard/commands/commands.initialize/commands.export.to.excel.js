@@ -28,7 +28,7 @@ class CommandsExportToExcel {
 
     enabled(){
       // Enable export to excel only for local build since export to excel doesn't work on actual build due to hosted server restrictions!
-      return !(lang.isCommandsEnabled.bookingHistory.includes(this.status.roomConstantKey) && this.isLocalServer());
+      return !(lang.isCommandsEnabled.bookingHistory.includes(this.status.roomConstantKey));
     };
 
     execute(){
