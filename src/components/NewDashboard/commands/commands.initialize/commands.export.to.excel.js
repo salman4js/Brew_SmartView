@@ -69,7 +69,7 @@ class CommandsExportToExcel {
         this.status.eventHelpers.triggerTableLoader(true, true);
         this.status.eventHelpers.validateStateFields().then((result) => {
             this.exportFileName = result.excelFileName + '.csv';
-            !this.isLocalServer() ? this.initiateServerExport() : this.initiateClientExport();
+            this.isLocalServer() ? this.initiateServerExport() : this.initiateClientExport();
         });
     };
 
