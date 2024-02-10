@@ -31,7 +31,7 @@ class TableView extends React.Component {
       paginationData: {
         count: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_COUNT,
         skipCount: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_SKIP_COUNT,
-        limitCount: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_LIMIT,
+        limitCount: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_LIMIT, // Limit count will be always 15, If needed can be changed.
         getNextNode: false,
         events: {
           onPageShift: this.onPageShift.bind(this)
@@ -122,8 +122,18 @@ class TableView extends React.Component {
       'table-view': {reloadSidepanel: {silent: true}, navigateToStatusTableView: true, dashboardMode: this.stateRouter.dashboardModel[this.stateRouter.dashboardModel.length - 1],
         selectedRoomConstant: this.stateRouter.tableModel[this.stateRouter.tableModel.length - 1]}
     };
-    this.selectedCheckboxIndex = []; // Keep local track of selected checkbox value,
-    // So that when the table renders again because of pagination, We can populate the selectedCheckboxIndex into state again.
+    /**
+     Keep local track of selected checkbox value,
+     So that when the table renders again because of pagination, We can populate the selectedCheckboxIndex into state again.
+    **/
+    this.selectedCheckboxIndex = [];
+    /**
+      For fetchable widgets, selected model data has to be separately tracked.
+      Everytime, we fetch for a new page data this.rawRoomModel gets resets,
+      so it's impossible to get the selectedNodes table model data from this.rawRoomModel.
+     Hence, for fetchable widgets, selectedModel data will be tracked in fetchableWidgetSelectedTableModel separately.
+    **/
+    this.fetchableWidgetSelectedTableModel = [];
     this.routerController = () => this.props.routerController();
     this.isStateRouterNotified = false;
     this.tablePerspectiveConstant = tableViewConstants.tablePerspectiveConstant;
@@ -180,8 +190,24 @@ class TableView extends React.Component {
   _restoreCheckboxSelection(options){
     if(options?.checkboxSelection){
       this.selectedCheckboxIndex = options.checkboxSelection;
+      if(this.isFetchableWidget()){
+        _.remove(this.fetchableWidgetSelectedTableModel, function(tableModel){
+          return !options.checkboxSelection.includes(tableModel._id);
+        });
+      }
     }
     this.state.metadataTableState.checkbox[0].selectedCheckboxIndex = this.selectedCheckboxIndex;
+  };
+
+  // For fetchable widgets, selected table model data has to be handled/tracked separately.
+  _updateFetchableWidgetSelectedTableModel(action, checkboxIndex){
+    if(action){ // Add into fetchableWidgetSelectedTableModel
+      this.fetchableWidgetSelectedTableModel.push(this._getTableCollection({nodes: [checkboxIndex]})[0]);
+    } else {
+      _.remove(this.fetchableWidgetSelectedTableModel, function(tableModel){
+        return tableModel._id === checkboxIndex;
+      });
+    }
   };
 
   // Update the checkbox selection.
@@ -196,6 +222,7 @@ class TableView extends React.Component {
           return index === checkBoxIndex;
         });
       }
+      this.isFetchableWidget() && this._updateFetchableWidgetSelectedTableModel(value, checkBoxIndex);
     } else {
       this.state.metadataTableState.checkbox[0].selectedCheckboxIndex = [];
     }
@@ -213,7 +240,6 @@ class TableView extends React.Component {
     this._toggleTableLoader(true);
     this._resetCheckboxSelection();
     this.widgetTileModel.paginationData.skipCount = (index * this.paginationConstants.PAGINATION_DEFAULT_LIMIT);
-    this.widgetTileModel.paginationData.limitCount = (selectedIndex * this.paginationConstants.PAGINATION_DEFAULT_LIMIT);
     this.widgetTileModel.paginationData.getNextNode = true;
   };
 
@@ -365,12 +391,15 @@ class TableView extends React.Component {
   };
 
   // Get table data from the table collection. If nodes collection not provided, It will return all the table collections.
-  async _getTableCollection(options){
+  _getTableCollection(options){
     var filteredTableCollection;
     if(options?.nodes){
       filteredTableCollection = _.filter(this.rawRoomModel, function(tableModel){
         return options.nodes.includes(tableModel._id);
       });
+      if(this.isFetchableWidget() && filteredTableCollection && options.nodes.length !== filteredTableCollection.length){
+        filteredTableCollection = this.fetchableWidgetSelectedTableModel;
+      };
       return this.refineTableCollection(filteredTableCollection);
     } else {
       return this.refineTableCollection(this.rawRoomModel);
@@ -476,8 +505,8 @@ class TableView extends React.Component {
     // Let's say we are in page 2, That time skipCount and limitCount will be 15 and 30 and our search result is just 2.
     // To avoid that problem, Only if the collection length is greater than default limit, do the slicing of the collection.
     this.filteredCollection = collection;
-    if(collection.length >= this.paginationConstants.PAGINATION_DEFAULT_LIMIT){
-      this.filteredCollection = collection.slice(this.widgetTileModel.paginationData.skipCount, this.widgetTileModel.paginationData.limitCount);
+    if(collection.length > this.paginationConstants.PAGINATION_DEFAULT_LIMIT){
+      this.filteredCollection = collection.slice(this.widgetTileModel.paginationData.skipCount, (2 * this.widgetTileModel.paginationData.skipCount || 15));
     }
     this.state.metadataTableState.tableLoader && !this.state.metadataTableState.keepLoader && this._toggleTableLoader(false);
   };
@@ -523,7 +552,7 @@ class TableView extends React.Component {
     this.getTableHeaders(); // Get the table headers!
     this.shouldFetchForWidget && await this.fetchNextNode();
     if(this.rawRoomModel){
-      convertedCollection = await this._getTableCollection();
+      convertedCollection = this._getTableCollection();
     };
     this._restoreCheckboxSelection();
     this.filterCollection(convertedCollection);

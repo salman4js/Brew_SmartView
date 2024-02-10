@@ -497,7 +497,12 @@ export function prepareCSV(options){
   // sure to align values with respect to headers
   for (const row of options.rows) {
     const values = options.headerRefKeys.map(e => {
-      return row[e]
+      if (row[e].indexOf(',') !== -1) {
+        row[e] = '"' + row[e] + '"';
+        return row[e];
+      } else {
+        return row[e];
+      }
     })
     csvRows.push(values.join(','))
   }
