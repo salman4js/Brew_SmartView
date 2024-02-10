@@ -34,8 +34,7 @@ var commandsConstant = Object.freeze({
       footerButtons: {
           primaryBtn: 'Apply',
           secondaryBtn: 'Cancel'
-      },
-      allowToExecute: ['history']
+      }
     },
 
     PropertySearchKey: Object.freeze({

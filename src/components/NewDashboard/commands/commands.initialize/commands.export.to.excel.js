@@ -106,26 +106,13 @@ class CommandsExportToExcel {
         CommandsConnector.fetchSelectedHistoryNode(options).then((result) => {
             if(result.data.success){
                 var csvData = prepareCSV({header: this.clientSideCSVHeader,
-                    rows: this.getRefinedTableRows(result.data.message),
+                    rows: this.status.eventHelpers.refineTableCollection(result.data.message),
                     headerRefKeys: this.clientSideCSVHeaderRefKeys});
                 var blob = new Blob([csvData], {type: 'text/csv'});
                 downloadContent({content: blob, fileName: this.exportFileName});
             }
             this._resetTable();
         });
-    };
-
-    // If there is a comma separated value in CSV data, then data discrepancy would happen.
-    getRefinedTableRows(tableCols) {
-        var filteredTableCol = this.status.eventHelpers.refineTableCollection(tableCols);
-        filteredTableCol.forEach((tableCol) => {
-            Object.keys(tableCol).forEach((key) => {
-                if (tableCol[key].indexOf(',') !== -1) {
-                    tableCol[key] = '"' + tableCol[key] + '"';
-                }
-            });
-        });
-        return filteredTableCol;
     };
 
     _resetTable(){

@@ -43,15 +43,13 @@ class CommandsSelectedModel {
         )
     };
 
-    async execute(){
-        if(!lang.SELECTED_MODELS.allowToExecute.includes(this.status.roomConstantKey)){
-            // First get the selected nodes table data from the table.view.
-            this.tableState.cellValues = await this.status.eventHelpers.getTableCollection({nodes: this.status.nodes});
-            // Get Table Headers for the current table mode.
-            this.tableState.headerValue = this.status.eventHelpers.getTableHeaders();
-            this._prepareDialogOptions();
-            this.status.eventHelpers.triggerCustomModel(this.dialogOptions);
-        }
+    execute(){
+        // First get the selected nodes table data from the table.view.
+        this.tableState.cellValues = this.status.eventHelpers.getTableCollection({nodes: this.status.nodes});
+        // Get Table Headers for the current table mode.
+        this.tableState.headerValue = this.status.eventHelpers.getTableHeaders();
+        this._prepareDialogOptions();
+        this.status.eventHelpers.triggerCustomModel(this.dialogOptions);
     };
 
     _onUpdateCheckboxSelection(value, checkBoxIndex){
