@@ -42,7 +42,7 @@ class CommandsConnector {
     };
 
     static async fetchCustomHTMLConfiguredTemplate(options){
-        if(getParsedUrl().hostname === lang.LOCAL_SERVER){
+        if(getParsedUrl().hostname !== lang.LOCAL_SERVER){
             return CommandsConnector._getCustomHTMLContentFromDB(options).then((result) => {
                 return result.data.data[0].customTemplate;
             }).catch(() => {
