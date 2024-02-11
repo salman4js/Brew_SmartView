@@ -16,21 +16,9 @@ class CheckoutUtils {
 
   // Get dynamic HTML content.
   _getHTMLContent(options) {
-    if(getParsedUrl().hostname !== lang.LOCAL_SERVER){
-      return CommandsConnector._getCustomHTMLContentFromDB(options).then((result) => {
-          return result.data.data[0]?.customTemplate;
-        });
-    } else {
-      var filePath = options.filepath !== undefined ? options.filepath : 'DynamicHTMLContent';
-      return fetch(`${this.baseUrl}/${filePath}/${options.filename}`)
-          .then(response => {
-            if (!response.ok) {
-              // Check for HTTP errors (status code outside the range 200-299)
-              return false;
-            }
-            return response.text();
-          });
-    }
+    return CommandsConnector.fetchCustomHTMLConfiguredTemplate(options).then((result) => {
+      return result;
+    });
   };
 
   // Fetch customer details!

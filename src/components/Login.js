@@ -76,7 +76,9 @@ const Login = () => {
             'showFullDetails': res.data.object.showFullDetails,
             'customHtmlForBillPreview': res.data.object?.customHtmlContent?.billPreview?.isEnabled,
             'customHtmlForHistoryPreview': res.data.object?.customHtmlContent?.historyPreview?.isEnabled,
-            'customHtmlForPropertyRead': res.data.object?.customHtmlContent?.propertyReadRoom?.isEnabled
+            'customHtmlForPropertyRead': res.data.object?.customHtmlContent?.propertyReadRoom?.isEnabled,
+            'customTemplateForBill': res.data.object?.customHtmlContent?.billGeneration?.isEnabled,
+            'customTemplateForInvoice': res.data.object?.customHtmlContent?.invoiceGeneration?.isEnabled,
           };
           
           defaultStorage(data);

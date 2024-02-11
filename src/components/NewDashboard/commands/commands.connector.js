@@ -1,5 +1,7 @@
 import CheckoutUtils from "../property.container/checkout.view/checkout.form.utils";
 import { moveToNextState } from "../../room.status.utils/room.status.utils";
+import {getParsedUrl} from "../../common.functions/node.convertor";
+import lang from "./commands.constants";
 const axios = require('axios');
 const Variables = require('../../Variables');
 
@@ -20,8 +22,15 @@ class CommandsConnector {
     };
 
     static async _getCustomHTMLContent(options){
-        var checkoutUtils = new CheckoutUtils(options);
-        return await checkoutUtils._getHTMLContent(options);
+        var filePath = options.filepath !== undefined ? options.filepath : 'DynamicHTMLContent';
+        return fetch(`${Variables.Variables.hostId}/${options.accId}/${filePath}/${options.filename}`)
+            .then(response => {
+                if (!response.ok) {
+                    // Check for HTTP errors (status code outside the range 200-299)
+                    return false;
+                }
+                return response.text();
+            });
     };
 
     static async _getCustomHTMLContentFromDB(options){
@@ -31,6 +40,22 @@ class CommandsConnector {
     static async moveToNextState(options){
       return await moveToNextState(options);
     };
+
+    static async fetchCustomHTMLConfiguredTemplate(options){
+        if(getParsedUrl().hostname === lang.LOCAL_SERVER){
+            return CommandsConnector._getCustomHTMLContentFromDB(options).then((result) => {
+                return result.data.data[0].customTemplate;
+            }).catch(() => {
+                console.warn('Error occurred while fetching dynamic html content');
+            })
+        } else {
+            return CommandsConnector._getCustomHTMLContent(options).then((result) => {
+                return result;
+            }).catch(() => {
+                console.warn('Error occurred while fetching dynamic html content')
+            })
+        }
+    }
 };
 
 export default CommandsConnector;

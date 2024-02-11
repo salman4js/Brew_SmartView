@@ -8,7 +8,8 @@ const storage = require("../../Controller/Storage/Storage")
 
 // get current lodgeId!
 export function getLodgeId(){
-  return storage.getStorage("loggedInID");
+  var lodgeId = storage.getStorage("loggedInID");
+  return lodgeId.split('-')[0];
 }
 
 // Get GST mode, If its inclusive it will return false else true.

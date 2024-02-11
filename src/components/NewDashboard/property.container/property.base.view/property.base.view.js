@@ -87,19 +87,9 @@ class PropertyBaseView extends React.Component {
             filename: this.customTemplateFileName,
             templateName: this.roomConstantKey
         };
-        if(getParsedUrl().hostname !== lang.LOCAL_SERVER){
-            return CommandsConnector._getCustomHTMLContentFromDB(options).then((result) => {
-                return result.data.data[0].customTemplate;
-            }).catch(() => {
-                console.warn('Error occurred while fetching dynamic html content');
-            })
-        } else {
-            return CommandsConnector._getCustomHTMLContent(options).then((result) => {
-                return result;
-            }).catch(() => {
-                console.warn('Error occurred while fetching dynamic html content')
-            })
-        }
+        return CommandsConnector.fetchCustomHTMLConfiguredTemplate(options).then((result) => {
+            return result;
+        });
     };
 
     setPropertyDataCallBackFunc(callBackFunc){
