@@ -238,6 +238,14 @@ const Client = () => {
             label: "Select custom html content for property read",
             isEnabled: undefined
         },
+        billGeneration: {
+            label: "Select custom html content for bill generation",
+            isEnabled: undefined
+        },
+        invoiceGeneration: {
+            label: "Select custom html content for invoice generation",
+            isEnabled: undefined
+        },
         onChange: (isEnabled, node) => updateCustomHtmlContentConfig(isEnabled, node)
   });
 
@@ -263,8 +271,8 @@ const Client = () => {
         }
     ]);
 
-    // Custom Property Read View Template Configuration
-    const [customPropertyReadTemplate, setCustomPropertyReadTemplate] = useState([
+    // Custom Property Read Room View Template Configuration
+    const [customPropertyReadRoomTemplate, setCustomPropertyReadRoomTemplate] = useState([
         {
             value: undefined,
             placeholder: "Custom Property Read preview Template",
@@ -273,6 +281,35 @@ const Client = () => {
             attribute: 'textAreaField'
         }
     ]);
+
+    // Custom Property Read User View Template Configuration
+    const [customPropertyReadUserTemplate, setCustomPropertyReadUserTemplate] = useState([
+        {
+            value: undefined,
+            placeholder: "Custom Property User preview Template",
+            name: 'customTemplate',
+            rows: '10',
+            attribute: 'textAreaField'
+        }
+    ]);
+
+    // Custom property bill generation template configuration!
+    const [customPropertyBillGeneration, setCustomPropertyBillGeneration] = useState([{
+        value: undefined,
+        placeholder: "Custom Property Bill Generation preview Template",
+        name: 'customTemplate',
+        rows: '10',
+        attribute: 'textAreaField'
+    }]);
+
+    // Custom property invoice generation template configuration!
+    const [customPropertyInvoiceGeneration, setCustomPropertyInvoiceGeneration] = useState([{
+        value: undefined,
+        placeholder: "Custom Property Invoice Generation preview Template",
+        name: 'customTemplate',
+        rows: '10',
+        attribute: 'textAreaField'
+    }])
   
   // RefundTracker state handler!
   const [refundTracker, setRefundTracker] = useState({
@@ -860,7 +897,8 @@ const Client = () => {
                                     <MetadataFields data={customHistoryTemplate}
                                                     updateData={(updatedData) => setCustomHistoryTemplate(updatedData)}/>
                                     <button className='btn btn-primary btn-center-config-matrix'
-                                            onClick={() => _updateCustomTemplate('history', customHistoryTemplate)}> Update Custom Template
+                                            onClick={() => _updateCustomTemplate('history', customHistoryTemplate)}> Update
+                                        Custom Template
                                     </button>
                                 </div>
                             </div>
@@ -873,20 +911,61 @@ const Client = () => {
                                     <MetadataFields data={customBillPreview}
                                                     updateData={(updatedData) => setCustomBillPreview(updatedData)}/>
                                     <button className='btn btn-primary btn-center-config-matrix'
-                                            onClick={() => _updateCustomTemplate('bill-preview', customBillPreview)}> Update Custom Template
+                                            onClick={() => _updateCustomTemplate('bill-preview', customBillPreview)}> Update
+                                        Custom Template
                                     </button>
                                 </div>
                             </div>
                             {/* Property Read Custom Template Preview */}
                             <div className="card modal-gap" style={{width: "50vh", height: '40vh'}}>
                                 <div className="card-header text-center" style={{color: "black"}}>
-                                    Property Read Preview Custom Template
+                                    Property Read Room Details Preview Custom Template
                                 </div>
                                 <div className='card-body'>
-                                    <MetadataFields data={customPropertyReadTemplate}
-                                                    updateData={(updatedData) => setCustomPropertyReadTemplate(updatedData)}/>
+                                    <MetadataFields data={customPropertyReadRoomTemplate}
+                                                    updateData={(updatedData) => setCustomPropertyReadRoomTemplate(updatedData)}/>
                                     <button className='btn btn-primary btn-center-config-matrix'
-                                            onClick={() => _updateCustomTemplate('property-read-room', customPropertyReadTemplate)}> Update Custom Template
+                                            onClick={() => _updateCustomTemplate('property-room', customPropertyReadRoomTemplate)}> Update
+                                        Custom Template
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="card modal-gap" style={{width: "50vh", height: '40vh'}}>
+                                <div className="card-header text-center" style={{color: "black"}}>
+                                    Property Read User Details Preview Custom Template
+                                </div>
+                                <div className='card-body'>
+                                    <MetadataFields data={customPropertyReadUserTemplate}
+                                                    updateData={(updatedData) => setCustomPropertyReadUserTemplate(updatedData)}/>
+                                    <button className='btn btn-primary btn-center-config-matrix'
+                                            onClick={() => _updateCustomTemplate('property-user', customPropertyReadUserTemplate)}> Update
+                                        Custom Template
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="card modal-gap" style={{width: "50vh", height: '40vh'}}>
+                                <div className="card-header text-center" style={{color: "black"}}>
+                                    Property Bill Generation Custom Template
+                                </div>
+                                <div className='card-body'>
+                                    <MetadataFields data={customPropertyBillGeneration}
+                                                    updateData={(updatedData) => setCustomPropertyBillGeneration(updatedData)}/>
+                                    <button className='btn btn-primary btn-center-config-matrix'
+                                            onClick={() => _updateCustomTemplate('property-bill-generation', customPropertyBillGeneration)}> Update
+                                        Custom Template
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="card modal-gap" style={{width: "50vh", height: '40vh'}}>
+                                <div className="card-header text-center" style={{color: "black"}}>
+                                    Property Invoice Generation Custom Template
+                                </div>
+                                <div className='card-body'>
+                                    <MetadataFields data={customPropertyInvoiceGeneration}
+                                                    updateData={(updatedData) => setCustomPropertyInvoiceGeneration(updatedData)}/>
+                                    <button className='btn btn-primary btn-center-config-matrix'
+                                            onClick={() => _updateCustomTemplate('property-invoice-generation', customPropertyInvoiceGeneration)}> Update
+                                        Custom Template
                                     </button>
                                 </div>
                             </div>

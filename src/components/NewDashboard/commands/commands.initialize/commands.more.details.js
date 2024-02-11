@@ -69,19 +69,9 @@ class CommandsMoreDetails {
         if(this.isCustomTemplateConfigured()){
             // Check if the server is running on local, If yes, get the html content from the local server
             // Or get the HTML content from the database.
-            if(getParsedUrl().hostname !== lang.LOCAL_SERVER){
-                return CommandsConnector._getCustomHTMLContentFromDB(options).then((result) => {
-                    return result.data.data[0].customTemplate;
-                }).catch(() => {
-                    console.warn('Error occurred while fetching the dynamic html content');
-                });
-            } else {
-                return CommandsConnector._getCustomHTMLContent(options).then((result) => {
-                    return result;
-                }).catch(() => {
-                    console.warn('Error occurred while fetching the dynamic html content');
-                });
-            }
+            return CommandsConnector.fetchCustomHTMLConfiguredTemplate(options).then((result) => {
+                return result;
+            });
         } else {
             // Rollback to the default history view which is checkout.view.template.
             // This function should return a promise. In the above condition, we have .then functions.

@@ -1033,6 +1033,12 @@ td {
   background-color: #d7d8d9;
 }
 
+.metadata-navbar-rightside{
+  position: absolute;
+  right: 0;
+  padding-right: 150px;
+}
+
 .metadata-navbar-container{
   display: flex;
   align-items: center;

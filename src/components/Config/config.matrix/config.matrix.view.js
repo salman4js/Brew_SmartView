@@ -184,6 +184,22 @@ const ConfigMatrix = (props) => {
                     {props.customHtmlConfiguration.propertyReadRoom.label}
                 </label>
             </div>
+            <div className="form-check">
+                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                       checked={props.customHtmlConfiguration.billGeneration.isEnabled}
+                       onChange={() => props.customHtmlConfiguration.onChange(!props.customHtmlConfiguration.billGeneration.isEnabled, 'billGeneration')}/>
+                <label className="form-check-label dashboard-input" htmlFor="flexCheckDefault" style={{color: "black"}}>
+                    {props.customHtmlConfiguration.billGeneration.label}
+                </label>
+            </div>
+            <div className="form-check">
+                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                       checked={props.customHtmlConfiguration.invoiceGeneration.isEnabled}
+                       onChange={() => props.customHtmlConfiguration.onChange(!props.customHtmlConfiguration.invoiceGeneration.isEnabled, 'invoiceGeneration')}/>
+                <label className="form-check-label dashboard-input" htmlFor="flexCheckDefault" style={{color: "black"}}>
+                    {props.customHtmlConfiguration.invoiceGeneration.label}
+                </label>
+            </div>
             <div className="modal-gap"></div>
             <div className="table-view-bill-line"></div>
             <div className="form-check">

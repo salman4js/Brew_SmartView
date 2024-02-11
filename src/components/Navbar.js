@@ -386,14 +386,11 @@ const Navbar = (props) => {
 
     return (
         <nav className="navbar sticky-top navbar-expand-lg navbar-dark navbar-bg">
-            <div className="container metadata-navbar-container">
+            <div className="metadata-navbar-container">
                 <a className="navbar-brand metadata-navbar-leftside" href="#">
                     <div className='row'>
                         <div className="col">
-                            <img src={LogoTop} width="30" height="30" className="d-inline-block align-top" alt="" />
-                        </div>
-                        <div className="col stock">
-                            {props.name}
+                            <img src={LogoTop} width="300" height="30" className="d-inline-block align-top" alt="" />
                         </div>
                     </div>
                 </a>
