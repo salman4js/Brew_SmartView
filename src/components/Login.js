@@ -74,11 +74,11 @@ const Login = () => {
             'isCheckinDateEditable': res.data.object.checkinDateEditable,
             'is-linked-with-vouchers': res.data.object.linkVouchersWithLivixius,
             'showFullDetails': res.data.object.showFullDetails,
-            'customHtmlForBillPreview': res.data.object?.customHtmlContent?.billPreview?.isEnabled,
-            'customHtmlForHistoryPreview': res.data.object?.customHtmlContent?.historyPreview?.isEnabled,
-            'customHtmlForPropertyRead': res.data.object?.customHtmlContent?.propertyReadRoom?.isEnabled,
-            'customTemplateForBill': res.data.object?.customHtmlContent?.billGeneration?.isEnabled,
-            'customTemplateForInvoice': res.data.object?.customHtmlContent?.invoiceGeneration?.isEnabled,
+            'customHtmlForBillPreview': res.data.object?.customHtmlContent?.billPreview?.isEnabled || false,
+            'customHtmlForHistoryPreview': res.data.object?.customHtmlContent?.historyPreview?.isEnabled || false,
+            'customHtmlForPropertyRead': res.data.object?.customHtmlContent?.propertyReadRoom?.isEnabled || false,
+            'customTemplateForBill': res.data.object?.customHtmlContent?.billGeneration?.isEnabled || false,
+            'customTemplateForInvoice': res.data.object?.customHtmlContent?.invoiceGeneration?.isEnabled || false,
           };
           
           defaultStorage(data);

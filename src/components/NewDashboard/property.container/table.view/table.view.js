@@ -585,9 +585,11 @@ class TableView extends React.Component {
     // If renderCustomBodyView is true and customModalBodyViewOptions is provided, set it in customModalBodyViewOptions state.
     if(options.renderCustomBodyView && options.customBodyViewOptions){
       this.setState({customModalBodyViewOptions: options.customBodyViewOptions});
+      this.state.customModal.customComponent = undefined;
     };
     if(options.renderCustomBodyView && options.customComponent){
       this.state.customModal.customComponent = options.customComponent;
+      this.setState({customModalBodyViewOptions: undefined})
     }
     this.state.customModal.show = true;
     this.state.customModal.centered = options.centered !== undefined ? options.centered : true;
