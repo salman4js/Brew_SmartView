@@ -228,23 +228,23 @@ const Client = () => {
   const [customHtmlConfiguration, setCustomHtmlConfiguration] = useState({
         billPreview: {
             label: "Select custom html content for bill preview",
-            isEnabled: undefined,
+            isEnabled: false,
         },
         historyPreview: {
             label: "Select custom html content for history preview",
-            isEnabled: undefined,
+            isEnabled: false,
         },
         propertyReadRoom: {
             label: "Select custom html content for property read",
-            isEnabled: undefined
+            isEnabled: false
         },
         billGeneration: {
             label: "Select custom html content for bill generation",
-            isEnabled: undefined
+            isEnabled: false
         },
         invoiceGeneration: {
             label: "Select custom html content for invoice generation",
-            isEnabled: undefined
+            isEnabled: false
         },
         onChange: (isEnabled, node) => updateCustomHtmlContentConfig(isEnabled, node)
   });

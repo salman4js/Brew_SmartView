@@ -54,8 +54,8 @@ var sidepanelConstants = Object.freeze({
             label: 'Bed Count'
         },
         roomStatus: {
-            placeholder: 'Bed Count',
-            label: 'Bed Count',
+            placeholder: 'Current Room Status',
+            label: 'Current Room Status',
             readOnly: true
         }
     }),
