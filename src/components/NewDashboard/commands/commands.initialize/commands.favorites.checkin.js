@@ -22,7 +22,12 @@ class CommandsFavoritesCheckin extends CommandsRoomTransfer {
     _getTargetedModel() {
         this._prepareFavoritesOptions();
         this.state.userModel = CollectionInstance.whereInCollections('widgetTileCollections', 'favorites', '_id', this.status.nodes[0])[0];
-        this.status.eventHelpers.updateSelectedModel(undefined, lang.FAVORITES_CHECKIN.dashboardMode, this.state.userModel);
+        var options = {
+            roomModel: undefined,
+            dashboardMode: lang.FAVORITES_CHECKIN.dashboardMode,
+            userModel: this.state.userModel
+        }
+        this.status.eventHelpers.updateSelectedModel(options);
         this.status.eventHelpers.onRoomTransfer(this.transferOptions);
     };
 

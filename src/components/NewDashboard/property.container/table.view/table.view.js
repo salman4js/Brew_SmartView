@@ -378,7 +378,7 @@ class TableView extends React.Component {
         getTableCollection: (options) => this._getTableCollection(options),
         getTableHeaders: () => this.getTableHeaders(),
         removeFromTableCollection: (model) => this.removeFromTableCollection(model),
-        updateSelectedModel: (roomModel, dashboardMode, userModel) => this.props.updateSelectedModel(roomModel, dashboardMode, userModel)
+        updateSelectedModel: (options) => this.props.updateSelectedModel(options)
       }
     }
   };

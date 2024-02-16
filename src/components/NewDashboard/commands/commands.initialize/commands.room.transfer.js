@@ -41,7 +41,7 @@ class CommandsRoomTransfer extends CheckoutFormView{
             billingDetails: {},
             billingInfo: {}
         };
-        this.props.updateSelectedModel = (roomModel, dashboardMode, userModel) => this.status.eventHelpers.updateSelectedModel(roomModel, dashboardMode, userModel);
+        this.props.updateSelectedModel = (roomModel, dashboardMode, userModel) => this.status.eventHelpers.updateSelectedModel({roomModel, dashboardMode, userModel});
     };
 
     // Override the fetchBillingDetails method to avoid preventing state errors.

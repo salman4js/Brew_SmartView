@@ -46,7 +46,7 @@ const DashboardInitializer = (props) => {
   
   // Go to location of that particular room model!
   function goToLocation(options){
-    dashboardWrapperRef.current.updateSelectedModel(options.model);
+    dashboardWrapperRef.current.updateSelectedModel({roomModel: options.model});
   };
   
   // Dashboard wrapper view!
