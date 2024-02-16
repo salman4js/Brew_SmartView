@@ -156,7 +156,7 @@ const PropertyContainer = (props) => {
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.read){
       return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} dashboardController = {(opts) => props.dashboardController(opts)}
-      updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)} routerOptions = {(opts) => getRouterOptions(opts)}
+      updateSelectedModel = {(options) => props.updateSelectedModel(options)} routerOptions = {(opts) => getRouterOptions(opts)}
       cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} routerController = {(opts) => props.routerController(opts)} />
     };
     
@@ -173,7 +173,7 @@ const PropertyContainer = (props) => {
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView){
       return <StatusTableView data = {props.data}  params = {props.params} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       dashboardController = {(opts) => props.dashboardController(opts)} stateRouter = {props.stateRouter} routerController = {(opts) => props.routerController(opts)}
-      updateSelectedModel = {(roomModel, dashboardMode, userModel) => props.updateSelectedModel(roomModel, dashboardMode, userModel)}/>
+      updateSelectedModel = {(options) => props.updateSelectedModel(options)}/>
     };
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){

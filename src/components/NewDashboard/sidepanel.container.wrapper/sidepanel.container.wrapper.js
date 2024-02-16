@@ -20,6 +20,7 @@ import metadataFieldTemplatestate from "../../fields/metadata.field.templatestat
 import PanelView from '../../SidePanelView/panel.view';
 import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view';
+import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
 
 const SidepanelWrapper = (props, ref) => {
 
@@ -214,7 +215,9 @@ const SidepanelWrapper = (props, ref) => {
   function panelItemOnClick(uId, model){
     var dashboardMode = getFormMode(model);
     _updateSelectedIdList(uId);
-    props.selectedModel(model, dashboardMode);
+    // Get userStatusMap from the collection instance.
+    var userStatusMap = CollectionInstance.getCollections('userStatusMap');
+    props.selectedModel({roomModel: model, dashboardMode: dashboardMode, userStatusMap: userStatusMap});
   };
 
   // Highlight selected ID!

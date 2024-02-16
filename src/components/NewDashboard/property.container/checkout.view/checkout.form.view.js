@@ -466,7 +466,7 @@ class CheckOutView extends React.Component {
         prebook: this.state.data.roomModel.preBooked, amount: this.getTotalPayableAmount(), refund: this.getRefundAmount(), 
         totalDishAmount: 0, isGst: this.getIsGSTEnabled(), foodGst: 0, stayGst: this.state.billingInfo.gstPrice,
         roomno: this.state.data.roomModel.roomno, dateTime: this.getDateTime(), checkoutBy: getCurrentUser()};
-      this.props.updateSelectedModel(this.state.data.roomModel, undefined, this.checkoutDetails);
+      this.props.updateSelectedModel({roomModel: this.state.data.roomModel, userModel: this.checkoutDetails});
     };
     
     // Perform checkout!

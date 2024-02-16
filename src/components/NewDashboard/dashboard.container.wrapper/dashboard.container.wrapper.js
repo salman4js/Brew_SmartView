@@ -99,11 +99,15 @@ const DashboardWrapper = (props, ref) => {
   });
 
   // Update the selected model from the side panel wrapper!
-  function updateSelectedModel(roomModel, dashboardMode, userModel){
+  function updateSelectedModel(options){
     onFormCancel(); // this will clear out the form data, so that the newly selected roomModel will load.
     // When dashboardMode is undefined, get the dashboardMode from the roomModel data.
-    dashboardMode = !dashboardMode ? getFormMode(roomModel.roomStatusConstant) : dashboardMode;
-    setSelectedModel(prevState => ({...prevState, roomModel: roomModel, dashboardMode: dashboardMode, userModel: userModel }));
+    if(!options.dashboardMode){
+      options['dashboardMode'] = getFormMode(options.roomModel.roomStatusConstant)
+    }
+    _navigateToStatusTableView(options);
+    // dashboardMode = !dashboardMode ? getFormMode(roomModel.roomStatusConstant) : dashboardMode;
+    // setSelectedModel(prevState => ({...prevState, roomModel: roomModel, dashboardMode: dashboardMode, userModel: userModel }));
   };
 
   // Update the state for goToLocation command action.
@@ -360,7 +364,7 @@ const DashboardWrapper = (props, ref) => {
       <div className = "sidepanel-wrapper">
         <div className = "flex-1">
           <SidepanelWrapper ref = {sidePanelRef} controller = {propertyController} data = {props.modalAssistData} params = {props.params} selectedModelData = {selectedModel}
-          dashboardController = {(opts) => _updateDashboardWrapper(opts)} selectedModel = {(roomModel, dashboardMode) => updateSelectedModel(roomModel, dashboardMode)} updateFilterData = {(value) => _updateFilterData(value)}
+          dashboardController = {(opts) => _updateDashboardWrapper(opts)} selectedModel = {(options) => updateSelectedModel(options)} updateFilterData = {(value) => _updateFilterData(value)}
           updatePropertyDetails = {(roomCollection, availability, roomStatus, userCollection) => _updatePropertyDetails(roomCollection, availability, roomStatus, userCollection)} />
         </div>
         <div className = "flex-2">
@@ -368,7 +372,7 @@ const DashboardWrapper = (props, ref) => {
             <PropertyContainer data = {selectedModel} htmlContent = {htmlContent} propertyContainerHeight = {props.modalAssistData.height} stateRouter = {customStateRouter}
             routerController = {(opts) => _routerController(opts)} propertyDetails = {propertyDetails} onSave = {(value) => onFormSave(value)}
             onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
-            updateSelectedModel = {(roomModel, dashboardMode, userModel) => updateSelectedModel(roomModel, dashboardMode, userModel)}
+            updateSelectedModel = {(options) => updateSelectedModel(options)}
             onCheckout = {(value) => onCheckout(value)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
           </div>
         </div>

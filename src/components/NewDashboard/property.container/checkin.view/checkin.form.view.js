@@ -286,6 +286,7 @@ const CheckinForm = (props) => {
   // Get advance amount limit!
   function _restrictAdvanceAmount(totalAmount){
     var nodeValue = {isShow: true, inlineMessage: `Advance amount cannot be greater than ${totalAmount}`};
+    // TODO: If its configured as Cash and Deposit, Don't add condition here in the metadata field.
     updateMetadataFields('advance', nodeValue, customizableFields, setCustomizableFields).then(() => {
       updateMetadataFields('advance', {condition: {validationStatement: '>=', validationValue: totalAmount}}, customizableFields, setCustomizableFields);
     });
