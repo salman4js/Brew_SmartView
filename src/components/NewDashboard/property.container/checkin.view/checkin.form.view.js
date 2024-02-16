@@ -279,14 +279,14 @@ const CheckinForm = (props) => {
       stayedDays = getStayedDays(currentDate, dateOfCheckout),
       gstPrice = props.data.roomModel.price * determineGSTPercent(props.data.roomModel.price),
       totalAmount = (stayedDays * priceAmount) + (stayedDays * gstPrice);
-    _restrictAdvanceAmount(totalAmount);
+    // If cash and deposit were configured, Don't restrict or limit the entry for C&D.
+    _isAdvanceRestricted() && _restrictAdvanceAmount(totalAmount);
     _restrictDiscountAmount(totalAmount); 
   }; 
   
   // Get advance amount limit!
   function _restrictAdvanceAmount(totalAmount){
     var nodeValue = {isShow: true, inlineMessage: `Advance amount cannot be greater than ${totalAmount}`};
-    // TODO: If its configured as Cash and Deposit, Don't add condition here in the metadata field.
     updateMetadataFields('advance', nodeValue, customizableFields, setCustomizableFields).then(() => {
       updateMetadataFields('advance', {condition: {validationStatement: '>=', validationValue: totalAmount}}, customizableFields, setCustomizableFields);
     });
