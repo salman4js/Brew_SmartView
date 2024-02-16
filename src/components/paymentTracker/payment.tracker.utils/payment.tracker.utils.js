@@ -37,9 +37,9 @@ export async function getRoomList(lodgeId, fetchPref){
     }
   };
   // Call the widget tile collection here!
-  fetchPref.getWidgetTileCollection && await fetchWidgetTilePref(lodgeId);
-  fetchPref.getMultipleLoginUsers && await fetchMultipleLoginUsers(lodgeId);
-  fetchPref.getUserCollection && await sidepanelContainerUtils.getUserModel({lodgeId: lodgeId})
+  fetchPref?.getWidgetTileCollection && await fetchWidgetTilePref(lodgeId);
+  fetchPref?.getMultipleLoginUsers && await fetchMultipleLoginUsers(lodgeId);
+  fetchPref?.getUserCollection && await sidepanelContainerUtils.getUserModel({lodgeId: lodgeId})
   var resultData = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/false/roomlodge`, params);
   // Add the rooms list to the global collections!
   if(resultData.data.success){
