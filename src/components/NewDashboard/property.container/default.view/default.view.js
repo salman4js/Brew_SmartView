@@ -72,8 +72,8 @@ class DefaultView extends React.Component {
     return {
        header: undefined,
        customData: [],
-       height: '200',
-       width: '200',
+       height: '100%',
+       width: '100%',
        childViewClass: 'text-center widget-tile-listitem-body',
       _showBodyChildView : function(){
         

@@ -75,7 +75,7 @@ const CardView = (props) => {
   };
   
   return(
-      <div className="card" style = {{height: props.data?.height + "px", width: props.data?.width + "px"}}>
+      <div className="card" style = {{height: props.data?.height, width: props.data?.width}}>
         {props.data.header !== undefined && (
             <div className="card-header text-handler text-center">
             {props.data?.header}
