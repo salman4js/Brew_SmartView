@@ -15,8 +15,7 @@ export function getParsedUrl(){
 // Ge the base url!
 export function getBaseUrl(){
   var parsedUrl = getParsedUrl();
-  const baseUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
-  return baseUrl;
+  return `${parsedUrl.protocol}//${parsedUrl.host}`;
 };
 
 // Get the current route!

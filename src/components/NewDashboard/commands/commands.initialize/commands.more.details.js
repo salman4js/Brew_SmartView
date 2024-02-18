@@ -1,8 +1,9 @@
 import lang from "../commands.constants";
+import _ from 'lodash';
 import CommandsConnector from "../commands.connector";
 import {templateHelpers} from "../../property.container/checkout.view/checkout.form.template";
-import {getParsedUrl} from "../../../common.functions/node.convertor";
 import {getStorage} from "../../../../Controller/Storage/Storage";
+import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 
 class CommandsMoreDetails {
     constructor(signatureOptions){
@@ -23,7 +24,7 @@ class CommandsMoreDetails {
 
     execute(){
       this.status.eventHelpers.triggerTableLoader(true, true);
-      this.selectedNodeData = lang.MORE_DETAILS.replacementsForEmptyData; // This is to handle replacements in the content for the empty data.
+      this.selectedNodeData = _.clone(lang.MORE_DETAILS.replacementsForEmptyData); // This is to handle replacements in the content for the empty data.
       // Selected node id will be passed here, we have to fetch the data for the selected node id.
       this.fetchHistoryDataForSelectedNodes().then(() => {
           this.fetchCustomHtmlContent().then((result) => {
@@ -44,6 +45,7 @@ class CommandsMoreDetails {
         }
         return CommandsConnector.fetchSelectedHistoryNode(options).then((result) => {
            if(result.data.success){
+               this.historyNode = result.data.message[0];
                Object.assign(this.selectedNodeData, result.data.message[0]);
            }
         }).catch(() => {
@@ -95,20 +97,38 @@ class CommandsMoreDetails {
         this.status.eventHelpers.routerController()._notifyStateRouter(opts);
     };
 
+    // When previewing history template, Room price of the room should be there but REST doesn't return room details with user details.
+    // They only return roomId with the user details.
+    // So, we have to get the room price from the collection instance based on the room id.
+    _getRoomPrice(){
+        return CollectionInstance.whereInCollections('roomsListCollection', undefined, '_id',  this.selectedNodeData.room)[0].price + ' Rs';
+    };
+
     // Populate replacements object based on the rollBackTemplateView view format.
     populateReplacements(replacements){
         replacements['currentCheckoutDate'] = replacements.dateofcheckout;
         replacements['currentTime'] = replacements.checkoutTime;
         replacements['extraBedCount'] = replacements.extraBeds;
         replacements['stayeddays'] = replacements.stayedDays;
-        replacements['roomPrice'] = replacements.bill;
+        replacements['roomPrice'] = this._getRoomPrice();
         replacements['roomPricePerStays'] = replacements.totalAmount;
-        replacements['gstPrice'] = replacements.stayGst;
-        replacements['advanceAmount'] = replacements.advance;
-        replacements['discountAmount'] = replacements.discount;
-        replacements['withoutGST'] = replacements.bill;
-        replacements['totalPrice'] = replacements.totalAmount;
+        replacements['gstPrice'] = this.historyNode.stayGst ? replacements.stayGst + ' Rs' : replacements.stayGst;
+        replacements['advanceAmount'] = this.historyNode.advance ? replacements.advance + ' Rs': replacements.advance;
+        replacements['discountAmount'] = this.historyNode.discount ? replacements.discount + ' Rs': replacements.discount;
+        replacements['withoutGST'] = this.historyNode.bill ? replacements.bill + ' Rs': replacements.bill;
+        replacements['totalPrice'] = replacements.totalAmount === "" ?  lang.MORE_DETAILS.replacementsForEmptyData.totalAmount : Number(replacements.totalAmount) + ' Rs';
+        replacements['isNegativeValue'] = Number(this.selectedNodeData.totalAmount) < 0; // Populate replacements object to blend in with checkout.view.template.
+        replacements.currentCheckoutDate = replacements.dateofcheckout === "" ? lang.MORE_DETAILS.replacementsForEmptyData.dateofcheckout : replacements.dateofcheckout;
+        replacements.checkoutTime = replacements.checkoutTime === "" ? lang.MORE_DETAILS.replacementsForEmptyData.checkoutTime : replacements.checkoutTime;
+        replacements.roomPricePerStays = replacements.roomPricePerStays === "" ? lang.MORE_DETAILS.replacementsForEmptyData.roomPricePerStays : replacements.roomPricePerStays + ' Rs';
         return replacements;
+    };
+
+    _getConfigOptions(){
+      return{
+          isAdvanceRestricted: JSON.parse(getStorage('isAdvanceRestricted')),
+          isExtraCalc: JSON.parse(getStorage('extraCalc'))
+      }
     };
 
     // Prepare dashboard controller options.
@@ -121,11 +141,10 @@ class CommandsMoreDetails {
           },
           replacements: this.selectedNodeData
       }
+      this.dashboardController.replacements['isCheckedOut'] = this.selectedNodeData.totalAmount !== "";
+      this.dashboardController.replacements = this.populateReplacements(this.dashboardController.replacements);
       if(this.defaultMoreDetailsTemplate){
-          // Populate replacements object to blend in with checkout.view.template.
-          this.dashboardController.replacements['isNegativeValue'] = Number(this.selectedNodeData.totalAmount) <= 0;
-          this.dashboardController.replacements = this.populateReplacements(this.dashboardController.replacements);
-          this.dashboardController.customHtmlContent['rollBackTemplateView'] =  templateHelpers({}, {}, this.dashboardController.replacements);
+          this.dashboardController.customHtmlContent['rollBackTemplateView'] =  templateHelpers({}, this._getConfigOptions(), this.dashboardController.replacements);
       }
     };
 };
