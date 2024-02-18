@@ -8,7 +8,7 @@ const ManageRecepDetails = (props) => {
   // Card view state handler!
   const [cardView, setCardView] = useState({
     header: "Account Details",
-    height: "580",
+    height: "100%", // Keep it 100%, Anyhow the height will be adjusted based on the content inside.
     _showBodyChildView : _showCardBodyView,
     footerEnabled: false,
     commandHelper : false,
