@@ -165,7 +165,7 @@ class Collections { // Design pattern --> Singleton class!
     }
   };
   
-  // Get arribute from the models!
+  // Get attribute from the models!
   getAttribute(collectionName, attributeName){
     var coll = this._ensureCollection(collectionName, true);
     if(!coll.validCol){
