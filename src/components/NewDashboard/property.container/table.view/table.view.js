@@ -14,6 +14,7 @@ import {
 import tableViewConstants from './table.view.constants';
 import MetadataFields from '../../../fields/metadata.fields.view';
 import TableFilterSettingsDialog from "../../dialogs/table.filter.settings/table.filter.settings.dialog";
+import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 
 class TableView extends React.Component {
 
@@ -419,8 +420,13 @@ class TableView extends React.Component {
       return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant]
           || (_.isFunction(this.setExpandedTableView) ? await this.setExpandedTableView() : []);
     } else {
-      // Create a shallow copy of the array before reversing
-      return [...this.widgetTileModel.propertyDetails.userCollection].reverse();
+      // Create a shallow copy of the array before reversing.
+      // User Collection doesn't have data about the room type, Room type is needed in user collection for filtering.
+      var userCollection = [...this.widgetTileModel.propertyDetails.userCollection].reverse();
+      userCollection.map((userModel) => {
+        userModel['suiteName'] = CollectionInstance.whereInCollections('roomsListCollection', undefined, '_id', userModel.room)[0].suiteName;
+      })
+      return userCollection;
     }
   };
 
