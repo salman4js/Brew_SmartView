@@ -20,15 +20,15 @@ function populateReplacementObject(state){
     'stayeddays': state.stayeddays,
     'oldRoomNo': state.userModel.oldRoomNo,
     'oldRoomStayDays': state.userModel.oldRoomStayDays,
-    'oldRoomPrice': state.userModel.oldRoomPrice + 'Rs',
+    'oldRoomPrice': Number(state.userModel.oldRoomPrice),
     'roomPrice': state.billingInfo.roomPrice,
-    'roomPricePerStays': state.billingInfo.roomPricePerStays + 'Rs',
-    'gstPrice': state.billingInfo.gstPrice,
-    'advanceAmount': state.billingInfo.advanceAmount,
-    'discountAmount': state.billingInfo.discountAmount,
-    'withoutGST': state.billingInfo.withoutGST,
-    'totalPrice': state.billingInfo.totalPrice,
-    'totalPrice + oldRoomPrice': state.billingInfo.totalPrice + state.userModel.oldRoomPrice + 'Rs',
+    'roomPricePerStays': state.billingInfo.roomPricePerStays + ' Rs',
+    'gstPrice': state.billingInfo.gstPrice + ' Rs',
+    'advanceAmount': state.billingInfo.advanceAmount + ' Rs',
+    'discountAmount': state.billingInfo.discountAmount + ' Rs',
+    'withoutGST': state.billingInfo.withoutGST + ' Rs',
+    'totalPrice': Number(state.billingInfo.totalPrice),
+    'totalPrice + oldRoomPrice': (Number(state.billingInfo.totalPrice) + Number(state.userModel.oldRoomPrice)) + 'Rs'
   };
 };
 
@@ -141,7 +141,7 @@ export function templateHelpers(state, configOptions, replacements, propertyCont
                   <div className='modal-gap'>
                     <label
                         style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.oldRoomPrice} </label>
-                    <p style={{color: 'black'}}> {replacements.oldRoomPrice + ' Rs'} </p>
+                    <p style={{color: 'black'}}> {replacements.oldRoomPrice} </p>
                   </div>
                 </div>
             )}
@@ -158,12 +158,12 @@ export function templateHelpers(state, configOptions, replacements, propertyCont
               <div className='modal-gap'>
                 <label
                     style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.roomPricePerStays} </label>
-                <p style={{color: 'black'}}> {replacements.roomPricePerStays + ' Rs'} </p>
+                <p style={{color: 'black'}}> {replacements.roomPricePerStays} </p>
               </div>
               <div className='modal-gap'>
                 <label
                     style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.gstDedeuction} </label>
-                <p style={{color: 'black'}}> {replacements.gstPrice + ' Rs'} </p>
+                <p style={{color: 'black'}}> {replacements.gstPrice} </p>
               </div>
               <div className='modal-gap'>
                 <label
@@ -193,10 +193,19 @@ export function templateHelpers(state, configOptions, replacements, propertyCont
                             color: 'green',
                             fontWeight: 'bold'
                           }}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.totalPayableAmountWithRoomTransfer} </label>
-                          <p style={{
-                            color: 'green',
-                            fontWeight: 'bold'
-                          }}> {replacements.totalPrice + replacements.oldRoomPrice + ' Rs'} </p>
+                          {replacements.isCheckedOut && (
+                              <p style={{
+                                color: 'green',
+                                fontWeight: 'bold'
+                              }}> {replacements.totalPrice + replacements.oldRoomPrice} </p>
+                          )}
+                          {/** If it's not checked out don't render oldRoomPrice data**/}
+                          {!replacements.isCheckedOut && (
+                              <p style={{
+                                color: 'green',
+                                fontWeight: 'bold'
+                              }}> {replacements.totalPrice} </p>
+                          )}
                         </div>
                     )}
                     {!userModel.isRoomTransfered && (
@@ -205,7 +214,7 @@ export function templateHelpers(state, configOptions, replacements, propertyCont
                             color: 'green',
                             fontWeight: 'bold'
                           }}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.totalPayableAmount} </label>
-                          <p style={{color: 'green', fontWeight: 'bold'}}> {replacements.totalPrice + ' Rs'} </p>
+                          <p style={{color: 'green', fontWeight: 'bold'}}> {replacements.totalPrice} </p>
                         </div>
                     )}
                   </>
@@ -217,7 +226,7 @@ export function templateHelpers(state, configOptions, replacements, propertyCont
                         color: 'red',
                         fontWeight: 'bold'
                       }}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.refundAmount} </label>
-                      <p style={{color: 'red', fontWeight: 'bold'}}> {Math.abs(replacements.totalPrice) + ' Rs'} </p>
+                      <p style={{color: 'red', fontWeight: 'bold'}}> {Math.abs(replacements.totalPrice)} </p>
                     </div>
                   </>
               )}

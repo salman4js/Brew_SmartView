@@ -56,7 +56,14 @@ var commandsConstant = Object.freeze({
            stayedDays: 'Not Checked-Out Yet',
            bill: 'Not Checked-Out Yet',
            stayGst: 'Not Checked-Out Yet',
-           oldRoomNo: 'Not Checked-Out Yet'
+           oldRoomNo: 'Not Checked-Out Yet',
+           totalAmount: 'Not Checked-Out Yet',
+           extraBedCollection: 'Not Checked-Out Yet',
+           dateofcheckout: 'Not Checked-Out Yet',
+           checkoutTime: 'Not Checked-Out Yet',
+           roomPricePerStays: 'Not Checked-Out Yet',
+           advance: 'Not provided any advance',
+           discount: 'Not provided any discount'
        }
     }),
 

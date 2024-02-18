@@ -1,6 +1,6 @@
 import axios from 'axios';
 import lang from '../commands.constants';
-import {getBaseUrl, formQueryParams, convertObjectValue} from "../../../common.functions/node.convertor";
+import {convertObjectValue, formQueryParams, getBaseUrl} from "../../../common.functions/node.convertor";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 import TableViewConstants from "../../property.container/table.view/table.view.constants";
 const Variables = require('../../../Variables').default;
@@ -67,8 +67,7 @@ class CommandsGenerateReceipt {
             true: 'Yes',
             false: 'No'
         };
-        var convertedData = convertObjectValue(serverData, ['isPaid'], objRules);
-        this.receiptOptions['cellValues'] = convertedData;
+        this.receiptOptions['cellValues'] = convertObjectValue(serverData, ['isPaid'], objRules);
     };
 
     // Fetch payment tracker invoice details for selected nodes.

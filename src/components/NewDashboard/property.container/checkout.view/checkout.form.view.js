@@ -347,9 +347,9 @@ class CheckOutView extends React.Component {
           roomPrice: this.getRoomPrice() + " Rs", 
           totalPrice: this.getTotalPayableAmount() + (this.getIsExclusive() ? this.gstPrice : 0), // In case of inclusive, GST amount would be in the
             // total amount, hence we don't have to add gst price with the total payable amount.
-          advanceAmount: this.state.billingDetails.advanceCheckin + ' Rs',
-          discountAmount: this.state.billingDetails.discountPrice + ' Rs',
-          withoutGST: this.getAmountWithoutGST() + ' Rs',
+          advanceAmount: this.state.billingDetails.advanceCheckin,
+          discountAmount: this.state.billingDetails.discountPrice,
+          withoutGST: this.getAmountWithoutGST(),
           roomPricePerStays: this.getAmountForStayedDays(),
           isNegativeValue: this.getTotalPayableAmount() <= 0
         }
