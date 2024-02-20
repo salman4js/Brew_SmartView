@@ -1,7 +1,13 @@
 var sidepanelConstants = Object.freeze({
+    SIDE_PANEL_MODES: Object.freeze({
+        roomList: 'ROOM_LIST',
+        filterList: 'FILTER_LIST',
+        voucherList: 'VOUCHER_LIST'
+    }),
     panelHeader: Object.freeze({
         FILTER_PANEL: 'Filter Panel',
-        ROOM_LISTS: 'Rooms List'
+        ROOM_LISTS: 'Rooms List',
+        VOUCHER_LISTS: 'Vouchers Model'
     }),
     formMode: Object.freeze({
         READ_MODE: 'read',
@@ -14,6 +20,16 @@ var sidepanelConstants = Object.freeze({
     }),
     tableHeader: Object.freeze({
         MORE_DETAILS_HEADER: ['Floor No', 'Bed Count', 'Ext Bed Rate', 'Room Price']
+    }),
+    voucherListParentCollection: Object.freeze({
+        inflow: {
+            value: 'InFlow',
+            data: 'ROOM_LIST'
+        },
+        outflow: {
+            value: 'OutFlow',
+            data: 'VOUCHER_LIST'
+        }
     }),
     TEMPLATE_LABEL: Object.freeze({
         roomno: {

@@ -417,8 +417,12 @@ class TableView extends React.Component {
   // Get room constant collection!
   async getRoomConstantCollection(){
     if(this.roomConstant !== 'afterCheckin'){
-      return this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant]
-          || (_.isFunction(this.setExpandedTableView) ? await this.setExpandedTableView() : []);
+      var widgetTileModel = this.widgetTileModel.data.widgetTileModel?.[this.widgetTileModel.data.selectedRoomConstant];
+      if (!widgetTileModel || widgetTileModel.length === 0) {
+        return (_.isFunction(this.setExpandedTableView) ? await this.setExpandedTableView() : []);
+      } else {
+        return widgetTileModel;
+      }
     } else {
       // Create a shallow copy of the array before reversing.
       // User Collection doesn't have data about the room type, Room type is needed in user collection for filtering.

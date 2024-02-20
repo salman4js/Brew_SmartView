@@ -108,7 +108,7 @@ class FilterTable extends TableView {
       Ideally, for the first time when the table state is being updated re-render lifecycle method will get triggered.
       So, again the computation happens, then the table state is being updated re-render lifecycle method will get triggered again 
       which gets the application to unresponsive state.
-      and thats why added this flag to prevent that.
+      and that's why added this flag to prevent that.
     **/
     this.tablePerspectiveConstant = filterTableConstants.filterTablePerspectiveConstant;
     this.params = props.params;

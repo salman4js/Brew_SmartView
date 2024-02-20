@@ -130,16 +130,26 @@ const Navbar = (props) => {
         isLabelFirst: true,
         customStyle: customCheckboxStyle
       },
-        {
-            select: null,
-            value: undefined,
-            name: 'history',
-            attribute: 'checkBoxField',
-            updateValue: true,
-            label: 'Enable history in dashboard',
-            isLabelFirst: true,
-            customStyle: customCheckboxStyle
-        },
+      {
+        select: null,
+        value: undefined,
+        name: 'history',
+        attribute: 'checkBoxField',
+        updateValue: true,
+        label: 'Enable history in dashboard',
+        isLabelFirst: true,
+        customStyle: customCheckboxStyle
+      },
+      {
+        select: null,
+        value: undefined,
+        name: 'voucherTracker',
+        attribute: 'checkBoxField',
+        updateValue: true,
+        label: 'Enable Voucher Tracker in dashboard',
+        isLabelFirst: true,
+        customStyle: customCheckboxStyle
+      },
       {
         value: 0,
         name: 'datesBetweenCount',
@@ -378,7 +388,7 @@ const Navbar = (props) => {
       props.refreshState && props.refreshState();
     };
 
-    useEffect(() => {
+    useEffect( () => {
         setOptions(JSON.parse(getStorage("config-value")));
         fetchUniversalMessage();
         fetchPreferences();

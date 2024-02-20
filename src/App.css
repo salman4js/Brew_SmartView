@@ -1200,6 +1200,7 @@ td {
   font-weight: bold;
   font-size: 100px;
   background-color: rgb(23, 120, 83);
+  height: 100%;
 }
 
 .widget-tile-body{

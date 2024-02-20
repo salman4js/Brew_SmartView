@@ -10,6 +10,7 @@ import StatusTableView from './table.view/table.view';
 import FilterTable from './filter.table.wrapper/filter.table.wrapper';
 import LogTable from './log.table.wrapper/log.table.wrapper';
 import PaymentTrackerWrapper from "./payment.tracker.view/payment.tracker.wrapper";
+import VoucherTableWrapper from "./voucher.table.wrapper/voucher.table.wrapper";
 import propertyContainerConstants from './property.container.constants';
 import {
   extractQueryParams,
@@ -188,6 +189,11 @@ const PropertyContainer = (props) => {
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.paymentTrackerView){
       return <PaymentTrackerWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+      routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+    };
+
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.voucherTrackerView){
+      return <VoucherTableWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
 
