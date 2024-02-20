@@ -21,6 +21,7 @@ import PanelView from '../../SidePanelView/panel.view';
 import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view';
 import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
+import {getStorage} from "../../../Controller/Storage/Storage";
 
 const SidepanelWrapper = (props, ref) => {
 
@@ -38,7 +39,8 @@ const SidepanelWrapper = (props, ref) => {
   // Sidepanel view state handler!
   const [sidepanelView, setSidepanelView] = useState({
     roomListTreePanel: true, // By default, roomListTreePanel is true!
-    filterRoomPanel: false
+    filterRoomPanel: false,
+    voucherListPanel: false
   });
 
   // Filter input metadata fields!
@@ -85,6 +87,10 @@ const SidepanelWrapper = (props, ref) => {
     modalSize: 'medium'
   });
 
+  function _isMultipleLoginEnabled(){
+    return JSON.parse(getStorage('multipleLogin'));
+  };
+
   // Update filter string from the sidepanel search view!
   function _updateFilterData(filterData){
     setSidepanel(prevState => ({...prevState, listFilter: filterData}))
@@ -118,8 +124,12 @@ const SidepanelWrapper = (props, ref) => {
   function childViewMainContent(){
     if(sidepanelView.roomListTreePanel){
       return roomListTreeView();
-    } else {
+    }
+    if(sidepanelView.filterRoomPanel){
       return filterPanelView();
+    }
+    if(sidepanelView.voucherListPanel){
+      return voucherListPanelView();
     }
   };
 
@@ -132,6 +142,31 @@ const SidepanelWrapper = (props, ref) => {
     )
   };
 
+  // Voucher list panel view.
+  function voucherListPanelView(){
+    let voucherListPanelCollectionView = Object.keys(sidepanelConstants.voucherListParentCollection);
+    return voucherListPanelCollectionView.map((voucherCollection) => {
+      return(
+          <CollectionView data = {sidepanelConstants.voucherListParentCollection[voucherCollection].value} showCollectionChildView = {() => _renderPanelItemViewVoucherCollection(voucherCollection)}/>
+      )
+    })
+  };
+
+  // Render panel item view voucher collection.
+  function _renderPanelItemViewVoucherCollection(voucherCollection){
+    if(sidepanelConstants.voucherListParentCollection[voucherCollection].data === sidepanelConstants.SIDE_PANEL_MODES.voucherList){
+      // Get the vouchers model from the collection instance!
+      var vouchersModel = CollectionInstance.getModel('widgetTileCollections', 'voucherModelList');
+      return vouchersModel.map((options) => {
+        return(
+            <PanelItemView data = {options.voucherName} showIndentationArrow = {true}/>
+        )
+      })
+    } else {
+      return roomListTreeView();
+    }
+  };
+
   // Side-panel search bar view!
   function _renderSearchBarView(){
     return <SidepanelContainerSearchView updateFilterData = {(filterData) => _updateFilterData(filterData)} />
@@ -141,7 +176,7 @@ const SidepanelWrapper = (props, ref) => {
   function roomListTreeView(){
     return (
         <>
-          {_renderSearchBarView()}
+          {!sidepanelView.voucherListPanel && _renderSearchBarView()}
           {!sidepanel.listFilter && _getRoomTypes().map((suiteType) => {
             return <CollectionView data = {suiteType} showCollectionChildView = {() => _renderPanelItemViewCollection(suiteType)}/>
           })}
@@ -183,17 +218,40 @@ const SidepanelWrapper = (props, ref) => {
     }
   };
 
+  // Set or change sidepanel view state.
+  function _setSidePanelMode(mode){
+    switch(mode){
+      case sidepanelConstants.SIDE_PANEL_MODES.roomList:
+        _setTreePanel(true);
+        break;
+      case sidepanelConstants.SIDE_PANEL_MODES.filterList:
+        _setFilterPanel(true);
+        break;
+      case sidepanelConstants.SIDE_PANEL_MODES.voucherList:
+        _setVoucherListPanel(true);
+        break;
+      default:
+        _setTreePanel(true);
+        break;
+    }
+  };
+
   // Enabled filter panel!
   function _setFilterPanel(value){
-    // Generate options and update filterpanel data.
+    // Generate options and update filter panel data.
     var filterPanelDropdownOptions = prepareFilterPanelOptions(sidepanel.parentData);
     updateMetadataFields('suiteType', {options: filterPanelDropdownOptions}, filterState, setFilterState);
-    _toggleSidepanelView(!value, value);
+    _toggleSidepanelView({filterPanel: value});
+  };
+
+  // Enable voucher list panel.
+  function _setVoucherListPanel(value){
+    _toggleSidepanelView({voucherListPanel: value});
   };
 
   // Enable tree panel!
   function _setTreePanel(value){
-    _toggleSidepanelView(value, !value);
+    _toggleSidepanelView({roomListTree: value});
   };
 
   // Apply filter for the user filtered data!
@@ -204,11 +262,15 @@ const SidepanelWrapper = (props, ref) => {
   };
 
   // Toggle between sidepanel view!
-  function _toggleSidepanelView(roomListTree, filterPanel){
+  function _toggleSidepanelView(options){
     // Choose header and change panel state!
-    var panelHeader = roomListTree ? sidepanelConstants.panelHeader.ROOM_LISTS : sidepanelConstants.panelHeader.FILTER_PANEL;
+    var panelHeader;
+    if(options.roomListTree) panelHeader = sidepanelConstants.panelHeader.ROOM_LISTS;
+    if(options.filterPanel) panelHeader = sidepanelConstants.panelHeader.FILTER_PANEL;
+    if(options.voucherListPanel) panelHeader = sidepanelConstants.panelHeader.VOUCHER_LISTS;
     setSidepanel(prevState => ({...prevState, header: panelHeader}));
-    setSidepanelView(prevState => ({roomListTreePanel: roomListTree, filterRoomPanel: filterPanel}));
+    setSidepanelView(prevState => ({roomListTreePanel: options.roomListTree,
+      filterRoomPanel: options.filterPanel, voucherListPanel: options.voucherListPanel}));
   };
 
   // Item panel collection onClick!
@@ -316,7 +378,8 @@ const SidepanelWrapper = (props, ref) => {
 
   // Fetch the available rooms list!
   async function fetchRoomsLists(){
-    var options = {getWidgetTileCollection: true, getMultipleLoginUsers: true};
+    var isMultipleLoginEnabled = _isMultipleLoginEnabled();
+    var options = {getWidgetTileCollection: true, getMultipleLoginUsers: isMultipleLoginEnabled};
     const result = await getRoomList(props.params.accIdAndName[0], options);
     if(result.data.success){
       setSidepanel(prevState => ({...prevState, childData: result.data.message}));
@@ -375,7 +438,7 @@ const SidepanelWrapper = (props, ref) => {
 
   // Expose child function to the parent component!
   React.useImperativeHandle(ref, () => ({
-    _setFilterPanel, _setTreePanel
+    _setSidePanelMode
   }));
 
   // Update the sidepanel height when props.data.height changes!

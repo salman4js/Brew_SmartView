@@ -27,7 +27,8 @@ var tableViewConstants = Object.freeze({
     history: ['_id', 'username', 'phonenumber', 'aadharcard', 'address', 'dateofcheckin',
       'checkinTime', 'dateofcheckout', 'checkoutTime', 'totalAmount'],
     logTable: ['_id', 'priceType', 'priceLog', 'isPaid', 'dateTime', 'price'],
-    paymentTrackerView: ['paymentTrackerId', 'amount', 'amountFor', 'dateTime', 'isPrebook']
+    paymentTrackerView: ['paymentTrackerId', 'amount', 'amountFor', 'dateTime', 'isPrebook'],
+    voucherTracker: ['_id', 'vNo', 'dateTime', 'particulars', 'cashMode', 'receipt', 'payment']
   }),
 
   tableInfoMessage: Object.freeze({

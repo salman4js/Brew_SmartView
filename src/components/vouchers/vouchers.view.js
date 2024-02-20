@@ -782,8 +782,7 @@ const VoucherView = () => {
       shouldShowCheckbox(true);
       updateTableCellWidth('290px');
       shouldShowCheatCodeFilter(true);
-      data['voucherId'] = selectedId;
-      const result = await getVoucherModelList(splitedIds[0], data);
+      const result = await getVoucherModelList({lodgeId: splitedIds[0], voucherId: selectedId});
       updateTableCellData(result, selectedId)
     }
   };
@@ -831,18 +830,9 @@ const VoucherView = () => {
   async function vouchersList(){
     const result = await getVouchersList(splitedIds[0]);
     if(result.data.success){
-      setSidepanel(prevState => ({...prevState, data: result.data.message, enableLoader: false}))
+      setSidepanel(prevState => ({...prevState, data: result.data.data, enableLoader: false}))
     }
   }
-  
-  // Get payment tracker data based on the room no1
-  async function getPaymentTracker(roomId){
-    var data = {lodgeId: splitedIds[0], roomId: roomId};
-    const result = await getAllPaymentTracker(data);
-    if(result.data.success){
-      
-    }
-  };
   
   // Get all the room items!
   async function getAllRoomList(){

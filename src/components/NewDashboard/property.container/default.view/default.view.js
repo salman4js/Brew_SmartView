@@ -36,7 +36,7 @@ class DefaultView extends React.Component {
     this.isStateRouterNotified = false;
     this.isLoggedInAsRecep =  JSON.parse(getStorage("loggedInAsRecep"));
     this.configurableWidgetTiles = defaultViewConstants.CONFIGURABLE_WIDGET_TILE;
-    this.propertyDetailsModel = {}; // Keeping the propertyDetailsModel outside of the state to avoid triggering change event!
+    this.propertyDetailsModel = {}; // Keeping the propertyDetailsModel outside the state to avoid triggering change event!
     this.propertyStatusMap = {}; // this is to keep track of user defined room status mapping of room status constant.
     // Later add this to global state if this data is further needed!
   };
@@ -118,8 +118,13 @@ class DefaultView extends React.Component {
   
   // On widget tile click handler!
   onWidgetTileClick(value){
-    this.props.dashboardController({navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel,
-      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: 'statusTableView', userStatusMap: this.propertyStatusMap, selectedRoomConstant: value});
+    var options = {navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel,
+      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: 'statusTableView', userStatusMap: this.propertyStatusMap, selectedRoomConstant: value}
+    if(Object.keys(defaultViewConstants.reloadSidePanelOptions).includes(value)){
+      options['reloadSidepanel'] = defaultViewConstants.reloadSidePanelOptions[value];
+      options.dashboardMode = 'voucherTrackerView'
+    }
+    this.props.dashboardController(options);
   };
 
   // Card body child view list item function!

@@ -8,6 +8,7 @@ var propertyContainerConstants = Object.freeze({
     filterTableView: 'filterTableView',
     logTableView: 'logTableView',
     paymentTrackerView: 'paymentTrackerView',
+    voucherTrackerView: 'voucherTrackerView',
     propertyReadView: 'propertyReadView',
     propertyEditView: 'propertyEditView',
     customHTMLView: 'customHtmlView',
@@ -38,7 +39,7 @@ var propertyContainerConstants = Object.freeze({
     propertyUser: 'property-user'
   }),
   // Panel field not required dashboardMode constants array!
-  IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView'],
+  IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView', 'voucherTrackerView'],
   ALLOW_PANEL_FIELD: ['edit', 'read'],
   IGNORE_PANEL_FIELD_DROPDOWN: ['statusTableView', 'roomStatus', 'customHtmlView'],
   propertyContainerPerspectiveConstant: 'property-container'

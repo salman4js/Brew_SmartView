@@ -2,9 +2,11 @@ import React, { useState, useRef } from 'react';
 import _ from 'lodash';
 import {useNavigate} from "react-router-dom";
 import SidepanelWrapper from '../sidepanel.container.wrapper/sidepanel.container.wrapper';
+import sidepanelConstants from "../sidepanel.container.wrapper/sidepanel.container.constants";
 import PropertyContainer from '../property.container/property.container';
 import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
 import {getQueryParams, updateQueryParams} from "../../common.functions/node.convertor";
+import sidepanel from "../../Sidebar/Sidepanel";
 
 const DashboardWrapper = (props, ref) => {
 
@@ -150,7 +152,7 @@ const DashboardWrapper = (props, ref) => {
   
   // On room transfer!
   function onRoomTransfer(){
-    sidePanelRef.current._setFilterPanel(true);
+    sidePanelRef.current._setSidePanelMode(sidepanelConstants.SIDE_PANEL_MODES.filterList);
   };
   
   // On form cancel operation!
@@ -260,9 +262,13 @@ const DashboardWrapper = (props, ref) => {
       replacements: opts.replacements}));
   };
 
-  // Reload sidepanel function!
+  // Reload side panel function!
   function _reloadSidepanel(opts){
-    sidePanelRef.current._setTreePanel(true); // When reloading the sidepanel, keep the left panel as roomListTreeView!
+    if(opts.reloadSidepanel.mode){
+      sidePanelRef.current._setSidePanelMode(sidepanelConstants.SIDE_PANEL_MODES[opts.reloadSidepanel.mode]);
+    } else {
+      sidePanelRef.current._setSidePanelMode(sidepanelConstants.SIDE_PANEL_MODES.roomList);
+    }
     var _reload = {...opts};
     setPropertyController(prevState => ({...prevState, reloadSidepanel: _reload.reloadSidepanel}));
   };
