@@ -144,6 +144,23 @@ class FilterTable extends TableView {
     };
   };
 
+  // Get mandatory info missing modal.
+  getMandatoryFieldsMissingModalInfo(){
+    return {
+      header: filterTableConstants.mandatoryFieldMissingDialog.header,
+      restrictBody: false,
+      showBodyItemView: function(){
+        return 'Please verify if the date of checkout is provided.'
+      },
+      footerEnabled: true,
+      footerButtons: [{
+        btnId: filterTableConstants.mandatoryFieldMissingDialog.footerButtons.confirmBtn,
+        variant: 'success',
+        onClick: this.onCloseCustomModal.bind(this)
+      }]
+    };
+  };
+
   // Get favorites checkin dialog modal information.
   getCheckInModalInfo(){
     return {
@@ -345,11 +362,20 @@ class FilterTable extends TableView {
     this.autoDecideStayTimePeriod && await this.showRequiredEditPropFields();
   };
   
-  // Propmt transfer dialog!
+  // Prompt transfer dialog!
   async promptTransferDialog(cellIndex){
-    await this.getRoomDetails(cellIndex); // Get room details of current and next room.
-    var modalInfo = this.isTransferOnSameType ? this.getTransferModalInfo() : this.getEditPropModalInfo();
+    let modalInfo;
+    // Before prompting the transfer dialog, Verify we got the mandatory fields from the user to proceed further with transfer operation.
+    // In this case, Mandatory fields are date-of-checkout from the user.
+    if(!this.state.data?.filteredData?.checkOutDate){
+     // Trigger mandatory fields values are missing alert.
+     modalInfo = this.getMandatoryFieldsMissingModalInfo();
+    } else {
+      await this.getRoomDetails(cellIndex); // Get room details of current and next room.
+      modalInfo = this.isTransferOnSameType ? this.getTransferModalInfo() : this.getEditPropModalInfo();
+    }
     this._prepareCustomModal(modalInfo);
+
   };
 
   // Prompt check-in dialog -->  This method is currently being used for favorites checkin.

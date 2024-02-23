@@ -478,7 +478,7 @@ class CheckOutView extends React.Component {
       if(result.data.success){
           this._toggleLoader(false);
           this._updatePropertyController({reloadSidepanel: {silent: true}, persistStatusView: false, widgetTileModel: {objectIdToBeUpdated: result.data.updatedModel._id,
-                  selectedConstant: [this.props.data.userStatusMap[this.props.data.roomModel.roomStatusConstant], this.props.data.originatingTableView.userStatus],
+                  selectedConstant: [this.props.data.userStatusMap[this.props.data.roomModel.roomStatusConstant] || this.props.data?.originatingTableView?.userStatus],
                   action: 'REMOVE', keysToCompare: ['_id', 'room']}, // After clearing the data from the
               // widget tile model, clear the model from the room status model too to keep the data in sync.
           updateUserCollection: {id: result.data.updatedModel._id, action: 'CHECK-OUT'}, updatedModel: result.data.updatedModel});
