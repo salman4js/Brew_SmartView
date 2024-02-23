@@ -22,6 +22,7 @@ import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view';
 import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
 import {getStorage} from "../../../Controller/Storage/Storage";
+import SidepanelContainerVoucherTrackerView from "./sidepanel.container.voucher.tracker.view";
 
 const SidepanelWrapper = (props, ref) => {
 
@@ -47,6 +48,7 @@ const SidepanelWrapper = (props, ref) => {
   const [filterState, setFilterState] = useState([{
     value: undefined,
     width: '300px',
+    label: 'Filter By Type',
     padding: '10px 5px 5px 5px',
     placeholder: "Filter by type",
     name: 'suiteType',
@@ -63,6 +65,7 @@ const SidepanelWrapper = (props, ref) => {
     callBackAfterUpdate: _applyFilter
   }, {
     value: new Date(),
+    label: 'Date of Checkout',
     placeholder: "Date of Checkout",
     name: 'checkOutDate',
     attribute: 'dateField',
@@ -144,27 +147,8 @@ const SidepanelWrapper = (props, ref) => {
 
   // Voucher list panel view.
   function voucherListPanelView(){
-    let voucherListPanelCollectionView = Object.keys(sidepanelConstants.voucherListParentCollection);
-    return voucherListPanelCollectionView.map((voucherCollection) => {
-      return(
-          <CollectionView data = {sidepanelConstants.voucherListParentCollection[voucherCollection].value} showCollectionChildView = {() => _renderPanelItemViewVoucherCollection(voucherCollection)}/>
-      )
-    })
-  };
-
-  // Render panel item view voucher collection.
-  function _renderPanelItemViewVoucherCollection(voucherCollection){
-    if(sidepanelConstants.voucherListParentCollection[voucherCollection].data === sidepanelConstants.SIDE_PANEL_MODES.voucherList){
-      // Get the vouchers model from the collection instance!
-      var vouchersModel = CollectionInstance.getModel('widgetTileCollections', 'voucherModelList');
-      return vouchersModel.map((options) => {
-        return(
-            <PanelItemView data = {options.voucherName} showIndentationArrow = {true}/>
-        )
-      })
-    } else {
-      return roomListTreeView();
-    }
+    var options = {roomTreeView: () => roomListTreeView()};
+    return <SidepanelContainerVoucherTrackerView options = {options} />
   };
 
   // Side-panel search bar view!
@@ -278,7 +262,7 @@ const SidepanelWrapper = (props, ref) => {
     var dashboardMode = getFormMode(model);
     _updateSelectedIdList(uId);
     // Get userStatusMap from the collection instance.
-    var userStatusMap = CollectionInstance.getCollections('userStatusMap');
+    var userStatusMap = CollectionInstance.getCollections('userStatusMap').data;
     props.selectedModel({roomModel: model, dashboardMode: dashboardMode, userStatusMap: userStatusMap});
   };
 

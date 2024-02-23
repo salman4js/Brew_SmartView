@@ -20,14 +20,14 @@ function populateReplacementObject(state){
     'stayeddays': state.stayeddays,
     'oldRoomNo': state.userModel.oldRoomNo,
     'oldRoomStayDays': state.userModel.oldRoomStayDays,
-    'oldRoomPrice': Number(state.userModel.oldRoomPrice),
+    'oldRoomPrice': Number(state.userModel.oldRoomPrice) + ' Rs',
     'roomPrice': state.billingInfo.roomPrice,
     'roomPricePerStays': state.billingInfo.roomPricePerStays + ' Rs',
     'gstPrice': state.billingInfo.gstPrice + ' Rs',
     'advanceAmount': state.billingInfo.advanceAmount + ' Rs',
     'discountAmount': state.billingInfo.discountAmount + ' Rs',
     'withoutGST': state.billingInfo.withoutGST + ' Rs',
-    'totalPrice': Number(state.billingInfo.totalPrice),
+    'totalPrice': Number(state.billingInfo.totalPrice) + ' Rs',
     'totalPrice + oldRoomPrice': (Number(state.billingInfo.totalPrice) + Number(state.userModel.oldRoomPrice)) + 'Rs'
   };
 };

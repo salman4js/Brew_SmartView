@@ -6,6 +6,12 @@ var filterTableConstants = Object.freeze({
     ZERO_STATE_MESSAGE: 'You have no records for this table!',
     ZERO_FILTER_MESSAGE: 'You have no filters applied to provide data!'
   }),
+  mandatoryFieldMissingDialog: Object.freeze({
+    header: 'Missing Mandatory Fields',
+    footerButtons: {
+      confirmBtn: 'Yes, Ok'
+    }
+  }),
   promptTransferDialog: Object.freeze({
     header: (details) => `Are you sure to move this customer from ${details.currentRoom} to ${details.nextRoom}`,
     footerButtons: {
