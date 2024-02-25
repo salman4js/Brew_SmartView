@@ -637,7 +637,7 @@ const VoucherView = () => {
   async function _saveVoucherModelCreation(lodgeId, data){
     data['voucherId'] = sidepanel.voucherId;
     data.dateTime = convertServerFormat(formatCustomIntoDateFormat(data.dateTime)); // Convert the date into dd/mm/yyy format!
-    const result = await addVoucherModelList(lodgeId, data);
+    const result = await addVoucherModelList({lodgeId: lodgeId, data: data});
     if(result.data.success){
       _triggerTableLoader(false);
       _clearFieldData(voucherModel, setVoucherModel);

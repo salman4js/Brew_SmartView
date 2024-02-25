@@ -15,6 +15,7 @@ import tableViewConstants from './table.view.constants';
 import MetadataFields from '../../../fields/metadata.fields.view';
 import TableFilterSettingsDialog from "../../dialogs/table.filter.settings/table.filter.settings.dialog";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
+import TableCreateActionDialog from "../../dialogs/table.create.action/table.create.action.dialog";
 
 class TableView extends React.Component {
 
@@ -134,6 +135,11 @@ class TableView extends React.Component {
       so it's impossible to get the selectedNodes table model data from this.rawRoomModel.
      Hence, for fetchable widgets, selectedModel data will be tracked in fetchableWidgetSelectedTableModel separately.
     **/
+    /**
+     * getPaginationCountFromCurrentCollection flag is introduced because for some widget tiles, We might want to
+     * calculate the pagination based on the current collection rather than the widgetTileModelCount e.g. voucherWidget
+    **/
+    this.getPaginationCountFromCurrentCollection = false;
     this.fetchableWidgetSelectedTableModel = [];
     this.routerController = () => this.props.routerController();
     this.isStateRouterNotified = false;
@@ -289,7 +295,7 @@ class TableView extends React.Component {
 
   // Enable pagination view if the limit set to pagination exceeds.
   _checkAndEnablePaginationView(convertedCollection){
-    var widgetTileModelCount = this.filterInitiated ? convertedCollection.length :
+    var widgetTileModelCount = (this.filterInitiated || this.getPaginationCountFromCurrentCollection) ? convertedCollection.length :
         (this.widgetTileModel.data.widgetTileModelCount?.[this.roomConstant] || convertedCollection.length);
     this.isPaginationRequired = widgetTileModelCount > this.paginationConstants.PAGINATION_DEFAULT_LIMIT;
     this.widgetTileModel.allowPagination = this.isPaginationRequired;
@@ -344,7 +350,12 @@ class TableView extends React.Component {
 
   // Check if the table filter mode is enabled for the roomConstantKey.
   checkForTableFilterMode(){
-    return this.roomConstant && TableFilterSettingsDialog && TableFilterSettingsDialog.enabled(this.roomConstant);
+    return this.roomConstant && tableViewConstants.tableFilterSettings.tableFilterAllowedKeys.includes(this.roomConstant);
+  };
+
+  // Check if the current table mode is enabled for create operation.
+  checkForTableCreateMode(){
+    return this.roomConstant && tableViewConstants.tableCreateMode.tableCreateModeAllowedKeys.includes(this.roomConstant);
   };
 
   // Execute action when table filter model triggered.
@@ -353,6 +364,11 @@ class TableView extends React.Component {
     // When the filter action is triggered, initialize the custom modal with the table dialog options from command table filter settings.
     this._prepareCustomModal(TableFilterSettingsDialog.execute(this.templateHelpersData.options));
   };
+
+  // Execute action when table create mode is triggered.
+  onCreateModeTableIconClicked(){
+    this._prepareCustomModal(TableCreateActionDialog.execute(this.templateHelpersData.options));
+  };
   
   // Template helpers data!
   prepareTemplateHelpersData(){
@@ -360,8 +376,10 @@ class TableView extends React.Component {
       selectedRoomConstant: this.widgetTileModel.data.selectedRoomConstant,
       roomConstantKey: this.roomConstant,
       allowTableFilterMode: this.checkForTableFilterMode(),
+      allowCreateMode: this.checkForTableCreateMode(),
       onBack: () => this.onBackClick(),
       onClickTableFilterMode: () => this.onFilterTableIconClicked(),
+      onClickTableCreateMode: () => this.onCreateModeTableIconClicked(),
       params: this.params,
       nodes: this.state.metadataTableState.checkbox[0].selectedCheckboxIndex,
       eventHelpers: {
@@ -379,6 +397,7 @@ class TableView extends React.Component {
         getTableCollection: (options) => this._getTableCollection(options),
         getTableHeaders: () => this.getTableHeaders(),
         removeFromTableCollection: (model) => this.removeFromTableCollection(model),
+        addIntoTableCollection: (model) => this.addIntoTableCollection(model),
         updateSelectedModel: (options) => this.props.updateSelectedModel(options)
       }
     }
@@ -389,6 +408,16 @@ class TableView extends React.Component {
     _.remove(this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant], function(tableModel){
       return tableModel._id === selectedModel._id;
     });
+  };
+
+  // Add newly created items into the table collection.
+  addIntoTableCollection(locallyCreatedModel){
+    var isLocallyCreatedModelExists = _.filter(this.rawRoomModel, function(model){
+      return model._id === locallyCreatedModel._id;
+    });
+    if(isLocallyCreatedModelExists.length === 0){
+      this.rawRoomModel.push(locallyCreatedModel);
+    };
   };
 
   // Get table data from the table collection. If nodes collection not provided, It will return all the table collections.
@@ -563,13 +592,13 @@ class TableView extends React.Component {
     this.shouldFetchForWidget && await this.fetchNextNode();
     if(this.rawRoomModel){
       convertedCollection = this._getTableCollection();
+      this._restoreCheckboxSelection();
+      this.filterCollection(convertedCollection);
+      this.state.metadataTableState.cellValues = this.filteredCollection;
+      this._checkAndEnablePaginationView(convertedCollection);
+      this.filterEnabled && this._setFilterTableState();
+      this.widgetTileModel.paginationData.getNextNode = false;
     };
-    this._restoreCheckboxSelection();
-    this.filterCollection(convertedCollection);
-    this.state.metadataTableState.cellValues = this.filteredCollection;
-    this._checkAndEnablePaginationView(convertedCollection);
-    this.filterEnabled && this._setFilterTableState();
-    this.widgetTileModel.paginationData.getNextNode = false;
   };
 
   _getRoomConstantKey(){

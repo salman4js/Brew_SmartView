@@ -7,7 +7,9 @@ class VoucherTableWrapper extends TableView {
     constructor(props) {
         super(props);
         this.state = {
-            data: props.data,
+            data: {
+                vouchersModelId: undefined
+            },
             metadataTableState: {
                 cellValues: undefined,
                 headerValue: undefined,
@@ -29,14 +31,27 @@ class VoucherTableWrapper extends TableView {
                 tableCellWidth : "590px",
                 showPanelField: false
             },
+            customModal: {
+                show: false,
+                onHide: this.onCloseCustomModal.bind(this),
+                header: undefined,
+                centered: true,
+                restrictBody: true,
+                customComponent: undefined,
+                showBodyItemView: undefined,
+                modalSize: "medium",
+                footerEnabled: false,
+                footerButtons: undefined
+            },
         }
-        this.voucherModelFetched = false;
+        this.voucherModelFetchStarted = false;
         this.params = this.props.params;
+        this.getPaginationCountFromCurrentCollection = true;
     };
 
-    getFirstVoucherModelDetails(){
+    getFirstVoucherModelsId(){
       var voucherModels = CollectionInstance.getModel('widgetTileCollections', 'voucherModelList');
-      return voucherModels[0];
+      return voucherModels[0]._id;
     };
 
     getTableHeaders() {
@@ -44,21 +59,45 @@ class VoucherTableWrapper extends TableView {
       this.state.metadataTableState.headerValue = this.voucherTableHeaders;
     };
 
-    async fetchVoucherDetails(modelDetails){
-        var result = await getVoucherModelList({lodgeId: this.params.accIdAndName[0], voucherId: modelDetails._id});
-        if(result.data.success){
-            this.currentVoucherDetails = result.data.message;
-            this.voucherTableHeaders = result.data.tableHeaders;
-            this.voucherModelFetched = true;
+    async fetchVoucherDetails(voucherModelId){
+        this.voucherModelFetchStarted = true;
+        if(!voucherModelId){
+            this.currentVoucherDetails = [];
+            this.voucherTableHeaders = [];
+        } else {
+            const result = await getVoucherModelList({lodgeId: this.params.accIdAndName[0], voucherId: voucherModelId});
+            if(result.data.success){
+                this.templateHelpersData.options.eventHelpers.dashboardController({queryParams: [{key: 'widgetObjectId', value: voucherModelId}]});
+                this.currentVoucherDetails = result.data.message;
+                this.voucherTableHeaders = result.data.tableHeaders;
+                this._toggleTableLoader(false);
+            }
         }
     };
 
     async setExpandedTableView(){
       // Get the first voucher model id from the collection instance,
       // Load the table view part of the voucher model.
-      var firstVoucherModel = this.getFirstVoucherModelDetails();
-      !this.voucherModelFetched && await this.fetchVoucherDetails(firstVoucherModel);
+      var voucherModelId = this.state.data?.vouchersModelId;
+      if(!voucherModelId){
+          voucherModelId = this.getFirstVoucherModelsId();
+      }
+      !this.voucherModelFetchStarted && await this.fetchVoucherDetails(voucherModelId);
       return this.currentVoucherDetails;
+    };
+
+    // Update the component state with newly added value!
+    _updateStateValue(updatedValue){
+        this.setState({data: updatedValue}, () => {
+            this._toggleTableLoader(true, true);
+            this.voucherModelFetchStarted = false;
+        });
+    };
+
+    componentDidUpdate(){
+        if(this.state.data.vouchersModelId !== this.props.data.vouchersModelId){
+            this._updateStateValue({vouchersModelId: this.props.data.vouchersModelId});
+        }
     };
 }
 

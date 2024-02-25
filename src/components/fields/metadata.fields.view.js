@@ -79,7 +79,8 @@ const MetadataFields = (props) => {
   // Handle input change!
   const handleInputChange = (index, event, attribute) => {
     const fieldState = [...props.data]; // Create a copy of the state array
-    fieldState[index].value = getInputValue(event, attribute) // Update the value at the specified index
+    fieldState[index].value = fieldState[index].conversionField ? fieldState[index].conversionMethod(getInputValue(event, attribute))
+        : getInputValue(event, attribute) // Update the value at the specified index
     fieldState[index].actualValue = getActualValue(event, attribute);
     fieldState[index].isChanged = true; // Change the metafield value to true when the value changed!
     if(fieldState[index].eventKeyRequired && event.key){ // If event key is required, and if the event key is not undefined.

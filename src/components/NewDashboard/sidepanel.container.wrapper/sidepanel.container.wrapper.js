@@ -147,7 +147,12 @@ const SidepanelWrapper = (props, ref) => {
 
   // Voucher list panel view.
   function voucherListPanelView(){
-    var options = {roomTreeView: () => roomListTreeView()};
+    var options = {roomTreeView: () => roomListTreeView(),
+      dashboardController: (opts) => props.dashboardController(opts),
+      params: props.params,
+      height: sidepanel.height,
+      lastSelectedVoucherId: props.selectedModelData.vouchersModelId
+    };
     return <SidepanelContainerVoucherTrackerView options = {options} />
   };
 
