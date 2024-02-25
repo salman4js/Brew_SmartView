@@ -21,8 +21,8 @@ export async function getVoucherModelList(options){
 }
 
 // add voucher model list!
-export async function addVoucherModelList(lodgeId, data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/addvouchermodel`, data);
+export async function addVoucherModelList(options){
+  const result = await axios.post(`${Variables.Variables.hostId}/${options.lodgeId}/addvouchermodel`, options.data);
   return result;
 }
 

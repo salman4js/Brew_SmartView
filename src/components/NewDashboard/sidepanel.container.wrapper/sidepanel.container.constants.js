@@ -22,10 +22,10 @@ var sidepanelConstants = Object.freeze({
         MORE_DETAILS_HEADER: ['Floor No', 'Bed Count', 'Ext Bed Rate', 'Room Price']
     }),
     voucherListParentCollection: Object.freeze({
-        inflow: {
-            value: 'InFlow',
-            data: 'ROOM_LIST'
-        },
+        // inflow: {
+        //     value: 'InFlow',
+        //     data: 'ROOM_LIST'
+        // },
         outflow: {
             value: 'OutFlow',
             data: 'VOUCHER_LIST'
@@ -75,6 +75,18 @@ var sidepanelConstants = Object.freeze({
             readOnly: true
         }
     }),
+    ADD_VOUCHER: Object.freeze({
+        dialogOptions: {
+            header: 'Add new voucher model',
+            placeholder: 'Voucher Name',
+            label: 'Voucher Name',
+            alertMessage: 'Please enter a valid voucher name'
+        },
+        footerButtons: {
+            primaryBtn: 'Create',
+            cancelBtn: 'Cancel'
+        }
+    })
 });
 
 export default sidepanelConstants;

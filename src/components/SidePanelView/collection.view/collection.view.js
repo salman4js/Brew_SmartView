@@ -6,7 +6,7 @@ import { getStorage, setStorage } from '../../../Controller/Storage/Storage';
 const CollectionView = (props) => {
 
   // State handler for expand and collapse action!
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(props.options?.isExpanded || false);
   
   // Expand Action!
   function expandCollapseAction(){
@@ -35,7 +35,8 @@ const CollectionView = (props) => {
   
   // Show child view!
   function _showChildView(){
-    return <PanelItemView data = {props.data} onClick = {() => expandCollapseAction()} />
+    return <PanelItemView data = {props.data} onClick = {() => expandCollapseAction()}
+    showInlineMenu = {props.options?.showInlineMenu} inlineAction = {() => props.options?.inlineAction()}/>
   };
   
   // Persist user preference using props.data in session storage!

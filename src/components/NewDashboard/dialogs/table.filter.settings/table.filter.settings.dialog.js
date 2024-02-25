@@ -8,7 +8,7 @@ class TableFilterSettingsDialog {
         this.status = signatureOptions;
     };
 
-    static enabled(constantKey) {
+    enabled(constantKey) {
         return lang.TABLE_FILTER.tableFilterAllowedKeys.includes(constantKey);
     };
 
@@ -48,7 +48,11 @@ class TableFilterSettingsDialog {
 
     static execute(signatureOptions) {
         const instance = new TableFilterSettingsDialog(signatureOptions);
-        return instance.getDialogOptions(); // return the options from the instance
+        if(instance.enabled(instance.status.roomConstantKey)){
+            return instance.getDialogOptions(); // return the options from the instance
+        } else {
+            throw new Error('Table Filter Settings is not enabled for the current provided constant key!');
+        }
     };
 }
 

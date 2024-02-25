@@ -65,6 +65,14 @@ var tableViewConstants = Object.freeze({
     PAGINATION_VIEW_HEIGHT: 20
   }),
 
+  tableFilterSettings: Object.freeze({
+    tableFilterAllowedKeys: ['history', 'afterCleaned', 'afterCheckin']
+  }),
+
+  tableCreateMode: Object.freeze({
+    tableCreateModeAllowedKeys: ['voucherTracker']
+  })
+
 });
 
 export default tableViewConstants;

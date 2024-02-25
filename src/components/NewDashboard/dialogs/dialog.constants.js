@@ -8,6 +8,23 @@ var dialogConstants = Object.freeze({
         tableFilterAllowedKeys: ['history', 'afterCleaned', 'afterCheckin']
     },
 
+    widgetObjectId: Object.freeze({
+       voucherTracker: 'voucherId'
+    }),
+
+    TABLE_CREATE: {
+      tableCreateLabel: (options) => `Create new ${options.headerValue}`,
+      footerButtons: {
+          primaryBtn: 'Create',
+          secondaryBtn: 'Cancel'
+      },
+      tableCreateModeAllowedKeys: ['voucherTracker']
+    },
+
+    HEADER_OPTIONS: {
+      voucherTracker: 'Voucher'
+    },
+
     TABLE_FILTER_DIALOG: {
         history: {
             dialogOptionsLabelAndPlaceholder: {
@@ -38,7 +55,7 @@ var dialogConstants = Object.freeze({
                 idNumber: 'ID Number'
             },
         }
-    },
+    }
 });
 
 export default dialogConstants;

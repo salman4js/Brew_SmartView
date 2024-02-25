@@ -6,7 +6,6 @@ import sidepanelConstants from "../sidepanel.container.wrapper/sidepanel.contain
 import PropertyContainer from '../property.container/property.container';
 import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
 import {getQueryParams, updateQueryParams} from "../../common.functions/node.convertor";
-import sidepanel from "../../Sidebar/Sidepanel";
 
 const DashboardWrapper = (props, ref) => {
 
@@ -31,6 +30,7 @@ const DashboardWrapper = (props, ref) => {
     originatingTableView: undefined, // This is to get the originating table view in other perspective view.
     // If the perspective view was opened from the table view through commands.
     propertyData: undefined,
+    vouchersModelId: undefined,
     propertyDataCallBackFunc: undefined
   });
 
@@ -107,7 +107,7 @@ const DashboardWrapper = (props, ref) => {
     if(!options.dashboardMode){
       options['dashboardMode'] = getFormMode(options.roomModel.roomStatusConstant)
     }
-    _navigateToStatusTableView(options);
+    _updateSelectedModelState(options);
     // dashboardMode = !dashboardMode ? getFormMode(roomModel.roomStatusConstant) : dashboardMode;
     // setSelectedModel(prevState => ({...prevState, roomModel: roomModel, dashboardMode: dashboardMode, userModel: userModel }));
   };
@@ -225,7 +225,7 @@ const DashboardWrapper = (props, ref) => {
   function _updateDashboardWrapper(opts){
     opts?.reloadSidepanel && _reloadSidepanel(opts);
     opts.queryParams && _updateQueryParams(opts.queryParams);
-    opts.navigateToStatusTableView && _navigateToStatusTableView(opts);
+    opts.navigateToStatusTableView && _updateSelectedModelState(opts);
     opts.navigateToPropertyContainer && _navigateToPropertyContainer();
     opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need
     // updated room model to updated it to the latest value
@@ -234,12 +234,13 @@ const DashboardWrapper = (props, ref) => {
     opts.goToLocation && goToLocation(opts);
     opts.onEditProperties && onEditProperties(opts);
     opts.isRoomTransferCommand && onRoomTransfer(opts);
+    opts.isVouchersModelSelectionUpdated && _updateSelectedModelState(opts);
     opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
     (opts.updateUserCollection || opts.updatedUserModel) && _updateUserCollection((opts.updateUserCollection || opts), opts.ignoreUpdateOfDefaultView);
   };
 
   // Navigate to status table view!
-  function _navigateToStatusTableView(opts) {
+  function _updateSelectedModelState(opts) {
     setSelectedModel(prevState => {
       const updatedState = {};
       // Loop over the keys in opts and update state properties accordingly
