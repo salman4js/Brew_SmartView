@@ -10,7 +10,8 @@ function voucherTrackerCreateOptions(){
             label: "Date",
             name: 'dateTime',
             attribute: 'dateField',
-            conversionField: true,
+            conversionInFieldConvertor: false,
+            conversionInNodeConvertor: true,
             conversionMethod: function(value){
                 return convertServerFormat(formatCustomIntoDateFormat(value));
             },

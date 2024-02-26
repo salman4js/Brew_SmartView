@@ -57,7 +57,7 @@ const MetadataFields = (props) => {
   // NOTE: dependentValueField --> Takes array or string, if string passed, it will be converted into an array!
   // Update the dependent value field!
   function updateDependantValueField(dependentValueField, currentFieldIndex) {
-    // DependentValudField could be array if multiple fields value should be changes, therefore, changing the dependentValue to array values eventhough its an string!
+    // DependentValueField could be array if multiple fields value should be changes, therefore, changing the dependentValue to array values even though it's a string!
     // First, check for the dependentValueField type and throw error if not in supported type!
     var dependentValues = prepareDependentValueField(dependentValueField);
     const fieldState = [...props.data];    
@@ -79,10 +79,12 @@ const MetadataFields = (props) => {
   // Handle input change!
   const handleInputChange = (index, event, attribute) => {
     const fieldState = [...props.data]; // Create a copy of the state array
-    fieldState[index].value = fieldState[index].conversionField ? fieldState[index].conversionMethod(getInputValue(event, attribute))
+    // If the field value needs to be changed while changing the input itself, This condition will be useful to do the conversion.
+    // conversionInFieldConvertor flag should be set to true and conversionMethod has to be specified.
+    fieldState[index].value = fieldState[index].conversionInFieldConvertor ? fieldState[index].conversionMethod(getInputValue(event, attribute))
         : getInputValue(event, attribute) // Update the value at the specified index
     fieldState[index].actualValue = getActualValue(event, attribute);
-    fieldState[index].isChanged = true; // Change the metafield value to true when the value changed!
+    fieldState[index].isChanged = true; // Change the metadata field value to true when the value changed!
     if(fieldState[index].eventKeyRequired && event.key){ // If event key is required, and if the event key is not undefined.
       // Send the key back to the respective component!
       fieldState[index].eventKey = event.key;

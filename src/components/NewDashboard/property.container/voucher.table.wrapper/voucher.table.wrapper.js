@@ -2,6 +2,7 @@ import TableView from "../table.view/table.view";
 import voucherTableWrapperConstants from "./voucher.table.wrapper.constants";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 import {getVoucherModelList} from "../../../vouchers/vouchers.utils";
+import _ from "lodash";
 
 class VoucherTableWrapper extends TableView {
     constructor(props) {
@@ -44,7 +45,6 @@ class VoucherTableWrapper extends TableView {
                 footerButtons: undefined
             },
         }
-        this.voucherModelFetchStarted = false;
         this.params = this.props.params;
         this.getPaginationCountFromCurrentCollection = true;
     };
@@ -62,28 +62,37 @@ class VoucherTableWrapper extends TableView {
     async fetchVoucherDetails(voucherModelId){
         this.voucherModelFetchStarted = true;
         if(!voucherModelId){
-            this.currentVoucherDetails = [];
+            this.currentVoucherCollections = [];
             this.voucherTableHeaders = [];
         } else {
             const result = await getVoucherModelList({lodgeId: this.params.accIdAndName[0], voucherId: voucherModelId});
             if(result.data.success){
                 this.templateHelpersData.options.eventHelpers.dashboardController({queryParams: [{key: 'widgetObjectId', value: voucherModelId}]});
-                this.currentVoucherDetails = result.data.message;
+                this.currentVoucherCollections = result.data.message;
                 this.voucherTableHeaders = result.data.tableHeaders;
                 this._toggleTableLoader(false);
             }
         }
     };
 
+    addIntoTableCollection(locallyCreatedModel) {
+      const isCreatedModelAlreadyExists = _.filter(this.currentVoucherCollections, function(model){
+          return model._id === locallyCreatedModel._id;
+      });
+      if(isCreatedModelAlreadyExists.length === 0){
+          this.currentVoucherCollections.push(locallyCreatedModel);
+      }
+    };
+
     async setExpandedTableView(){
       // Get the first voucher model id from the collection instance,
       // Load the table view part of the voucher model.
-      var voucherModelId = this.state.data?.vouchersModelId;
+      var voucherModelId = this.state.data?.vouchersModelId || this.props.data?.vouchersModelId;
       if(!voucherModelId){
           voucherModelId = this.getFirstVoucherModelsId();
       }
       !this.voucherModelFetchStarted && await this.fetchVoucherDetails(voucherModelId);
-      return this.currentVoucherDetails;
+      return this.currentVoucherCollections;
     };
 
     // Update the component state with newly added value!

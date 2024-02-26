@@ -360,13 +360,14 @@ class TableView extends React.Component {
 
   // Execute action when table filter model triggered.
   onFilterTableIconClicked(){
-    this.isFilterDialogOpened = true; // Need to keep track of this flag to prevent changing the table data to empty when re-renders happens through customModalBodyViewOptions.
+    this.isAnyDialogOpenedFromTable = true; // Need to keep track of this flag to prevent changing the table data to empty when re-renders happens through customModalBodyViewOptions.
     // When the filter action is triggered, initialize the custom modal with the table dialog options from command table filter settings.
     this._prepareCustomModal(TableFilterSettingsDialog.execute(this.templateHelpersData.options));
   };
 
   // Execute action when table create mode is triggered.
   onCreateModeTableIconClicked(){
+    this.isAnyDialogOpenedFromTable = true;
     this._prepareCustomModal(TableCreateActionDialog.execute(this.templateHelpersData.options));
   };
   
@@ -412,12 +413,8 @@ class TableView extends React.Component {
 
   // Add newly created items into the table collection.
   addIntoTableCollection(locallyCreatedModel){
-    var isLocallyCreatedModelExists = _.filter(this.rawRoomModel, function(model){
-      return model._id === locallyCreatedModel._id;
-    });
-    if(isLocallyCreatedModelExists.length === 0){
-      this.rawRoomModel.push(locallyCreatedModel);
-    };
+    // This method should be overridden if table.view is being extended by any other component.
+    // If not extended add the locallyCreatedModel into the widgetTileModel and update the corresponding state model in dashboard.container.wrapper
   };
 
   // Get table data from the table collection. If nodes collection not provided, It will return all the table collections.
@@ -479,7 +476,7 @@ class TableView extends React.Component {
   // Restore filter options flag, When filter options is empty object.
   _restoreFilterOptions(){
     this.filterInitiated = false;
-    this.isFilterDialogOpened = false;
+    this.isAnyDialogOpenedFromTable = false;
     this.widgetTileModel.isHeightAdjustedForPagination = false;
     this.filterOptions.query && delete this.filterOptions.query;
   };
@@ -517,7 +514,7 @@ class TableView extends React.Component {
         this.filterOptions.query[opts] = options[opts];
       })
     }
-    this.isFilterDialogOpened = false; // When _prepareFilterOptions method being executed, it means that the filter modal has been closed.
+    this.isAnyDialogOpenedFromTable = false; // When _prepareFilterOptions method being executed, it means that the filter modal has been closed.
   };
 
   // Fetch next nodes only for fetchable widgets.
@@ -580,11 +577,11 @@ class TableView extends React.Component {
     this.filterEnabled = false;
     var convertedCollection;
     this.shouldFetchForWidget = this.widgetTileModel.paginationData.getNextNode && this.isFetchableWidget(); // Check for fetchable widgets.
-    if (this.isFetchableWidget() && (!this.filterInitiated && !this.isFilterDialogOpened && !this.isTableRowSelected())) {
+    if (this.isFetchableWidget() && (!this.filterInitiated && !this.isAnyDialogOpenedFromTable && !this.isTableRowSelected())) {
       // We check for any table row is selected when selecting a checkboxes to prevent unnecessary data changed in rawRoomModel
       // and to prevent unwanted re-renders.
       this.rawRoomModel = await this.getRoomConstantCollection();
-    } else if (!this.isFetchableWidget()) {
+    } else if (!this.isFetchableWidget() && !this.isAnyDialogOpenedFromTable) {
       this.rawRoomModel = await this.getRoomConstantCollection();
       this.filterInitiated && this.clientSideFilter();
     }

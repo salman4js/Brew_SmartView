@@ -87,12 +87,22 @@ export function extractStateValue(state, value){
   return result;
 };
 
+// If the metadata fields needs to be changed into any specific format before sending it to server,
+// This method will be useful to do the conversion based on the conversionMethod specified in the fields.
+function checkIfConversionNeeded(options){
+  if(options.conversionInNodeConvertor){
+    options.value = options.conversionMethod(options.value);
+    options.defaultValue = options.conversionMethod(options.defaultValue);
+  }
+};
+
 // Convert the data into server understandable format!
 export function nodeConvertor(status, fieldProp){ // fieldProp will take array as an input,
   // whatever values are there in the fieldProp will be returned in the result object.
   var valuesArr = fieldProp !== undefined ? fieldProp : [];
   const result = {};
   status.map((options, index) => {
+    checkIfConversionNeeded(options);
     if(options.defaultValue && (options.value === undefined)){
       result[options.name] = options.defaultValue;
     } else {
