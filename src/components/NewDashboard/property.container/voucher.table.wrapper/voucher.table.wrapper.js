@@ -18,7 +18,7 @@ class VoucherTableWrapper extends TableView {
                 tableLoader: true,
                 selectedRoomId: undefined,
                 isCheckboxSelected: false,
-                enableCheckbox: false,
+                enableCheckbox: true,
                 checkbox: [
                     {
                         select: (value, checkBoxIndex) => this._updateCheckboxSelection(value, checkBoxIndex),
@@ -57,6 +57,7 @@ class VoucherTableWrapper extends TableView {
     getTableHeaders() {
       this._getRoomConstantKey();
       this.state.metadataTableState.headerValue = this.voucherTableHeaders;
+      return this.state.metadataTableState.headerValue;
     };
 
     async fetchVoucherDetails(voucherModelId){
