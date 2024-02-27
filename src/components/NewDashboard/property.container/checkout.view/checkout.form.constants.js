@@ -91,6 +91,7 @@ var checkoutViewConstants = Object.freeze({
       label: 'ID Number'
     },
     dateofcheckin: {
+      minDate: '',
       placeholder: 'Date of Check-In',
       label: 'Date of Check-In',
       attribute: 'dateField',
