@@ -9,6 +9,11 @@ const DateField = (props) => {
   function getSelectedDate(){
     return props.data.value !== undefined ? new Date(props.data.value) : new Date();
   }
+
+  // Get minimum date.
+  function getMinDate(){
+    return props.data.minDate !== undefined ? props.data.minDate : new Date();
+  }
   
   // Get max date!
   function getMaxDate(){
@@ -20,7 +25,7 @@ const DateField = (props) => {
     <div className = "modal-gap" style = {getStyle(props.data.style)}>
         <label style={{ color: "black" }}> {props.data.label} </label>
         <DatePicker style={{ color: "black" }} className="form-control" placeholderText={props.data.placeholder} 
-        selected = {getSelectedDate()} dateFormat={props.data.dateFormat} minDate={new Date()} maxDate= {getMaxDate()}
+        selected = {getSelectedDate()} dateFormat={props.data.dateFormat} minDate={getMinDate()} maxDate= {getMaxDate()}
          showTimeSelect = {props.data.showTimeSelect} excludeDates = {props.data.excludeDates}
         onChange={((e) => props.handleInputChange(props.index, e, props.data.attribute))} isClearable />
     </div>
