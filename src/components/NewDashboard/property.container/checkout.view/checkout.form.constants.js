@@ -95,8 +95,10 @@ var checkoutViewConstants = Object.freeze({
       placeholder: 'Date of Check-In',
       label: 'Date of Check-In',
       attribute: 'dateField',
-      conversionRequired: true,
-      conversionMethod: (value) => formatDate(value),
+      conversionInNodeConvertor: true,
+      conversionMethod: function(value){
+        return formatDate(value);
+      },
       style: {
         width: '500px'
       },
@@ -105,17 +107,19 @@ var checkoutViewConstants = Object.freeze({
       placeholder: 'Date of Check-Out',
       label: 'Date of Check-Out',
       attribute: 'dateField',
-      conversionRequired: true,
-      conversionMethod: (value) => formatDate(value),
+      conversionInNodeConvertor: true,
+      conversionMethod: function(value){
+        return formatDate(value);
+      },
       style: {
         width: '500px'
       },
     },
     updatedAdvance: {
-      value: undefined,
+      value: 0,
       attribute: 'textField',
       restrictShow: true,
-      addWith: 'advance'
+      postValidateAction: {job: {value: 'advance:value', action: '+'}, condition: {value: 'advance:isChanged', result: true}}
     },
     room: {
       value: undefined,

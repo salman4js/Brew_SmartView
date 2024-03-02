@@ -28,18 +28,6 @@ class PropertyEditView extends PropertyBaseView {
         return extractQueryParams().isEditable === "true";
     };
 
-    // Prepare fields for edit customer details!
-    _prepareFieldCustomData(stateFields){
-        this.state.data.map((options) => {
-            if(options.conversionRequired){
-                stateFields[options.name] = options.conversionMethod(stateFields[options.name]);
-            }
-            if(options.addWith){
-                stateFields[options.name] = Number(options.value) + Number(stateFields[options.addWith]);
-            }
-        })
-    };
-
     saveEditedModel(){
         // Get the metadataField values.
         var fieldData = nodeConvertor(this.state.data),
@@ -47,7 +35,6 @@ class PropertyEditView extends PropertyBaseView {
             urlStates = extractQueryParams();
         // Add mandatory data into the fieldData.
         this._addMandatoryFieldData(fieldData, {[urlStates.uniqueId]: urlStates.selectedModel, lodgeId: this.params.accIdAndName[0]});
-        this._prepareFieldCustomData(fieldData);
         this.state.propertyDataCallBackFunc(fieldData).then((result) => {
             var modalOptions = this._prepareModalOptions(result);
             this._toggleComponentLoader(true);
