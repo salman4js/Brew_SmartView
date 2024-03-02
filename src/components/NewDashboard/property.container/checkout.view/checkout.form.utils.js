@@ -1,8 +1,8 @@
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
-import { checkoutFormValue } from "../checkin.view/checkin.form.utils";
-import {filterKeysInArr, getParsedUrl} from '../../../common.functions/node.convertor';
-import lang from '../../commands/commands.constants'
+import {checkoutFormValue} from "../checkin.view/checkin.form.utils";
+import {filterKeysInArr} from '../../../common.functions/node.convertor';
 import CommandsConnector from "../../commands/commands.connector";
+
 const axios = require('axios');
 const Variables = require("../../../Variables");
 const _ = require('lodash');
@@ -24,8 +24,7 @@ class CheckoutUtils {
   // Fetch customer details!
   async fetchUserDetails(options){
     var data = {roomid: options.roomid, isHourly: options.isHourly, stayeddays: options.stayeddays}; // Corrected 'stayeddayes' to 'stayeddays'
-    const result = await axios.post(`${this.baseUrl}/userroom`, data);
-    return result;
+    return await axios.post(`${this.baseUrl}/userroom`, data);
   };
   
   // Fetch customer billing details!

@@ -77,7 +77,7 @@ export function getCurrentUser(){
   return getStorage('loggedInUser') || 'Manager';
 };
 
-// Extract data from the state handlers. This is usefull when states are holding their view's sub view function.
+// Extract data from the state handlers. This is useful when states are holding their view's sub view function.
 // In that case, sub view state will always hold the initial data.
 export function extractStateValue(state, value){
   var result = {};
@@ -96,6 +96,41 @@ function checkIfConversionNeeded(options){
   }
 };
 
+// Function to decouple the condition statement for postValidationAction.
+function decoupleConditionStatement(options){
+  if(options.indexOf(":") !== -1){
+    return {fieldKey: options.substring(options.indexOf(':') + 1), fieldState: options.substring(0, options.indexOf(':'))};
+  } else {
+    throw new Error("Statement doesn't align with designed approach!");
+  }
+};
+
+// Check if the metadata fields has any additional params such as addsWith.
+// Change the state value as instructed only if the addWith params conditions are met.
+function checkForAddsWith(options, status){
+  function performAction(){
+    var actionStatement = `${options.value} ${options.postValidateAction.job.action} ${extractStateValue(status, action.fieldKey)[action.fieldState]}`;
+    options.value = eval(actionStatement);
+  };
+  if(options.postValidateAction){
+    // Check if any conditions are provided, If not do the addWith part.
+    if(options.postValidateAction.condition !== undefined){
+      // Retrieve the condition.
+      var statement = decoupleConditionStatement(options.postValidateAction.condition.value);
+      var action = decoupleConditionStatement(options.postValidateAction.job.value);
+      // Check if the conditions are met.
+      if(extractStateValue(status, statement.fieldKey)[statement.fieldState] === options.postValidateAction.condition.result){
+        // When the conditions are met, First form the action statement.
+        performAction();
+      } else {
+        return false; // Provided condition doesn't meet.
+      }
+    } else {
+      performAction();
+    }
+  }
+};
+
 // Convert the data into server understandable format!
 export function nodeConvertor(status, fieldProp){ // fieldProp will take array as an input,
   // whatever values are there in the fieldProp will be returned in the result object.
@@ -103,6 +138,7 @@ export function nodeConvertor(status, fieldProp){ // fieldProp will take array a
   const result = {};
   status.map((options, index) => {
     checkIfConversionNeeded(options);
+    options.postValidateAction && checkForAddsWith(options, status);
     if(options.defaultValue && (options.value === undefined)){
       result[options.name] = options.defaultValue;
     } else {
@@ -325,12 +361,11 @@ export function handleCommands(commands, setState, enable){
 };
 
 // Check if any of the metadata fields has been updated or not!
-export function getFieldsData(field, name){
+export function checkIfFieldsAreUpdated(field, name){
   var result = {};
   field.forEach((options) => {
     if(options.name === name){
-      var isUpdated = (options.value !== undefined) ? true : false;
-      result['isFieldUpdated'] = isUpdated;
+      result['isFieldUpdated'] = (options.value !== undefined);
       result['updatedValue'] = options.value;
     }
   });

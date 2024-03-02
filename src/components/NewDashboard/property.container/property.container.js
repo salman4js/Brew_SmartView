@@ -134,7 +134,7 @@ const PropertyContainer = (props) => {
     var options = {
       navigateToStatusTableView: true,
       selectedRoomConstant: propertyContainerConstants.TABLE_HEADERS[panelFieldOptions.panelFieldDropdown], // Here, selectedRoomConstant represents table header for the table view.
-      // In case of room transfer view, the table header value is being overriden in the filter.table.wrapper
+      // In case of room transfer view, the table header value is being overridden in the filter.table.wrapper
       dashboardMode: panelFieldOptions.panelFieldDropdown,
       routerOptions: {currentRouter: propertyContainerConstants.propertyContainerPerspectiveConstant, action: 'ADD'}
     };

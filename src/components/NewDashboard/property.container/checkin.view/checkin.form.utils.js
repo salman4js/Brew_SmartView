@@ -70,7 +70,7 @@ export async function editPrebookDetails(data){
 // Edit occupied customer data and also update the userModel in the upcomingCheckout widgetTile collection as well userCollections.
 export async function editOccupiedUserModel(data){
   var shouldUpdateCollections = shouldAddToCollections(data, 'edit-checkin');
-  const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/updateoccupieddata`, data);
+  const result = await axios.put(`${Variables.Variables.hostId}/${data.lodgeId}/updateoccupieddata`, data);
   // Determine the action based on the datesBetweenCount user preferences.
   const action = shouldUpdateCollections ? 'EDIT' : 'DELETE';
   shouldAddToCollections && result.data.success && _updateWidgetTileCollections('upcomingCheckout', result.data.updatedUserModel, action);

@@ -9,9 +9,8 @@ import {getStayedDays, determineGSTPercent, getTimeDate, formatDate} from '../..
 import {
   nodeConvertor,
   validateFieldData,
-  getFieldsData,
   updateMetadataFields,
-  getCurrentUser
+  getCurrentUser, checkIfFieldsAreUpdated
 } from '../../../common.functions/node.convertor';
 import { getStorage } from '../../../../Controller/Storage/Storage';
 import propertyContainerConstants from "../property.container.constants";
@@ -262,7 +261,7 @@ const CheckinForm = (props) => {
   // Get price amount for advance amount restriction!
   function getPriceAmount(){
     var priceAmount;
-    var result = getFieldsData(checkinFields, 'updatePrice');
+    var result = checkIfFieldsAreUpdated(checkinFields, 'updatePrice');
     if(result.isFieldUpdated){
       priceAmount = result.updatedValue;
     } else {
@@ -275,7 +274,7 @@ const CheckinForm = (props) => {
   function _restrictAdvAndDiscount(){ // If any of these two restricted coming via config use that condition here!
     var priceAmount = getPriceAmount(),
       currentDate = brewDate.getFullDate("yyyy/mm/dd"),
-      dateOfCheckout = getFieldsData(checkinFields, 'checkout').updatedValue,
+      dateOfCheckout = checkIfFieldsAreUpdated(checkinFields, 'checkout').updatedValue,
       stayedDays = getStayedDays(currentDate, dateOfCheckout),
       gstPrice = props.data.roomModel.price * determineGSTPercent(props.data.roomModel.price),
       totalAmount = (stayedDays * priceAmount) + (stayedDays * gstPrice);
