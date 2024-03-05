@@ -1,0 +1,36 @@
+.popover-container {
+    position: absolute;
+    left: calc(100% + 5px); /* Adjust the distance between the header and the control */
+    top: 0; /* Aligns the control vertically with the header */
+}
+
+.popover-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.popover-menu {
+    top: 100%;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 190px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.popover-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.popover-menu ul {
+    padding: 1px;
+    cursor: pointer;
+}
+
+.popover-container .popover-menu:hover{
+    background-color: #f1f1f1;
+}

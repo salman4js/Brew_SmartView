@@ -9,7 +9,7 @@ class CommandsExportToExcel {
         this.isDisabled = this.enabled();
         this.defaults = {
             value: lang.EXPORT_TO_EXCEL.exportToExcelLabel,
-            disabled: this.isDisabled,
+            disabled: !this.isDisabled,
             onClick: () => this.execute()
         };
         this.exportDialogFieldOptions = [{
@@ -27,8 +27,7 @@ class CommandsExportToExcel {
     };
 
     enabled(){
-      // Enable export to excel only for local build since export to excel doesn't work on actual build due to hosted server restrictions!
-      return !(lang.isCommandsEnabled.bookingHistory.includes(this.status.roomConstantKey));
+        return lang.isCommandsEnabled.exportToExcel.includes(this.status.roomConstantKey);
     };
 
     execute(){
@@ -95,29 +94,41 @@ class CommandsExportToExcel {
         });
     };
 
+    _prepareCSVAndDownload(options){
+        var csvData = prepareCSV({header: this.clientSideCSVHeader,
+            rows: this.status.eventHelpers.refineTableCollection(options.rows),
+            headerRefKeys: this.clientSideCSVHeaderRefKeys});
+        var blob = new Blob([csvData], {type: 'text/csv'});
+        downloadContent({content: blob, fileName: this.exportFileName});
+    };
+
     // Initiate the export to excel process on client side
     initiateClientExport(){
-        var options = {
-            accId: this.status.params.accIdAndName[0],
-            selectedNodes: this.status.nodes
-        }
         this._prepareClientSideExportCSVHeader();
-        // To initiate the export to excel data on client side, We need to fetch the history nodes data from the server.
-        CommandsConnector.fetchSelectedHistoryNode(options).then((result) => {
-            if(result.data.success){
-                var csvData = prepareCSV({header: this.clientSideCSVHeader,
-                    rows: this.status.eventHelpers.refineTableCollection(result.data.message),
-                    headerRefKeys: this.clientSideCSVHeaderRefKeys});
-                var blob = new Blob([csvData], {type: 'text/csv'});
-                downloadContent({content: blob, fileName: this.exportFileName});
+        if(!this.status.eventHelpers._isFetchableWidget()){
+            // If it's a fetchable widget and status.nodes.length is zero which mean that the command was executed from table header.
+            // If the status.node.length is zero, Get the all the table collection and proceed with export.
+            // else do the export part only the selected nodes.
+            this._prepareCSVAndDownload({rows: this.status.eventHelpers.getTableCollection(this.status.nodes.length === 0 ? {} : {nodes: this.status.nodes})});
+        } else {
+            var options = {
+                accId: this.status.params.accIdAndName[0],
+                selectedNodes: this.status.nodes // When this commands executed from table header, there would be no selection of nodes.
             }
-            this._resetTable();
-        });
+            // As of now, there is only one fetchable widget, Abstract this part of the code when there are multiple fetchable widget.
+            // To initiate the export to excel data on client side, We need to fetch the history nodes data from the server.
+            CommandsConnector.fetchSelectedHistoryNode(options).then((result) => {
+                if(result.data.success){
+                    this._prepareCSVAndDownload({rows: result.data.message});
+                }
+            });
+        }
+        this._resetTable();
     };
 
     _resetTable(){
         this.status.eventHelpers.collapseCustomModal();
-        this.status.eventHelpers.updateCheckboxSelection(false)
+        this.status.eventHelpers.updateCheckboxSelection(false);
         this.status.eventHelpers.triggerTableLoader(false);
     };
 

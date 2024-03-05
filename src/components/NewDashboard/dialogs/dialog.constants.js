@@ -21,6 +21,15 @@ var dialogConstants = Object.freeze({
       tableCreateModeAllowedKeys: ['voucherTracker']
     },
 
+    TABLE_EDIT: {
+        tableEditLabel: (options) => `Edit ${options.headerValue} Entry`,
+        footerButtons: {
+            primaryBtn: 'Edit',
+            secondaryBtn: 'Cancel'
+        },
+        tableEditModeAllowedKeys: ['voucherTracker']
+    },
+
     HEADER_OPTIONS: {
       voucherTracker: 'Voucher'
     },

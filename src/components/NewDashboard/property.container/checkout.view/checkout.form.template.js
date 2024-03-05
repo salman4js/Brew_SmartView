@@ -27,7 +27,7 @@ function populateReplacementObject(state){
     'advanceAmount': state.billingInfo.advanceAmount + ' Rs',
     'discountAmount': state.billingInfo.discountAmount + ' Rs',
     'withoutGST': state.billingInfo.withoutGST + ' Rs',
-    'totalPrice': Number(state.billingInfo.totalPrice) + ' Rs',
+    'totalPrice': Math.abs(Number(state.billingInfo.totalPrice)) + ' Rs',
     'totalPrice + oldRoomPrice': (Number(state.billingInfo.totalPrice) + Number(state.userModel.oldRoomPrice)) + 'Rs'
   };
 };
@@ -226,7 +226,7 @@ export function templateHelpers(state, configOptions, replacements, propertyCont
                         color: 'red',
                         fontWeight: 'bold'
                       }}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.refundAmount} </label>
-                      <p style={{color: 'red', fontWeight: 'bold'}}> {Math.abs(replacements.totalPrice)} </p>
+                      <p style={{color: 'red', fontWeight: 'bold'}}> {(replacements.totalPrice)} </p>
                     </div>
                   </>
               )}

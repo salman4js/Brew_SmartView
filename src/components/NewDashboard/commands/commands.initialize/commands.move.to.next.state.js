@@ -3,7 +3,7 @@ import CommandsConnector from "../commands.connector";
 class CommandsMoveToNextState {
     constructor(signatureOptions) {
         this.status = signatureOptions ;
-        this.isDisabled = this.enabled();
+        this.isDisabled = !this.enabled();
         this.defaults = {
             value: lang.MOVE_TO_NEXT_STATE.moveToNextState,
             disabled: this.isDisabled,
@@ -12,7 +12,7 @@ class CommandsMoveToNextState {
     };
 
     enabled(){
-      return !lang.isCommandsEnabled.moveToNextState.includes(this.status.roomConstantKey);
+      return lang.isCommandsEnabled.moveToNextState.includes(this.status.roomConstantKey) && this.status.nodes.length >= 1;
     };
 
     execute(){

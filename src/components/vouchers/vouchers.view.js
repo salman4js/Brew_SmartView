@@ -585,11 +585,11 @@ const VoucherView = () => {
       fieldData['lodgeId'] = splitedIds[0]
       const result = await getNetProfitPreview(fieldData);
       if(result.data.success){
-        // Update netprofit preview data!
+        // Update net profit preview data!
         setNetProfit(prevState => ({...prevState, isLoading: false, 
-          paymentTrackerSum: result.data.data.inflowDetails.totalAmount, voucherPaymentSum: result.data.data.outflowDetails.totalPayment,
-        voucherReceiptSum: result.data.data.outflowDetails.totalReceipt, paymentTrackerTaxableAmount: result.data.data.inflowDetails.totalTaxableAmount,
-        netProfit: result.data.data.netProfitStatus, netProfitStatus: result.data.data.netProfitStatus > 0 ? 'PROFIT' : "LOSS"}));
+          paymentTrackerSum: result.data?.data?.inflowDetails?.totalAmount, voucherPaymentSum: result.data?.data?.outflowDetails?.totalPayment,
+        voucherReceiptSum: result.data?.data?.outflowDetails?.totalReceipt, paymentTrackerTaxableAmount: result.data?.data?.inflowDetails?.totalTaxableAmount,
+        netProfit: result.data?.data?.netProfitStatus, netProfitStatus: result.data?.data?.netProfitStatus > 0 ? 'PROFIT' : "LOSS"}));
         
         // Update tablePreview data for inflow
         setTablePreviewViewForInflow(prevState => ({...prevState, cellValues: result.data.data.individualVoucherReportForPayment, 
@@ -651,7 +651,7 @@ const VoucherView = () => {
   async function _onEditVoucherModel(lodgeId, data){
     data['voucherId'] = sidepanel.voucherId;
     data.dateTime = convertServerFormat(formatCustomIntoDateFormat(data.dateTime)); // Convert the date into dd/mm/yyy format!
-    const result = await editVoucherModelList(lodgeId, data);
+    const result = await editVoucherModelList({lodgeId, data});
     if(result.data.success){
       _triggerTableLoader(false);
       destroyCommandHelper();

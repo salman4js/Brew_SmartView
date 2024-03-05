@@ -1214,9 +1214,11 @@ td {
   cursor: pointer;
 }
 
-.brew-statustableview-lefttoolbar-header{
-  padding-left: 600px;
-  font-weight: bold
+.brew-statustableview-lefttoolbar-header {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
 }
 
 .brew-tabletemplate-left-toolbar{

@@ -1,4 +1,3 @@
-import CheckoutUtils from "../property.container/checkout.view/checkout.form.utils";
 import { moveToNextState } from "../../room.status.utils/room.status.utils";
 import {getParsedUrl} from "../../common.functions/node.convertor";
 import lang from "./commands.constants";
@@ -55,7 +54,16 @@ class CommandsConnector {
                 console.warn('Error occurred while fetching dynamic html content')
             })
         }
-    }
+    };
+
+    static async DeleteController(options){
+        var selectedNodes = encodeURIComponent(JSON.stringify(options.selectedNodes));
+        return await axios.delete(`${Variables.Variables.hostId}/${options.accId}/${selectedNodes}/${options.widgetName}/delete`);
+    };
+
+    static async EditController(options){
+      return await axios.put(`${Variables.Variables.hostId}/${options.accId}/${options.selectedNodes}/${options.widgetName}/edit`, options.data);
+    };
 };
 
 export default CommandsConnector;
