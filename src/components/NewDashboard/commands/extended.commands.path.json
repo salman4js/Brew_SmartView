@@ -6,5 +6,7 @@
   "./commands.initialize/commands.export.to.excel.js",
   "./commands.initialize/commands.more.details.js",
   "./commands.initialize/commands.generate.receipt.js",
-  "./commands.initialize/commands.move.to.next.state.js"
+  "./commands.initialize/commands.move.to.next.state.js",
+  "./commands.initialize/commands.edit.js",
+  "./commands.initialize/commands.delete.js"
 ]

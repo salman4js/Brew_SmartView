@@ -8,20 +8,21 @@ import metadataFieldTemplatestate from "../../../fields/metadata.field.templates
 import CustomModal from '../../../CustomModal/custom.modal.view';
 import MetadataFields from '../../../fields/metadata.fields.view';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
-import { templateHelpers } from './checkout.form.template';
+import {templateHelpers} from './checkout.form.template';
 import PropertyAlertContainer from '../property.alert.container/property.alert.container.view';
-import { activityLoader } from '../../../common.functions/common.functions.view';
-import { getTimeDate, determineGSTPercent } from '../../../common.functions/common.functions';
+import {activityLoader} from '../../../common.functions/common.functions.view';
+import {determineGSTPercent, getTimeDate} from '../../../common.functions/common.functions';
 import {
-    getBaseUrl,
+    createMetadataFieldsWithBaseObj,
+    filterKeysInObj,
     formQueryParams,
-    nodeConvertor,
-    validateFieldData,
-    updateMetadataFields,
+    getBaseUrl,
     getCurrentUser,
-    createMetadataFieldsWithBaseObj, filterKeysInObj
+    nodeConvertor,
+    updateMetadataFields,
+    validateFieldData
 } from '../../../common.functions/node.convertor';
-import { getStorage } from '../../../../Controller/Storage/Storage';
+import {getStorage} from '../../../../Controller/Storage/Storage';
 import propertyContainerConstants from "../property.container.constants";
 
 class CheckOutView extends React.Component {
@@ -399,9 +400,8 @@ class CheckOutView extends React.Component {
       var amountForStayedDays = this.getAmountForStayedDays(),
         advanceAmount = Number(this.state.billingDetails.advanceCheckin),
         discountAmount = Number(this.state.billingDetails.discountPrice),
-        extraBedPrice = Number(this.getExtraBedPrice()),
-        totalPayableAmount = (amountForStayedDays - advanceAmount - discountAmount) + extraBedPrice;
-      return totalPayableAmount;
+        extraBedPrice = Number(this.getExtraBedPrice());
+      return (amountForStayedDays - advanceAmount - discountAmount) + extraBedPrice;
     };
 
     // Get extra bed price!

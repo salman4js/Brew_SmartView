@@ -1,11 +1,11 @@
 import {addVoucherModelList} from "../../../vouchers/vouchers.utils";
 import {convertServerFormat, formatCustomIntoDateFormat} from "../../../common.functions/common.functions";
 
-function voucherTrackerCreateOptions(){
+function voucherTrackerCreateOptions(options){
     return [
         {
-            value: new Date(),
-            defaultValue: new Date(),
+            value: options?.dateTime || new Date(),
+            defaultValue: options?.dateTime || new Date(),
             placeholder: "Date",
             label: "Date",
             name: 'dateTime',
@@ -22,7 +22,7 @@ function voucherTrackerCreateOptions(){
             }
         },
         {
-            value: undefined,
+            value: options?.particulars,
             placeholder: "Particulars",
             label: "Particulars",
             name: 'particulars',
@@ -34,7 +34,7 @@ function voucherTrackerCreateOptions(){
             }
         },
         {
-            value: undefined,
+            value: options?.cashMode,
             placeholder: "Cash Mode",
             label: "Cash Mode",
             name: 'cashMode',
@@ -46,7 +46,7 @@ function voucherTrackerCreateOptions(){
             }
         },
         {
-            value: undefined,
+            value: options?.receipt,
             defaultValue: 0,
             placeholder: "Receipt",
             label: "Receipt",
@@ -61,7 +61,7 @@ function voucherTrackerCreateOptions(){
             }
         },
         {
-            value: undefined,
+            value: options?.payment,
             defaultValue: 0,
             placeholder: "Payment",
             label: "Payment",
@@ -80,7 +80,7 @@ function voucherTrackerCreateOptions(){
 
 
 var dialogCreateOptions = {
-    'voucherTracker': () => voucherTrackerCreateOptions(),
+    'voucherTracker': (options) => voucherTrackerCreateOptions(options),
     'onSave': {
         'voucherTracker': (options) => addVoucherModelList(options)
     }

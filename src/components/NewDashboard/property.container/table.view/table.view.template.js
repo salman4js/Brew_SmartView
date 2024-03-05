@@ -4,6 +4,7 @@ import PaginationView from "./pagination.view/pagination.view";
 import FacetView from "./facet.view/facet.view";
 import TableToolbarView from "../../table.toolbar.view/table.toolbar.view";
 import React from "react";
+import PopoverField from "../../../fields/popoverField/popover.field";
 
 class TableViewTemplateHelpers {
 
@@ -42,11 +43,19 @@ class TableViewTemplateHelpers {
                         </svg>
                     </span>
                 )}
-                <span className='brew-statustableview-lefttoolbar-header'>
+                <span className='brew-statustableview-lefttoolbar-header' id = 'anchor-element'>
                     {this.data.options.selectedRoomConstant}
+                    {this.data.options.allowHeaderControl && (
+                        this._renderPopOverMenu()
+                    )}
                 </span>
             </div>
         );
+    };
+
+    // Render popover menu for the corresponding element.
+    _renderPopOverMenu(){
+      return <PopoverField data = {{options: this.data.options}}/>
     };
 
     // Render table toolbar menu action items.

@@ -6,8 +6,10 @@ import _ from "lodash";
 class CommandsSelectedModel {
     constructor(signatureOptions) {
         this.status = signatureOptions;
+        this.isDisabled = this.enabled();
         this.defaults = {
             icon: () => this.getSelectedModelsTemplate(),
+            disabled: !this.isDisabled,
             onClick: () => this.execute()
         };
         this.statusNodes = _.clone(this.status.nodes);
@@ -41,6 +43,10 @@ class CommandsSelectedModel {
               Selected <span className = 'commands-selected-model-container-count'>{this.currentSelectedNodesCount}</span>
           </span>
         )
+    };
+
+    enabled(){
+      return this.status.nodes.length >= 1;
     };
 
     execute(){

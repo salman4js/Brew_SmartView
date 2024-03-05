@@ -49,6 +49,10 @@ class FilterTable extends TableView {
         tableCellWidth : "590px",
         showPanelField: false
       },
+      facets: {
+        isFacetsEnabled: false,
+        facetsHeight: undefined
+      },
       customModal: {
         show: false,
         onHide: this.onCloseCustomModal.bind(this),
@@ -464,7 +468,7 @@ class FilterTable extends TableView {
   _setTableCellState(){
     var tableCells = this.state.metadataTableState.cellValues,
       tableCellsClone = _.clone(tableCells); // Cloning the original data to prevent it from appending to table.view data...
-    tableCellsClone.map((options, index) => { // SInce the table cell value is an array of object, mapping it and then adding the actions view!
+    tableCellsClone.map((options, index) => { // Since the table cell value is an array of object, mapping it and then adding the actions view!
       if(!options.actions){
         options.actions = this.filterActionCellView(index);
       }

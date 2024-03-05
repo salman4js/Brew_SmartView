@@ -85,6 +85,21 @@ class VoucherTableWrapper extends TableView {
       }
     };
 
+    removeFromTableCollection(selectedVoucherModelIds) {
+        _.remove(this.currentVoucherCollections, function(model){
+           return selectedVoucherModelIds.includes(model._id);
+        });
+    };
+
+    updateModelFromTableCollection(updatedVoucherModel){
+        var indexToUpdate = _.findIndex(this.currentVoucherCollections, function(model){
+           return model._id === updatedVoucherModel._id;
+        });
+        if(indexToUpdate !== -1){
+            _.assign(this.currentVoucherCollections[indexToUpdate], updatedVoucherModel);
+        }
+    };
+
     async setExpandedTableView(){
       // Get the first voucher model id from the collection instance,
       // Load the table view part of the voucher model.

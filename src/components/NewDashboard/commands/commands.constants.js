@@ -77,37 +77,81 @@ var commandsConstant = Object.freeze({
         generateReceipt: 'Generate Receipt'
     }),
 
+    DELETE_CONTROLLER: Object.freeze({
+       deleteController: 'Delete',
+       voucherTracker: {
+           successMessage: 'Voucher entry deleted successfully!',
+           errorMessage: 'Something went wrong, Please try again later!'
+       }
+    }),
+
+    EDIT_CONTROLLER: Object.freeze({
+        editController: 'Edit',
+        voucherTracker: {
+            successMessage: 'Voucher entry updated!',
+            errorMessage: 'Something went wrong, Please try again later!'
+        }
+    }),
+
     // TODO: Remove this later, when we have backend support for column customization.
     configuredTableHeaderAndKey: Object.freeze({
         history: [{
+                'id': 'username', 'title': 'Guest Name',
+            }, {
+                'id': 'phonenumber', 'title': 'Phone Number',
+            }, {
+                'id': 'aadharcard', 'title': 'Guest Id Number',
+            }, {
+                'id': 'address', 'title': 'Address',
+            }, {
+                'id': 'dateofcheckin', 'title': 'Date of Checkin',
+            }, {
+                'id': 'checkinTime', 'title': 'Time of Checkin',
+            }, {
+                'id': 'dateofcheckout', 'title': 'Date of Checkout',
+            }, {
+                'id': 'checkoutTime', 'title': 'Time of Checkout',
+            }, {
+                'id': 'totalAmount', 'title': 'Total Amount',
+        }],
+        afterCheckin: [{
             'id': 'username', 'title': 'Guest Name',
         }, {
             'id': 'phonenumber', 'title': 'Phone Number',
         }, {
-            'id': 'aadharcard', 'title': 'Guest Id Number',
+            'id': 'roomno', 'title': 'Room Number',
         }, {
-            'id': 'address', 'title': 'Address',
+            'id': 'floorNo', 'title': 'Floor Number',
         }, {
             'id': 'dateofcheckin', 'title': 'Date of Checkin',
         }, {
-            'id': 'checkinTime', 'title': 'Time of Checkin',
-        }, {
             'id': 'dateofcheckout', 'title': 'Date of Checkout',
+        }],
+        voucherTracker: [{
+            'id': 'vNo', 'title': 'Voucher Number',
         }, {
-            'id': 'checkoutTime', 'title': 'Time of Checkout',
+            'id': 'dateTime', 'title': 'Date & Time',
         }, {
-            'id': 'totalAmount', 'title': 'Total Amount',
-        }]
+            'id': 'particulars', 'title': 'Particulars',
+        }, {
+            'id': 'cashMode', 'title': 'Cash Mode',
+        }, {
+            'id': 'payment', 'title': 'Payment',
+        }, {
+            'id': 'receipt', 'title': 'Receipt',
+        }],
     }),
 
     isCommandsEnabled: Object.freeze({
         goToLocation: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned', 'inCleaning'],
         roomTransfer: ['afterCheckin', 'upcomingCheckout'],
         favoritesCheckin: ['favorites'],
-        bookingHistory: ['history'],
+        exportToExcel: ['history', 'afterCheckin', 'voucherTracker'],
         moreDetails: ['history'],
         generateReceipt: ['paymentTrackerView', 'logTable'],
-        moveToNextState: ['afterCheckedout', 'inCleaning']
+        moveToNextState: ['afterCheckedout', 'inCleaning'],
+        deleteAction: ['voucherTracker'],
+        editAction: ['voucherTracker']
     })
 });
 

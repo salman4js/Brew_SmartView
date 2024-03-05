@@ -93,16 +93,6 @@ const Navbar = (props) => {
       {
         select: null,
         value: undefined,
-        name: 'dashboardVersion',
-        attribute: 'checkBoxField',
-        updateValue: true,
-        label: 'Enable Dashboard Version 2.o',
-        isLabelFirst: true,
-        customStyle: customCheckboxStyle
-      },
-      {
-        select: null,
-        value: undefined,
         name: 'upcomingCheckout',
         attribute: 'checkBoxField',
         updateValue: true,
@@ -146,6 +136,7 @@ const Navbar = (props) => {
         name: 'voucherTracker',
         attribute: 'checkBoxField',
         updateValue: true,
+        restrictShow: !isLinkedWithVouchers(),
         label: 'Enable Voucher Tracker in dashboard',
         isLabelFirst: true,
         customStyle: customCheckboxStyle
@@ -516,7 +507,6 @@ const Navbar = (props) => {
                                               })
                                           }
                                           {isInsights && <Link className="nav-link dropdown-item" to={`/${props.id}/chart-dashboard`} style={{ color: "black" }}>Insights</Link>}
-                                          <Link className='nav-link dropdown-item' to={`/${props.id}/contentnative`} style={{ color: "black" }}> Generate Reports </Link>
                                           <div className = 'nav-link dropdown-item' style = {{color: 'black'}} onClick = {() => _toggleUserPreferenceModal(true)}>
                                             User Preferences
                                           </div>
@@ -524,9 +514,6 @@ const Navbar = (props) => {
                                   </li>
                                   {(!loggedInAsRecep && !dashboardVersion) && (
                                       <Link className='nav-link dropdown-item' to={`/${props.id}/editroom`} style={{ color: "black" }}> Edit Customer Details </Link>
-                                  )}
-                                  {isLinkedWithVouchers() && (
-                                    <Link className='nav-link dropdown-item' to={`/${props.id}/vouchers`} style={{ color: "black" }}> Vouchers Tracker </Link>
                                   )}
                                   <Link className='nav-link dropdown-item' to={`/${props.id}/paymenttracker`} style={{ color: "black" }}> Payment Tracker </Link>
                                   {isRefundTrackerEnabled() && (
