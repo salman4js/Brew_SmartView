@@ -4,7 +4,7 @@ class PropertyAlertContainer extends React.Component {
   
   constructor(props){
     super(props);
-    this.state = props.data;
+    this.state = props.data || {};
     this.viewRef = React.createRef();
     this.viewRefHeight = props.viewRefHeight;
   };

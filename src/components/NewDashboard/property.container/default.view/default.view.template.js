@@ -46,7 +46,7 @@ export function widgetTileTemplateHelpers(widgetModel){
   )
 };
 
-// Widget body child view templat helpers!
+// Widget body child view template helpers!
 export function widgetTileBodyTemplateHelpers(stateCount){
   return(
     <div className = 'widget-tile-body'>

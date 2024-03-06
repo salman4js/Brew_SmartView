@@ -35,10 +35,6 @@ class CommandsExportToExcel {
       this._promptConfirmationDialog();
     };
 
-    isLocalServer(){
-        return _checkForSecureConnections();
-    };
-
     // Prompt confirmation dialog to get the name of the file to be downloaded.
     _promptConfirmationDialog(){
         this.getExportDialogOptions();
@@ -68,29 +64,7 @@ class CommandsExportToExcel {
         this.status.eventHelpers.triggerTableLoader(true, true);
         this.status.eventHelpers.validateStateFields().then((result) => {
             this.exportFileName = result.excelFileName + '.csv';
-            this.isLocalServer() ? this.initiateServerExport() : this.initiateClientExport();
-        });
-    };
-
-    // Initiate the export to excel process on server
-    initiateServerExport(){
-        // TODO: Get the filename from the user.
-        var params = {
-            lodgeId: this.status.params.accIdAndName[0],
-            fileName: this.exportFileName,
-            widgetValue: this.status.roomConstantKey,
-            headerValue: this.configuredColumns,
-            nodes: this.status.nodes
-        };
-        // TODO: Show progress panel when the export operation is in progress.
-        CommandsConnector.onExportToExcel(params).then((result) => {
-            // REST will return the file content downloadable url.
-            // Fetch the file from that downloadable url.
-            result.data.filename = params.fileName;
-            downloadContent(result.data);
-            this._resetTable();
-        }).catch((error) => {
-            console.warn(error);
+            this.initiateClientExport();
         });
     };
 

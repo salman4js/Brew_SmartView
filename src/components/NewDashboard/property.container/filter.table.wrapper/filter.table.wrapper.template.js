@@ -27,6 +27,8 @@ export function editPropertiesBodyView(data, updateData){
 }
 
 // Favorites checkin form sub child view!
-export function favoritesCheckInFormView(roomModel){
-  return <CheckinForm data = {roomModel} afterFormSave = {(opts) => roomModel.afterFormSave(opts)} params = {roomModel.params}/>
+export function favoritesCheckInFormView(options){
+  return <CheckinForm data = {options} afterFormSave = {(opts) => options.afterFormSave(opts)}
+  routerOptions = {(opts) => options.routerOptions(opts)} dashboardController = {(opts) => options.dashboardController(opts)}
+  routerController = {() => options.routerController()} params = {options.params}/>
 }

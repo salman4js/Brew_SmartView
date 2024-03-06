@@ -28,14 +28,14 @@ class CommandsFavoritesCheckin extends CommandsRoomTransfer {
             userModel: this.state.userModel
         }
         this.status.eventHelpers.updateSelectedModel(options);
-        this.status.eventHelpers.onRoomTransfer(this.transferOptions);
+        this.status.eventHelpers.dashboardController(this.transferOptions);
     };
 
     // Prepare the options for favorites checkin.
     _prepareFavoritesOptions(){
         this.transferOptions['filterTableOptions'] = {
             extraColumnState: lang.FAVORITES_CHECKIN.favoritesCheckinKey,
-            afterSave: (opts) => this.status.eventHelpers.dashboardController(opts)
+            afterSave: (opts) => this.status.eventHelpers.dashboardController(opts),
         }
     };
 }

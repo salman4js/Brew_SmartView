@@ -57,7 +57,7 @@ class PopoverField extends React.Component {
     };
 
     handleClickOutside(event) {
-        if (this.popoverRef && !this.popoverRef.current.contains(event.target)) {
+        if (this.state.isOpen && this.popoverRef && !this.popoverRef.current.contains(event.target)) {
             this._updateComponentState({key: 'isOpen', value: false});
         }
     };

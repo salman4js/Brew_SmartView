@@ -3,6 +3,7 @@ import voucherTableWrapperConstants from "./voucher.table.wrapper.constants";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 import {getVoucherModelList} from "../../../vouchers/vouchers.utils";
 import _ from "lodash";
+import tableViewConstants from "../table.view/table.view.constants";
 
 class VoucherTableWrapper extends TableView {
     constructor(props) {
@@ -51,7 +52,15 @@ class VoucherTableWrapper extends TableView {
 
     getFirstVoucherModelsId(){
       var voucherModels = CollectionInstance.getModel('widgetTileCollections', 'voucherModelList');
-      return voucherModels[0]._id;
+      if(voucherModels[0] !== undefined){
+          return voucherModels[0]._id;
+      }
+    };
+
+    // Check if the current table mode is enabled for create operation.
+    checkForTableCreateMode(){
+        var voucherModelId = this.getFirstVoucherModelsId();
+        return this.roomConstant && voucherModelId && tableViewConstants.tableCreateMode.tableCreateModeAllowedKeys.includes(this.roomConstant);
     };
 
     getTableHeaders() {
