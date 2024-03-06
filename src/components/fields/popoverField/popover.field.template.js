@@ -23,7 +23,7 @@ class PopoverFieldTemplate {
                 {this.status.options.isOpen && (
                     <div className="popover-menu"
                          style={{top: this.status.options.anchorPosition.top, left: this.status.options.anchorPosition.left}}>
-                        <ul>
+                        <ul onClick={() => this.status.eventHelpers._togglePopOverMenu()}>
                             {this._renderCommandOptions()}
                         </ul>
                     </div>

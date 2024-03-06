@@ -1,5 +1,6 @@
 import lang from "../commands.constants";
 import CommandsConnector from "../commands.connector";
+import _ from "lodash";
 class CommandsMoveToNextState {
     constructor(signatureOptions) {
         this.status = signatureOptions ;
@@ -12,18 +13,29 @@ class CommandsMoveToNextState {
     };
 
     enabled(){
-      return lang.isCommandsEnabled.moveToNextState.includes(this.status.roomConstantKey) && this.status.nodes.length >= 1;
+      return lang.isCommandsEnabled.moveToNextState.includes(this.status.roomConstantKey);
     };
 
     execute(){
-      this._moveToNextStatus();
+        this.selectedNodes = _.clone(this.status.nodes);
+        this._moveToNextStatus();
+    };
+
+    _getAllTableCollectionNodes(){
+        var tableCollection = this.status.eventHelpers.getTableCollection();
+        tableCollection.map((tableModel) => {
+           this.selectedNodes.push(tableModel._id);
+        });
     };
 
     // Execute move to next state commands!
     _moveToNextStatus() {
         this.status.eventHelpers.triggerTableLoader(true, true);
         this.status.eventHelpers.updateCheckboxSelection();
-        var moveToOperation = this.status.nodes.map((node) => {
+        if(this.status.nodes.length === 0){
+            this._getAllTableCollectionNodes();
+        }
+        var moveToOperation = this.selectedNodes.map((node) => {
             return CommandsConnector.moveToNextState({ lodgeId: this.status.params.accIdAndName[0], roomId: node })
                 .then((result) => {
                     if (result.data.success) {

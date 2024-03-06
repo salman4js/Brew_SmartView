@@ -3,23 +3,24 @@ import _ from 'lodash';
 import brewDate from 'brew-date';
 import TableView from '../table.view/table.view';
 import {
-  filterTableActionCellView,
   editPropertiesBodyView,
-  filterTableCheckInActionCellView, favoritesCheckInFormView
+  favoritesCheckInFormView,
+  filterTableActionCellView,
+  filterTableCheckInActionCellView
 } from './filter.table.wrapper.template';
 import filterTableConstants from './filter.table.wrapper.constants';
+import filterTableWrapperConstants from './filter.table.wrapper.constants';
 import {
   filterKeysInObj,
+  getCurrentUser,
   nodeConvertor,
-  validateFieldData,
   updateMultipleMetadataFields,
-  getCurrentUser
+  validateFieldData
 } from '../../../common.functions/node.convertor';
-import {getTimeDate, getIsExclusive} from '../../../common.functions/common.functions';
+import {getIsExclusive, getTimeDate} from '../../../common.functions/common.functions';
 import CheckoutUtils from '../checkout.view/checkout.form.utils';
 import {checkInFormValue} from '../checkin.view/checkin.form.utils';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
-import filterTableWrapperConstants from "./filter.table.wrapper.constants";
 
 class FilterTable extends TableView {
   
@@ -202,8 +203,12 @@ class FilterTable extends TableView {
 
   // Favorites checkin form sub child view.
   _checkInFormView(){
-    return favoritesCheckInFormView({roomModel: this.roomDetails.selectedRoomModel, userModel: this.state.data.userModel,
-    onFormSave: this.state.data.onFormSave, params: this.params, afterFormSave: (opts) => this.state.data.filterTableOptions.afterSave(opts)});
+    var options = {roomModel: this.roomDetails.selectedRoomModel, userModel: this.state.data.userModel,
+      routerController: () => this.routerController(), roomStatusConstant: this.roomConstant, routerOptions: (opts) => this.props.getRouterOptions(opts),
+      dashboardController: (opts) => this.onCloseCustomModal() && this.props.dashboardController(opts), onFormSave: this.state.data.onFormSave,
+      params: this.params, afterFormSave: (opts) => this.state.data.filterTableOptions.afterSave(opts)};
+    options['userStatusMap'] = CollectionInstance.getCollections('userStatusMap').data;
+    return favoritesCheckInFormView(options);
   };
 
   // Get edit prop modal information!
