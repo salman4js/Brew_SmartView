@@ -1204,9 +1204,7 @@ td {
 }
 
 .widget-tile-body{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
 }
 
 .widget-tile-listitem-body:hover{
@@ -1243,5 +1241,18 @@ td {
 .files div:hover > .sidepanel-filter-panel div:hover {
   background-color: transparent;
 }
+
+.widget-tile-listitem-body .widget-tile-body .brew-list-view-template-options{
+  height: 0.375em;
+  background-color: rgb(23, 120, 83);
+  color: white;
+  border-bottom: 0.0000000000000000001em solid white;
+}
+
+.widget-tile-listitem-body .widget-tile-body .brew-list-view-template-options:hover{
+  background-color: black;
+}
+
+
 
 

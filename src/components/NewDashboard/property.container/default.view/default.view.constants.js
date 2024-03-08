@@ -4,7 +4,13 @@ var defaultViewConstants = Object.freeze({
     upcomingPrebook: 'Upcoming Prebook',
     favorites: 'Favorite Customers',
     history: 'Booking History',
-    voucherTracker: 'Voucher Tracker'
+    voucherTracker: 'Voucher Tracker',
+    insights: 'Insights'
+  }),
+
+  dashboardMode: Object.freeze({
+    voucherTracker: 'voucherTracker',
+    tableView: 'statusTableView'
   }),
 
   reloadSidePanelOptions: Object.freeze({

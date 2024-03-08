@@ -142,6 +142,16 @@ const Navbar = (props) => {
         customStyle: customCheckboxStyle
       },
       {
+        select: null,
+        value: undefined,
+        name: 'insights',
+        attribute: 'checkBoxField',
+        updateValue: true,
+        label: 'Enable Insights in dashboard',
+        isLabelFirst: true,
+        customStyle: customCheckboxStyle
+      },
+      {
         value: 0,
         name: 'datesBetweenCount',
         attribute: 'stepperButtonField',

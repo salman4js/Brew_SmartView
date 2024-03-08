@@ -13,7 +13,7 @@ export function filterTableActionCellView(events, index){
 }
 
 export function filterTableCheckInActionCellView(events, index){
-  var transfer = 'Check-In';
+  var transfer = 'Favorites Check-In';
   return(
       <div className = 'metadata-button-field filter-tablecell-field brew-cursor' onClick = {() => events.checkInEvent(index)}>
         {transfer}

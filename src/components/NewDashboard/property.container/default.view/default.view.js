@@ -5,7 +5,12 @@ import { getStorage } from '../../../../Controller/Storage/Storage';
 import { getRoomStatusConstants, getGreetings } from '../../../common.functions/common.functions';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 import BlockActions from '../../../fields/block.actions.view/block.actions.view';
-import { templateHelpers, widgetTileTemplateHelpers, widgetTileBodyTemplateHelpers } from './default.view.template';
+import {
+  templateHelpers,
+  widgetTileTemplateHelpers,
+  widgetTileBodyTemplateHelpers,
+  _renderListFieldTemplateHelpers
+} from './default.view.template';
 import propertyContainerConstants from "../property.container.constants";
 
 
@@ -88,6 +93,11 @@ class DefaultView extends React.Component {
     });
   };
 
+  // Render list field view!
+  _renderListFieldView(options){
+    return _renderListFieldTemplateHelpers({data: this.listFieldData, propertyStatus: options.propertyStatus});
+  };
+
   // Notify the state router that the perspective is ready!
   notifyStateRouter(){
     var opts = {
@@ -119,10 +129,10 @@ class DefaultView extends React.Component {
   // On widget tile click handler!
   onWidgetTileClick(value){
     var options = {navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel,
-      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: 'statusTableView', userStatusMap: this.propertyStatusMap, selectedRoomConstant: value}
+      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: defaultViewConstants.dashboardMode.tableView, userStatusMap: this.propertyStatusMap, selectedRoomConstant: value}
     if(Object.keys(defaultViewConstants.reloadSidePanelOptions).includes(value)){
       options['reloadSidepanel'] = defaultViewConstants.reloadSidePanelOptions[value];
-      options.dashboardMode = 'voucherTrackerView'
+      options.dashboardMode = defaultViewConstants.dashboardMode.voucherTracker
     }
     this.props.dashboardController(options);
   };
@@ -131,7 +141,7 @@ class DefaultView extends React.Component {
   cardBodyChildView(roomStatusConstant){
     // Get the count of the roomStatus from the state!
     var countOfTheState = roomStatusConstant !== undefined ? this.state.propertyStatusDetails[roomStatusConstant] : 0;
-    return widgetTileBodyTemplateHelpers(countOfTheState);
+    return widgetTileBodyTemplateHelpers({stateCount: countOfTheState, propertyStatus: roomStatusConstant});
   };
 
   // UnMap room status from the state and add it as an array!
@@ -223,8 +233,8 @@ class DefaultView extends React.Component {
       var nonAddedStatusConstant = _.difference(this.state.userRoomStatus, tempData); // non added room status constant, manually add those to the cardViewCollection 
       // with the count 0!
       // Add feature widget tile collection props!
-      this.addWidgetCollectionToPropertyDetails();
       this.addFeatureWidgetCollection(cardViewCollectionProps);
+      this.addWidgetCollectionToPropertyDetails();
       if(!CollectionInstance.getCollections('userStatusMap')){
         CollectionInstance.setCollections('userStatusMap', this.propertyStatusMap); // Adding this into global collection because user map can be used anywhere!
       };
@@ -258,8 +268,24 @@ class DefaultView extends React.Component {
   addPropertyStatusDetails(propertyStatus){
     if(this.state.propertyStatusDetails[propertyStatus] === undefined){
       // Get the count.
-      this.state.propertyStatusDetails[propertyStatus] = this.widgetTileCollection.widgetTileModelCount[propertyStatus];
+      if(!this.widgetTileCollection.widgetTileModelCount[propertyStatus]?.noCountWidget){
+        this.state.propertyStatusDetails[propertyStatus] = this.widgetTileCollection.widgetTileModelCount[propertyStatus];
+      } else if(this.widgetTileCollection.widgetTileModelCount[propertyStatus]?.noCountWidget &&
+          this.widgetTileCollection.widgetTileModelCount[propertyStatus]?.value){
+        this._setUpListFieldView(propertyStatus);
+        this.state.propertyStatusDetails[propertyStatus] = (options) => this._renderListFieldView(options);
+      }
     }
+  };
+
+  // Set up list field view!
+  _setUpListFieldView(propertyStatus){
+    this.listFieldData = {};
+    var convertedModel = []
+    _.forOwn(this.widgetTileCollection.widgetTileModelCount[propertyStatus]?.value, function(value){
+      convertedModel.push({data: value.label, subData: value.count});
+    });
+    this.listFieldData[propertyStatus] = convertedModel;
   };
 
   // Check the widget permission for receptionist users.

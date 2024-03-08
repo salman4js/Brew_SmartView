@@ -1,0 +1,23 @@
+.brew-list-view-template-options {
+    display: flex;
+    justify-content: space-between; /* To separate the value and subdata */
+    background-color: #F0F0F0;
+    color: black;
+    height: 0.29em;
+    align-items: center;
+    border-bottom: 0.0000000000000000001em solid black;
+}
+
+.brew-list-view-template-options-value {
+    margin-left: 0.2em;
+    font-size: 15px;
+}
+
+.brew-list-view-template-options-subdata {
+    margin-right: 0.2em;
+    font-size: 15px;
+}
+
+.brew-list-view-template-options:hover{
+    background-color: #ddd;
+}
