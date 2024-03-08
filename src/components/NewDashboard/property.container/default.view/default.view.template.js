@@ -1,4 +1,6 @@
 import CardView from '../../../CardView/card.view/card.view';
+import _ from 'lodash';
+import ListView from "../../../fields/listview/list.view";
 
 // Default template helpers!
 export function templateHelpers(data){
@@ -46,11 +48,16 @@ export function widgetTileTemplateHelpers(widgetModel){
   )
 };
 
+// List field view template helpers!
+export function _renderListFieldTemplateHelpers(options){
+    return <ListView options = {{templateData: options.data[options.propertyStatus], templateHelpersData: {allowSubData: true}}}/>
+};
+
 // Widget body child view template helpers!
-export function widgetTileBodyTemplateHelpers(stateCount){
+export function widgetTileBodyTemplateHelpers(options){
   return(
     <div className = 'widget-tile-body'>
-      {stateCount}
+      {_.isFunction(options.stateCount) ? options.stateCount(options) : options.stateCount}
     </div>
   )
 };
