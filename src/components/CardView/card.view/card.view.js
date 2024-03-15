@@ -69,22 +69,24 @@ const CardView = (props) => {
   
   // On card body view click!
   function onCardBodyViewClick(){
-    // Get the pass value declared in the caller component state!
-    var passer = props.data.passer !== undefined ? props.data.passer : props.data.header;
-    props.data.onClick(passer);
+    if(!props.data?.enableLoader && props.data?.onClick){
+      // Get the pass value declared in the caller component state!
+      var passer = props.data.passer !== undefined ? props.data.passer : props.data.header;
+      props.data.onClick(passer);
+    }
   };
   
   return(
       <div className="card" style = {{height: props.data?.height, width: props.data?.width}}>
         {props.data.header !== undefined && (
-            <div className="card-header text-handler text-center">
+            <div className="card-header text-handler text-center brew-cursor" onClick = {() => props.data.allowHeaderClick && onCardBodyViewClick()}>
             {props.data?.header}
           </div>
         )}
         {props.data?.commandHelper && (
           _showCommands()
         )}
-        <div className = {getChildViewStyle()} onClick = {() => !props.data?.enableLoader && props.data?.onClick && onCardBodyViewClick()}>
+        <div className = {getChildViewStyle()} onClick = {() => onCardBodyViewClick()}>
           {props.data?.enableLoader ? _showActivityLoader() : props.data?._showBodyChildView()}
         </div>
         {props.data?.footerEnabled && (

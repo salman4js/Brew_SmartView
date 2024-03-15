@@ -431,7 +431,7 @@ export function removeKeysInObj(obj, unwantedData){
   return obj;
 };
 
-// Keep only the necessay data in objects and remove unwanted things!
+// Keep only the necessary data in objects and remove unwanted things!
 export function filterKeysInObj(obj, filterData){
   for (const key in obj) {
     if (!filterData.includes(key)) {
@@ -441,7 +441,7 @@ export function filterKeysInObj(obj, filterData){
   return obj;
 };
 
-// Keep only the necessay data in arrays and remove unwanted things!
+// Keep only the necessary data in arrays and remove unwanted things!
 export function filterKeysInArr(arr, filterData){
   var resultArr = [];
   for(var i = 0; i <= arr.length - 1; i++){

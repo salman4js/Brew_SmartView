@@ -11,14 +11,15 @@ import FilterTable from './filter.table.wrapper/filter.table.wrapper';
 import LogTable from './log.table.wrapper/log.table.wrapper';
 import PaymentTrackerWrapper from "./payment.tracker.view/payment.tracker.wrapper";
 import VoucherTableWrapper from "./voucher.table.wrapper/voucher.table.wrapper";
+import PropertyReadView from "./property.base.view/property.read.view/property.read.view";
+import PropertyEditView from "./property.base.view/property.edit.view/property.edit.view";
+import InsightsTableWrapper from "./insights.table.wrapper/insights.table.wrapper";
 import propertyContainerConstants from './property.container.constants';
 import {
   extractQueryParams,
   extractStateValue,
   renderCustomHTMLContent,
 } from '../../common.functions/node.convertor';
-import PropertyReadView from "./property.base.view/property.read.view/property.read.view";
-import PropertyEditView from "./property.base.view/property.edit.view/property.edit.view";
 
 const PropertyContainer = (props) => {
 
@@ -46,6 +47,20 @@ const PropertyContainer = (props) => {
     props.routerController()._notifyStateRouter({routerOptions: {action: 'DELETE'}}).then((result) => {
       props.dashboardController(getRouterOptions(result));
     })
+  };
+
+  // For non-table view perspective, Use this method to notify the state router instead of writing the same code
+  // for in all non-table view perspective.
+  function notifyStateRouter(){
+    var opts = {
+      routerOptions: {
+        currentRouter: propertyContainerConstants.PERSPECTIVE_CONSTANT[props.data.dashboardMode],
+        currentTableMode: propertyContainerConstants.WIDGET_CONSTANTS[props.data.dashboardMode],
+        currentDashboardMode: props.data.dashboardMode,
+        action: 'ADD'
+      }
+    };
+    props.routerController()._notifyStateRouter(opts);
   };
 
   // Get the router options!
@@ -195,6 +210,11 @@ const PropertyContainer = (props) => {
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.voucherTrackerView){
       return <VoucherTableWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+    };
+
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.insights){
+      return <InsightsTableWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+      notifyStateRouter = {() => notifyStateRouter()} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyReadView){

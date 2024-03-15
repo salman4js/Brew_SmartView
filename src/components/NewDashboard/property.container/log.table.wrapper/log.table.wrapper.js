@@ -1,4 +1,4 @@
-import { convertObjectValue } from '../../../common.functions/node.convertor';
+import {convertObjectValue} from '../../../common.functions/node.convertor';
 import logTableConstants from './log.table.wrapper.constants';
 import LogTableUtils from './log.table.utils';
 import TableView from '../table.view/table.view';
@@ -62,8 +62,7 @@ class LogTable extends TableView {
       true: 'Yes',
       false: 'No'
     };
-    var convertedData = convertObjectValue(serverData, ['isPaid'], objRules);
-    this.logTableData = convertedData;
+    this.logTableData = convertObjectValue(serverData, ['isPaid'], objRules);
   };
   
   // Log table data has to be fetched from the server everytime the logTable loads!

@@ -3,7 +3,6 @@ import CustomModal from '../../../CustomModal/custom.modal.view';
 import PaginationView from "./pagination.view/pagination.view";
 import FacetView from "./facet.view/facet.view";
 import TableToolbarView from "../../table.toolbar.view/table.toolbar.view";
-import React from "react";
 import PopoverField from "../../../fields/popoverField/popover.field";
 
 class TableViewTemplateHelpers {

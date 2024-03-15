@@ -9,6 +9,7 @@ var propertyContainerConstants = Object.freeze({
     logTableView: 'logTableView',
     paymentTrackerView: 'paymentTrackerView',
     voucherTrackerView: 'voucherTrackerView',
+    insights: 'insights',
     propertyReadView: 'propertyReadView',
     propertyEditView: 'propertyEditView',
     customHTMLView: 'customHtmlView',
@@ -32,11 +33,15 @@ var propertyContainerConstants = Object.freeze({
   WIDGET_CONSTANTS: Object.freeze({
     customHtmlView: 'History Preview',
     propertyReadView: '',
-    propertyEditView: ''
+    propertyEditView: '',
+    insights: 'Insights'
   }),
   PROPERTY_VIEW: Object.freeze({
     propertyRoom: 'property-room',
     propertyUser: 'property-user'
+  }),
+  PERSPECTIVE_CONSTANT: Object.freeze({
+    insights: 'insights-view'
   }),
   // Panel field not required dashboardMode constants array!
   IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView', 'voucherTrackerView'],

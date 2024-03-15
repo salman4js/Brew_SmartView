@@ -76,6 +76,7 @@ class DefaultView extends React.Component {
   getCardViewProps(){
     return {
        header: undefined,
+       allowHeaderClick: true,
        customData: [],
        height: '100%',
        width: '100%',
@@ -129,10 +130,16 @@ class DefaultView extends React.Component {
   // On widget tile click handler!
   onWidgetTileClick(value){
     var options = {navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel,
-      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: defaultViewConstants.dashboardMode.tableView, userStatusMap: this.propertyStatusMap, selectedRoomConstant: value}
-    if(Object.keys(defaultViewConstants.reloadSidePanelOptions).includes(value)){
-      options['reloadSidepanel'] = defaultViewConstants.reloadSidePanelOptions[value];
+      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: defaultViewConstants.dashboardMode.tableView, userStatusMap: this.propertyStatusMap, selectedRoomConstant: value},
+      constantKey = _.findKey(options.userStatusMap, (val) => {
+        return val === value;
+      });
+    if(Object.keys(defaultViewConstants.reloadSidePanelOptions).includes(constantKey)){
+      options['reloadSidepanel'] = defaultViewConstants.reloadSidePanelOptions[constantKey];
       options.dashboardMode = defaultViewConstants.dashboardMode.voucherTracker
+    }
+    if(Object.keys(defaultViewConstants.updateDashboardMode).includes(constantKey)){
+      options.dashboardMode = defaultViewConstants.dashboardMode.insights
     }
     this.props.dashboardController(options);
   };
