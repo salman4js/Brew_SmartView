@@ -1,3 +1,5 @@
+import {_updateInsightsCount} from "../../dashboard.utils.helper/form.utils.helper";
+
 const axios = require('axios');
 const Variables = require("../../../Variables");
 const {shouldAddToCollections, addToCollections, removeModelsFromCollections,
@@ -11,6 +13,8 @@ export async function checkInFormValue(data){
   var updateCollections = shouldAddToCollections(data, 'check-in');
   var result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/adduserrooms`, data);
   // After the data has been synced with the server, Add the user collection to the global.collections!
+  result.data.success && _updateInsightsCount('todayArrival', 'INC');
+  result.data.success && _updateInsightsCount('currentCheckedIn', 'DEC');
   updateCollections && addToCollections('upcomingCheckout', result.data.updatedUserModel);
   updateCollections && _updateWidgetTileCount('upcomingCheckout', 'INC');
   // Update the widgetTileCount for history tile and also, add the entry into the history widgetTileModel.
@@ -25,6 +29,8 @@ export async function checkInFormValue(data){
 export async function checkoutFormValue(data){
   data._id = data.userid; // To blend in with _updateWidgetTileCollections method.
   var result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteuser`, data);
+  result.data.success &&   _updateInsightsCount('todayCheckout', 'INC');
+  result.data.success && _updateInsightsCount('currentCheckedIn', 'DEC');
   result.data.success && _updateWidgetTileCollections('upcomingCheckout', data, 'DELETE');
   result.data.success && _updateWidgetTileCount('upcomingCheckout', 'DEC');
   // If the checkout action is being performed by room transfer module, then delete the history entry from the collection.
@@ -40,9 +46,10 @@ export async function prebookFormValue(data){
   var updateCollections = shouldAddToCollections(data, 'pre-book');
   const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/addprebookuserrooms`, data);
   // After the data has been synced with the server, Add the user collection to the global.collections!
-  updateCollections && addToCollections('upcomingPrebook', result.data.updatedUserModel); // This is for the default.view (New dashboard tile view)
-  updateCollections && _updateWidgetTileCount('upcomingPrebook', 'INC');
-  // Add the prebookuser into the room model prebook user array in the room colletions!
+  result.data.success && updateCollections && addToCollections('upcomingPrebook', result.data.updatedUserModel); // This is for the default.view (New dashboard tile view)
+  result.data.success && updateCollections && _updateWidgetTileCount('upcomingPrebook', 'INC');
+  result.data.success && _updateInsightsCount('todayUpcomingArrival', 'INC');
+  // Add the prebook user into the room model prebook user array in the room colletions!
   var options = {roomId: result.data.updatedUserModel.room, prebookUserId: result.data.updatedUserModel._id,
     prebookDateofCheckin: data.prebookdateofcheckin, prebookDateofCheckout: data.prebookdateofcheckout};
   _updateRoomListCollection(options, 'ADD', 'pre-book'); // this is to update the roomsListCollection to keep the data in sync for the filter.table (Room transfer).

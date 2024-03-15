@@ -9,12 +9,17 @@ var defaultViewConstants = Object.freeze({
   }),
 
   dashboardMode: Object.freeze({
-    voucherTracker: 'voucherTracker',
+    voucherTracker: 'voucherTrackerView',
+    insights: 'insights',
     tableView: 'statusTableView'
   }),
 
   reloadSidePanelOptions: Object.freeze({
-    'Voucher Tracker': {silent: true, mode: 'voucherList'}
+    voucherTracker: {silent: true, mode: 'voucherList'}
+  }),
+
+  updateDashboardMode: Object.freeze({
+    insights: []
   }),
 
   RECEP_LEVEL_WIDGETS: ['upcomingCheckout', 'upcomingPrebook', 'favorites'],
