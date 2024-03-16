@@ -123,21 +123,18 @@ const PropertyContainer = (props) => {
   // Get panel field dropdown values!
   function getPanelFieldDropdown(){
     if(shouldShowPanelDropdown()){
-       return [
-          {
-            value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? propertyContainerConstants.FORM_MODE.checkinForm : propertyContainerConstants.FORM_MODE.checkoutForm),
-          },
-          {
-            value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : 'payment tracker'),
-            actualValue: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : propertyContainerConstants.DASHBOARD_MODE.paymentTrackerView)
-          },
-          {
-            value: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : 'Maintainance Log'),
-            actualValue: (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? undefined : propertyContainerConstants.DASHBOARD_MODE.logTableView)
-          }
-        ]
+       return propertyContainerConstants.PANEL_FIELD_VALUES[props.data.dashboardMode]
     } else {
       return []; // Return empty array as per the design of the panel field!
+    }
+  };
+
+  // Sometimes, We want to update the panel field dropdown into different attribute rather than updating it in dashboardMode.
+  // This method would be handy in those cases. (i.e): insights
+  function _updateDashboardControllerOpts(options, panelFieldOptions){
+    if(Object.keys(propertyContainerConstants.reloadDashboardControllerOpts).includes(props.data.dashboardMode)){
+      options.dashboardMode = propertyContainerConstants.reloadDashboardControllerOpts[props.data.dashboardMode].dashboardMode;
+      options['insightsReportMode'] = panelFieldOptions.panelFieldDropdown
     }
   };
   
@@ -148,18 +145,24 @@ const PropertyContainer = (props) => {
     // Options to handle perspective change!
     var options = {
       navigateToStatusTableView: true,
-      selectedRoomConstant: propertyContainerConstants.TABLE_HEADERS[panelFieldOptions.panelFieldDropdown], // Here, selectedRoomConstant represents table header for the table view.
-      // In case of room transfer view, the table header value is being overridden in the filter.table.wrapper
+      selectedRoomConstant: propertyContainerConstants.TABLE_HEADERS[panelFieldOptions.panelFieldDropdown],
       dashboardMode: panelFieldOptions.panelFieldDropdown,
       routerOptions: {currentRouter: propertyContainerConstants.propertyContainerPerspectiveConstant, action: 'ADD'}
     };
+    _updateDashboardControllerOpts(options, panelFieldOptions);
     props.dashboardController(options);
   };
 
   // Get panel field dropdown selectedValues and values!
   function getPanelFieldsValues(){
-    if(props.data.dashboardMode !== propertyContainerConstants.DASHBOARD_MODE.roomStatus){
-      return (props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit ? propertyContainerConstants.FORM_MODE.checkinForm : propertyContainerConstants.FORM_MODE.checkoutForm);
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit){
+      return propertyContainerConstants.FORM_MODE.checkinForm;
+    }
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.read){
+      return propertyContainerConstants.FORM_MODE.checkoutForm;
+    }
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.insights){
+      return propertyContainerConstants.FORM_MODE.insightsForm;
     }
   };
 
@@ -275,35 +278,22 @@ const PropertyContainer = (props) => {
       onClick: onEditProperties,
       disabled: (props.data?.roomModel?.isOccupied === "true"),
       attribute: 'buttonField'
+    }];
+
+    var insightsViewModel = [{
+      btnValue: propertyContainerConstants.BUTTON_FIELDS.cancelButton,
+      onClick: onCancel,
+      attribute: 'buttonField'
     }]
     
-    return {checkinFormModel, checkoutFormModel, roomStatusFormModel, emptyFormModel, propertyReadViewModel, propertyEditViewModel};
+    return {edit: checkinFormModel, read: checkoutFormModel, roomStatus: roomStatusFormModel, default: emptyFormModel,
+      propertyReadView: propertyReadViewModel, propertyEditView: propertyEditViewModel, insights: insightsViewModel};
   };
 
   // Get panel field right side data!
   function getPanelRightSideData(){
     var formModels = getFormModels();
-    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit){
-      return formModels.checkinFormModel;
-    };
-    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.read){
-      return formModels.checkoutFormModel;
-    }
-    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.roomStatus){
-      return formModels.roomStatusFormModel;
-    }
-    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.default){
-      return formModels.checkinFormModel;
-    }
-    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyReadView){
-      return formModels.propertyReadViewModel;
-    }
-    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyEditView){
-      return formModels.propertyEditViewModel;
-    }
-    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView || props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
-      return formModels.emptyFormModel;
-    }
+    return formModels[props.data.dashboardMode];
   };
   
   // Render right side control panel for datalist field!

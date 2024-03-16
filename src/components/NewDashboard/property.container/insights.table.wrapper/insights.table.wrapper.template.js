@@ -21,9 +21,9 @@ class InsightsTableWrapperTemplate {
 
     _renderInsightsView(){
         return (
-            <div>
+            <div style = {{height: this.options.height + 'px'}}>
                 <Bar
-                    data={this.options.data.weeklyData}
+                    data={this.options.data[this.options.collection]}
                     height={this.options.height}
                     width={600}
                     options={{

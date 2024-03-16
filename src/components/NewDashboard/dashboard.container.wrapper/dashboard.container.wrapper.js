@@ -31,6 +31,7 @@ const DashboardWrapper = (props, ref) => {
     // If the perspective view was opened from the table view through commands.
     propertyData: undefined,
     vouchersModelId: undefined,
+    insightsReportMode: undefined,
     propertyDataCallBackFunc: undefined
   });
 
