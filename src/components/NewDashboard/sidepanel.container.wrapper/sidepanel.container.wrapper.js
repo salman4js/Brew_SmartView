@@ -3,6 +3,8 @@ import _ from "lodash";
 import sidepanelConstants from "./sidepanel.container.constants";
 import PropertyContainerConstants from "../property.container/property.container.constants";
 import SidepanelContainerSearchView from "./sidepanel.container.search.view";
+import SidepanelContainerVoucherTrackerView from "./sidepanel.container.voucher.tracker.view";
+import SidepanelContainerInsightsSearchView from "./sidepanel.container.insights.search.view/sidepanel.container.insights.search.view";
 import { getAvailableRoomTypes, getUserModel } from './sidepanel.container.utils';
 import { getRoomList } from '../../paymentTracker/payment.tracker.utils/payment.tracker.utils';
 import { getStatusCodeColor, formatDate } from '../../common.functions/common.functions';
@@ -22,7 +24,6 @@ import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view';
 import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
 import {getStorage} from "../../../Controller/Storage/Storage";
-import SidepanelContainerVoucherTrackerView from "./sidepanel.container.voucher.tracker.view";
 
 const SidepanelWrapper = (props, ref) => {
 
@@ -41,7 +42,8 @@ const SidepanelWrapper = (props, ref) => {
   const [sidepanelView, setSidepanelView] = useState({
     roomListTreePanel: true, // By default, roomListTreePanel is true!
     filterRoomPanel: false,
-    voucherListPanel: false
+    voucherListPanel: false,
+    insightsSearchForm: false
   });
 
   // Filter input metadata fields!
@@ -134,6 +136,9 @@ const SidepanelWrapper = (props, ref) => {
     if(sidepanelView.voucherListPanel){
       return voucherListPanelView();
     }
+    if(sidepanelView.insightsSearchForm){
+      return insightsSearchFormPanel();
+    }
   };
 
   // Sidepanel filter state view!
@@ -154,6 +159,15 @@ const SidepanelWrapper = (props, ref) => {
       lastSelectedVoucherId: props.selectedModelData.vouchersModelId
     };
     return <SidepanelContainerVoucherTrackerView options = {options} />
+  };
+
+  // Insights search form panel view!
+  function insightsSearchFormPanel(){
+    var options = {
+      dashboardController: (opts) => props.dashboardController(opts),
+      height: sidepanel.height,
+    }
+    return <SidepanelContainerInsightsSearchView options = {options} />
   };
 
   // Side-panel search bar view!
@@ -219,6 +233,9 @@ const SidepanelWrapper = (props, ref) => {
       case sidepanelConstants.SIDE_PANEL_MODES.voucherList:
         _setVoucherListPanel(true);
         break;
+      case sidepanelConstants.SIDE_PANEL_MODES.insightsSearchForm:
+        _setInsightsSearchFormPanel(true);
+        break;
       default:
         _setTreePanel(true);
         break;
@@ -236,6 +253,11 @@ const SidepanelWrapper = (props, ref) => {
   // Enable voucher list panel.
   function _setVoucherListPanel(value){
     _toggleSidepanelView({voucherListPanel: value});
+  };
+
+  // Enable insights search form panel!
+  function _setInsightsSearchFormPanel(value){
+    _toggleSidepanelView({insightsSearchForm: value});
   };
 
   // Enable tree panel!
@@ -257,9 +279,10 @@ const SidepanelWrapper = (props, ref) => {
     if(options.roomListTree) panelHeader = sidepanelConstants.panelHeader.ROOM_LISTS;
     if(options.filterPanel) panelHeader = sidepanelConstants.panelHeader.FILTER_PANEL;
     if(options.voucherListPanel) panelHeader = sidepanelConstants.panelHeader.VOUCHER_LISTS;
+    if(options.insightsSearchForm) panelHeader = sidepanelConstants.panelHeader.INSIGHTS_SEARCH_FORM;
     setSidepanel(prevState => ({...prevState, header: panelHeader}));
     setSidepanelView(prevState => ({roomListTreePanel: options.roomListTree,
-      filterRoomPanel: options.filterPanel, voucherListPanel: options.voucherListPanel}));
+      filterRoomPanel: options.filterPanel, voucherListPanel: options.voucherListPanel, insightsSearchForm: options.insightsSearchForm}));
   };
 
   // Item panel collection onClick!

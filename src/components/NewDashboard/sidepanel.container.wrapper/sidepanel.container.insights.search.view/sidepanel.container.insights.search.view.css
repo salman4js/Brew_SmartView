@@ -1,0 +1,11 @@
+.insights-search-form{
+    padding: 10px 10px 10px 10px;
+    position: relative
+}
+
+.insights-search-form-button-fields{
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+}

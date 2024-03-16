@@ -1,6 +1,7 @@
 import React from 'react';
 import {activityLoader} from "../../../common.functions/common.functions.view";
 import InsightsTableWrapperTemplate from "./insights.table.wrapper.template";
+import insightsTableWrapperConstants from "./insights.table.wrapper.constants";
 import InsightsUtils from "./insights.utils";
 import InsightsDatasets from "./insights.datasets";
 import _ from "lodash";
@@ -9,7 +10,8 @@ class InsightsTableWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loader: true
+            loader: true,
+            selectedCollection: insightsTableWrapperConstants.defaultMode
         }
         this._prepareChartsDatasets();
     };
@@ -18,6 +20,12 @@ class InsightsTableWrapper extends React.Component {
         this._fetchChartCollection().then(() => {
             this.setState({loader: false});
         });
+    };
+
+    _updateComponentState(options){
+      this.setState({[options.key]: options.value}, () => {
+         _.isFunction(options.nextFunction) && options.nextFunction();
+      });
     };
 
     _fetchChartCollection(){
@@ -45,7 +53,7 @@ class InsightsTableWrapper extends React.Component {
     templateHelpers(){
         !this.isStateRouterNotified && this._doInitializeAction();
         if(!this.state.loader){
-            var insightsTableWrapper = new InsightsTableWrapperTemplate({data:this.insightDataSets, height: this.props.height});
+            var insightsTableWrapper = new InsightsTableWrapperTemplate({data:this.insightDataSets, height: this.props.height, collection: this.state.selectedCollection});
             return insightsTableWrapper._renderInsightsView();
         } else {
             var opts = {
@@ -64,6 +72,12 @@ class InsightsTableWrapper extends React.Component {
 
     render(){
         return this.templateHelpers();
+    };
+
+    componentDidUpdate() {
+        if(this.props.data.insightsReportMode && this.state.selectedCollection !== insightsTableWrapperConstants.reportModes[this.props.data.insightsReportMode]){
+            this._updateComponentState({key: 'selectedCollection', value: insightsTableWrapperConstants.reportModes[this.props.data.insightsReportMode]});
+        }
     };
 }
 

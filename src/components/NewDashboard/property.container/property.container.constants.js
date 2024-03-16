@@ -20,7 +20,8 @@ var propertyContainerConstants = Object.freeze({
   }),
   FORM_MODE: Object.freeze({
     checkinForm: 'checkin-form',
-    checkoutForm: 'checkout-form'
+    checkoutForm: 'checkout-form',
+    insightsForm: 'Weekly Report'
   }),
   BUTTON_FIELDS: Object.freeze({
     cancelButton: 'Cancel',
@@ -43,9 +44,35 @@ var propertyContainerConstants = Object.freeze({
   PERSPECTIVE_CONSTANT: Object.freeze({
     insights: 'insights-view'
   }),
+  PANEL_FIELD_VALUES: Object.freeze({
+    edit: [{
+      value: 'checkin-form'
+    }],
+    read: [{
+      value: 'checkout-form'
+    }, {
+      value: 'Payment Tracker',
+      actualValue: 'paymentTrackerView'
+    }, {
+      value: 'Maintenance Log',
+      actualValue: 'logTableView'
+    }],
+    insights: [{
+      value: 'Weekly Report',
+      actualValue: 'weeklyReport'
+    }, {
+      value: 'Monthly Report',
+      actualValue: 'monthlyReport'
+    }]
+  }),
+  reloadDashboardControllerOpts: {
+    insights: {
+      dashboardMode: 'insights'
+    }
+  },
   // Panel field not required dashboardMode constants array!
   IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView', 'voucherTrackerView'],
-  ALLOW_PANEL_FIELD: ['edit', 'read'],
+  ALLOW_PANEL_FIELD: ['edit', 'read', 'insights'],
   IGNORE_PANEL_FIELD_DROPDOWN: ['statusTableView', 'roomStatus', 'customHtmlView'],
   propertyContainerPerspectiveConstant: 'property-container'
 });

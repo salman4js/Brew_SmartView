@@ -115,7 +115,7 @@ class DefaultView extends React.Component {
 
   // Render widget view after data fetched and the status count has been computed!
   renderWidgetTile(){
-    // Before render the widgetTiles, Set the greetins message!
+    // Before render the widgetTiles, Set the greetings message!
     this.setGreetings();
     // Check if the data is loaded!
     if(this.state.data.isFetched && this.state.isComputed){
@@ -126,21 +126,24 @@ class DefaultView extends React.Component {
       return <BlockActions />
     }
   };
+
+  // Sometimes, we want to update the dashboard controller options based on the widget tile is being triggered.
+  // this method will be handy for that use-case.
+  _updateDashboardControllerOpts(options, value){
+    var  constantKey = _.findKey(options.userStatusMap, (val) => {
+      return val === value;
+    });
+    if(Object.keys(defaultViewConstants.reloadSidePanelOptions).includes(constantKey)){
+      options['reloadSidepanel'] = defaultViewConstants.reloadSidePanelOptions[constantKey].sidepanelOptions;
+      options.dashboardMode = defaultViewConstants.reloadSidePanelOptions[constantKey].dashboardMode
+    }
+  };
   
   // On widget tile click handler!
   onWidgetTileClick(value){
     var options = {navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel,
-      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: defaultViewConstants.dashboardMode.tableView, userStatusMap: this.propertyStatusMap, selectedRoomConstant: value},
-      constantKey = _.findKey(options.userStatusMap, (val) => {
-        return val === value;
-      });
-    if(Object.keys(defaultViewConstants.reloadSidePanelOptions).includes(constantKey)){
-      options['reloadSidepanel'] = defaultViewConstants.reloadSidePanelOptions[constantKey];
-      options.dashboardMode = defaultViewConstants.dashboardMode.voucherTracker
-    }
-    if(Object.keys(defaultViewConstants.updateDashboardMode).includes(constantKey)){
-      options.dashboardMode = defaultViewConstants.dashboardMode.insights
-    }
+      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: defaultViewConstants.dashboardMode.tableView, userStatusMap: this.propertyStatusMap, selectedRoomConstant: value};
+    this._updateDashboardControllerOpts(options, value);
     this.props.dashboardController(options);
   };
 
@@ -219,7 +222,6 @@ class DefaultView extends React.Component {
         cardViewCollectionProps = [],
         tempData = []; // This is to verify the non-added room status constant, and add them to the card body view with the count 0!
       this.state.data.roomCollection.map((model) => {
-        var cardViewProps = this.getCardViewProps();
         roomStatusConstants.map((status) => {
           if(model.roomStatusConstant === status && model.roomStatus !== undefined){
             this._updatePropertyDetailsModel(model);
