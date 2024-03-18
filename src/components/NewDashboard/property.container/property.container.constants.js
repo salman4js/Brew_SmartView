@@ -56,13 +56,6 @@ var propertyContainerConstants = Object.freeze({
     }, {
       value: 'Maintenance Log',
       actualValue: 'logTableView'
-    }],
-    insights: [{
-      value: 'Weekly Report',
-      actualValue: 'weeklyReport'
-    }, {
-      value: 'Monthly Report',
-      actualValue: 'monthlyReport'
     }]
   }),
   reloadDashboardControllerOpts: {
@@ -72,7 +65,7 @@ var propertyContainerConstants = Object.freeze({
   },
   // Panel field not required dashboardMode constants array!
   IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView', 'voucherTrackerView'],
-  ALLOW_PANEL_FIELD: ['edit', 'read', 'insights'],
+  ALLOW_PANEL_FIELD: ['edit', 'read'],
   IGNORE_PANEL_FIELD_DROPDOWN: ['statusTableView', 'roomStatus', 'customHtmlView'],
   propertyContainerPerspectiveConstant: 'property-container'
 });

@@ -132,10 +132,7 @@ const PropertyContainer = (props) => {
   // Sometimes, We want to update the panel field dropdown into different attribute rather than updating it in dashboardMode.
   // This method would be handy in those cases. (i.e): insights
   function _updateDashboardControllerOpts(options, panelFieldOptions){
-    if(Object.keys(propertyContainerConstants.reloadDashboardControllerOpts).includes(props.data.dashboardMode)){
-      options.dashboardMode = propertyContainerConstants.reloadDashboardControllerOpts[props.data.dashboardMode].dashboardMode;
-      options['insightsReportMode'] = panelFieldOptions.panelFieldDropdown
-    }
+    // Use this method in-case if needed to change the dashboard controller options.
   };
   
   // Update panel field data from the metadata fields!
@@ -279,15 +276,9 @@ const PropertyContainer = (props) => {
       disabled: (props.data?.roomModel?.isOccupied === "true"),
       attribute: 'buttonField'
     }];
-
-    var insightsViewModel = [{
-      btnValue: propertyContainerConstants.BUTTON_FIELDS.cancelButton,
-      onClick: onCancel,
-      attribute: 'buttonField'
-    }]
     
     return {edit: checkinFormModel, read: checkoutFormModel, roomStatus: roomStatusFormModel, default: emptyFormModel,
-      propertyReadView: propertyReadViewModel, propertyEditView: propertyEditViewModel, insights: insightsViewModel};
+      propertyReadView: propertyReadViewModel, propertyEditView: propertyEditViewModel};
   };
 
   // Get panel field right side data!
