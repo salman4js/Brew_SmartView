@@ -1,9 +1,5 @@
 var insightsTableWrapperConstants = Object.freeze({
-    reportModes: {
-        weeklyReport: 'weeklyData',
-        monthlyReport: 'monthlyData'
-    },
-    defaultMode: 'weeklyData'
+    defaultMode: 'chartData'
 });
 
 export default insightsTableWrapperConstants;

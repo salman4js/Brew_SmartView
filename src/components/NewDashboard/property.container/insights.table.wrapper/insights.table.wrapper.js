@@ -11,27 +11,37 @@ class InsightsTableWrapper extends React.Component {
         super(props);
         this.state = {
             loader: true,
-            selectedCollection: insightsTableWrapperConstants.defaultMode
+            selectedCollection: insightsTableWrapperConstants.defaultMode,
+            selectedDates: {
+                fromDate: undefined,
+                toDate: undefined
+            }
         }
-        this._prepareChartsDatasets();
     };
 
     _prepareChartsDatasets(){
-        this._fetchChartCollection().then(() => {
-            this.setState({loader: false});
-        });
+        if(!this.chartCollectionFetched){
+            this.chartCollectionFetched = true;
+            this._fetchChartCollection(this.state.selectedDates).then(() => {
+                this._toggleLoader(false);
+            });
+        }
+    };
+
+    _toggleLoader(val){
+        this.setState({loader: val});
     };
 
     _updateComponentState(options){
       this.setState({[options.key]: options.value}, () => {
-         _.isFunction(options.nextFunction) && options.nextFunction();
+         options.nextFunction && _.isFunction(options.nextFunction) && options.nextFunction();
       });
     };
 
-    _fetchChartCollection(){
+    _fetchChartCollection(options){
         return new Promise((resolve, reject) => {
             var insightsUtils = new InsightsUtils({accId: this.props.params.accIdAndName[0]});
-            insightsUtils.fetchInsightsCollections().then((result) => {
+            insightsUtils.fetchInsightsCollections(options).then((result) => {
                 if(!_.isEmpty(result)){
                     this._populateCollectionWithDataSet(result);
                     resolve();
@@ -75,8 +85,13 @@ class InsightsTableWrapper extends React.Component {
     };
 
     componentDidUpdate() {
-        if(this.props.data.insightsReportMode && this.state.selectedCollection !== insightsTableWrapperConstants.reportModes[this.props.data.insightsReportMode]){
-            this._updateComponentState({key: 'selectedCollection', value: insightsTableWrapperConstants.reportModes[this.props.data.insightsReportMode]});
+        if(!this.props.data.insightsData?.date){
+            this._prepareChartsDatasets();
+        }
+        if(this.props.data.insightsData?.date && !_.isEqual(this.state.selectedDates, this.props.data.insightsData.date)){
+            this.chartCollectionFetched = false;
+            this._toggleLoader(true);
+            this._updateComponentState({key:'selectedDates', value: this.props.data.insightsData.date, nextFunction: () => this._prepareChartsDatasets()});
         }
     };
 }

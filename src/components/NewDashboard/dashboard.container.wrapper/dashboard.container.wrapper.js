@@ -31,7 +31,7 @@ const DashboardWrapper = (props, ref) => {
     // If the perspective view was opened from the table view through commands.
     propertyData: undefined,
     vouchersModelId: undefined,
-    insightsReportMode: undefined,
+    insightsData: undefined,
     propertyDataCallBackFunc: undefined
   });
 
@@ -236,6 +236,7 @@ const DashboardWrapper = (props, ref) => {
     opts.onEditProperties && onEditProperties(opts);
     opts.isRoomTransferCommand && onRoomTransfer(opts);
     opts.isVouchersModelSelectionUpdated && _updateSelectedModelState(opts);
+    opts.isInsightsDataUpdated && _updateSelectedModelState(opts);
     opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
     (opts.updateUserCollection || opts.updatedUserModel) && _updateUserCollection((opts.updateUserCollection || opts), opts.ignoreUpdateOfDefaultView);
   };
