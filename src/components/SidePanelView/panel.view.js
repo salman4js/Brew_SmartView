@@ -32,9 +32,9 @@ const PanelView = (props) => {
           {_showHeaderView()}
         </div>
         <div className = "sidepanel" ref = {sidePanelRef} style = {{height: props.data.height + "px"}}>
-          <div className = "files">
-            {props.childView && props.childView()}
-          </div>
+            <div className = "files">
+                {props.childView && props.childView()}
+            </div>
         </div>
     </div>
   )

@@ -15,14 +15,20 @@ class InsightsTableWrapper extends React.Component {
             selectedDates: {
                 fromDate: undefined,
                 toDate: undefined
-            }
+            },
+            filters: undefined
         }
     };
 
     _prepareChartsDatasets(){
         if(!this.chartCollectionFetched){
             this.chartCollectionFetched = true;
-            this._fetchChartCollection(this.state.selectedDates).then(() => {
+            this._fetchChartCollection({filters: this.state.filters, selectedDates: this.state.selectedDates}).then((result) => {
+                if(result && !_.isEmpty(result)){
+                    this._populateCollectionWithDataSet(result);
+                } else {
+                    // Throw some error to the user that the insights fetching has been failed
+                }
                 this._toggleLoader(false);
             });
         }
@@ -42,10 +48,7 @@ class InsightsTableWrapper extends React.Component {
         return new Promise((resolve, reject) => {
             var insightsUtils = new InsightsUtils({accId: this.props.params.accIdAndName[0]});
             insightsUtils.fetchInsightsCollections(options).then((result) => {
-                if(!_.isEmpty(result)){
-                    this._populateCollectionWithDataSet(result);
-                    resolve();
-                }
+                resolve(result);
             }).catch(() => {
                 reject();
             });
@@ -54,10 +57,8 @@ class InsightsTableWrapper extends React.Component {
 
     _populateCollectionWithDataSet(chartData){
         this.insightDataSets = _.clone(InsightsDatasets);
-        Object.keys(chartData).forEach((data) => {
-            this.insightDataSets[data].labels = chartData[data].label;
-            this.insightDataSets[data].datasets[0].data = chartData[data].data;
-        });
+        this.insightDataSets.chartData.labels = chartData.label;
+        this.insightDataSets.chartData.datasets[0].data = chartData.data;
     };
 
     templateHelpers(){
@@ -88,9 +89,11 @@ class InsightsTableWrapper extends React.Component {
         if(!this.props.data.insightsData?.date){
             this._prepareChartsDatasets();
         }
-        if(this.props.data.insightsData?.date && !_.isEqual(this.state.selectedDates, this.props.data.insightsData.date)){
+        if((this.props.data.insightsData?.date && !_.isEqual(this.state.selectedDates, this.props.data.insightsData.date))
+            || this.props.data.insightsData?.filters && !_.isEqual(this.state.filters, this.props.data.insightsData.filters)){
             this.chartCollectionFetched = false;
             this._toggleLoader(true);
+            this._updateComponentState({key: 'filters', value: this.props.data.insightsData.filters});
             this._updateComponentState({key:'selectedDates', value: this.props.data.insightsData.date, nextFunction: () => this._prepareChartsDatasets()});
         }
     };
