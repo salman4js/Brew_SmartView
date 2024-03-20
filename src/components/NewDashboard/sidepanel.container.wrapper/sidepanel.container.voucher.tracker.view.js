@@ -131,7 +131,7 @@ class SidepanelContainerVoucherTrackerView extends React.Component {
 
     _renderPanelItemViewVoucherCollection(voucherCollection){
         this.getVoucherModelFromCollection();
-        if(sidepanelConstants.voucherListParentCollection[voucherCollection].data === sidepanelConstants.SIDE_PANEL_MODES.voucherList){;
+        if(sidepanelConstants.voucherListParentCollection[voucherCollection].data === sidepanelConstants.SIDE_PANEL_MODES.voucherList){
             // Always the table data will show the first voucher tracker data's in the table so in the sidepanel first voucher tracker has to be selected.
             return this.vouchersModel.map((options) => {
                 return(

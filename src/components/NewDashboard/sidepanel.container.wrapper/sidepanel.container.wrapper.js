@@ -166,6 +166,7 @@ const SidepanelWrapper = (props, ref) => {
     var options = {
       dashboardController: (opts) => props.dashboardController(opts),
       height: sidepanel.height,
+      insightsData: props.selectedModelData.insightsData
     }
     return <SidepanelContainerInsightsSearchView options = {options} />
   };
