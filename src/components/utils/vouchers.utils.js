@@ -3,56 +3,47 @@ const Variables = require("../Variables")
 
 // Get vouchers list!
 export async function getVouchersList(lodgeId){
-  const vouchersList = await axios.get(`${Variables.Variables.hostId}/${lodgeId}/getvouchers`);
-  return vouchersList;
+  return await axios.get(`${Variables.Variables.hostId}/${lodgeId}/getvouchers`);
 }
 
 // Add vouchers list!
 export async function addVouchersList(lodgeId, data){
   data["lodge"] = lodgeId; // Adding lodge id to the field data.
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/addvouchers`, data);
-  return result
+  return await axios.post(`${Variables.Variables.hostId}/${lodgeId}/addvouchers`, data)
 }
 
 // get voucher model list1
 export async function getVoucherModelList(options){
-  const result = await axios.get(`${Variables.Variables.hostId}/${options.lodgeId}/${options.voucherId}/getvouchermodel`);
-  return result;
+  return await axios.get(`${Variables.Variables.hostId}/${options.lodgeId}/${options.voucherId}/getvouchermodel`);
 }
 
 // add voucher model list!
 export async function addVoucherModelList(options){
-  const result = await axios.post(`${Variables.Variables.hostId}/${options.lodgeId}/addvouchermodel`, options.data);
-  return result;
+  return await axios.post(`${Variables.Variables.hostId}/${options.lodgeId}/addvouchermodel`, options.data);
 }
 
 // Edit voucher model list!
 export async function editVoucherModelList(options){
-  const result = await axios.put(`${Variables.Variables.hostId}/${options.lodgeId}/editvouchermodel`, options.data);
-  return result;
+  return await axios.put(`${Variables.Variables.hostId}/${options.lodgeId}/editvouchermodel`, options.data);
 }
 
 // Get previous voucher model!
 export async function getPrevVoucherModel(lodgeId, data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getprevvouchermodel`, data);
-  return result;
+  return await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getprevvouchermodel`, data);
 }
 
 // Delete voucher model list!
 export async function deleteVoucherModelList(lodgeId, data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/deletevouchermodel`, data);
-  return result;
+  return await axios.post(`${Variables.Variables.hostId}/${lodgeId}/deletevouchermodel`, data);
 }
 
 // Get voucher model result based on the filter query!
 export async function getFilteredModel(lodgeId, data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/cheatcodefilter`, data);
-  return result;
+  return await axios.post(`${Variables.Variables.hostId}/${lodgeId}/cheatcodefilter`, data);
 };
 
 // Get net profit preview!
 export async function getNetProfitPreview(data){
-  const result = await axios.get(`${Variables.Variables.hostId}/${data.lodgeId}/${data.date}/getnetprofitpreview`, data);
-  return result;
+  return await axios.get(`${Variables.Variables.hostId}/${data.lodgeId}/${data.date}/getnetprofitpreview`, data);
 }
 

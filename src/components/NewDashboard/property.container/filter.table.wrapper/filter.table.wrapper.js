@@ -18,8 +18,8 @@ import {
   validateFieldData
 } from '../../../common.functions/node.convertor';
 import {getIsExclusive, getTimeDate} from '../../../common.functions/common.functions';
-import CheckoutUtils from '../checkout.view/checkout.form.utils';
-import {checkInFormValue} from '../checkin.view/checkin.form.utils';
+import CheckoutUtils from "../../../utils/checkout.form.utils";
+import {checkInFormValue} from "../../../utils/checkin.form.utils";
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 
 class FilterTable extends TableView {

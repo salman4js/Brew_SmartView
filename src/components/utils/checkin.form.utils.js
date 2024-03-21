@@ -1,14 +1,14 @@
-import {_updateInsightsCount} from "../../dashboard.utils.helper/form.utils.helper";
+import {_updateInsightsCount} from "../NewDashboard/dashboard.utils.helper/form.utils.helper";
 
 const axios = require('axios');
-const Variables = require("../../../Variables");
+const Variables = require("../Variables");
 const {shouldAddToCollections, addToCollections, removeModelsFromCollections,
-   _updateRoomListCollection, _updateWidgetTileCollections,  _updateWidgetTileCount, checkForPaymentTrackerData} = require('../../dashboard.utils.helper/form.utils.helper');
+   _updateRoomListCollection, _updateWidgetTileCollections,  _updateWidgetTileCount, checkForPaymentTrackerData} = require('../NewDashboard/dashboard.utils.helper/form.utils.helper');
 
 // Checkin form values!
 export async function checkInFormValue(data){
   // Pass the amountFor, amount here for voucher and payment tracker.
-  var data = checkForPaymentTrackerData(data, 'check-in');
+  checkForPaymentTrackerData(data, 'check-in');
   // Check if the checkin customer details has to be added in the upcomingCheckout widget collection!
   var updateCollections = shouldAddToCollections(data, 'check-in');
   var result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/adduserrooms`, data);

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import MetadataFields from '../../fields/metadata.fields.view';
 import TableViewTemplateHelpers from "./table.view/table.view.template";
 import CheckInForm from './checkin.view/checkin.form.view';
-import {formUtils} from "./checkin.view/checkin.form.utils";
+import {formUtils} from "../../utils/checkin.form.utils";
 import CheckOutView from './checkout.view/checkout.form.view';
 import RoomStatusView from './room.status.view/room.status.view';
 import DefaultView from './default.view/default.view';

@@ -1,7 +1,7 @@
 import bwt from "brew-date";
 import axios from "axios";
-import Variables from "../../../Variables";
-import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
+import Variables from "../Variables";
+import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
 
 
 class InsightsUtils {
