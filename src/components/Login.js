@@ -1,55 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Variables from './Variables';
-import {useDispatch} from 'react-redux';
-import {initializeGlobalMessage} from '../global.state/actions/index';
 import Loading from "./Loading";
 import axios from 'axios';
-import Modals from "./Modals";
 import { defaultStorage, setStorage } from '../Controller/Storage/Storage';
 import CollectionInstance from '../global.collection/widgettile.collection/widgettile.collection';
 import {_checkForSecureConnections} from "./common.functions/common.functions";
+import CustomModal from "./fields/customModalField/custom.modal.view";
 
 const Login = () => {
 
   let navigate = useNavigate();
-  
-  var dispatch = useDispatch();
 
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
-  const [error, setError] = useState();
-  const [show, setShow] = useState(false);
 
   // Loader
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Error handler!
-  const [errorHandler, setErrorHandler] = useState({
+  // State handler for custom modal.
+  const [customModal, setCustomModal] = useState({
     show: false,
-    message: false,
-    header: false,
-    headerText: undefined,
-  })
+    onHide: onCloseCustomModal,
+    header: undefined,
+    centered: false,
+    restrictBody: true,
+    modalSize: "medium",
+    footerEnabled: false,
+    customData: undefined
+  });
 
-  const handleShow = () => {
-    setErrorHandler({
-      ...errorHandler,
-      show: false,
-      message: undefined,
-      header: false,
-      headerText: undefined
-    })
-  }
+  function _showAlertModal(){
+    return <CustomModal modalData = {customModal} />
+  };
+
+  function onCloseCustomModal(){
+    setCustomModal(prevState => ({...prevState, show: false}));
+  };
 
   async function checkConfig(id, lodgeName){
     // Check for is gst enabled and hourly basis enabled!
     await axios.get(`${Variables.hostId}/${id}/check-matrix`)
       .then(res => {
         if(res.data.success){
-          // Update the globalMessage status to FETCH since we have to fetch it for the first time when user logins!
-          _updateGlobalMessageStatus();
           // Set isGst and isHourly basis in localstorage!
           const data = {
             "isGst" : res.data.object.isGst,
@@ -83,20 +77,11 @@ const Login = () => {
           
           defaultStorage(data);
           setMessage("Validating User Preference");
-        } else {
-          setLoading(false);
-          setError(res.data.message)
-          setShow(!show);
         }
       })
-  }
-  
-  // Update the global message status to 'FETCH';
-  function _updateGlobalMessageStatus(){
-    dispatch(initializeGlobalMessage())
-  }
+  };
 
-  // Check the config for the enabled chicklets!
+  // Check the config for the enabled actions!
   const checkOptions = async (lodgeId, lodgeName) => {
     setLoading(true);
     setMessage("Validating...")
@@ -105,10 +90,6 @@ const Login = () => {
         if (res.data.success) {
           setStorage("config-value", JSON.stringify(res.data.message));
           setLoading(false)
-        } else {
-          setLoading(false);
-          setError(res.data.message)
-          setShow(!show);
         }
       })
   }
@@ -163,7 +144,6 @@ const Login = () => {
           setMessage("Validating your credentials...")
           if (res.data.success) {
             setLoading(!loading);
-            setError("");
             localStorage.setItem("token", res.data.token);
             // Before Navigating to the landing page, check the accont lockout!
             setMessage("Checking for a account lockout...");
@@ -172,9 +152,7 @@ const Login = () => {
               setLoading(false);
               const data = {
                 show: true,
-                message: res.data.isLockedMessage,
-                header: true,
-                headerText: "Warning!",
+                header: res.data.isLockedMessage,
               }
 
               populateModal(data);
@@ -205,27 +183,24 @@ const Login = () => {
             setLoading(false);
             const data = {
               show: true,
-              message: res.data.message,
-              header: true,
-              headerText: "Warning!",
+              header: res.data.message,
             }
-
             populateModal(data);
 
           }
         })
     }
-    setTimeout(handleShow(), 3000)
   }
 
   function populateModal(data){
-    setErrorHandler({
-      ...errorHandler,
+    setCustomModal({
+      ...customModal,
       show: data.show,
       header: data.header,
-      headerText: data.headerText,
-      message: data.message
-    })
+      centered: false,
+      restrictBody: true,
+      footerEnabled: false
+    });
   };
   
   // When the route changes to login in any circumstances,
@@ -281,14 +256,9 @@ const Login = () => {
                         <button className="btn btn-outline-success" onClick={processData}> Get Me In! </button>
                         <br />
                         <br />
-                        {
-                          errorHandler.show === false ? (
-                            <div>
-                            </div>
-                          ) : (
-                            <Modals options = {errorHandler} setShow = {(data) => handleShow(data)} />
-                          )
-                        }
+                        {customModal.show !== false && (
+                            _showAlertModal()
+                        )}
                       </div>
                     </form>
                   </div>
