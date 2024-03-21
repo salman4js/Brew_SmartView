@@ -1,6 +1,5 @@
 const axios = require('axios');
-const Variables = require("../../../Variables");
-const _ = require('lodash');
+const Variables = require('../Variables');
 
 class LogTableUtils {
   
@@ -11,8 +10,7 @@ class LogTableUtils {
   
   // Fetch log table data!
   async fetchLogTableData(){
-    var result = await axios.get(`${this.baseUrl}/${this.userId}/getallentries`);
-    return result;
+    return await axios.get(`${this.baseUrl}/${this.userId}/getallentries`);
   };
   
 };

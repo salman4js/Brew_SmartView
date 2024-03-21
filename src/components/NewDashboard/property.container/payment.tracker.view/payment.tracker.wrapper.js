@@ -1,6 +1,6 @@
 import TableView from "../table.view/table.view";
 import lang from './payment.tracker.wrapper.constants';
-import {getPaymentTracker} from "../../../paymentTracker/payment.tracker.utils/payment.tracker.utils";
+import {getPaymentTracker} from "../../../utils/payment.tracker.utils";
 
 class PaymentTrackerWrapper extends TableView {
     constructor(props) {

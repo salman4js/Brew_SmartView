@@ -2,7 +2,7 @@ import React from 'react';
 import {activityLoader} from "../../../common.functions/common.functions.view";
 import InsightsTableWrapperTemplate from "./insights.table.wrapper.template";
 import insightsTableWrapperConstants from "./insights.table.wrapper.constants";
-import InsightsUtils from "./insights.utils";
+import InsightsUtils from "../../../utils/insights.utils";
 import InsightsDatasets from "./insights.datasets";
 import _ from "lodash";
 

@@ -1,6 +1,6 @@
-import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
+import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
 const axios = require('axios');
-const Variables = require("../../Variables");
+const Variables = require('../Variables');
 
 // Get available room types!
 export async function getAvailableRoomTypes(lodgeId){

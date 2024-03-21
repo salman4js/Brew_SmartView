@@ -5,8 +5,8 @@ import PropertyContainerConstants from "../property.container/property.container
 import SidepanelContainerSearchView from "./sidepanel.container.search.view";
 import SidepanelContainerVoucherTrackerView from "./sidepanel.container.voucher.tracker.view";
 import SidepanelContainerInsightsSearchView from "./sidepanel.container.insights.search.view/sidepanel.container.insights.search.view";
-import { getAvailableRoomTypes, getUserModel } from './sidepanel.container.utils';
-import { getRoomList } from '../../paymentTracker/payment.tracker.utils/payment.tracker.utils';
+import { getAvailableRoomTypes, getUserModel } from '../../utils/sidepanel.container.utils';
+import {getRoomList} from "../../utils/payment.tracker.utils";
 import { getStatusCodeColor, formatDate } from '../../common.functions/common.functions';
 import {
   updateMetadataFields,

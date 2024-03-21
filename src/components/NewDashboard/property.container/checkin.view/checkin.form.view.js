@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { checkInFormValue } from './checkin.form.utils';
+import {checkInFormValue} from "../../../utils/checkin.form.utils";
 import brewDate from 'brew-date';
 import { prebookExcludeDates } from '../../../ExcludeDates/excludesdates';
 import MetadataFields from '../../../fields/metadata.fields.view';

@@ -5,9 +5,7 @@ const axios = require('axios');
 const Variables = require('../../Variables');
 
 class CommandsConnector {
-    constructor() {
-        // All those methods here would be static methods.
-    };
+    // All those methods here would be static methods.
 
     // Export to excel connector.
     static async onExportToExcel(options){

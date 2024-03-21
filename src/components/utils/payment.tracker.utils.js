@@ -1,9 +1,8 @@
-import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
-
-const sidepanelContainerUtils = require('../../NewDashboard/sidepanel.container.wrapper/sidepanel.container.utils');
+import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
+const sidepanelContainerUtils = require('../utils/sidepanel.container.utils');
 const axios = require("axios");
 const brewDate = require('brew-date');
-const Variables = require("../../Variables");
+const Variables = require('../Variables');
 
 // Check if the widget tile collections are already fetched!
 export async function fetchWidgetTilePref(lodgeId){

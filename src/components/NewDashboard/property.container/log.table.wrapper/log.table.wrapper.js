@@ -1,6 +1,6 @@
 import {convertObjectValue} from '../../../common.functions/node.convertor';
 import logTableConstants from './log.table.wrapper.constants';
-import LogTableUtils from './log.table.utils';
+import LogTableUtils from "../../../utils/log.table.utils";
 import TableView from '../table.view/table.view';
 
 class LogTable extends TableView {

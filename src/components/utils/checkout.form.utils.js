@@ -1,11 +1,9 @@
-import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
-import {checkoutFormValue} from "../checkin.view/checkin.form.utils";
-import {filterKeysInArr} from '../../../common.functions/node.convertor';
-import CommandsConnector from "../../commands/commands.connector";
-
+import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
+import {checkoutFormValue} from "./checkin.form.utils";
+import {filterKeysInArr} from "../common.functions/node.convertor";
+import CommandsConnector from "../NewDashboard/commands/commands.connector";
 const axios = require('axios');
-const Variables = require("../../../Variables");
-const _ = require('lodash');
+const Variables = require("../Variables");
 
 class CheckoutUtils {
     
