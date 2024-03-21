@@ -1,6 +1,6 @@
 import React from 'react';
 import { getRoomStatusConstants } from '../../../common.functions/common.functions';
-import { moveToNextState } from '../../../room.status.utils/room.status.utils';
+import { moveToNextState } from '../../../utils/room.status.utils';
 import { activityLoader } from '../../../common.functions/common.functions.view';
 import { templateHelpers } from './room.status.template';
 import propertyContainerConstants from "../property.container.constants";

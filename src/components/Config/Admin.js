@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Success from '../ToastHandler/Success';
-import Error from '../ToastHandler/Error';
+import Success from './ToastHandler/Success';
 import Variables from '../Variables';
 
 const Admin = () => {

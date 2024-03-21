@@ -5,7 +5,7 @@ import CheckoutUtils from './checkout.form.utils';
 import checkoutViewConstants from './checkout.form.constants';
 import MetadataModelState from './metadata.model.state/maintainance.log.model.state';
 import metadataFieldTemplatestate from "../../../fields/metadata.field.templatestate";
-import CustomModal from '../../../CustomModal/custom.modal.view';
+import CustomModal from "../../../fields/customModalField/custom.modal.view";
 import MetadataFields from '../../../fields/metadata.fields.view';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
 import {templateHelpers} from './checkout.form.template';

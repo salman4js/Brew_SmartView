@@ -15,7 +15,7 @@ import {
   filterKeysInObj
 } from '../../common.functions/node.convertor';
 import { activityLoader } from '../../common.functions/common.functions.view';
-import CustomModal from '../../CustomModal/custom.modal.view';
+import CustomModal from "../../fields/customModalField/custom.modal.view";
 import MetadataTableView from '../../metadata.table.view/metadata.table.view';
 import MetadataFields from '../../fields/metadata.fields.view';
 import metadataFieldTemplatestate from "../../fields/metadata.field.templatestate";

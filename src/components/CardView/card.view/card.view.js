@@ -1,8 +1,7 @@
 import React from 'react';
-import CustomModal from '../../CustomModal/custom.modal.view';
+import CustomModal from "../../fields/customModalField/custom.modal.view";
 import CommandHelper from '../../fields/commandField/command.helper.field'
 import {activityLoader} from '../../common.functions/common.functions.view'
-import CustomModalBodyitem from '../../CustomModal/custom.modal.body/custom.modal.body.item/custom.modal.body.item'
 import { getClassName } from '../../common.functions/common.functions';
 import Button from 'react-bootstrap/Button'
 

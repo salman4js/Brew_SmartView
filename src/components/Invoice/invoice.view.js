@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import _ from 'lodash';
 import brewDate from 'brew-date';
-import TableHead from "../table.view/table.head.view";
-import TableCell from "../table.view/table.cell.view";
+import TableHead from "./table.view/table.head.view";
+import TableCell from "./table.view/table.cell.view";
 import MetadataTable from '../metadata.table.view/metadata.table.view';
-import NetProfitView from '../vouchers/net.profit.view';
 import { getStorage } from "../../Controller/Storage/Storage";
 import {convertQueryParamsIntoObjects} from "../common.functions/node.convertor";
 
@@ -408,14 +407,6 @@ const Invoice = (props) => {
                     {_showDescriptionTable()}
                     {_receiptTotalAmount()}
                   </div>
-                </div>
-              )}
-              
-              {/* Vouchers Report Generation */}
-              {props.node.vouchersReport && (
-                <div className = "container invoice" style = {{height: window.innerHeight}}>
-                  <NetProfitView data = {props.netProfit} tableDataForInflow = {props.tablePreviewViewForInflow} 
-                  tableDataForOutFlow = {props.tablePreviewViewForOutflow} />
                 </div>
               )}
             </div>

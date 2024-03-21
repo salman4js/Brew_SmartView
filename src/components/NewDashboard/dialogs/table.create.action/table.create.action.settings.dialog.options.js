@@ -1,4 +1,4 @@
-import {addVoucherModelList} from "../../../vouchers/vouchers.utils";
+import {addVoucherModelList} from "../../../utils/vouchers.utils";
 import {convertServerFormat, formatCustomIntoDateFormat} from "../../../common.functions/common.functions";
 
 function voucherTrackerCreateOptions(options){

@@ -1,5 +1,4 @@
 import React from 'react';
-import InlineToast from '../../InlineToast/Inline.toast.view'
 
 class TextField extends React.Component {
   constructor(props) {
@@ -37,8 +36,10 @@ class TextField extends React.Component {
   _showInlineToast(){
     return(
         this.props.data.inlineToast.isShow && (
-            <InlineToast message = {this.props.data.inlineToast.inlineMessage} />
-        )
+            <small className="inline-toast-view">
+              {this.props.data.inlineToast.inlineMessage}
+            </small>
+  )
     )
   };
 

@@ -1,1 +1,0 @@
-export const roomType = ['Suite Type', 'Price Per Day', 'Extra Bed Price'];
