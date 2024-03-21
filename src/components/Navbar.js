@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import brewDate from 'brew-date';
 import Variables from './Variables';
-import {useDispatch} from 'react-redux';
 import { nodeConvertor, updateMetadataFields } from './common.functions/node.convertor';
 import { activityLoader } from './common.functions/common.functions.view';
-import {useGlobalMessage} from './global.state/global.state.manager';
-import {createGlobalMessage, killGlobalMessage} from '../global.state/actions/index';
-import ProgressPanel from './progresspanel/progresspanel.view/progresspanel.view';
-import CustomModal from './CustomModal/custom.modal.view';
+import CustomModal from "./fields/customModalField/custom.modal.view";
 import StepperWizard from './stepper.wizard/stepper.wizard.view';
 import MetadataFields from './fields/metadata.fields.view'
 import axios from 'axios';
@@ -185,10 +181,6 @@ const Navbar = (props) => {
       };
     };
     
-    // Global Message handler!
-    var globalMessage = useGlobalMessage();
-    var dispatch = useDispatch();
-    
     // Check if logged in as manager or not!
     function isLoggedInAsManager(){
       return !(JSON.parse(getStorage("loggedInAsRecep")))
@@ -212,42 +204,7 @@ const Navbar = (props) => {
     
     // Permission levels!
     var loggedInAsRecep = JSON.parse(getStorage("loggedInAsRecep"));
-    
-    // Render progress panel icon1
-    function renderProgressPanelIcon(){
-      return(
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-chat-left-text-fill" viewBox="0 0 16 16">
-          <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/>
-        </svg>
-      )
-    }
-    
-    // Check global state for universal message, If message found return the message, If not fetch from the server!
-    function checkGlobalStateForMessage(){
-      const state = {
-        success: globalMessage ? false : true,
-        message: {show: true, message: globalMessage.value},
-        status: globalMessage.status
-      }
-      
-      return state;
-    }
-    
-    // Trigger the global message!
-    function _triggerGlobalMessage(value){
-      dispatch(createGlobalMessage(value));
-    }
-    
-    // Never trigger the universal message untill the next session!
-    function _neverTriggerUniversalMessage(value){
-      dispatch(killGlobalMessage(value));
-    }
-    
-    // Should render universal message!
-    function shouldRenderUniversalMessage(){
-      return globalMessage.status === 'SHOW'
-    };
-    
+
     // Fetch preference and update global collection instance!
     async function fetchPreferences(){
       // Get the options ready first!
@@ -268,7 +225,7 @@ const Navbar = (props) => {
     function setCheckboxValueWithPref(){
       var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');
       var collection = Object.keys(widgetTileCollection.data);
-      for (var [index, model] of collection.entries()){
+      for (var model of collection.entries()){
         if(typeof widgetTileCollection.data[model] === 'object'){
           updateMetadataFields(model, {value: true}, checkboxField, setCheckboxField)
         } else {
@@ -276,32 +233,7 @@ const Navbar = (props) => {
         }
       };
     };
-    
-    // Fetch and show universal message!
-    async function fetchUniversalMessage(){
-      var fetch = checkGlobalStateForMessage();
-      if(fetch.status === "FETCH"){
-        const result = await axios.get(`${Variables.hostId}/${splitedIds[0]}/getuniversalmessage`);
-        if(result.data.state){
-          _triggerGlobalMessage(result.data.message);
-        } else { // Which means universal message has been died!
-          _neverTriggerUniversalMessage(result.data.message);
-        }
-      } else if(fetch.status === "SHOW") {
-        _triggerGlobalMessage(fetch.message)
-      }
-    };
-    
-    // Kill the universal message and never show it again untill the admin triggers!
-    async function killGlobalMessageInServer(){
-      axios.post(`${Variables.hostId}/${splitedIds[0]}/killuniversalmessage`)
-        .then(result => {
-          _neverTriggerUniversalMessage(result.data.message)
-        }).catch(err => {
-          // Problem while killing the universal message!
-        })
-    };
-    
+
     // Custom modal body item view!
     function customModalBodyItem(){
       if(customModalState.enableLoader){
@@ -391,7 +323,6 @@ const Navbar = (props) => {
 
     useEffect( () => {
         setOptions(JSON.parse(getStorage("config-value")));
-        fetchUniversalMessage();
         fetchPreferences();
     }, []);
 
@@ -405,9 +336,6 @@ const Navbar = (props) => {
                         </div>
                     </div>
                 </a>
-                {shouldRenderUniversalMessage() && (
-                  <ProgressPanel data = {globalMessage.value} toolTip = {"Mark as read"} onClose = {() => killGlobalMessageInServer()} renderIcon = {() => renderProgressPanelIcon()} />
-                )}
                 <div className = "metadata-navbar-rightside">
                   <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                       <span className="navbar-toggler-icon"></span>

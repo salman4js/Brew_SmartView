@@ -1,4 +1,4 @@
-import { moveToNextState } from "../../room.status.utils/room.status.utils";
+import { moveToNextState } from "../../utils/room.status.utils";
 import {getParsedUrl} from "../../common.functions/node.convertor";
 import lang from "./commands.constants";
 const axios = require('axios');

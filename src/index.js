@@ -2,12 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import "bootstrap/dist/css/bootstrap.min.css";
-import {createStore} from 'redux';
-import allReducers from './global.state/reducers/index'
-import { Provider } from 'react-redux';
-
-// Redux store with all reducers combined!
-const store = createStore(allReducers);
 
 // Registering Service Worker.
 if ('serviceWorker' in navigator) {
@@ -23,9 +17,7 @@ if ('serviceWorker' in navigator) {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Provider store = {store}>
       <App />
-    </Provider>
   </React.StrictMode>
 );
 

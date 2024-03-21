@@ -4,11 +4,11 @@ import CollectionView from "../../SidePanelView/collection.view/collection.view"
 import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
 import PanelItemView from "../../SidePanelView/panel.item/panel.item.view";
 import _ from "lodash";
-import CustomModal from "../../CustomModal/custom.modal.view";
+import CustomModal from "../../fields/customModalField/custom.modal.view";
 import MetadataFields from "../../fields/metadata.fields.view";
 import {activityLoader} from "../../common.functions/common.functions.view";
 import {nodeConvertor, validateFieldData} from "../../common.functions/node.convertor";
-import {addVouchersList} from "../../vouchers/vouchers.utils";
+import {addVouchersList} from "../../utils/vouchers.utils";
 import {_updateWidgetTileCount} from "../dashboard.utils.helper/form.utils.helper";
 
 class SidepanelContainerVoucherTrackerView extends React.Component {

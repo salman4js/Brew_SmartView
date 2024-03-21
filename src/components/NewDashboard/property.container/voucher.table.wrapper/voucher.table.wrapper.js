@@ -1,7 +1,7 @@
 import TableView from "../table.view/table.view";
 import voucherTableWrapperConstants from "./voucher.table.wrapper.constants";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
-import {getVoucherModelList} from "../../../vouchers/vouchers.utils";
+import {getVoucherModelList} from "../../../utils/vouchers.utils";
 import _ from "lodash";
 import tableViewConstants from "../table.view/table.view.constants";
 

@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import { loginAs } from './choose.login.utils';
-import CustomModal from '../CustomModal/custom.modal.view';
+import CustomModal from "../fields/customModalField/custom.modal.view";
 import MetadataFields from '../fields/metadata.fields.view';
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ModalAssist from '../modal.assist/modal.assist.view';
 import { activityLoader } from '../common.functions/common.functions.view';
 import { validateFieldData, nodeConvertor } from '../common.functions/node.convertor';

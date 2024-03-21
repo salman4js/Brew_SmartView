@@ -1,5 +1,5 @@
 import MetadataTable from '../../../metadata.table.view/metadata.table.view';
-import CustomModal from '../../../CustomModal/custom.modal.view';
+import CustomModal from "../../../fields/customModalField/custom.modal.view";
 import PaginationView from "./pagination.view/pagination.view";
 import FacetView from "./facet.view/facet.view";
 import TableToolbarView from "../../table.toolbar.view/table.toolbar.view";

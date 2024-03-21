@@ -3,7 +3,7 @@ import { checkInFormValue } from './checkin.form.utils';
 import brewDate from 'brew-date';
 import { prebookExcludeDates } from '../../../ExcludeDates/excludesdates';
 import MetadataFields from '../../../fields/metadata.fields.view';
-import CustomModal from '../../../CustomModal/custom.modal.view';
+import CustomModal from "../../../fields/customModalField/custom.modal.view";
 import { activityLoader } from '../../../common.functions/common.functions.view';
 import {getStayedDays, determineGSTPercent, getTimeDate, formatDate} from '../../../common.functions/common.functions';
 import {
