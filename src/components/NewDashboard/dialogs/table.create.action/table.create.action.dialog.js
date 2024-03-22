@@ -1,4 +1,4 @@
-import lang from "../dialog.constants";
+import lang from '../dialog.constants'
 import dialogCreateOptions from "./table.create.action.settings.dialog.options";
 import {extractQueryParams} from "../../../common.functions/node.convertor";
 

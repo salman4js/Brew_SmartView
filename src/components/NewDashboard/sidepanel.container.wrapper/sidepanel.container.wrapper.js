@@ -92,10 +92,6 @@ const SidepanelWrapper = (props, ref) => {
     modalSize: 'medium'
   });
 
-  function _isMultipleLoginEnabled(){
-    return JSON.parse(getStorage('multipleLogin'));
-  };
-
   // Update filter string from the sidepanel search view!
   function _updateFilterData(filterData){
     setSidepanel(prevState => ({...prevState, listFilter: filterData}))
@@ -391,8 +387,7 @@ const SidepanelWrapper = (props, ref) => {
 
   // Fetch the available rooms list!
   async function fetchRoomsLists(){
-    var isMultipleLoginEnabled = _isMultipleLoginEnabled();
-    var options = {getWidgetTileCollection: true, getMultipleLoginUsers: isMultipleLoginEnabled};
+    var options = {getWidgetTileCollection: true};
     const result = await getRoomList(props.params.accIdAndName[0], options);
     if(result.data.success){
       setSidepanel(prevState => ({...prevState, childData: result.data.message}));

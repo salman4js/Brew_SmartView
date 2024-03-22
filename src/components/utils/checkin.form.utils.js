@@ -102,6 +102,12 @@ export async function deleteRoomModel(data){
   return result;
 };
 
+// Pre book exclude dates!
+export const prebookExcludeDates = async (props) => {
+  const res = await axios.get(`${Variables.hostId}/${props}/excludedates`);
+  return res.data;
+};
+
 // Club all the above function and make it accessible to other parts of the program through unique key.
 export function formUtils(){
   return{

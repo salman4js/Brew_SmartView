@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {checkInFormValue} from "../../../utils/checkin.form.utils";
+import {checkInFormValue, prebookExcludeDates} from "../../../utils/checkin.form.utils";
 import brewDate from 'brew-date';
-import { prebookExcludeDates } from '../../../ExcludeDates/excludesdates';
 import MetadataFields from '../../../fields/metadata.fields.view';
 import CustomModal from "../../../fields/customModalField/custom.modal.view";
 import { activityLoader } from '../../../common.functions/common.functions.view';

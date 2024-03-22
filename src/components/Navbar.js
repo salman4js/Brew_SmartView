@@ -4,7 +4,7 @@ import Variables from './Variables';
 import { nodeConvertor, updateMetadataFields } from './common.functions/node.convertor';
 import { activityLoader } from './common.functions/common.functions.view';
 import CustomModal from "./fields/customModalField/custom.modal.view";
-import StepperWizard from './stepper.wizard/stepper.wizard.view';
+import StepperWizard from "./NewDashboard/dialogs/stepper.wizard/stepper.wizard.view";
 import MetadataFields from './fields/metadata.fields.view'
 import axios from 'axios';
 import LogoTop from '../Assets/logo512.png';
@@ -140,6 +140,17 @@ const Navbar = (props) => {
       {
         select: null,
         value: undefined,
+        name: 'multipleLogin',
+        attribute: 'checkBoxField',
+        updateValue: true,
+        restrictShow: !isMultipleLoginEnabled(),
+        label: 'Enable Receptionist Details in dashboard',
+        isLabelFirst: true,
+        customStyle: customCheckboxStyle
+      },
+      {
+        select: null,
+        value: undefined,
         name: 'insights',
         attribute: 'checkBoxField',
         updateValue: true,
@@ -180,6 +191,11 @@ const Navbar = (props) => {
         updateMetadataFields('askQa', {value: undefined}, stepperWizardInput, setStepperWizardInput); // When enter key is pressed, clear out the stepper wizard input value.
       };
     };
+
+    // Check if multiple logins is configured or not.
+    function isMultipleLoginEnabled(){
+      return JSON.parse(getStorage('multipleLogin'));
+    }
     
     // Check if logged in as manager or not!
     function isLoggedInAsManager(){
@@ -225,7 +241,7 @@ const Navbar = (props) => {
     function setCheckboxValueWithPref(){
       var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');
       var collection = Object.keys(widgetTileCollection.data);
-      for (var model of collection.entries()){
+      for (var model of collection){
         if(typeof widgetTileCollection.data[model] === 'object'){
           updateMetadataFields(model, {value: true}, checkboxField, setCheckboxField)
         } else {

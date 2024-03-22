@@ -2,7 +2,6 @@ import React from 'react';
 import _ from 'lodash';
 import {activityLoader} from "../../../common.functions/common.functions.view";
 import propertyBaseConstants from "./property.base.constants";
-import lang from '../../commands/commands.constants'
 import {extractQueryParams, getParsedUrl} from "../../../common.functions/node.convertor";
 import CommandsConnector from "../../commands/commands.connector";
 

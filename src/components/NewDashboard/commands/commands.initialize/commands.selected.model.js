@@ -1,6 +1,6 @@
 import lang from "../commands.constants";
 import MetadataTable from "../../../metadata.table.view/metadata.table.view";
-import tableViewConstants from "../../property.container/table.view/table.view.constants";
+import tableViewConstants from '../../property.container/table.view/table.view.constants'
 import _ from "lodash";
 
 class CommandsSelectedModel {

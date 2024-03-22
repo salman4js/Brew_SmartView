@@ -4,7 +4,7 @@ import Success from './ToastHandler/Success'
 import Error from './ToastHandler/Error';
 import Feed from './Configure_Transport/Feed_tMode/Feed';
 import axios from 'axios';
-import Loading from '../Loading';
+import BlockActions from "../fields/block.actions.view/block.actions.view";
 import {nodeConvertor} from '../common.functions/node.convertor';
 import MetadataFields from "../fields/metadata.fields.view";
 import { useParams } from "react-router-dom";
@@ -697,7 +697,7 @@ const Client = () => {
             {
                 loading ? (
                     <div className = "container">
-                      <Loading />
+                      <BlockActions />
                     </div>
                 ) : (
                     <div className='row'>

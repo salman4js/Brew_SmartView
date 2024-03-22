@@ -1,5 +1,6 @@
 import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
 const sidepanelContainerUtils = require('../utils/sidepanel.container.utils');
+const multipleLoginUtils = require('../utils/manage.recep.utils');
 const axios = require("axios");
 const brewDate = require('brew-date');
 const Variables = require('../Variables');
@@ -19,15 +20,6 @@ export async function fetchWidgetTilePref(lodgeId){
   }
 };
 
-// Fetch multiple login users!
-export async function fetchMultipleLoginUsers(lodgeId){
-  var result =  await axios.get(`${Variables.Variables.hostId}/${lodgeId}/getlogins`);
-  if(result.data.success){
-    CollectionInstance.setCollections('multipleLogins', result.data.message);
-  }
-  return result;
-};
-
 // Get rooms list!
 export async function getRoomList(lodgeId, fetchPref){
   // Default access token params!
@@ -38,7 +30,6 @@ export async function getRoomList(lodgeId, fetchPref){
   };
   // Call the widget tile collection here!
   fetchPref?.getWidgetTileCollection && await fetchWidgetTilePref(lodgeId);
-  fetchPref?.getMultipleLoginUsers && await fetchMultipleLoginUsers(lodgeId);
   fetchPref?.getUserCollection && await sidepanelContainerUtils.getUserModel({lodgeId: lodgeId})
   var resultData = await axios.post(`${Variables.Variables.hostId}/${lodgeId}/false/roomlodge`, params);
   // Add the rooms list to the global collections!

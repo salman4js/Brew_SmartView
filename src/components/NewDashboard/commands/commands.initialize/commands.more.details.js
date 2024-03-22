@@ -1,8 +1,8 @@
 import lang from "../commands.constants";
 import _ from 'lodash';
 import CommandsConnector from "../commands.connector";
-import {templateHelpers} from "../../property.container/checkout.view/checkout.form.template";
-import {getStorage} from "../../../../Controller/Storage/Storage";
+import {templateHelpers} from '../../property.container/checkout.view/checkout.form.template';
+import {getStorage} from '../../../../Controller/Storage/Storage'
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 
 class CommandsMoreDetails {

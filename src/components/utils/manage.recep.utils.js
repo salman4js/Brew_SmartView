@@ -2,8 +2,8 @@ const axios = require("axios");
 const Variables = require("../Variables");
 
 // Get account details!
-export async function getAccountDetails(data){
-  return await axios.get(`${Variables.Variables.hostId}/${data.lodge}/getlogins`, data);
+export async function getAccountDetails(options){
+  return await axios.get(`${Variables.Variables.hostId}/${options.accId}/getlogins`);
 }
 
 // Add new account details!

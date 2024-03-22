@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import { loginAs } from './choose.login.utils';
+import { loginAs } from '../utils/choose.login.utils'
 import CustomModal from "../fields/customModalField/custom.modal.view";
 import MetadataFields from '../fields/metadata.fields.view';
 import { useNavigate, useParams } from "react-router-dom";
-import ModalAssist from '../modal.assist/modal.assist.view';
+import ModalAssist from "../NewDashboard/dialogs/modal.assist/modal.assist.view";
 import { activityLoader } from '../common.functions/common.functions.view';
 import { validateFieldData, nodeConvertor } from '../common.functions/node.convertor';
 import CollectionInstance from '../../global.collection/widgettile.collection/widgettile.collection';
