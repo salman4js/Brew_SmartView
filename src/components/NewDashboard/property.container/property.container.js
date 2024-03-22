@@ -219,12 +219,13 @@ const PropertyContainer = (props) => {
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyReadView){
       return <PropertyReadView data = {props.data} height = {props.propertyContainerHeight} routerController = {(opts) => props.routerController(opts)} params = {props.params} />
+
     };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyEditView){
       return <PropertyEditView  data = {props.data} height = {props.propertyContainerHeight} routerController = {(opts) => props.routerController(opts)}
       dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} modalOptions = {(options, nextFunc) => _updateCustomModalOptions(options, nextFunc)}/>
-    }
+    };
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){
       return renderCustomHTMLContent(props.htmlContent.customHtmlContent, props.htmlContent.replacements, props.propertyContainerHeight);

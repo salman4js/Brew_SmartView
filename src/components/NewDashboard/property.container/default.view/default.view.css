@@ -1,0 +1,50 @@
+.default-widget-tile-view{
+    background: rgba(0, 0, 0, 0) linear-gradient(45deg, rgb(9, 14, 44) 0%, rgb(18, 44, 105) 58.93%, rgb(7, 141, 179) 100%) repeat scroll 0% 0%;
+    min-height: 100vh;
+    color: white;
+}
+
+.widget-tile-container{
+    padding: 40px;
+}
+
+.widget-tile-listitem{
+    margin-bottom: 20px;
+}
+
+.widget-tile-listitem-body{
+    color: white;
+    font-weight: bold;
+    font-size: 100px;
+    background-color: rgb(23, 120, 83);
+    height: 100%;
+}
+
+.widget-tile-body {
+    display: grid;
+    height: 100%; /* Ensure the parent container has a height */
+}
+
+.widget-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center horizontally */
+    position: relative;
+    /* Remove top and transform properties */
+}
+
+.widget-tile-listitem-body:hover{
+    background-color: black;
+    cursor: pointer;
+}
+
+.widget-tile-listitem-body .widget-tile-body .brew-list-view-template-options{
+    height: 0.375em;
+    background-color: rgb(23, 120, 83);
+    color: white;
+    border-bottom: 0.0000000000000000001em solid white;
+}
+
+.widget-tile-listitem-body .widget-tile-body .brew-list-view-template-options:hover{
+    background-color: black;
+}

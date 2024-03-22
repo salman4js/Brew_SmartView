@@ -13,7 +13,8 @@ var tableViewConstants = Object.freeze({
     history: ['Guest Name', 'Phone Number', 'Guest ID Number', 'Address', 'Date of Checkin',
       'Time of Checkin', 'Date of Checkout', 'Time of Checkout', 'Total Amount'],
     logTable: ['Log Type', 'Log Comments', 'Log Paid', 'Log Date & Time', 'Log Price'],
-    paymentTrackerView: ['Amount', 'Amount For', 'Date & Time', 'Mode']
+    paymentTrackerView: ['Amount', 'Amount For', 'Date & Time', 'Mode'],
+    multipleLogin: ['Username', 'Password', 'Permission Level']
   }),
 
   PropertyStatusRequiredKey: Object.freeze({
@@ -28,7 +29,8 @@ var tableViewConstants = Object.freeze({
       'checkinTime', 'dateofcheckout', 'checkoutTime', 'totalAmount'],
     logTable: ['_id', 'priceType', 'priceLog', 'isPaid', 'dateTime', 'price'],
     paymentTrackerView: ['paymentTrackerId', 'amount', 'amountFor', 'dateTime', 'isPrebook'],
-    voucherTracker: ['_id', 'vNo', 'dateTime', 'particulars', 'cashMode', 'receipt', 'payment']
+    voucherTracker: ['_id', 'vNo', 'dateTime', 'particulars', 'cashMode', 'receipt', 'payment'],
+    multipleLogin: ['_id', 'username', 'password', 'loginAs']
   }),
 
   tableInfoMessage: Object.freeze({

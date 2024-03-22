@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import Variables from './Variables';
-import Loading from "./Loading";
+import BlockActions from "./fields/block.actions.view/block.actions.view";
 import axios from 'axios';
 import { defaultStorage, setStorage } from '../Controller/Storage/Storage';
 import CollectionInstance from '../global.collection/widgettile.collection/widgettile.collection';
@@ -222,7 +222,7 @@ const Login = () => {
     <div>
       {
         loading ? (
-          <Loading message = {message} />
+          <BlockActions options = {{message: message, defaultTemplate: true}} />
         ) : (
           <div>
             <div>

@@ -5,7 +5,8 @@ var defaultViewConstants = Object.freeze({
     favorites: 'Favorite Customers',
     history: 'Booking History',
     voucherTracker: 'Voucher Tracker',
-    insights: 'Insights'
+    insights: 'Insights',
+    multipleLogin: 'Manage Accounts'
   }),
 
   dashboardMode: Object.freeze({
@@ -27,7 +28,8 @@ var defaultViewConstants = Object.freeze({
 
   RECEP_LEVEL_WIDGETS: ['upcomingCheckout', 'upcomingPrebook', 'favorites'],
   MANAGER_LEVEL_WIDGETS: ['upcomingCheckout', 'upcomingPrebook', 'favorites', 'history', 'voucherTracker'],
-  defaultViewPerspectiveConstant: 'default-view'
+  defaultViewPerspectiveConstant: 'default-view',
+  blockActionsMessage: 'Preparing Dashboard...'
 });
 
 export default defaultViewConstants;

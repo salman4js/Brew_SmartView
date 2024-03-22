@@ -1,6 +1,5 @@
 import lang from "../commands.constants";
 import CommandsConnector from "../commands.connector";
-import {_checkForSecureConnections} from "../../../common.functions/common.functions";
 import {downloadContent, prepareCSV} from "../../../common.functions/node.convertor";
 
 class CommandsExportToExcel {

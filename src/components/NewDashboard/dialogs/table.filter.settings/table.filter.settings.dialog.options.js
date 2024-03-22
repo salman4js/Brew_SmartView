@@ -1,20 +1,26 @@
 import lang from "../dialog.constants";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
+import _ from "lodash";
+import {getStorage} from "../../../../Controller/Storage/Storage";
 
 function historyTableFilterOptions(){
+    var isMultipleLoginEnabled = JSON.parse(getStorage('multipleLogin')),
+        multipleUserModel = isMultipleLoginEnabled ? _.map(CollectionInstance.getModel('widgetTileCollections', 'multipleLogin'), 'username') : [];
     return [{
         value: undefined,
         placeholder: lang.TABLE_FILTER_DIALOG.history.dialogOptionsLabelAndPlaceholder.checkoutBy,
         name: 'checkoutBy',
         attribute: 'listField',
-        options: CollectionInstance.getAttribute('multipleLogins', 'username'),
+        options: multipleUserModel,
+        restrictShow: !isMultipleLoginEnabled,
         isRequired: false
     }, {
         value: undefined,
         placeholder: lang.TABLE_FILTER_DIALOG.history.dialogOptionsLabelAndPlaceholder.checkinBy,
         name: 'checkinBy',
         attribute: 'listField',
-        options: CollectionInstance.getAttribute('multipleLogins', 'username'),
+        options: multipleUserModel,
+        restrictShow: !isMultipleLoginEnabled,
         isRequired: false
     }, {
         value: undefined,

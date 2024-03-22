@@ -1,7 +1,6 @@
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Login from './components/Login';
-import Loading from './components/Loading';
 import Admin from './components/Config/Admin';
 import Client from './components/Config/Client';
 import ChooseLogin from './components/LoginAs/choose.login';
@@ -15,7 +14,6 @@ function App() {
         <Routes>
           <Route path = "/login" exact element = {<Login />} />
           <Route path = "/admin-config" exact element = {<Admin />} />
-          <Route path = "/:id/loading" exact element = {<Loading />} />
           <Route path = "/:id/client-config" exact element = {<Client />} />
           <Route path = "/:id/chooselogin" exact element = {<ChooseLogin /> } />
           <Route path = "/windowprint" element = {<WindowPrint />} />

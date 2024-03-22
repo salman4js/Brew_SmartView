@@ -1,15 +1,16 @@
 import React from 'react';
+import './default.view.css';
 import _ from 'lodash';
 import defaultViewConstants from './default.view.constants';
+import BlockActions from "../../../fields/block.actions.view/block.actions.view";
 import { getStorage } from '../../../../Controller/Storage/Storage';
 import { getRoomStatusConstants, getGreetings } from '../../../common.functions/common.functions';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
-import BlockActions from '../../../fields/block.actions.view/block.actions.view';
 import {
   templateHelpers,
   widgetTileTemplateHelpers,
   widgetTileBodyTemplateHelpers,
-  _renderListFieldTemplateHelpers
+  _renderListFieldTemplateHelpers, _renderCustomFieldTemplateHelpers
 } from './default.view.template';
 import propertyContainerConstants from "../property.container.constants";
 
@@ -51,7 +52,7 @@ class DefaultView extends React.Component {
     if(this.state.data.isFetched && this.state.isComputed){
       return templateHelpers(this);
     } else {
-      return <BlockActions />
+      return <BlockActions options = {{message: defaultViewConstants.blockActionsMessage}} />
     }
   };
 
@@ -97,6 +98,11 @@ class DefaultView extends React.Component {
   // Render list field view!
   _renderListFieldView(options){
     return _renderListFieldTemplateHelpers({data: this.listFieldData, propertyStatus: options.propertyStatus});
+  };
+
+  // Render custom view field!
+  _renderCustomViewField(options){
+    return _renderCustomFieldTemplateHelpers(options);
   };
 
   // Notify the state router that the perspective is ready!
@@ -283,6 +289,8 @@ class DefaultView extends React.Component {
           this.widgetTileCollection.widgetTileModelCount[propertyStatus]?.value){
         this._setUpListFieldView(propertyStatus);
         this.state.propertyStatusDetails[propertyStatus] = (options) => this._renderListFieldView(options);
+      } else if(this.widgetTileCollection.widgetTileModelCount[propertyStatus]?.noCountWidget){
+        this.state.propertyStatusDetails[propertyStatus] = (options) => this._renderCustomViewField(options);
       }
     }
   };

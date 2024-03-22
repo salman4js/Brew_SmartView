@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react';
 import { useParams } from 'react-router-dom';
 import NavbarWrapper from './navbar.container.wrapper/navbar.container.wrapper';
-import ModalAssist from '../modal.assist/modal.assist.view';
+import ModalAssist from "./dialogs/modal.assist/modal.assist.view";
 import DashboardWrapper from './dashboard.container.wrapper/dashboard.container.wrapper';
 
 const DashboardInitializer = (props) => {

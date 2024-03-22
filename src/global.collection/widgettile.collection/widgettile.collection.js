@@ -159,9 +159,8 @@ class Collections { // Design pattern --> Singleton class!
     if(!collection){
       throw new Error('Collection does not exists');
     } else {
-      var validCol = checkForAttr ? this.getTypeOfCollection(collection) : collection,
-        result = checkForAttr ? {validCol, collection} : collection;
-      return result;
+      var validCol = checkForAttr ? this.getTypeOfCollection(collection) : collection;
+      return checkForAttr ? {validCol, collection} : collection;
     }
   };
   

@@ -53,6 +53,15 @@ export function _renderListFieldTemplateHelpers(options){
     return <ListView options = {{templateData: options.data[options.propertyStatus], templateHelpersData: {allowSubData: true}}}/>
 };
 
+// Custom view field template helpers!
+export function _renderCustomFieldTemplateHelpers(options){
+  return(
+      <div className = 'bi bi-book widget-tile-body widget-icon'>
+
+      </div>
+  )
+};
+
 // Widget body child view template helpers!
 export function widgetTileBodyTemplateHelpers(options){
   return(
