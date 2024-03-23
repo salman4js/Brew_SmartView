@@ -81,16 +81,22 @@ var commandsConstant = Object.freeze({
        deleteController: 'Delete',
        voucherTracker: {
            successMessage: 'Voucher entry deleted successfully!',
-           errorMessage: 'Something went wrong, Please try again later!'
-       }
+       },
+       multipleLogin: {
+           successMessage: 'Account has been deleted successfully!'
+       },
+       deleteControllerError: 'Something went wrong, Please try again later!'
     }),
 
     EDIT_CONTROLLER: Object.freeze({
         editController: 'Edit',
         voucherTracker: {
             successMessage: 'Voucher entry updated!',
-            errorMessage: 'Something went wrong, Please try again later!'
-        }
+        },
+        multipleLogin: {
+            successMessage: 'Account details updated!'
+        },
+        editControllerError: 'Something went wrong, please try again later!'
     }),
 
     // TODO: Remove this later, when we have backend support for column customization.
@@ -150,8 +156,8 @@ var commandsConstant = Object.freeze({
         moreDetails: ['history'],
         generateReceipt: ['paymentTrackerView', 'logTable'],
         moveToNextState: ['afterCheckedout', 'inCleaning'],
-        deleteAction: ['voucherTracker'],
-        editAction: ['voucherTracker']
+        deleteAction: ['voucherTracker', 'multipleLogin'],
+        editAction: ['voucherTracker', 'multipleLogin']
     })
 });
 

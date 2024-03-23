@@ -16,14 +16,18 @@ class TableEditActionDialog {
     };
 
     getCustomBodyViewOptions(){
-        return dialogEditOptions[this.status.roomConstantKey](this.status.currentModel);
+        if(dialogEditOptions[this.status.roomConstantKey]){
+            return dialogEditOptions[this.status.roomConstantKey](this.status.currentModel);
+        }
     };
 
     async onEdit(){
       var options = {};
       this.status.eventHelpers.validateStateFields().then((result) => {
           if(result){
-              result[lang.widgetObjectId[this.status.roomConstantKey]] = this.status.nodes[0];
+              if(lang.widgetObjectId[this.status.roomConstantKey]){
+                  result[lang.widgetObjectId[this.status.roomConstantKey]] = this.status.nodes[0];
+              }
               options['accId'] = this.status.params.accIdAndName[0];
               options['selectedNodes'] = this.status.nodes[0];
               options['widgetName'] = this.status.roomConstantKey;
@@ -32,7 +36,7 @@ class TableEditActionDialog {
               this.status.eventHelpers.collapseCustomModal();
               this.status.eventHelpers.updateCheckboxSelection();
               this.status.eventHelpers.onEdit(options).then((response) => {
-                  if(response.data.success){
+                  if(response.data.statusCode === 200){
                       this.status.eventHelpers.updateModelFromTableCollection(response.data.result);
                       this.status.eventHelpers.triggerTableLoader(false);
                       this.status.eventHelpers.triggerCustomModel({header: CommandsLang.EDIT_CONTROLLER[this.status.roomConstantKey].successMessage, centered: false});
@@ -40,7 +44,7 @@ class TableEditActionDialog {
               }).catch((err) => {
                  console.warn(err);
                  this.status.eventHelpers.triggerTableLoader(false);
-                  this.status.eventHelpers.triggerCustomModel({header: CommandsLang.EDIT_CONTROLLER[this.status.roomConstantKey].errorMessage, centered: false});
+                  this.status.eventHelpers.triggerCustomModel({header: CommandsLang.EDIT_CONTROLLER.editControllerError, centered: false});
               });
           }
       })

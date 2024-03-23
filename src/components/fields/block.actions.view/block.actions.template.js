@@ -2,7 +2,7 @@ import React from "react";
 import {Triangle} from "react-loader-spinner";
 
 export function templateHelpers(options){
-  if(options.defaultTemplate){
+  if(options?.defaultTemplate){
       return (
           <div className="d-flex align-items-center justify-content-center">
               <div className="top-align">

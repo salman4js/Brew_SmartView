@@ -39,7 +39,7 @@ class CommandsMoveToNextState {
             return CommandsConnector.moveToNextState({ lodgeId: this.status.params.accIdAndName[0], roomId: node })
                 .then((result) => {
                     if (result.data.success) {
-                        this.status.eventHelpers.removeFromTableCollection(result.data.data);
+                        this.status.eventHelpers.removeFromTableCollection(node);
                         this.status.eventHelpers.dashboardController({
                             reloadSidepanel: { silent: true },
                             updatedModel: result.data.data

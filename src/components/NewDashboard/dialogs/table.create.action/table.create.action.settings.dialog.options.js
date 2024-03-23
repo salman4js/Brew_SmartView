@@ -1,13 +1,15 @@
-import {addVoucherModelList} from "../../../utils/vouchers.utils";
+import {addAccount} from "../../../utils/manage.recep.utils";
+import CommonCrudController from "../../common.crud.controller/common.crud.controller";
 import {convertServerFormat, formatCustomIntoDateFormat} from "../../../common.functions/common.functions";
+import lang from "../dialog.constants";
 
 function voucherTrackerCreateOptions(options){
     return [
         {
             value: options?.dateTime || new Date(),
             defaultValue: options?.dateTime || new Date(),
-            placeholder: "Date",
-            label: "Date",
+            placeholder: lang.TABLE_CREATE_DIALOG.voucherTracker.date,
+            label: lang.TABLE_CREATE_DIALOG.voucherTracker.date,
             name: 'dateTime',
             attribute: 'dateField',
             conversionInFieldConvertor: false,
@@ -23,8 +25,8 @@ function voucherTrackerCreateOptions(options){
         },
         {
             value: options?.particulars,
-            placeholder: "Particulars",
-            label: "Particulars",
+            placeholder: lang.TABLE_CREATE_DIALOG.voucherTracker.particulars,
+            label: lang.TABLE_CREATE_DIALOG.voucherTracker.cashMode,
             name: 'particulars',
             attribute: 'textField',
             isRequired: true,
@@ -35,8 +37,8 @@ function voucherTrackerCreateOptions(options){
         },
         {
             value: options?.cashMode,
-            placeholder: "Cash Mode",
-            label: "Cash Mode",
+            placeholder: lang.TABLE_CREATE_DIALOG.voucherTracker.cashMode,
+            label: lang.TABLE_CREATE_DIALOG.voucherTracker.cashMode,
             name: 'cashMode',
             attribute: 'textField',
             isRequired: true,
@@ -48,8 +50,8 @@ function voucherTrackerCreateOptions(options){
         {
             value: options?.receipt,
             defaultValue: 0,
-            placeholder: "Receipt",
-            label: "Receipt",
+            placeholder: lang.TABLE_CREATE_DIALOG.voucherTracker.receipt,
+            label: lang.TABLE_CREATE_DIALOG.voucherTracker.receipt,
             name: 'receipt',
             dependentValue: 'payment',
             updateIsRequiredOnDependentValue: true,
@@ -63,8 +65,8 @@ function voucherTrackerCreateOptions(options){
         {
             value: options?.payment,
             defaultValue: 0,
-            placeholder: "Payment",
-            label: "Payment",
+            placeholder: lang.TABLE_CREATE_DIALOG.voucherTracker.payment,
+            label: lang.TABLE_CREATE_DIALOG.voucherTracker.payment,
             name: 'payment',
             dependentValue: 'receipt',
             updateIsRequiredOnDependentValue: true,
@@ -76,14 +78,51 @@ function voucherTrackerCreateOptions(options){
             }
         }
     ]
-}
+};
+
+function multipleLoginCreateOptions(options){
+    return [{
+        value: options?.username,
+        placeholder:  lang.TABLE_CREATE_DIALOG.multipleLogin.username.placeholder,
+        label:  lang.TABLE_CREATE_DIALOG.multipleLogin.username.placeholder,
+        name: 'username',
+        attribute: 'textField',
+        isRequired: true,
+        inlineToast: {
+            isShow: false,
+            inlineMessage: 'Please provide a valid payment.'
+        }
+    }, {
+        value: options?.password,
+        placeholder: lang.TABLE_CREATE_DIALOG.multipleLogin.password.placeholder,
+        label:  lang.TABLE_CREATE_DIALOG.multipleLogin.password.label,
+        name: 'password',
+        attribute: 'textField',
+        isRequired: true,
+        inlineToast: {
+            isShow: false,
+            inlineMessage: 'Please provide a valid payment.'
+        }
+    }, {
+        value: options?.loginAs,
+        placeholder: lang.TABLE_CREATE_DIALOG.multipleLogin.loginAs.placeholder,
+        label: lang.TABLE_CREATE_DIALOG.multipleLogin.loginAs.placeholder,
+        name: 'loginAs',
+        attribute: 'listField',
+        options: lang.TABLE_CREATE_DIALOG.multipleLogin.loginAs.listFieldOptions,
+        isRequired: true,
+        inlineToast: {
+            isShow: false,
+            inlineMessage: 'Please provide a valid payment.'
+        }
+    }]
+};
 
 
 var dialogCreateOptions = {
     'voucherTracker': (options) => voucherTrackerCreateOptions(options),
-    'onSave': {
-        'voucherTracker': (options) => addVoucherModelList(options)
-    }
+    'multipleLogin': (options) => multipleLoginCreateOptions(options),
+    'onSave': (options) => CommonCrudController.CreateController(options)
 };
 
 export default dialogCreateOptions;
