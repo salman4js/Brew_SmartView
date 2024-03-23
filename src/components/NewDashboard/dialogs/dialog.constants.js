@@ -18,7 +18,7 @@ var dialogConstants = Object.freeze({
           primaryBtn: 'Create',
           secondaryBtn: 'Cancel'
       },
-      tableCreateModeAllowedKeys: ['voucherTracker']
+      tableCreateModeAllowedKeys: ['voucherTracker', 'multipleLogin']
     },
 
     TABLE_EDIT: {
@@ -27,11 +27,12 @@ var dialogConstants = Object.freeze({
             primaryBtn: 'Edit',
             secondaryBtn: 'Cancel'
         },
-        tableEditModeAllowedKeys: ['voucherTracker']
+        tableEditModeAllowedKeys: ['voucherTracker', 'multipleLogin']
     },
 
     HEADER_OPTIONS: {
-      voucherTracker: 'Voucher'
+      voucherTracker: 'Voucher',
+      multipleLogin: 'Account'
     },
 
     TABLE_FILTER_DIALOG: {
@@ -64,7 +65,36 @@ var dialogConstants = Object.freeze({
                 idNumber: 'ID Number'
             },
         }
-    }
+    },
+    TABLE_CREATE_DIALOG: Object.freeze({
+        voucherTracker: {
+            date: 'Date',
+            particulars: 'Particulars',
+            cashMode: 'Cash Mode',
+            receipt: 'Receipt',
+            payment: 'Payment'
+        },
+        multipleLogin: {
+            username: {
+                label: 'Enter Username',
+                placeholder: 'User Name'
+            },
+            password: {
+                label: 'Password',
+                placeholder: 'Set a password',
+            },
+            loginAs: {
+                placeholder: 'Permission Level',
+                listFieldOptions: [{
+                    value: 'Manager Level Authorization',
+                    actualValue: 'managerLevel'
+                }, {
+                    value: 'Receptionist Level Authorization',
+                    actualValue: 'receptionistLevel'
+                }]
+            }
+        }
+    })
 });
 
 export default dialogConstants;

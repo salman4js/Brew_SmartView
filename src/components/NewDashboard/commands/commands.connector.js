@@ -53,15 +53,6 @@ class CommandsConnector {
             })
         }
     };
-
-    static async DeleteController(options){
-        var selectedNodes = encodeURIComponent(JSON.stringify(options.selectedNodes));
-        return await axios.delete(`${Variables.Variables.hostId}/${options.accId}/${selectedNodes}/${options.widgetName}/delete`);
-    };
-
-    static async EditController(options){
-      return await axios.put(`${Variables.Variables.hostId}/${options.accId}/${options.selectedNodes}/${options.widgetName}/edit`, options.data);
-    };
 };
 
 export default CommandsConnector;

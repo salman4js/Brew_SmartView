@@ -94,7 +94,7 @@ const DashboardWrapper = (props, ref) => {
     CollectionInstance.updateCollections('userCollections', userCollection);
   };
   
-  // Sidepanel controller throught props state handler!
+  // Sidepanel controller through props state handler!
   const [propertyController, setPropertyController] = useState({
     reloadSidepanel: {
       silent: false

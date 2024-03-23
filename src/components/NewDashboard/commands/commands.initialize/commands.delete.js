@@ -1,5 +1,5 @@
 import lang from "../commands.constants";
-import CommandsConnector from "../commands.connector";
+import CommonCrudController from "../../common.crud.controller/common.crud.controller";
 
 class CommandsDelete {
     constructor(signatureOptions) {
@@ -24,15 +24,15 @@ class CommandsDelete {
           this.status.eventHelpers.removeFromTableCollection(this.status.nodes);
           this.status.eventHelpers.triggerTableLoader(false);
           this.status.eventHelpers.triggerCustomModel({header: lang.DELETE_CONTROLLER[this.status.roomConstantKey].successMessage, centered: false});
-      }).catch(() => {
+      }).catch((err) => {
           this.status.eventHelpers.triggerTableLoader(false);
-          this.status.eventHelpers.triggerCustomModel({header: lang.DELETE_CONTROLLER[this.status.roomConstantKey].errorMessage, centered: false});
+          this.status.eventHelpers.triggerCustomModel({header: lang.DELETE_CONTROLLER.deleteControllerError, centered: false});
       });
     };
 
     _initiateDeleteAction(){
       return new Promise((resolve, reject) => {
-         CommandsConnector.DeleteController({widgetName: this.status.roomConstantKey,
+          CommonCrudController.DeleteController({widgetName: this.status.roomConstantKey,
              selectedNodes: this.status.nodes, accId: this.status.params.accIdAndName[0]})
          .then((result) => {
              if(result.status === 204){

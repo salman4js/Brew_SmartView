@@ -376,8 +376,8 @@ class TableView extends React.Component {
     this.templateHelpersData.options = {
       selectedRoomConstant: this.widgetTileModel.data.selectedRoomConstant,
       roomConstantKey: this.roomConstant,
-      allowTableFilterMode: this.checkForTableFilterMode(),
       allowHeaderControl: true,
+      allowTableFilterMode: this.checkForTableFilterMode(),
       allowCreateMode: this.checkForTableCreateMode(),
       onBack: () => this.onBackClick(),
       onClickTableFilterMode: () => this.onFilterTableIconClicked(),
@@ -411,9 +411,9 @@ class TableView extends React.Component {
   };
 
   // Remove from table collection in case of moveToNextState operation.
-  removeFromTableCollection(selectedModel){
-    _.remove(this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant], function(tableModel){
-      return tableModel._id === selectedModel._id;
+  removeFromTableCollection(selectedNodes){
+    _.remove(this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant], function(model){
+      return selectedNodes.includes(model._id);
     });
   };
 
@@ -421,12 +421,24 @@ class TableView extends React.Component {
   updateModelFromTableCollection(updatedModel){
     // This method should be overridden if table.view is being extended by any other component.
     // If not extended add the locallyCreatedModel into the widgetTileModel and update the corresponding state model in dashboard.container.wrapper if necessary!
+    var indexToUpdate = _.findIndex(this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant], function(model){
+      return model._id === updatedModel._id;
+    });
+    if(indexToUpdate !== -1){
+      _.assign(this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant][indexToUpdate], updatedModel);
+    }
   };
 
   // Add newly created items into the table collection.
   addIntoTableCollection(locallyCreatedModel){
     // This method should be overridden if table.view is being extended by any other component.
     // If not extended add the locallyCreatedModel into the widgetTileModel and update the corresponding state model in dashboard.container.wrapper
+    const isCreatedModelAlreadyExists = _.filter(this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant], function(model){
+      return model._id === locallyCreatedModel._id;
+    });
+    if(isCreatedModelAlreadyExists.length === 0){
+      this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant].push(locallyCreatedModel);
+    }
   };
 
   // Get table data from the table collection. If nodes collection not provided, It will return all the table collections.
