@@ -1,5 +1,5 @@
-var metadataFieldTemplatestate = Object.freeze({
-    metadataFieldState: {
+var metadataFieldTemplateState = Object.freeze({
+    textField: {
         value: undefined,
         width: '500px',
         placeholder: undefined,
@@ -10,9 +10,31 @@ var metadataFieldTemplatestate = Object.freeze({
         isRequired: true,
         inlineToast: {
             isShow: false,
+            inlineToastColor: 'red',
             inlineMessage: 'Please provide a valid input.'
         }
+    },
+    buttonField: {
+        btnValue: '',
+        onClick: function(){
+
+        },
+        isDark: true,
+        occupyFullSpace: true,
+        customClass: undefined,
+        attribute: 'buttonField'
+    },
+    checkboxField: {
+        select: null,
+        value: undefined,
+        name: undefined,
+        attribute: 'checkBoxField',
+        updateValue: true,
+        restrictShow: false,
+        label: undefined,
+        isLabelFirst: true,
+        customStyle: {}
     }
 });
 
-export default metadataFieldTemplatestate;
+export default metadataFieldTemplateState;

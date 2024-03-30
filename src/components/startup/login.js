@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import Variables from './Variables';
-import BlockActions from "./fields/block.actions.view/block.actions.view";
-import axios from 'axios';
-import { defaultStorage, setStorage } from '../Controller/Storage/Storage';
-import CollectionInstance from '../global.collection/widgettile.collection/widgettile.collection';
-import {_checkForSecureConnections} from "./common.functions/common.functions";
-import CustomModal from "./fields/customModalField/custom.modal.view";
+import BlockActions from "../fields/block.actions.view/block.actions.view";
+import AppStartupUtils from "../utils/app.startup.utils";
+import Variables from "../Variables";
+import connector from "../utils/connector";;
+import {defaultStorage, setStorage} from "../../Controller/Storage/Storage";
+import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
+import {_checkForSecureConnections} from "../common.functions/common.functions";
+import CustomModal from "../fields/customModalField/custom.modal.view";
 
 const Login = () => {
 
@@ -39,67 +40,17 @@ const Login = () => {
     setCustomModal(prevState => ({...prevState, show: false}));
   };
 
-  async function checkConfig(id, lodgeName){
-    // Check for is gst enabled and hourly basis enabled!
-    await axios.get(`${Variables.hostId}/${id}/check-matrix`)
-      .then(res => {
-        if(res.data.success){
-          // Set isGst and isHourly basis in localstorage!
-          const data = {
-            "isGst" : res.data.object.isGst,
-            "isHourly" : res.data.object.isHourly,
-            "isChannel": res.data.object.isChannel,
-            "updatePrice" : res.data.object.updatePrice,
-            "isExtra": res.data.object.isExtra,
-            "isExclusive": res.data.object.isExclusive,
-            "area" : res.data.object.address,
-            "emailId": res.data.object.emailId,
-            "isInsights": res.data.object.isInsights,
-            "isSpecific": res.data.object.isSpecific,
-            "canDelete": res.data.object.canDelete,
-            "extraCalc": res.data.object.extraCalc,
-            "isGrcPreview": res.data.object.grcPreview,
-            "removePan": res.data.object.removePan,
-            "printManager": res.data.object.printManager,
-            "validateInvoiceDetails": res.data.object.validateInvoiceDetails,
-            "refundPercentage": res.data.object.refundPercentage,
-            "isRefundTrackerEnabled": res.data.object.refundTracker !== undefined ? res.data.object.refundTracker : false,
-            'isAdvanceRestricted': res.data.object.restrictAdvance,
-            'isCheckinDateEditable': res.data.object.checkinDateEditable,
-            'is-linked-with-vouchers': res.data.object.linkVouchersWithLivixius,
-            'showFullDetails': res.data.object.showFullDetails,
-            'customHtmlForBillPreview': res.data.object?.customHtmlContent?.billPreview?.isEnabled || false,
-            'customHtmlForHistoryPreview': res.data.object?.customHtmlContent?.historyPreview?.isEnabled || false,
-            'customHtmlForPropertyRead': res.data.object?.customHtmlContent?.propertyReadRoom?.isEnabled || false,
-            'customTemplateForBill': res.data.object?.customHtmlContent?.billGeneration?.isEnabled || false,
-            'customTemplateForInvoice': res.data.object?.customHtmlContent?.invoiceGeneration?.isEnabled || false,
-          };
-          
-          defaultStorage(data);
-          setMessage("Validating User Preference");
-        }
-      })
+  async function checkConfig(){
+    // Initialize App startup utils!
+    await this.appStartUpUtils.fetchConfig();
   };
-
-  // Check the config for the enabled actions!
-  const checkOptions = async (lodgeId, lodgeName) => {
-    setLoading(true);
-    setMessage("Validating...")
-    await axios.get(`${Variables.hostId}/${lodgeId}/config-checking`)
-      .then(res => {
-        if (res.data.success) {
-          setStorage("config-value", JSON.stringify(res.data.message));
-          setLoading(false)
-        }
-      })
-  }
 
   // Navigate user to the dashboard!
   function navigateUser(id, lodgeName, redirect, hasMultipleLogins, isMultipleLogins, userPreferences){
     // If account is not locked, allow the user to the base!
     var dashboardRoutes = ['dashboard', 'dashboardcontainer'],
       dashboardRoute = userPreferences.dashboardVersion ? dashboardRoutes[1] : dashboardRoutes[0];
-    const chooseRoute = (hasMultipleLogins && isMultipleLogins) ? "chooselogin" : dashboardRoute; // Navigate to chooselogin if multiple login is enabled!
+    const chooseRoute = (hasMultipleLogins && isMultipleLogins) ? "choose-login" : dashboardRoute; // Navigate to chooselogin if multiple login is enabled!
     if(redirect === "livixius"){
       navigate(`/${id}-${lodgeName}/${chooseRoute}`, { replace: true })
     } else {
@@ -139,7 +90,7 @@ const Login = () => {
         username: username,
         password: password
       }
-      axios.post(`${Variables.hostId}/loginlodge`, credentials)
+      connector.post(`${Variables.hostId}/loginlodge`, credentials)
         .then(async res => {
           setMessage("Validating your credentials...")
           if (res.data.success) {
@@ -154,29 +105,16 @@ const Login = () => {
                 show: true,
                 header: res.data.isLockedMessage,
               }
-
               populateModal(data);
             } else {
-              setMessage("Validating your config file...");
-              
-              const defaultData = {
-                "gstin" : res.data.gstin,
-                "pan" : res.data.pan,
-                "owner-name" : res.data.name,
-                "owner-number" : res.data.number,
-                "lodge-name": res.data.lodgename,
-                "redirectTo": res.data.redirect,
-                "loggedInID": res.data.loginId,
-                "multipleLogin" : res.data.multipleLogins
-              }
-              
-              defaultStorage(defaultData);
-              // Set the preferences in global collection, Incase of any refresh happens, the widgettile collection will be fetched from roomslist or from navbar!
+              setMessage('Fetching config file...');
+              this.appStartUpUtils = new AppStartupUtils({accId: res.data.hostId});
+              // Set the preferences in global collection, In case of any refresh happens, the widgettile collection will be fetched from roomslist or from navbar!
               CollectionInstance.setCollections('widgetTileCollections', res.data.preferences);
-              await checkConfig(res.data.hostId, res.data.lodgename); // Check for config matrix
-              await checkOptions(res.data.hostId, res.data.lodgename); // Check for the config cabinets!
+              await checkConfig(); // Check for config matrix
               // Before navigating the user to the corresponding dashboards, Register the service worker for push notifications.
               _registerPushNotifications();
+              setLoading(false);
               navigateUser(res.data.hostId, res.data.lodgename, res.data.redirect, res.data.hasMultipleLogins, res.data.multipleLogins, res.data.preferences); // Navigate to the dashboard
             }
           } else {
@@ -211,7 +149,7 @@ const Login = () => {
   
   useEffect(() => {
     // Check for local host instance, If its local host, block the request.
-    if(_checkForSecureConnections()){
+    if(!_checkForSecureConnections()){
       setLoading(true);
     }
     localStorage.clear();

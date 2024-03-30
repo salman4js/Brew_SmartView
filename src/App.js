@@ -1,6 +1,6 @@
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import Login from './components/Login';
+import AppStartUpWrapper from "./components/startup/app.startup";
 import Admin from './components/Config/Admin';
 import Client from './components/Config/Client';
 import ChooseLogin from './components/LoginAs/choose.login';
@@ -12,12 +12,12 @@ function App() {
     <div>
       <Router>
         <Routes>
-          <Route path = "/login" exact element = {<Login />} />
+          <Route path = "/startup" exact element = {<AppStartUpWrapper />} />
           <Route path = "/admin-config" exact element = {<Admin />} />
           <Route path = "/:id/client-config" exact element = {<Client />} />
-          <Route path = "/:id/chooselogin" exact element = {<ChooseLogin /> } />
+          <Route path = "/:id/choose-login" exact element = {<ChooseLogin /> } />
           <Route path = "/windowprint" element = {<WindowPrint />} />
-          <Route path = "/:id/dashboardcontainer" exact element = {<DashboardInitializer />} />
+          <Route path = "/:id/dashboard-container" exact element = {<DashboardInitializer />} />
         </Routes>
       </Router>
     </div>

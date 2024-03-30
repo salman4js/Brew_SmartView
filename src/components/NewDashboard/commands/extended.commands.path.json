@@ -8,5 +8,7 @@
   "./commands.initialize/commands.generate.receipt.js",
   "./commands.initialize/commands.move.to.next.state.js",
   "./commands.initialize/commands.edit.js",
-  "./commands.initialize/commands.delete.js"
+  "./commands.initialize/commands.delete.js",
+  "./commands.initialize/commands.switch.account.js",
+  "./commands.initialize/commands.logout.js"
 ]

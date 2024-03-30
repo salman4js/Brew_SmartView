@@ -152,18 +152,15 @@ const ChooseLogin = () => {
           "loggedInUser": result.data.loggedInUser,
           "loggedInAsRecep": result.data.loggedInAsRecep
         };
-        // User preference to determine the navigation route!
-        var userPreferenceDashboard = CollectionInstance.getModel('widgetTileCollections', 'dashboardVersion');
-        const loginRoute = userPreferenceDashboard ? 'dashboardcontainer' : "dashboard"
         defaultStorage(storageData);
-        navigateUser(loginRoute);
+        navigateUser('dashboard-container');
       } else {
         _loginAsError(true, result.data.message);
       }
     }
   }
   
-  // Show error incase of login error!
+  // Show error in case of login error!
   function _loginAsError(value, message){
     setCustomModal(prevState => ({...prevState, bodyFooter: value}));
   }

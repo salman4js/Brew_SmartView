@@ -6,7 +6,7 @@ import { activityLoader } from './common.functions/common.functions.view';
 import CustomModal from "./fields/customModalField/custom.modal.view";
 import StepperWizard from "./NewDashboard/dialogs/stepper.wizard/stepper.wizard.view";
 import MetadataFields from './fields/metadata.fields.view'
-import axios from 'axios';
+import connector from 'axios';
 import LogoTop from '../Assets/logo512.png';
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { getStorage } from '../Controller/Storage/Storage';
@@ -231,7 +231,7 @@ const Navbar = (props) => {
       // Check if the widget collection data already exists in collection instance!
       var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');
       if(!widgetTileCollection){
-        const result = await axios.post(`${Variables.hostId}/${splitedIds[0]}/getwidgettilecol`, options);
+        const result = await connector.post(`${Variables.hostId}/${splitedIds[0]}/getwidgettilecol`, options);
         CollectionInstance.setCollections('widgetTileCollections', result.data.data);
       };
       setCheckboxValueWithPref();
@@ -241,7 +241,7 @@ const Navbar = (props) => {
     function setCheckboxValueWithPref(){
       var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections');
       var collection = Object.keys(widgetTileCollection.data);
-      for (var model of collection){
+      for (var model of collection.entries()){
         if(typeof widgetTileCollection.data[model] === 'object'){
           updateMetadataFields(model, {value: true}, checkboxField, setCheckboxField)
         } else {
@@ -324,7 +324,7 @@ const Navbar = (props) => {
       const fieldValue = nodeConvertor(checkboxField);
       var datesBetweenPref = fieldValue.datesBetweenCount || 3; // 3 being the default value of the datesBetween pref.
       fieldValue.datesBetween = brewDate.getBetween(brewDate.getFullDate('yyyy/mm/dd'), brewDate.addDates(brewDate.getFullDate('yyyy/mm/dd'), datesBetweenPref));
-      const result = await axios.post(`${Variables.hostId}/${splitedIds[0]}/updatepref`, fieldValue); 
+      const result = await connector.post(`${Variables.hostId}/${splitedIds[0]}/updatepref`, fieldValue);
       if(result.data.success){
         CollectionInstance.removeCollections('widgetTileCollections'); // WHen the preference updated, Remove the existing collection!
         CollectionInstance.setCollections('widgetTileCollections', result.data.data); // And then update with the new preference collections!

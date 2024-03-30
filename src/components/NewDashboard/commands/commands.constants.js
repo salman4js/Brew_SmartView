@@ -77,6 +77,14 @@ var commandsConstant = Object.freeze({
         generateReceipt: 'Generate Receipt'
     }),
 
+    LOG_OUT: Object.freeze({
+       logOut: 'Log Out'
+    }),
+
+    SWITCH_ACCOUNT: Object.freeze({
+        switchAccount: 'Switch Account'
+    }),
+
     DELETE_CONTROLLER: Object.freeze({
        deleteController: 'Delete',
        voucherTracker: {
@@ -154,10 +162,14 @@ var commandsConstant = Object.freeze({
         favoritesCheckin: ['favorites'],
         exportToExcel: ['history', 'afterCheckin', 'voucherTracker'],
         moreDetails: ['history'],
+        selectedModel: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned', 'inCleaning',
+        'history', 'paymentTrackerView', 'voucherTracker', 'multipleLogin'],
         generateReceipt: ['paymentTrackerView', 'logTable'],
         moveToNextState: ['afterCheckedout', 'inCleaning'],
         deleteAction: ['voucherTracker', 'multipleLogin'],
-        editAction: ['voucherTracker', 'multipleLogin']
+        editAction: ['voucherTracker', 'multipleLogin'],
+        logOut: ['app-header'],
+        switchAccount: ['app-header']
     })
 });
 

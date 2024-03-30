@@ -1,4 +1,4 @@
-const axios = require('axios');
+import connector from "../utils/connector";;
 const Variables = require('../Variables');
 
 class LogTableUtils {
@@ -10,7 +10,7 @@ class LogTableUtils {
   
   // Fetch log table data!
   async fetchLogTableData(){
-    return await axios.get(`${this.baseUrl}/${this.userId}/getallentries`);
+    return await connector.get(`${this.baseUrl}/${this.userId}/getallentries`);
   };
   
 };

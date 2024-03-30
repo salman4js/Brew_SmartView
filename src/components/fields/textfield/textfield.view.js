@@ -36,7 +36,7 @@ class TextField extends React.Component {
   _showInlineToast(){
     return(
         this.props.data.inlineToast.isShow && (
-            <small className="inline-toast-view">
+            <small className="inline-toast-view" style = {{color: this.props.data?.inlineToast?.inlineToastColor || 'red'}}>
               {this.props.data.inlineToast.inlineMessage}
             </small>
   )

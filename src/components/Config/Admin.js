@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import connector from "../utils/connector";
 import Success from './ToastHandler/Success';
 import Variables from '../Variables';
 
@@ -37,7 +37,7 @@ const Admin = () => {
       name: name,
       number: number
     }
-    axios.post(`${Variables.hostId}/addlodge`, data)
+    connector.post(`${Variables.hostId}/addlodge`, data)
       .then(res => {
         if (res.data.success) {
           setSuccess(!success);

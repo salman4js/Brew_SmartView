@@ -428,7 +428,7 @@ const CheckinForm = (props) => {
   async function _getExcludeDates(){
     _toggleLoader(true);
     var excludeDates = [];
-    var result = await prebookExcludeDates(props.data.roomModel._id);
+    var result = await prebookExcludeDates({roomModelId: props.data.roomModel._id});
     if(result.success){
         result.message.map((options) => {
           excludeDates.push(new Date(options));
