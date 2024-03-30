@@ -1,18 +1,17 @@
 import {getStorage} from "../../Controller/Storage/Storage";
 
+const connector = require('../utils/connector');
 const saveAs = require('file-saver');
-const axios = require('axios');
 const storage = require("../../Controller/Storage/Storage");
 const _ = require('lodash');
 
 // Get parsed url!
 export function getParsedUrl(){
   var url = window.location.href;
-  const parsedUrl = new URL(url);
-  return parsedUrl;
+  return new URL(url);
 };
 
-// Ge the base url!
+// Get the base url!
 export function getBaseUrl(){
   var parsedUrl = getParsedUrl();
   return `${parsedUrl.protocol}//${parsedUrl.host}`;
@@ -234,7 +233,9 @@ export function _enableInlineToast(nodeValue, nodeStatus, state, setState){
 
      // If the object is found, update the isShow property
      if (targetObjectIndex !== -1) {
-       updatedInputField[targetObjectIndex].inlineToast.isShow = !nodeStatus;
+       if(updatedInputField[targetObjectIndex].inlineToast){
+         updatedInputField[targetObjectIndex].inlineToast.isShow = !nodeStatus;
+       }
      }
 
      // Set the modified copy of the inputField array back into the state
@@ -518,7 +519,7 @@ export function downloadContent(options){
     saveAs(options.content, options.fileName);
     return true;
   } else {
-    axios.get(options.downloadUrl).then((result) => {
+    connector.get(options.downloadUrl).then((result) => {
       var blob = new Blob([result.data]);
       saveAs(blob, options.filename);
       return true;

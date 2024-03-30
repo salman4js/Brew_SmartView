@@ -4,7 +4,7 @@ import brewDate from 'brew-date';
 import CheckoutUtils from "../../../utils/checkout.form.utils";
 import checkoutViewConstants from './checkout.form.constants';
 import MetadataModelState from './metadata.model.state/maintainance.log.model.state';
-import metadataFieldTemplatestate from "../../../fields/metadata.field.templatestate";
+import MetadataFieldTemplateState from "../../../fields/metadata.field.templatestate";
 import CustomModal from "../../../fields/customModalField/custom.modal.view";
 import MetadataFields from '../../../fields/metadata.fields.view';
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
@@ -554,7 +554,7 @@ class CheckOutView extends React.Component {
         var requiredKeys, propertyData, metadataFieldState, propertyConstants, userModel;
         userModel = _.clone(this.state.userModel);
         userModel['amountFor'] = undefined; userModel['dateTime'] = undefined; userModel['updatedAdvance'] = undefined; userModel['roomId'] = undefined;
-        metadataFieldState = _.clone(metadataFieldTemplatestate.metadataFieldState);
+        metadataFieldState = _.clone(MetadataFieldTemplateState.textField);
         propertyConstants = _.clone(checkoutViewConstants.TEMPLATE_LABEL_FOR_EDIT_CUSTOMER_DETAILS);
         // Check if date of checkin editable is configured or not...
         if(!this.getIsDateOfCheckinEditable()){

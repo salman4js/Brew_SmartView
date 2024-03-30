@@ -1,7 +1,7 @@
 import { moveToNextState } from "../../utils/room.status.utils";
 import {getParsedUrl} from "../../common.functions/node.convertor";
 import lang from "./commands.constants";
-const axios = require('axios');
+import connector from "../../utils/connector";
 const Variables = require('../../Variables');
 
 class CommandsConnector {
@@ -9,13 +9,13 @@ class CommandsConnector {
 
     // Export to excel connector.
     static async onExportToExcel(options){
-        return await axios.post(`${Variables.Variables.hostId}/${options.lodgeId}/exporttocsv`, options);
+        return await connector.post(`${Variables.Variables.hostId}/${options.lodgeId}/exporttocsv`, options);
     };
 
     // Fetch selected history node data.
     static async fetchSelectedHistoryNode(options){
       // selectedNodes takes array of selected nodes ids.
-      return await axios.get(`${Variables.Variables.hostId}/${options.accId}/${options.roomId}/${JSON.stringify(options.selectedNodes)}/historynode`)
+      return await connector.get(`${Variables.Variables.hostId}/${options.accId}/${options.roomId}/${JSON.stringify(options.selectedNodes)}/historynode`)
     };
 
     static async _getCustomHTMLContent(options){
@@ -31,7 +31,7 @@ class CommandsConnector {
     };
 
     static async _getCustomHTMLContentFromDB(options){
-      return await axios.get(`${Variables.Variables.hostId}/${options.accId}/${options.templateName}/getcustomtemplate`);
+      return await connector.get(`${Variables.Variables.hostId}/${options.accId}/${options.templateName}/getcustomtemplate`);
     };
 
     static async moveToNextState(options){

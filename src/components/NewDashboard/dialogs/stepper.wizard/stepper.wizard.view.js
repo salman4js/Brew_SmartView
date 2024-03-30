@@ -31,7 +31,9 @@ class StepperWizard extends React.Component {
   };
   
   // Onclick close stepper wizard!
-  closeWizardOnClick(){
+  closeWizardOnClick(event){
+    event.preventDefault();
+    event.stopPropagation();
     this.state.data.onHide();
   };
   
@@ -43,7 +45,9 @@ class StepperWizard extends React.Component {
   
   // Render passed footer view!
   renderPassedFooter(){
-    return this.state.data.footerView()
+    if(this.state.data.enableFooter){
+      return this.state.data.footerView()
+    }
   };
   
   // Update the state value if the parent props changes!

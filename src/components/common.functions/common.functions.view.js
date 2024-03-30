@@ -15,6 +15,7 @@ export function _renderNavbar(id, splitedIds, refreshState, goToLocation){
 function getStyle(options){
   return{
     marginTop: options.marginTop,
+    marginBottom: options.marginBottom,
     color: options.color,
     textAlign: options.textCenter ? "center" : "none",
     marginLeft: options.marginLeft,

@@ -5,8 +5,7 @@ export function setStorage(key, value){
 
 // Get the specific session storage values!
 export function getStorage(key){
-    const result = sessionStorage.getItem(key);
-    return result;
+    return sessionStorage.getItem(key);
 }
 
 // Store into the session storage multiple values!
@@ -18,12 +17,11 @@ export function defaultStorage(data){
 
 // Clear particular item from the storage!
 export function removeItemStorage(key){
-  const result = sessionStorage.removeItem(key);
-  return result;
+    return sessionStorage.removeItem(key);
 }
 
 // Clear the session storage!
-export function clearStorage(){
-    const result = sessionStorage.clear();
-    return result;
+export function clearStorage(name){
+    document.cookie = name +'=; path=/';
+    return sessionStorage.clear();
 }

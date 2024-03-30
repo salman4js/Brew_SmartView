@@ -1,8 +1,7 @@
 import {getStorage} from "../../Controller/Storage/Storage";
 import {getParsedUrl} from "./node.convertor";
-
 const brewDate = require("brew-date");
-const axios = require("axios");
+const connector = require('../utils/connector');
 const Variables = require("../Variables");
 const storage = require("../../Controller/Storage/Storage")
 
@@ -95,7 +94,7 @@ export async function getExtraBedPrice(roomType, lodgeId){
   const values = {
       suitename: roomType
   }
-  await axios.post(`${Variables.Variables.hostId}/${lodgeId}/getprice`, values)
+  await connector.post(`${Variables.Variables.hostId}/${lodgeId}/getprice`, values)
     .then(res => {
       if(res.data.success){
         res.data.message.map((options, key) => {

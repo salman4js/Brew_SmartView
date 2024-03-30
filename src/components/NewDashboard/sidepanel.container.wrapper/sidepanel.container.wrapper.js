@@ -6,7 +6,7 @@ import SidepanelContainerSearchView from "./sidepanel.container.search.view";
 import SidepanelContainerVoucherTrackerView from "./sidepanel.container.voucher.tracker.view";
 import SidepanelContainerInsightsSearchView from "./sidepanel.container.insights.search.view/sidepanel.container.insights.search.view";
 import { getAvailableRoomTypes, getUserModel } from '../../utils/sidepanel.container.utils';
-import {getRoomList} from "../../utils/payment.tracker.utils";
+import {getRoomList} from "../../utils/user.preference.utils";
 import { getStatusCodeColor, formatDate } from '../../common.functions/common.functions';
 import {
   updateMetadataFields,
@@ -18,12 +18,11 @@ import { activityLoader } from '../../common.functions/common.functions.view';
 import CustomModal from "../../fields/customModalField/custom.modal.view";
 import MetadataTableView from '../../metadata.table.view/metadata.table.view';
 import MetadataFields from '../../fields/metadata.fields.view';
-import metadataFieldTemplatestate from "../../fields/metadata.field.templatestate";
+import MetadataFieldTemplateState from "../../fields/metadata.field.templatestate";
 import PanelView from '../../SidePanelView/panel.view';
 import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view';
 import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
-import {getStorage} from "../../../Controller/Storage/Storage";
 
 const SidepanelWrapper = (props, ref) => {
 
@@ -337,7 +336,7 @@ const SidepanelWrapper = (props, ref) => {
   function _toggleCustomModal(data, e, value){
     e && e.stopPropagation();
     var requiredKeys, propertyData, metadataFieldState, propertyConstants;
-    metadataFieldState = _.clone(metadataFieldTemplatestate.metadataFieldState);
+    metadataFieldState = _.clone(MetadataFieldTemplateState.textField);
     propertyConstants = _.clone(sidepanelConstants.TEMPLATE_LABEL);
     propertyConstants.suiteName.options = _getRoomTypes();
     requiredKeys = Object.keys(propertyConstants);
@@ -373,6 +372,8 @@ const SidepanelWrapper = (props, ref) => {
     if(result.data.success){
       setSidepanel(prevState => ({...prevState, parentData: result.data.message}));
       fetchRoomsLists();
+    } else {
+      props.params.navigateInto({path: '/rejected'});
     }
   };
 
@@ -394,6 +395,8 @@ const SidepanelWrapper = (props, ref) => {
       var userModel = await fetchUserModel();
       props.updatePropertyDetails(result.data.message, result.data.countAvailability, result.data.roomStatus, userModel); // Send the property details to the dashboard container!
       _toggleLoader(false);
+    } else {
+      props.params.rejectPerspective();
     }
   };
 

@@ -34,7 +34,7 @@ class CommandsSelectedModel {
                 }
             ],
         }
-        this.currentSelectedNodesCount = this.status.nodes.length;
+        this.currentSelectedNodesCount = this.status?.nodes?.length || 0;
     };
 
     getSelectedModelsTemplate(){
@@ -46,7 +46,7 @@ class CommandsSelectedModel {
     };
 
     enabled(){
-      return this.status.nodes.length >= 1;
+      return lang.isCommandsEnabled.selectedModel.includes(this.status.roomConstantKey) && this.status.nodes.length >= 1;
     };
 
     execute(){

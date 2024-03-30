@@ -8,7 +8,7 @@ export function templateHelpers(options){
             <span>
               {options.propsData.header}
             </span>
-            <span className="stepper-wizard-close" onClick = {() => options.closeWizard()}>&times;</span>
+            <span className="stepper-wizard-close" onClick = {(event) => options.closeWizard(event)}>&times;</span>
           </div>
           <div className = 'stepper-wizard-body' style = {{height: options.bodyViewHeight - 100}}>
             {options.callBodyView()}

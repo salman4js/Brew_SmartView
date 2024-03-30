@@ -82,7 +82,7 @@ class Collections { // Design pattern --> Singleton class!
     }
   };
   
-  // Remove particular models and colletion from the widget tile model schema!
+  // Remove particular models and collection from the widget tile model schema!
   removeCollections(collectionName, data, modelName){
     if(modelName){
       var models = widgetTileModelSchema.collections[collectionName].data,

@@ -1,8 +1,8 @@
-const axios = require("axios");
+import connector from "../utils/connector";
 const Variables = require("../Variables")
 
 
 // Multiple loginAs call!
 export async function loginAs(fieldData){
-  return await axios.post(`${Variables.Variables.hostId}/${fieldData.lodge}/loginas`, fieldData);
+  return await connector.post(`${Variables.Variables.hostId}/${fieldData.lodge}/loginas`, fieldData);
 }

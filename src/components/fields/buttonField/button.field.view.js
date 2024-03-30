@@ -8,6 +8,7 @@ const ButtonField = (props) => {
     className = props.data.disabled ? className + ' disabled' : className;
     className = props.data.occupyFullSpace ? className + ' occupyFullSpace' : className;
     className = props.data.isDark ? className + ' btn btn-dark' : className;
+    className = props.data.customClass ? className + ' ' + props.data.customClass : className;
     return className;
   };
 

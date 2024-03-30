@@ -1,6 +1,6 @@
 import {_updateInsightsCount} from "../NewDashboard/dashboard.utils.helper/form.utils.helper";
 
-const axios = require('axios');
+import connector from "../utils/connector";;
 const Variables = require("../Variables");
 const {shouldAddToCollections, addToCollections, removeModelsFromCollections,
    _updateRoomListCollection, _updateWidgetTileCollections,  _updateWidgetTileCount, checkForPaymentTrackerData} = require('../NewDashboard/dashboard.utils.helper/form.utils.helper');
@@ -11,7 +11,7 @@ export async function checkInFormValue(data){
   checkForPaymentTrackerData(data, 'check-in');
   // Check if the checkin customer details has to be added in the upcomingCheckout widget collection!
   var updateCollections = shouldAddToCollections(data, 'check-in');
-  var result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/adduserrooms`, data);
+  var result = await connector.post(`${Variables.Variables.hostId}/${data.lodgeId}/adduserrooms`, data);
   // After the data has been synced with the server, Add the user collection to the global.collections!
   result.data.success && _updateInsightsCount('todayArrival', 'INC');
   result.data.success && _updateInsightsCount('currentCheckedIn', 'DEC');
@@ -28,7 +28,7 @@ export async function checkInFormValue(data){
 // Checkout form values!
 export async function checkoutFormValue(data){
   data._id = data.userid; // To blend in with _updateWidgetTileCollections method.
-  var result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteuser`, data);
+  var result = await connector.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteuser`, data);
   result.data.success &&   _updateInsightsCount('todayCheckout', 'INC');
   result.data.success && _updateInsightsCount('currentCheckedIn', 'DEC');
   result.data.success && _updateWidgetTileCollections('upcomingCheckout', data, 'DELETE');
@@ -44,7 +44,7 @@ export async function checkoutFormValue(data){
 export async function prebookFormValue(data){
   // Check if the prebook customer details has to be added in the upcomingPrebook widget collection!
   var updateCollections = shouldAddToCollections(data, 'pre-book');
-  const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/addprebookuserrooms`, data);
+  const result = await connector.post(`${Variables.Variables.hostId}/${data.lodgeId}/addprebookuserrooms`, data);
   // After the data has been synced with the server, Add the user collection to the global.collections!
   result.data.success && updateCollections && addToCollections('upcomingPrebook', result.data.updatedUserModel); // This is for the default.view (New dashboard tile view)
   result.data.success && updateCollections && _updateWidgetTileCount('upcomingPrebook', 'INC');
@@ -59,7 +59,7 @@ export async function prebookFormValue(data){
 // Remove prebook data for the room model.
 export async function removePrebookData(data){
   var updateCollection = shouldAddToCollections(data, 'pre-book');
-  const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteprebookuserrooms`, data);
+  const result = await connector.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteprebookuserrooms`, data);
   result.data.success && _updateRoomListCollection(data, 'DELETE', 'pre-book');
   result.data.success && _updateWidgetTileCollections('upcomingPrebook', result.data.updatedPrebookModel, 'DELETE');
   updateCollection && result.data.success && _updateWidgetTileCount('upcomingPrebook', 'DEC');
@@ -69,7 +69,7 @@ export async function removePrebookData(data){
 // Edit prebook user details and also update the widgettileCollections upcomingPrebook model.
 export async function editPrebookDetails(data){
   var shouldUpdateCollections = shouldAddToCollections(data, 'edit-prebook');
-  const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/editprebookedrooms`, data);
+  const result = await connector.post(`${Variables.Variables.hostId}/${data.lodgeId}/editprebookedrooms`, data);
   shouldUpdateCollections && result.data.success && _updateWidgetTileCollections('upcomingPrebook', result.data.updatedPrebookModel, 'EDIT');
   return result;
 };
@@ -77,7 +77,7 @@ export async function editPrebookDetails(data){
 // Edit occupied customer data and also update the userModel in the upcomingCheckout widgetTile collection as well userCollections.
 export async function editOccupiedUserModel(data){
   var shouldUpdateCollections = shouldAddToCollections(data, 'edit-checkin');
-  const result = await axios.put(`${Variables.Variables.hostId}/${data.lodgeId}/updateoccupieddata`, data);
+  const result = await connector.put(`${Variables.Variables.hostId}/${data.lodgeId}/updateoccupieddata`, data);
   // Determine the action based on the datesBetweenCount user preferences.
   const action = shouldUpdateCollections ? 'EDIT' : 'DELETE';
   shouldAddToCollections && result.data.success && _updateWidgetTileCollections('upcomingCheckout', result.data.updatedUserModel, action);
@@ -86,7 +86,7 @@ export async function editOccupiedUserModel(data){
 
 // Edit existing room model and also update the roomsListCollection.
 export async function editRoomModel(data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/roomupdater`, data);
+  const result = await connector.post(`${Variables.Variables.hostId}/${data.lodgeId}/roomupdater`, data);
   if(result.data.success){
     // Modify the result.data.updatedData just to update the room list collections.
     result.data.updatedData['roomId'] = data.roomId;
@@ -97,14 +97,14 @@ export async function editRoomModel(data){
 
 // Delete the existing room model.
 export async function deleteRoomModel(data){
-  const result = await axios.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteroom`, data);
+  const result = await connector.post(`${Variables.Variables.hostId}/${data.lodgeId}/deleteroom`, data);
   result.data.success && _updateRoomListCollection(data, 'DELETE');
   return result;
 };
 
 // Pre book exclude dates!
-export const prebookExcludeDates = async (props) => {
-  const res = await axios.get(`${Variables.hostId}/${props}/excludedates`);
+export const prebookExcludeDates = async (options) => {
+  const res = await connector.get(`${Variables.Variables.hostId}/${options.roomModelId}/excludedates`);
   return res.data;
 };
 

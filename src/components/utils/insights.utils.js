@@ -1,5 +1,5 @@
 import bwt from "brew-date";
-import axios from "axios";
+import connector from "../utils/connector";
 import Variables from "../Variables";
 import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
 
@@ -50,7 +50,7 @@ class InsightsUtils {
     async fetchInsightsCollections(options){
         const filters = encodeURIComponent(JSON.stringify(this._getFilters(options))),
             selectedDates = encodeURIComponent(JSON.stringify(this._getSelectedDates(options)));
-        return await axios.get(`${Variables.hostId}/${this.options.accId}/${filters}/${selectedDates}/insights-filter`).then((result) => {
+        return await connector.get(`${Variables.hostId}/${this.options.accId}/${filters}/${selectedDates}/insights-filter`).then((result) => {
             if(result.data.success){
                 const parsedResult = this._resultParser(result.data.result);
                 return this._prepareChartData(this._getSelectedDates(options), parsedResult);

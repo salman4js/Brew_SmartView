@@ -49,22 +49,9 @@
   left: 20px
 }
 
-.loginSection {
-  padding: 9px;
-  position: relative;
-  top: 150px;
-}
-
 .toggleButton {
   position: relative;
   right: 20px;
-}
-
-
-
-.heading-div2 {
-  position: relative;
-  top: 150px;
 }
 
 .form-control-inline {
@@ -159,10 +146,6 @@
   font-size: 11px;
   color: white;
   text-align: center;
-}
-
-.heading-top {
-  font-weight: bold;
 }
 
 .grid-system {
@@ -1031,12 +1014,6 @@ td {
   margin-left: 4px;
   padding: 4px;
   background-color: #d7d8d9;
-}
-
-.metadata-navbar-rightside{
-  position: absolute;
-  right: 0;
-  padding-right: 150px;
 }
 
 .metadata-navbar-container{

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import connector from "../../../utils/connector";
 import lang from '../commands.constants';
 import {convertObjectValue, formQueryParams, getBaseUrl} from "../../../common.functions/node.convertor";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
@@ -104,7 +104,7 @@ class CommandsGenerateReceipt {
     // Fetch data for selected nodes!
     async fetchDataForNodes(){
         var options = {nodes: this.status.nodes, widgetValue: this.status.roomConstantKey}
-        var result = await axios.post(`${this.baseUrl.serverSide}/generatereceipt`, options);
+        var result = await connector.post(`${this.baseUrl.serverSide}/generatereceipt`, options);
         return result;
     };
 }

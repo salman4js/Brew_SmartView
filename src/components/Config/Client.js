@@ -3,7 +3,7 @@ import Variables from '../Variables';
 import Success from './ToastHandler/Success'
 import Error from './ToastHandler/Error';
 import Feed from './Configure_Transport/Feed_tMode/Feed';
-import axios from 'axios';
+import connector from "../utils/connector";
 import BlockActions from "../fields/block.actions.view/block.actions.view";
 import {nodeConvertor} from '../common.functions/node.convertor';
 import MetadataFields from "../fields/metadata.fields.view";
@@ -442,7 +442,7 @@ const Client = () => {
 
     // Get the config options from the server
     const showConfig = () => {
-        axios.get(`${Variables.hostId}/${splitedIds[0]}/config-get`)
+        connector.get(`${Variables.hostId}/${splitedIds[0]}/config-get`)
             .then(res => {
                 if (res.data.success) {
                     setOptions(res.data.message);
@@ -455,7 +455,7 @@ const Client = () => {
     // Show applied config from the server!
     const checkConfig = () => {
         setLoading(true)
-        axios.get(`${Variables.hostId}/${splitedIds[0]}/config-checking`)
+        connector.get(`${Variables.hostId}/${splitedIds[0]}/config-checking`)
             .then(res => {
                 if (res.data.success) {
                     setValue(res.data.message);
@@ -469,7 +469,7 @@ const Client = () => {
     // Check Matrix Data!
     const checkMatrix = () => {
         setLoading(true)
-        axios.get(`${Variables.hostId}/${splitedIds[0]}/check-matrix`)
+        connector.get(`${Variables.hostId}/${splitedIds[0]}/check-matrix`)
             .then(res => {
                 if(res.data.success){
                     setIsGst(res.data.object.isGstEnabled);
@@ -509,7 +509,7 @@ const Client = () => {
         const data = {
             id: id
         }
-        axios.post(`${Variables.hostId}/${splitedIds[0]}/delete-config`, data)
+        connector.post(`${Variables.hostId}/${splitedIds[0]}/delete-config`, data)
             .then(res => {
                 if (res.data.success) {
                     setLoader(false);
@@ -544,7 +544,7 @@ const Client = () => {
             config: dropdown,
             id: splitedIds[0]
         }
-        axios.post(`${Variables.hostId}/${splitedIds[0]}/create-config`, data)
+        connector.post(`${Variables.hostId}/${splitedIds[0]}/create-config`, data)
             .then(res => {
                 if (res.data.success) {
                     setLoader(false);
@@ -596,7 +596,7 @@ const Client = () => {
       var fieldData = getFieldData(metadataField);
       setLoading(true);
       fieldData['templateName'] = templateName;
-      var result = await axios.post(`${Variables.hostId}/${splitedIds[0]}/savecustomtemplate`, fieldData);
+      var result = await connector.post(`${Variables.hostId}/${splitedIds[0]}/savecustomtemplate`, fieldData);
       if(result.data.status){
           setLoading(false);
           setSuccess(!success);
@@ -640,7 +640,7 @@ const Client = () => {
             customHtmlContent: customHtmlConfiguration
         }
 
-        axios.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
+        connector.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
             .then(resp => {
                 if (resp.data.success) {
                     setSuccess(!success)
@@ -662,7 +662,7 @@ const Client = () => {
     
     // Get the room status of the lodge for configuration!
     async function getRoomStatus(){
-      await axios.get(`${Variables.hostId}/${splitedIds[0]}/getallroomstatus`)
+      await connector.get(`${Variables.hostId}/${splitedIds[0]}/getallroomstatus`)
         .then(res => {
           if(res.data.success){
             setRoomStatus(prevState => ({...prevState, name: res.data.infoMessage}))
