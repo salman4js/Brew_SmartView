@@ -123,7 +123,7 @@ class SidepanelContainerVoucherTrackerView extends React.Component {
         return voucherListPanelCollectionView.map((voucherCollection) => {
             return(
                 <CollectionView data = {sidepanelConstants.voucherListParentCollection[voucherCollection].value} ignoreTreePref = {true}
-                options = {{isExpanded: true, showInlineMenu: true, inlineAction: () => this._createNewVoucherModel()}}
+                options = {{isExpanded: true, showInlineMenu: true, onMouseOverInlineAction: true, inlineAction: () => this._createNewVoucherModel()}}
                  showCollectionChildView = {() => this._renderPanelItemViewVoucherCollection(voucherCollection)}/>
             )
         });

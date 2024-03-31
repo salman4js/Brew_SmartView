@@ -88,6 +88,7 @@ class UserPreferenceSelection extends React.Component {
             field.name = preferenceKey;
             field.label = AppHeaderConstants.userPreferenceFieldValue[preferenceKey].label;
             field.customStyle = AppHeaderConstants.userPreferenceCheckboxCustomStyle;
+            field.restrictShow = AppHeaderConstants.userPreferenceFieldValue[preferenceKey].restrictShow;
             if(AppHeaderConstants.userPreferenceFieldValue[preferenceKey].restrictShow === false){
                 // Check for user permissions!
                 field.restrictShow = this.isLoggedInAsRecep();
