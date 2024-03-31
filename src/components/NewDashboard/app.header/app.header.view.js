@@ -6,8 +6,9 @@ import MetadataFieldTemplateState from "../../fields/metadata.field.templatestat
 import baseCommandsSetup from "../commands/base.commands.setup";
 import AppHeaderTemplate from "./app.header.template";
 import AppHeaderConstants from "./app.header.constants";
-import {getStorage} from "../../../Controller/Storage/Storage";
+import FacetsItemsFieldView from '../../fields/facetItemsField/facets.items.field.view';
 import UserPreferenceSelection from "./user.preference.selection/user.preference.selection";
+import {getStorage} from "../../../Controller/Storage/Storage";
 
 class AppHeaderView extends React.Component {
     constructor(props) {
@@ -44,10 +45,25 @@ class AppHeaderView extends React.Component {
         this.setState({footerFields: baseCommands});
     };
 
+    isLoggedInRecep(){
+      return JSON.parse(getStorage('loggedInAsRecep'));
+    };
+
+    isMultipleLoginEnabled(){
+      return JSON.parse(getStorage('multipleLogin'));
+    };
+
+    getLoggedInUser(){
+      return getStorage('loggedInUser');
+    };
+
     _prepareTemplateEventHelpers(){
       this.templateEventHelpers = {
           stepperWizard: this.state.stepperWizard,
-          stepperWizardBodyView: () => this._renderUserPreferenceView(),
+          multiLoginEnabled: () => this.isMultipleLoginEnabled(),
+          loggedAsRecep: () => this.isLoggedInRecep(),
+          loggedInUser: () => this.getLoggedInUser(),
+          stepperWizardBodyView: () => this._setUpFacetViewForUserPreference(),
           onUserSettingsIconClick: () => this.onUserSettingsClick()
       }
     };
@@ -69,12 +85,23 @@ class AppHeaderView extends React.Component {
         )
     };
 
+    _setUpFacetViewForUserPreference(){
+        var facetViewBodyOptions = this._renderUserPreferenceView();
+        return <FacetsItemsFieldView options = {{bodyOptions: facetViewBodyOptions, height: window.innerHeight - 100}}/>
+    };
+
     _renderUserPreferenceView(){
-        return(
-            <div className = 'app-header-userpreference-selection'>
-                <UserPreferenceSelection params = {this.props.params} refreshState = {() => this.props.refreshState()}/>
-            </div>
-        )
+        return[{
+            name: AppHeaderConstants.facetHeader.userPreference,
+            facetPosition: 'body',
+            view: () => {
+                return(
+                    <div className = 'app-header-userpreference-selection'>
+                        <UserPreferenceSelection params = {this.props.params} refreshState = {() => this.props.refreshState()}/>
+                    </div>
+                )
+            }
+        }]
     };
 
     templateHelpers(){

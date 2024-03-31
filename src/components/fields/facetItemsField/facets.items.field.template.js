@@ -26,7 +26,7 @@ function facetsItemFooterViewTemplate(options){
 
 export function facetBodyFieldPanelTemplate(options){
   return(
-      <div style = {{height: options.height + " px"}}>
+      <div className='facets-items-wrapper' style = {{height: options.height + " px"}}>
           {facetsItemsFieldTemplate(options.bodyOptions)}
           {options.isFooterEnabled && (
               <div className = 'facets-items-footerview'>
