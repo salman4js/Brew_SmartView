@@ -8,11 +8,25 @@ class AppHeaderTemplate {
     };
 
     _renderStepperWizardBody(){
-      return this.options.stepperWizardBodyView();
+      return (
+          <>
+              <div className='user-profile-region'>
+                  <div className='user-identifier'>
+                      <div className='user-profile'>
+                          <span>{this.options.loggedAsRecep() ? 'R' : 'M'}</span>
+                      </div>
+                  </div>
+                  <div className='user-letter'>
+                      {this.options.multiLoginEnabled() ? this.options.loggedInUser() : 'Manager'}
+                  </div>
+              </div>
+              {this.options.stepperWizardBodyView()}
+          </>
+      )
     };
 
-    _renderStepperWizard(){
-        return <StepperWizard data = {this.options.stepperWizard} bodyView = {(data) => this._renderStepperWizardBody(data)}/>
+    _renderStepperWizard() {
+        return <StepperWizard data={this.options.stepperWizard} bodyView={(data) => this._renderStepperWizardBody(data)}/>
     };
 
     _renderAppHeaderTemplate(){

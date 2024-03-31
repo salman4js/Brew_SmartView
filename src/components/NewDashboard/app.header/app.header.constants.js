@@ -39,8 +39,12 @@ const appHeaderConstants = Object.freeze({
             restrictShow: !JSON.parse(getStorage('multipleLogin'))
         },
         datesBetweenCount: {
-            label: 'Enable Dates Between'
+            label: 'Enable Dates Between',
+            attribute: 'stepperButtonField'
         }
+    },
+    facetHeader: {
+        userPreference: 'User Preference Settings'
     },
     preferenceSaveButtonKey: 'Apply & Save',
     constantKey: 'app-header'

@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from "lodash";
 import {_updateUserPreferences} from "../../../utils/user.preference.utils";
-import './user.preference.selection.css';
 import AppHeaderConstants from "../app.header.constants";
 import MetadataFieldTemplateState from "../../../fields/metadata.field.templatestate";
 import MetadataFields from "../../../fields/metadata.fields.view";
@@ -92,6 +91,9 @@ class UserPreferenceSelection extends React.Component {
             if(AppHeaderConstants.userPreferenceFieldValue[preferenceKey].restrictShow === false){
                 // Check for user permissions!
                 field.restrictShow = this.isLoggedInAsRecep();
+            }
+            if(AppHeaderConstants.userPreferenceFieldValue[preferenceKey].attribute){
+                field.attribute = AppHeaderConstants.userPreferenceFieldValue[preferenceKey].attribute;
             }
             userPreferenceField.push(field);
         });

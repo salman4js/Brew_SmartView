@@ -7,3 +7,42 @@
 .app-header-footer{
     width: 29em;
 }
+
+.app-header-userpreference-selection{
+    padding: 5px;
+}
+
+.user-profile-region{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #8fd19e;
+    height: 12em;
+}
+
+.user-identifier{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-profile{
+    background: lightblue;
+    border-radius: 50%;
+    width: 7em;
+    height: 7em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-profile span{
+    font-size: 3em;
+}
+
+.user-letter {
+    text-align: center;
+    font-size: 1.5em;
+}
+

@@ -1,6 +1,5 @@
 import React from 'react';
-import Tippy from '@tippy.js/react';
-import 'tippy.js/dist/tippy.css';
+import './collection.panel.view.css';
 
 
 const CollectionPanelView = (props) => {
