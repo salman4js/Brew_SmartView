@@ -35,8 +35,8 @@ const CollectionView = (props) => {
   
   // Show child view!
   function _showChildView(){
-    return <PanelItemView data = {props.data} onClick = {() => expandCollapseAction()}
-    showInlineMenu = {props.options?.showInlineMenu} inlineAction = {() => props.options?.inlineAction()}/>
+    return <PanelItemView data = {props.data} onClick = {() => expandCollapseAction()} customInlineMenu = {props.options?.customInlineMenu}
+    onMouseOverInlineAction = {props.options?.onMouseOverInlineAction} showInlineMenu = {props.options?.showInlineMenu} _renderCustomInlineMenu = {() => props.options?.inlineAction()}/>
   };
   
   // Persist user preference using props.data in session storage!

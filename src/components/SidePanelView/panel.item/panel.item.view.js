@@ -49,7 +49,6 @@ const PanelItemView = (props) => {
     setInlineAction(prevState => ({...prevState, mouseOver: false}))
   }
 
-  
   return(
     <div className = "file-items" onClick = {() => selectItem()} 
       onMouseOver = {() => _triggerMouseOver()} onMouseOut = {() => _triggerMouseOut()}
@@ -60,7 +59,10 @@ const PanelItemView = (props) => {
              ' (' + props.subData + ')'
          )}
        </span>
-       {props.showInlineMenu && inlineAction.mouseOver && (
+       {props.onMouseOverInlineAction && props.showInlineMenu && inlineAction.mouseOver && (
+         props.customInlineMenu ? (props._renderCustomInlineMenu && props._renderCustomInlineMenu()) :  _inlineMenu()
+       )}
+       {!props.onMouseOverInlineAction && props.showInlineMenu && (
          props.customInlineMenu ? (props._renderCustomInlineMenu && props._renderCustomInlineMenu()) :  _inlineMenu()
        )}
     </div>
