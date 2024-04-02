@@ -25,15 +25,15 @@ const appHeaderConstants = Object.freeze({
         },
         insights: {
             label: 'Enable Insights',
-            restrictShow: !JSON.parse(getStorage('isInsights'))
+            restrictShow: !(JSON.parse(getStorage('isInsights')))
         },
         voucherTracker: {
             label: 'Enable Voucher Tracker',
-            restrictShow: !JSON.parse(getStorage('is-linked-with-vouchers'))
+            restrictShow: !(JSON.parse(getStorage('is-linked-with-vouchers')))
         },
         multipleLogin: {
             label: 'Enable Manage Accounts',
-            restrictShow: !JSON.parse(getStorage('multipleLogin'))
+            restrictShow: !(JSON.parse(getStorage('multipleLogin')))
         },
         datesBetweenCount: {
             label: 'Enable Dates Between',
