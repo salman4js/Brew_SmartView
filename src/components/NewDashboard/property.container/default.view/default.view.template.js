@@ -21,24 +21,6 @@ export function templateHelpers(data){
   )
 };
 
-// <h3 className='heading-top topic-off'>
-//     {state.params.accIdAndName[1]} - Dashboard
-// </h3>
-// <div className="btn btn-primary">
-//     <span className="align-left">
-//         Booked Rooms:
-//         <span class="align-left-more badge text-bg-secondary">{state.data.reservedCount}</span>
-//     </span>
-//     <span className="align-left">
-//         Free Rooms:
-//         <span class="align-left-more badge text-bg-secondary">{state.data.countAvailability}</span>
-//     </span>
-//     <span className="align-left">
-//         Total Rooms:
-//         <span class="align-left-more badge text-bg-secondary">{state.data.totalCount}</span>
-//     </span>
-// </div>
-
 // Widget tile template helpers!
 export function widgetTileTemplateHelpers(widgetModel){
   return(
@@ -66,7 +48,7 @@ export function _renderCustomFieldTemplateHelpers(options){
 export function widgetTileBodyTemplateHelpers(options){
   return(
     <div className = 'widget-tile-body'>
-      {_.isFunction(options.stateCount) ? options.stateCount(options) : options.stateCount}
+      {_.isFunction(options.stateCount) ? options.stateCount(options) : (options.stateCount > 90 ? '90+' : options.stateCount)}
     </div>
   )
 };
