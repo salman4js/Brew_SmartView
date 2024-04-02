@@ -1,125 +1,106 @@
 import React from 'react';
-import _ from 'lodash';
+import _ from "lodash";
 import './app.header.view.css';
-import MetadataFields from "../../fields/metadata.fields.view";
-import MetadataFieldTemplateState from "../../fields/metadata.field.templatestate";
 import baseCommandsSetup from "../commands/base.commands.setup";
 import AppHeaderTemplate from "./app.header.template";
 import AppHeaderConstants from "./app.header.constants";
-import FacetsItemsFieldView from '../../fields/facetItemsField/facets.items.field.view';
-import UserPreferenceSelection from "./user.preference.selection/user.preference.selection";
-import {getStorage} from "../../../Controller/Storage/Storage";
+import MetadataFields from "../../fields/metadata.fields.view";
 
 class AppHeaderView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: true,
+            appHeaderCommands: undefined,
             stepperWizard: {
                 show: false,
-                header: AppHeaderConstants.userPreferenceConstants.header,
+                header: undefined,
                 enableFooter: true,
-                footerView: this._renderStepperWizardFooter.bind(this),
+                additionalParams: [],
+                passingProps: 'additionalParams',
+                footerView: this._renderStepperWizardFooterView.bind(this),
                 onHide: this._toggleStepperWizard.bind(this)
             },
-            footerFields: undefined
+            bodyView: undefined,
+            customState: undefined
         };
         this.params = this.props.params;
     };
+    
+    _prepareTemplateEventHelpers(){
+        this.state.isLoading && this._setUpAppHeaderCommands();
+        this.templateEventHelpers = {
+            appHeaderCommands: this.state.appHeaderCommands,
+            stepperWizard: this.state.stepperWizard,
+            stepperWizardBodyView: () => this._renderStepperWizardBodyView()
+        }
+    };
 
-    _getBaseCommands(){
-        var footerFields = [];
-        this.baseCommands = baseCommandsSetup({roomConstantKey: AppHeaderConstants.constantKey, params: this.params});
-        this.baseCommands.defaults.map((commands) => {
-            var metadataButtonField = _.clone(MetadataFieldTemplateState.buttonField);
+    _getAppHeaderCommands(){
+        var appHeaderCommands = [];
+        this.appHeaderCommands = baseCommandsSetup({roomConstantKey: AppHeaderConstants.appHeaderConstantKey,
+            params: this.params, state: this.state, _setState: (options) => this.updateStateComponent(options),
+            goToLocation: (options) => this.props.goToLocation(options),
+            dialogReady: () => this._toggleStepperWizard(true), refreshState: () => this.props.refreshState()});
+        this.appHeaderCommands.defaults.map((commands) => {
             if(!commands.disabled){
-                metadataButtonField.btnValue = commands.value;
-                metadataButtonField.onClick = commands.onClick;
-                footerFields.push(metadataButtonField);
+                appHeaderCommands.push(commands);
             }
         });
-        return footerFields;
+        return appHeaderCommands;
     };
 
-    _setUpStepperWizardFooter(){
-        var baseCommands = this._getBaseCommands();
-        this.setState({footerFields: baseCommands});
-    };
-
-    isLoggedInRecep(){
-      return JSON.parse(getStorage('loggedInAsRecep'));
-    };
-
-    isMultipleLoginEnabled(){
-      return JSON.parse(getStorage('multipleLogin'));
-    };
-
-    getLoggedInUser(){
-      return getStorage('loggedInUser');
-    };
-
-    _prepareTemplateEventHelpers(){
-      this.templateEventHelpers = {
-          stepperWizard: this.state.stepperWizard,
-          multiLoginEnabled: () => this.isMultipleLoginEnabled(),
-          loggedAsRecep: () => this.isLoggedInRecep(),
-          loggedInUser: () => this.getLoggedInUser(),
-          stepperWizardBodyView: () => this._setUpFacetViewForUserPreference(),
-          onUserSettingsIconClick: () => this.onUserSettingsClick()
-      }
-    };
-
-    onUserSettingsClick(){
-        this._toggleStepperWizard(true);
+    _setUpAppHeaderCommands() {
+        var appHeaderCommands = this._getAppHeaderCommands();
+        this.updateStateComponent({
+            key: 'appHeaderCommands',
+            value: appHeaderCommands,
+            nextFunc: () => this._toggleLoader(false)
+        });
     };
 
     _toggleStepperWizard(val){
         this.state.stepperWizard.show = val;
-        this.setState({stepperWizard: this.state.stepperWizard});
+        if(!val){
+            this.state.stepperWizard.header = undefined;
+            this.state.bodyView = undefined;
+            this.state.customState = undefined;
+        }
+        this.updateStateComponent({key: 'stepperWizard', value: this.state.stepperWizard});
     };
 
-    _renderStepperWizardFooter(){
-        return (
-            <div className = 'app-header-footer'>
-                <MetadataFields data = {this.state.footerFields}/>
-            </div>
-        )
+    _toggleLoader(val){
+      this.updateStateComponent({key: 'isLoading', value: val});
     };
 
-    _setUpFacetViewForUserPreference(){
-        var facetViewBodyOptions = this._renderUserPreferenceView();
-        return <FacetsItemsFieldView options = {{bodyOptions: facetViewBodyOptions, height: window.innerHeight - 100}}/>
+    _renderStepperWizardFooterView(){
+      return(
+          <div className = 'app-header-footer'>
+              <MetadataFields data = {this.state.customState} updateData = {(updatedData) => this.setState({customState: updatedData})}/>
+          </div>
+      )
     };
 
-    _renderUserPreferenceView(){
-        return[{
-            name: AppHeaderConstants.facetHeader.userPreference,
-            facetPosition: 'body',
-            view: () => {
-                return(
-                    <div className = 'app-header-userpreference-selection'>
-                        <UserPreferenceSelection params = {this.props.params} refreshState = {() => this.props.refreshState()}/>
-                    </div>
-                )
-            }
-        }]
+    _renderStepperWizardBodyView(){
+        return this.state.bodyView;
+    };
+
+    updateStateComponent(options){
+      this.setState({[options.key]: options.value}, () => {
+         _.isFunction(options.nextFunc) && options.nextFunc();
+      });
     };
 
     templateHelpers(){
         this._prepareTemplateEventHelpers();
-        var appHeaderTemplate = new AppHeaderTemplate(this.templateEventHelpers);
-        return appHeaderTemplate._renderAppHeaderTemplate();
-    };
-
-    componentDidMount() {
-        this._setUpStepperWizardFooter();
+        if(!this.state.isLoading){
+            const appHeaderTemplate = new AppHeaderTemplate(this.templateEventHelpers);
+            return appHeaderTemplate._renderAppHeaderTemplate();
+        }
     };
 
     render(){
-      return(
-          <>
-              {this.templateHelpers()}
-          </>
-      )
+      return this.templateHelpers();
     };
 }
 

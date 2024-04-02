@@ -256,6 +256,7 @@ const DashboardWrapper = (props, ref) => {
           updatedState[key] = prevState[key];
         }
       });
+
       return updatedState;
     });
   };

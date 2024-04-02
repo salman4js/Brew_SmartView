@@ -66,7 +66,7 @@ class InputAnalyser {
   // Analyse the user input for roomno as this phase will only consider room number as an input.
   analyzeInput(){
     this.getAllRoomsList();
-    // Check if the roomnumber is present in the roomsList model.
+    // Check if the room number is present in the roomsList model.
     if(!this.roomLists.includes(this.userInput)){
       return this.noIdeaResponse(defaultChatConstants.NO_IDEA_RES_CONSTANTS.no_room_exists);
     } else {
