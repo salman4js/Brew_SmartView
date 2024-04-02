@@ -65,7 +65,7 @@ const DashboardInitializer = (props) => {
   
   return(
     <>
-      <AppHeaderView params = {contextObj} refreshState = {() => refreshState()}/>
+      <AppHeaderView params = {contextObj} refreshState = {() => refreshState()} goToLocation = {(options) => goToLocation(options)} />
       <ModalAssist data = {modalAssistData} height={(value) => storeModalAssistHeight(value)}
       childView={() => dashboardWrapperView()} />
     </>

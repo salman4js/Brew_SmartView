@@ -1,10 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
 import CollectionInstance from '../../global.collection/widgettile.collection/widgettile.collection';
-import { getCurrentRoute } from '../common.functions/node.convertor';
+import {getCurrentRoute} from '../common.functions/node.convertor';
 import defaultChatConstants from './chat.default.constants';
 import './chat.performer.css';
-import { templateHelpers } from './chat.performer.template';
+import {templateHelpers} from './chat.performer.template';
 
 class ChatPerformer extends React.Component {
   constructor(props){
@@ -36,11 +36,10 @@ class ChatPerformer extends React.Component {
   
   // Get the targeted model from the room collection!
   getTargetedModel(targetedModelId){
-    var roomColl = CollectionInstance.getCollections('roomsListCollection').data,
-      targetedModel = _.find(roomColl, function(obj){
-        return obj._id === targetedModelId;
-      });
-    return targetedModel;
+    var roomColl = CollectionInstance.getCollections('roomsListCollection').data;
+    return _.find(roomColl, function (obj) {
+      return obj._id === targetedModelId;
+    });
   };
   
   // More details handler!

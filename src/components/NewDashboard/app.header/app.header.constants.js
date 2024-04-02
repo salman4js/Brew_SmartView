@@ -1,9 +1,6 @@
 import {getStorage} from "../../../Controller/Storage/Storage";
 
 const appHeaderConstants = Object.freeze({
-    userPreferenceConstants: {
-        header: 'User Settings'
-    },
     userPreferenceCheckboxCustomStyle: {
         color: 'black',
         border: '1px solid grey',
@@ -47,7 +44,8 @@ const appHeaderConstants = Object.freeze({
         userPreference: 'User Preference Settings'
     },
     preferenceSaveButtonKey: 'Apply & Save',
-    constantKey: 'app-header'
+    appHeaderConstantKey: 'app-header',
+    userPreferenceConstantKey: 'user-preference'
 });
 
 export default appHeaderConstants;

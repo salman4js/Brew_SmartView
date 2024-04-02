@@ -3,15 +3,19 @@ import CollectionInstance from "../../../../global.collection/widgettile.collect
 import _ from "lodash";
 import {getStorage} from "../../../../Controller/Storage/Storage";
 
+const isMultipleLoginEnabled = JSON.parse(getStorage('multipleLogin'));
+
+function getMultipleLoginUser(){
+    return isMultipleLoginEnabled ? _.map(CollectionInstance.getModel('widgetTileCollections', 'multipleLogin'), 'username') : [];
+};
+
 function historyTableFilterOptions(){
-    var isMultipleLoginEnabled = JSON.parse(getStorage('multipleLogin')),
-        multipleUserModel = isMultipleLoginEnabled ? _.map(CollectionInstance.getModel('widgetTileCollections', 'multipleLogin'), 'username') : [];
     return [{
         value: undefined,
         placeholder: lang.TABLE_FILTER_DIALOG.history.dialogOptionsLabelAndPlaceholder.checkoutBy,
         name: 'checkoutBy',
         attribute: 'listField',
-        options: multipleUserModel,
+        options: getMultipleLoginUser(),
         restrictShow: !isMultipleLoginEnabled,
         isRequired: false
     }, {
@@ -19,7 +23,7 @@ function historyTableFilterOptions(){
         placeholder: lang.TABLE_FILTER_DIALOG.history.dialogOptionsLabelAndPlaceholder.checkinBy,
         name: 'checkinBy',
         attribute: 'listField',
-        options: multipleUserModel,
+        options: getMultipleLoginUser(),
         restrictShow: !isMultipleLoginEnabled,
         isRequired: false
     }, {
@@ -117,7 +121,8 @@ function afterCheckinFilterOptions(){
         placeholder: lang.TABLE_FILTER_DIALOG.afterCheckin.dialogOptionsLabelAndPlaceholder.checkinBy,
         name: 'checkinBy',
         attribute: 'listField',
-        options: CollectionInstance.getAttribute('multipleLogins', 'username'),
+        options: getMultipleLoginUser(),
+        restrictShow: !isMultipleLoginEnabled,
         isRequired: false
     }, {
         value: undefined,

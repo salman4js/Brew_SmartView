@@ -20,7 +20,7 @@ const defaultChatConstants = {
   DETAILS_MESSAGE: {
     available: 'Go to room state',
     occupied: 'Go to bill preview',
-    enabledRoute: ['dashboardcontainer']
+    enabledRoute: ['dashboard-container']
   }
 };
 

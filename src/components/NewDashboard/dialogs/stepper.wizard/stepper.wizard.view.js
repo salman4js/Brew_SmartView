@@ -46,7 +46,7 @@ class StepperWizard extends React.Component {
   // Render passed footer view!
   renderPassedFooter(){
     if(this.state.data.enableFooter){
-      return this.state.data.footerView()
+      return this.state.data.footerView();
     }
   };
   

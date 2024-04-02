@@ -1,4 +1,5 @@
 import lang from '../commands.constants';
+import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 import {getStorage} from "../../../../Controller/Storage/Storage";
 
 class CommandsSwitchAccount {
@@ -21,6 +22,7 @@ class CommandsSwitchAccount {
     };
 
     execute(){
+        CollectionInstance.deleteAllCollections();
         this.status.params.navigateInto({path: `/${this.status.params.id}/choose-login`})
     };
 }

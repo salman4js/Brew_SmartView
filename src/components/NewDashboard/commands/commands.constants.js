@@ -85,6 +85,17 @@ var commandsConstant = Object.freeze({
         switchAccount: 'Switch Account'
     }),
 
+    USER_SETTINGS: Object.freeze({
+        constantKey: 'user-preference',
+        header: 'User Settings'
+    }),
+
+    CONNECT: Object.freeze({
+        constantKey: 'livixius-connect',
+        header: 'Livixius Connect',
+        defaultGreetings: 'Hey there, Give me any room no to get details'
+    }),
+
     DELETE_CONTROLLER: Object.freeze({
        deleteController: 'Delete',
        voucherTracker: {
@@ -168,8 +179,10 @@ var commandsConstant = Object.freeze({
         moveToNextState: ['afterCheckedout', 'inCleaning'],
         deleteAction: ['voucherTracker', 'multipleLogin'],
         editAction: ['voucherTracker', 'multipleLogin'],
-        logOut: ['app-header'],
-        switchAccount: ['app-header']
+        userSettings: ['app-header'],
+        connect: ['app-header'],
+        logOut: ['user-preference'],
+        switchAccount: ['user-preference']
     })
 });
 

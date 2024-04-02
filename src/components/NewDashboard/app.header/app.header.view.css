@@ -8,6 +8,10 @@
     width: 29em;
 }
 
+.app-header-body-view{
+    padding: 5px;
+}
+
 .app-header-userpreference-selection{
     padding: 5px;
 }
@@ -44,5 +48,9 @@
 .user-letter {
     text-align: center;
     font-size: 1.5em;
+}
+
+.app-header-actions{
+    margin-left: 1.5em;
 }
 
