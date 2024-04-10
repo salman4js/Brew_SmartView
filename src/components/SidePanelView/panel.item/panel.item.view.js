@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
+import './panel.item.view.css';
 
 const PanelItemView = (props) => {
 
@@ -9,7 +10,7 @@ const PanelItemView = (props) => {
 
   function _onInlineMenuClick(_id, event){
     event.stopPropagation();
-    props.inlineAction(_id);
+    props._renderCustomInlineMenu(_id);
   }
   
   // Render inline menu!
@@ -36,7 +37,7 @@ const PanelItemView = (props) => {
 
   // On select item!
   async function selectItem(){
-    props.onClick(props._id);
+    props.onClick(props.passingProps || props._id);
   }
   
   // trigger mouse over event!

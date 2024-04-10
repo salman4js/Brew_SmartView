@@ -118,10 +118,26 @@ function multipleLoginCreateOptions(options){
     }]
 };
 
+function createRoomAction(options){
+    return[{
+        value: options?.username,
+        placeholder:  lang.TABLE_CREATE_DIALOG.createRoomAction.roomno.placeholder,
+        label:  lang.TABLE_CREATE_DIALOG.createRoomAction.roomno.label,
+        name: 'roomno',
+        attribute: 'textField',
+        isRequired: true,
+        inlineToast: {
+            isShow: false,
+            inlineMessage: 'Please provide a valid payment.'
+        }
+    }]
+};
+
 
 var dialogCreateOptions = {
     'voucherTracker': (options) => voucherTrackerCreateOptions(options),
     'multipleLogin': (options) => multipleLoginCreateOptions(options),
+    'createRoomAction': (options) => createRoomAction(options),
     'onSave': (options) => CommonCrudController.CreateController(options)
 };
 

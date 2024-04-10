@@ -8,9 +8,14 @@ function multipleLoginEditOptions(options){
   return dialogCreateOptions['multipleLogin'](options);
 };
 
+function roomActionEditOptions(options){
+  return dialogCreateOptions['createRoomAction'](options);
+};
+
 var dialogEditOptions = {
     'voucherTracker': (options) => voucherTrackerEditOptions(options),
-    'multipleLogin': (options) => multipleLoginEditOptions(options)
+    'multipleLogin': (options) => multipleLoginEditOptions(options),
+    'createRoomAction': (options) => roomActionEditOptions(options)
 };
 
 export default dialogEditOptions;

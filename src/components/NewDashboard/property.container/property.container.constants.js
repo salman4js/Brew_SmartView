@@ -10,6 +10,7 @@ var propertyContainerConstants = Object.freeze({
     paymentTrackerView: 'paymentTrackerView',
     voucherTrackerView: 'voucherTrackerView',
     insights: 'insights',
+    createRoomAction: 'createRoomAction',
     propertyReadView: 'propertyReadView',
     propertyEditView: 'propertyEditView',
     customHTMLView: 'customHtmlView',
@@ -65,7 +66,8 @@ var propertyContainerConstants = Object.freeze({
     }
   },
   // Panel field not required dashboardMode constants array!
-  IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView', 'logTableView', 'paymentTrackerView', 'voucherTrackerView', 'multipleLogin'],
+  IGNORE_PANEL_FIELD: ['default', 'statusTableView', 'filterTableView',
+    'logTableView', 'paymentTrackerView', 'voucherTrackerView', 'multipleLogin', 'createRoomAction'],
   ALLOW_PANEL_FIELD: ['edit', 'read'],
   IGNORE_PANEL_FIELD_DROPDOWN: ['statusTableView', 'roomStatus', 'customHtmlView'],
   propertyContainerPerspectiveConstant: 'property-container'

@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
 import {_updateUserPreferences} from "../../../utils/user.preference.utils";
-import AppHeaderConstants from "../app.header.constants";
+import UserPreferenceSelectionConstants from "./user.preference.selection.constants";
 import MetadataFieldTemplateState from "../../../fields/metadata.field.templatestate";
 import MetadataFields from "../../../fields/metadata.fields.view";
 import {getStorage} from "../../../../Controller/Storage/Storage";
@@ -83,23 +83,23 @@ class UserPreferenceSelection extends React.Component {
 
     _setUpUserPreferenceFields(){
         const userPreferenceField = [];
-        Object.keys(AppHeaderConstants.userPreferenceFieldValue).map((preferenceKey) => {
+        Object.keys(UserPreferenceSelectionConstants.userPreferenceFieldValue).map((preferenceKey) => {
             const field = _.clone(MetadataFieldTemplateState.checkboxField);
             field.name = preferenceKey;
-            field.label = AppHeaderConstants.userPreferenceFieldValue[preferenceKey].label;
-            field.customStyle = AppHeaderConstants.userPreferenceCheckboxCustomStyle;
-            field.restrictShow = AppHeaderConstants.userPreferenceFieldValue[preferenceKey].restrictShow;
-            if(AppHeaderConstants.userPreferenceFieldValue[preferenceKey].restrictShow === false){
+            field.label = UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].label;
+            field.customStyle = UserPreferenceSelectionConstants.userPreferenceCheckboxCustomStyle;
+            field.restrictShow = UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].restrictShow;
+            if(UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].restrictShow === false){
                 // Check for user permissions!
                 field.restrictShow = this.isLoggedInAsRecep();
             }
-            if(AppHeaderConstants.userPreferenceFieldValue[preferenceKey].attribute){
-                field.attribute = AppHeaderConstants.userPreferenceFieldValue[preferenceKey].attribute;
+            if(UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].attribute){
+                field.attribute = UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].attribute;
             }
             userPreferenceField.push(field);
         });
         const buttonField = _.clone(MetadataFieldTemplateState.buttonField);
-        buttonField.btnValue = AppHeaderConstants.preferenceSaveButtonKey;
+        buttonField.btnValue = UserPreferenceSelectionConstants.preferenceSaveButtonKey;
         buttonField.onClick = () => this._applyUserPreferences();
         userPreferenceField.push(buttonField);
         this._updateStateComponent({key: 'userPreferencesFields', value: userPreferenceField, nextFunc: () => this._setValueForUserPreferenceFields()})

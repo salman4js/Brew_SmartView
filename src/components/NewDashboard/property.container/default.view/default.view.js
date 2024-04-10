@@ -21,6 +21,7 @@ class DefaultView extends React.Component {
     super(props);
     this.state = {
       data: props.data,
+      selectedModel: undefined,
       params: props.params,
       height: props.height,
       propertyStatusDetails: {
@@ -34,6 +35,7 @@ class DefaultView extends React.Component {
       userRoomStatus: [], // User preference room status!
       widgetTile: this.renderWidgetTile.bind(this)
     };
+    this.detailsMessage = defaultViewConstants.detailsMessage;
     this.widgetPermissions = {
       recep: defaultViewConstants.RECEP_LEVEL_WIDGETS,
       manager: defaultViewConstants.MANAGER_LEVEL_WIDGETS
@@ -157,7 +159,8 @@ class DefaultView extends React.Component {
   cardBodyChildView(roomStatusConstant){
     // Get the count of the roomStatus from the state!
     var countOfTheState = roomStatusConstant !== undefined ? this.state.propertyStatusDetails[roomStatusConstant] : 0;
-    return widgetTileBodyTemplateHelpers({stateCount: countOfTheState, propertyStatus: roomStatusConstant});
+    return widgetTileBodyTemplateHelpers({stateCount: countOfTheState,
+      propertyStatus: roomStatusConstant, viewClass: defaultViewConstants.CLIENT_WIDGET_TILE_VIEWCLASS[roomStatusConstant]});
   };
 
   // UnMap room status from the state and add it as an array!
@@ -202,7 +205,7 @@ class DefaultView extends React.Component {
   };
   
   // Get configured widget tile collections!
-  getWidgetTileCollections(){ // This method takes care of configuration of widget tile based on the user preference!
+  getWidgetTileCollections(isAdministrativePageEnabled){ // This method takes care of configuration of widget tile based on the user preference!
     var widgetTileCollections = CollectionInstance.getCollections('widgetTileCollections'), // Only the user selected preferences will be here!
       preferences = Object.keys(widgetTileCollections.data);
     this.widgetTileCollection = {};
@@ -211,6 +214,9 @@ class DefaultView extends React.Component {
         this.widgetTileCollection[preference] = widgetTileCollections.data[preference];
       }
     };
+    if(isAdministrativePageEnabled){
+      this._addClientSideWidgetTile();
+    }
     this.prepareUpcomingNotifications();
   };
   
@@ -219,34 +225,48 @@ class DefaultView extends React.Component {
       
   };
 
+  // Add client side widget tiles!
+  _addClientSideWidgetTile(){
+    var clientSideWidgets = Object.keys(defaultViewConstants.CLIENT_WIDGET_TILE);
+    clientSideWidgets.forEach((widget) => {
+      this.widgetTileCollection[widget] = [];
+      this.widgetTileCollection.widgetTileModelCount[widget] = defaultViewConstants.CLIENT_WIDGET_TILE[widget];
+    });
+  };
+
   // Widget tile render functions!
   makeWidgetTile(){
     if(this.state.data.isFetched && this.state.isComputed){
-      // Get widget tile collection from the global collections!
-      this.getWidgetTileCollections();
       var roomStatusConstants = getRoomStatusConstants(),
+        isAdministrativePageEnabled = this.state.selectedModel._getPreference('administrativePageEnabled'),
         cardViewCollectionProps = [],
+        nonAddedStatusConstant = [],
         tempData = []; // This is to verify the non-added room status constant, and add them to the card body view with the count 0!
-      this.state.data.roomCollection.map((model) => {
-        roomStatusConstants.map((status) => {
-          if(model.roomStatusConstant === status && model.roomStatus !== undefined){
-            this._updatePropertyDetailsModel(model);
-            this._updatePropertyStatusMap(model);
-            // Check if the widgetTile has been already added to the cardViewCollectionProps!
-            var isWidgetTileAdded = _.find(cardViewCollectionProps, {customData: [model.roomStatus]});
-            if(!isWidgetTileAdded){
-              this.prepareWidgetTile(model, cardViewCollectionProps);
-            };
-          }
+      // Get widget tile collection from the global collections!
+      this.getWidgetTileCollections(isAdministrativePageEnabled);
+      if(!isAdministrativePageEnabled){
+        this.state.data.roomCollection.map((model) => {
+          roomStatusConstants.map((status) => {
+            if(model.roomStatusConstant === status && model.roomStatus !== undefined){
+              this._updatePropertyDetailsModel(model);
+              this._updatePropertyStatusMap(model);
+              // Check if the widgetTile has been already added to the cardViewCollectionProps!
+              var isWidgetTileAdded = _.find(cardViewCollectionProps, {customData: [model.roomStatus]});
+              if(!isWidgetTileAdded){
+                this.prepareWidgetTile(model, cardViewCollectionProps);
+              };
+            }
+          });
         });
-      });
+        // After we add the roomStatusConstants value to the cardViewCollectionProps, Check what are the roomStatusConstants are missing, and add them with the count 0!
+        cardViewCollectionProps.map((cardViewModel) => {
+          tempData.push(cardViewModel.customData[0]);
+        });
+        nonAddedStatusConstant = _.difference(this.state.userRoomStatus, tempData); // non added room status constant, manually add those to the cardViewCollection with the count 0!
+      } else {
+        this.detailsMessage = defaultViewConstants.administrativeDetailsMessage;
 
-      // After we add the roomStatusConstants value to the cardViewCollectionProps, Check what are the roomStatusConstants are missing, and add them with the count 0!
-      cardViewCollectionProps.map((cardViewModel) => {
-        tempData.push(cardViewModel.customData[0]);
-      });
-      var nonAddedStatusConstant = _.difference(this.state.userRoomStatus, tempData); // non added room status constant, manually add those to the cardViewCollection 
-      // with the count 0!
+      }
       // Add feature widget tile collection props!
       this.addFeatureWidgetCollection(cardViewCollectionProps);
       this.addWidgetCollectionToPropertyDetails();
@@ -278,8 +298,8 @@ class DefaultView extends React.Component {
       };
     };
   };
-  
-  // Add property status details with widget tile collection count!
+
+  // Add property status details with widget tile collection count or view according to their type!
   addPropertyStatusDetails(propertyStatus){
     if(this.state.propertyStatusDetails[propertyStatus] === undefined){
       // Get the count.
@@ -391,12 +411,13 @@ class DefaultView extends React.Component {
     }
   }; 
   
-  // Update state data everytime when the props changes!
+  // Update state data everytime when the props change!
   _updateStateData() {
     return new Promise((resolve) => {
       this.setState(prevState => ({
         ...prevState,
-        data: this.props.data
+        data: this.props.data,
+        selectedModel: this.props.selectedModel
       }), () => {
         this.computeCollectionStateDetails().then(() => {
           resolve();

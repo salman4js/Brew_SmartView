@@ -14,6 +14,7 @@ import VoucherTableWrapper from "./voucher.table.wrapper/voucher.table.wrapper";
 import PropertyReadView from "./property.base.view/property.read.view/property.read.view";
 import PropertyEditView from "./property.base.view/property.edit.view/property.edit.view";
 import InsightsTableWrapper from "./insights.table.wrapper/insights.table.wrapper";
+import CreateRoomActionTableWrapper from "./create.room.action.table.wrapper/create.room.action.table.wrapper";
 import propertyContainerConstants from './property.container.constants';
 import {
   extractQueryParams,
@@ -168,68 +169,72 @@ const PropertyContainer = (props) => {
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.edit){
       return <CheckInForm height = {props.propertyContainerHeight} data = {props.data} params = {props.params} routerController = {(opts) => props.routerController(opts)}
       afterFormSave = {(opts) => props.onCancel(opts)} routerOptions = {(opts) => getRouterOptions(opts)} dashboardController = {(opts) => props.dashboardController(opts)} />
-    };
+    }
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.read){
       return <CheckOutView height = {props.propertyContainerHeight} data = {props.data} params = {props.params} dashboardController = {(opts) => props.dashboardController(opts)}
       updateSelectedModel = {(options) => props.updateSelectedModel(options)} routerOptions = {(opts) => getRouterOptions(opts)}
       cancelCheckoutPrompt = {(opts) => props.cancelCheckoutPrompt(opts)} routerController = {(opts) => props.routerController(opts)} />
-    };
+    }
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.roomStatus){
       return <RoomStatusView height = {props.propertyContainerHeight} data = {props.data} params = {props.params}
       dashboardController = {(opts) => props.dashboardController(opts)} routerController = {(opts) => props.routerController(opts)} />
-    };
+    }
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.default){
-      return <DefaultView data = {props.propertyDetails} params = {props.params} height = {props.propertyContainerHeight}
+      return <DefaultView data = {props.propertyDetails} selectedModel = {props.data} params = {props.params} height = {props.propertyContainerHeight}
       dashboardController = {(opts) => props.dashboardController(opts)} routerController = {(opts) => props.routerController(opts)} />
-    };
+    }
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.statusTableView){
       return <StatusTableView data = {props.data}  params = {props.params} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       dashboardController = {(opts) => props.dashboardController(opts)} stateRouter = {props.stateRouter} routerController = {(opts) => props.routerController(opts)}
       updateSelectedModel = {(options) => props.updateSelectedModel(options)}/>
-    };
+    }
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.filterTableView){
       return <FilterTable data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} stateRouter = {props.stateRouter} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} routerController = {(opts) => props.routerController(opts)} />
-    };
+    }
     
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.logTableView){
       return <LogTable data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
-    };
+    }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.paymentTrackerView){
       return <PaymentTrackerWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
-    };
+    }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.voucherTrackerView){
       return <VoucherTableWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
-    };
+    }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.insights){
       return <InsightsTableWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       notifyStateRouter = {() => notifyStateRouter()} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
-    };
+    }
+
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.createRoomAction){
+      return <CreateRoomActionTableWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+      routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+    }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyReadView){
       return <PropertyReadView data = {props.data} height = {props.propertyContainerHeight} routerController = {(opts) => props.routerController(opts)} params = {props.params} />
-
-    };
+    }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyEditView){
       return <PropertyEditView  data = {props.data} height = {props.propertyContainerHeight} routerController = {(opts) => props.routerController(opts)}
       dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} modalOptions = {(options, nextFunc) => _updateCustomModalOptions(options, nextFunc)}/>
-    };
+    }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customHTMLView){
       return renderCustomHTMLContent(props.htmlContent.customHtmlContent, props.htmlContent.replacements, props.propertyContainerHeight);
-    };
+    }
   };
 
   // Get form models!

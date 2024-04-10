@@ -3,13 +3,15 @@ var sidepanelConstants = Object.freeze({
         roomList: 'ROOM_LIST',
         filterList: 'FILTER_LIST',
         voucherList: 'VOUCHER_LIST',
-        insightsSearchForm: 'INSIGHTS_SEARCH_FORM'
+        insightsSearchForm: 'INSIGHTS_SEARCH_FORM',
+        roomTypeListPanel: 'CREATE_ROOM_ACTION'
     }),
     panelHeader: Object.freeze({
         FILTER_PANEL: 'Filter Panel',
         ROOM_LISTS: 'Rooms List',
         VOUCHER_LISTS: 'Vouchers Model',
-        INSIGHTS_SEARCH_FORM: 'Insights Form'
+        INSIGHTS_SEARCH_FORM: 'Insights Form',
+        roomTypeListPanel: 'Room Type List'
     }),
     formMode: Object.freeze({
         READ_MODE: 'read',
