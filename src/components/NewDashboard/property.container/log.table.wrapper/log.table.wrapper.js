@@ -47,8 +47,7 @@ class LogTable extends TableView {
   
   // Prepare the metadata table header state!
   _prepareTableHeaderState(){
-    var tableHeaders = this.propertyStatusTableHeader[logTableConstants.tableInfoMessage.PROPERTY_STATUS_KEY];
-    this.state.metadataTableState.headerValue = tableHeaders;
+    this.state.metadataTableState.headerValue = this.propertyStatusTableHeader[logTableConstants.tableInfoMessage.PROPERTY_STATUS_KEY];
   };
   
   // Prepare the metadata table cell state!

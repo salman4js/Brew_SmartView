@@ -27,12 +27,13 @@ var dialogConstants = Object.freeze({
             primaryBtn: 'Edit',
             secondaryBtn: 'Cancel'
         },
-        tableEditModeAllowedKeys: ['voucherTracker', 'multipleLogin']
+        tableEditModeAllowedKeys: ['voucherTracker', 'multipleLogin', 'createRoomAction']
     },
 
     HEADER_OPTIONS: {
-      voucherTracker: 'Voucher',
-      multipleLogin: 'Account'
+        voucherTracker: 'Voucher',
+        multipleLogin: 'Account',
+        createRoomAction: 'Room'
     },
 
     TABLE_FILTER_DIALOG: {
@@ -92,6 +93,23 @@ var dialogConstants = Object.freeze({
                     value: 'Receptionist Level Authorization',
                     actualValue: 'receptionistLevel'
                 }]
+            }
+        },
+        createRoomAction: {
+            roomno: {
+                placeholder: 'Enter Room Number'
+            },
+            floorNo: {
+                placeholder: 'Enter Floor Number'
+            },
+            extraBedPrice: {
+                placeholder: 'Enter Extra Bed Price'
+            },
+            price: {
+                placeholder: 'Enter Room Price'
+            },
+            bedCount: {
+                placeholder: 'Enter Bed Count'
             }
         }
     })

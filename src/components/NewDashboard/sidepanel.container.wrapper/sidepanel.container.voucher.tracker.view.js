@@ -146,7 +146,7 @@ class SidepanelContainerVoucherTrackerView extends React.Component {
 
     templateHelpers(){
       if(this.state.isLoading){
-          var opts = { color: "black", marginTop: (this.props.options.height / 4) + "px", textCenter: true}
+          const opts = {color: "black", marginTop: (this.props.options.height / 4) + "px", textCenter: true};
           return activityLoader(opts);
       } else {
           return this.voucherTrackerParentStruct();

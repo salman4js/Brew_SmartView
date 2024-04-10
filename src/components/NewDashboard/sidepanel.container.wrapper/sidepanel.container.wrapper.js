@@ -23,6 +23,7 @@ import PanelView from '../../SidePanelView/panel.view';
 import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view';
 import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
+import SidepanelContainerRoomslistView from "./sidepanel.container.roomslist.view";
 
 const SidepanelWrapper = (props, ref) => {
 
@@ -42,7 +43,8 @@ const SidepanelWrapper = (props, ref) => {
     roomListTreePanel: true, // By default, roomListTreePanel is true!
     filterRoomPanel: false,
     voucherListPanel: false,
-    insightsSearchForm: false
+    insightsSearchForm: false,
+    roomTypeListPanel: false
   });
 
   // Filter input metadata fields!
@@ -120,7 +122,7 @@ const SidepanelWrapper = (props, ref) => {
     }
   };
 
-  // Sidepanel chid view main content!
+  // Sidepanel child view main content!
   function childViewMainContent(){
     if(sidepanelView.roomListTreePanel){
       return roomListTreeView();
@@ -133,6 +135,9 @@ const SidepanelWrapper = (props, ref) => {
     }
     if(sidepanelView.insightsSearchForm){
       return insightsSearchFormPanel();
+    }
+    if(sidepanelView.roomTypeListPanel){
+      return roomTypeListPanel();
     }
   };
 
@@ -164,6 +169,16 @@ const SidepanelWrapper = (props, ref) => {
       insightsData: props.selectedModelData.insightsData
     }
     return <SidepanelContainerInsightsSearchView options = {options} />
+  };
+  
+  // Enable Create Room Action panel!
+  function roomTypeListPanel(){
+    var options = {
+      dashboardController: (opts) => props.dashboardController(opts),
+      height: sidepanel.height,
+      adminAction: props.selectedModelData.adminAction
+    }
+    return <SidepanelContainerRoomslistView options = {options}/>
   };
 
   // Side-panel search bar view!
@@ -232,6 +247,9 @@ const SidepanelWrapper = (props, ref) => {
       case sidepanelConstants.SIDE_PANEL_MODES.insightsSearchForm:
         _setInsightsSearchFormPanel(true);
         break;
+      case sidepanelConstants.SIDE_PANEL_MODES.roomTypeListPanel:
+        _setroomTypeListPanel(true);
+        break;
       default:
         _setTreePanel(true);
         break;
@@ -256,6 +274,11 @@ const SidepanelWrapper = (props, ref) => {
     _toggleSidepanelView({insightsSearchForm: value});
   };
 
+  // Enable create room action panel!
+  function _setroomTypeListPanel(value){
+    _toggleSidepanelView(({roomTypeListPanel: value}));
+  };
+
   // Enable tree panel!
   function _setTreePanel(value){
     _toggleSidepanelView({roomListTree: value});
@@ -276,9 +299,11 @@ const SidepanelWrapper = (props, ref) => {
     if(options.filterPanel) panelHeader = sidepanelConstants.panelHeader.FILTER_PANEL;
     if(options.voucherListPanel) panelHeader = sidepanelConstants.panelHeader.VOUCHER_LISTS;
     if(options.insightsSearchForm) panelHeader = sidepanelConstants.panelHeader.INSIGHTS_SEARCH_FORM;
+    if(options.roomTypeListPanel) panelHeader = sidepanelConstants.panelHeader.roomTypeListPanel;
     setSidepanel(prevState => ({...prevState, header: panelHeader}));
     setSidepanelView(prevState => ({roomListTreePanel: options.roomListTree,
-      filterRoomPanel: options.filterPanel, voucherListPanel: options.voucherListPanel, insightsSearchForm: options.insightsSearchForm}));
+      filterRoomPanel: options.filterPanel, voucherListPanel: options.voucherListPanel,
+      insightsSearchForm: options.insightsSearchForm, roomTypeListPanel: options.roomTypeListPanel}));
   };
 
   // Item panel collection onClick!

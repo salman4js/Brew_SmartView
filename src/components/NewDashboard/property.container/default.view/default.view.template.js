@@ -11,7 +11,7 @@ export function templateHelpers(data){
               {data.greetingMessage}
           </div>
           <div className = 'brew-greetings-breif-message'>
-            Here's the breif idea of what's going on in your property!
+              {data.detailsMessage}
           </div>
       </div>
       <div className = 'row widget-tile-container'>
@@ -38,7 +38,7 @@ export function _renderListFieldTemplateHelpers(options){
 // Custom view field template helpers!
 export function _renderCustomFieldTemplateHelpers(options){
   return(
-      <div className = 'bi bi-book widget-tile-body widget-icon'>
+      <div className = {options.viewClass}>
 
       </div>
   )

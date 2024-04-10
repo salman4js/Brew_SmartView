@@ -31,7 +31,9 @@ const DashboardWrapper = (props, ref) => {
     // If the perspective view was opened from the table view through commands.
     propertyData: undefined,
     vouchersModelId: undefined,
+    adminAction: undefined,
     insightsData: undefined,
+    _getPreference: (key) => getPreference(key),
     propertyDataCallBackFunc: undefined
   });
 
@@ -58,6 +60,11 @@ const DashboardWrapper = (props, ref) => {
     tableModel: [],
     dashboardModel: []
   });
+
+  // Method to get preference using preference key!
+  function getPreference(key){
+    return CollectionInstance.getModel('widgetTileCollections', key);
+  };
   
   // Function to update property details!
   function _updatePropertyDetails(roomCollection, availability, roomStatus, userCollection){
@@ -224,10 +231,9 @@ const DashboardWrapper = (props, ref) => {
 
   // Update dashboard wrapper!
   function _updateDashboardWrapper(opts){
-    if(opts){
+    if(!opts.adminAction){
       opts.reloadSidepanel && _reloadSidepanel(opts);
       opts.queryParams && _updateQueryParams(opts.queryParams);
-      opts.navigateToStatusTableView && _updateSelectedModelState(opts);
       opts.navigateToPropertyContainer && _navigateToPropertyContainer();
       opts.persistStatusView && _reloadAndPersistStatusView(opts.updatedModel); // Reload persist status view need
       // updated room model to updated it to the latest value
@@ -236,10 +242,11 @@ const DashboardWrapper = (props, ref) => {
       opts.goToLocation && goToLocation(opts);
       opts.onEditProperties && onEditProperties(opts);
       opts.isRoomTransferCommand && onRoomTransfer(opts);
-      opts.isVouchersModelSelectionUpdated && _updateSelectedModelState(opts);
-      opts.isInsightsDataUpdated && _updateSelectedModelState(opts);
       opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
-      (opts.updateUserCollection || opts.updatedUserModel) && _updateUserCollection((opts.updateUserCollection || opts), opts.ignoreUpdateOfDefaultView);
+      (opts.navigateToStatusTableView || opts.isVouchersModelSelectionUpdated || opts.isInsightsDataUpdated) && _updateSelectedModelState(opts);
+      (opts.updateUserCollection || opts.updatedUserModel) && _updateUserCollection((opts.updateUserCollection || opts));
+    } else {
+      opts.isAdminActionRoomTypeModelSelectionUpdated && _updateSelectedModelState(opts);
     }
   };
 
