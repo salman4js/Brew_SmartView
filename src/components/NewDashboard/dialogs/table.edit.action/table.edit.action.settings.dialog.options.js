@@ -11,11 +11,12 @@ function multipleLoginEditOptions(options){
 
 function roomActionEditOptions(options){
   var dialogOptions = dialogCreateOptions['roomAction'](options);
-  dialogOptions.map((options) => {
-      if(options.name === 'suiteName'){
-          options.attribute = 'listField';
-          options.readOnly = false;
-          options.options = CollectionInstance.getAttribute('roomTypes', 'suiteType')
+  dialogOptions.map((dOptions) => {
+      if(dOptions.name === 'suiteName'){
+          dOptions.value = options.suiteName
+          dOptions.attribute = 'listField';
+          dOptions.readOnly = false;
+          dOptions.options = CollectionInstance.getAttribute('roomTypes', 'suiteType')
       }
   });
   return dialogOptions;
