@@ -19,7 +19,7 @@ class AppStartupUtils {
                       "owner-number" : res.data.object.number,
                       "lodge-name": res.data.object.lodgename,
                       "redirectTo": res.data.object.redirectTo,
-                      "loggedInID": res.data.object.loginId,
+                      "loggedInID": this.options.accId,
                       "multipleLogin" : res.data.object.multipleLogins,
                       "isGst" : res.data.object.isGst,
                       "isHourly" : res.data.object.isHourly,

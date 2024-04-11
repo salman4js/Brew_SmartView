@@ -1,20 +1,21 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import _ from "lodash";
 import sidepanelConstants from "./sidepanel.container.constants";
 import PropertyContainerConstants from "../property.container/property.container.constants";
 import SidepanelContainerSearchView from "./sidepanel.container.search.view";
 import SidepanelContainerVoucherTrackerView from "./sidepanel.container.voucher.tracker.view";
-import SidepanelContainerInsightsSearchView from "./sidepanel.container.insights.search.view/sidepanel.container.insights.search.view";
-import { getAvailableRoomTypes, getUserModel } from '../../utils/sidepanel.container.utils';
+import SidepanelContainerInsightsSearchView
+  from "./sidepanel.container.insights.search.view/sidepanel.container.insights.search.view";
+import {getAvailableRoomTypes, getUserModel} from '../../utils/sidepanel.container.utils';
 import {getRoomList} from "../../utils/user.preference.utils";
-import { getStatusCodeColor, formatDate } from '../../common.functions/common.functions';
+import {formatDate, getStatusCodeColor} from '../../common.functions/common.functions';
 import {
-  updateMetadataFields,
-  nodeConvertor,
   createMetadataFieldsWithBaseObj,
-  filterKeysInObj
+  filterKeysInObj,
+  nodeConvertor,
+  updateMetadataFields
 } from '../../common.functions/node.convertor';
-import { activityLoader } from '../../common.functions/common.functions.view';
+import {activityLoader} from '../../common.functions/common.functions.view';
 import CustomModal from "../../fields/customModalField/custom.modal.view";
 import MetadataTableView from '../../metadata.table.view/metadata.table.view';
 import MetadataFields from '../../fields/metadata.fields.view';
@@ -439,18 +440,14 @@ const SidepanelWrapper = (props, ref) => {
     setSidepanel(prevState => ({...prevState, height: undefined, selectedId: []}));
   };
 
-  // Remove model from the collection!
-  function _removeModelFromCollection(modelIds){
-    const currentCollectionData = sidepanel.childData;
-    _.remove(currentCollectionData, (model) => {
-      return modelIds.includes(model._id)
-    });
-    setSidepanel(prevState => ({...prevState, childData: currentCollectionData}));
+  // Get current view template!
+  function _getCurrentViewTemplate(){
+    return _.omitBy(sidepanelView, _.isNil);
   }
 
   // Update the child model on every silent true state update!
-  function updateModel(){
-    if(props.selectedModelData.roomModel !== undefined){ // this condition is added here because when we click on cancel on the property container 
+  function updateModel(options){
+    if(props.selectedModelData.roomModel !== undefined){ // this condition is added here because when we click on cancel on the property container
       // The opts which gets send to the dashboardController function is reloadSidepanel silent: true to avoid making an api call for cancel operation!
       // That time the props.selectedModelData.roomModel will be undefined.
       var isListFilterApplied = isFilterApplied(),
@@ -479,6 +476,13 @@ const SidepanelWrapper = (props, ref) => {
         setSidepanel(prevState => ({...prevState, listFilter: currentListFilterData})); // Update the list filter data!
       }
     }
+    if(options?.action === 'REMOVE'){
+      const currentCollectionData = sidepanel.childData;
+      _.remove(currentCollectionData, (model) => {
+        return options.modelIds.includes(model._id)
+      });
+      setSidepanel(prevState => ({...prevState, childData: currentCollectionData}));
+    }
   };
 
   // Expose child function to the parent component!
@@ -491,10 +495,7 @@ const SidepanelWrapper = (props, ref) => {
     if(!props.controller.reloadSidepanel.silent){
       fetchRoomsTypes();
     } else {
-      updateModel();
-    }
-    if(props.controller.reloadSidepanel.silent && props.controller.reloadSidepanel.removeModelFromCollection){
-      _removeModelFromCollection(props.controller.reloadSidepanel.removeModelFromCollection.modelIds);
+      updateModel(props.controller.reloadSidepanel);
     }
     _resetClientData();
     updateSidePanelHeight(props.data.height);

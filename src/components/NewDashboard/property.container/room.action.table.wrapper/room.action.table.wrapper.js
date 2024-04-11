@@ -56,27 +56,33 @@ class RoomActionTableWrapper extends TableView{
     };
 
     removeFromTableCollection(selectedNodes) {
-        this.props.dashboardController({reloadSidepanel: {silent: true, removeModelFromCollection: {modelIds: selectedNodes}}});
         _.remove(this.collection, (model) => {
            return selectedNodes.includes(model._id);
         });
+        this.props.dashboardController({reloadSidepanel: {silent: true, mode: 'roomTypeListPanel', action: 'REMOVE', modelIds: selectedNodes}});
     };
 
     _prepareTableHeaderState(){
       this.state.metadataTableState.headerValue = this.propertyStatusTableHeader[createRoomActionTableConstants.tableInfoMessage.PROPERTY_STATUS_KEY];
     };
 
+    _getSelectedModel(){
+        if(this.state.adminAction){
+            return CollectionInstance.whereInCollections('roomTypes', undefined, '_id', this.state.adminAction.roomTypeModelId)[0];
+        } else {
+            return CollectionInstance.getCollections('roomTypes').data[0];
+        }
+    };
+
+    prepareTemplateHelpersData(){
+      super.prepareTemplateHelpersData();
+      this.templateHelpersData.options['selectedModel'] = this._getSelectedModel();
+    };
+
     _prepareTableCellState(){
         // Get the roomType from the collection by roomTypeModelId.
-        var searchValue;
-        if(this.state.adminAction){
-            searchValue = CollectionInstance.whereInCollections('roomTypes', undefined, '_id', this.state.adminAction.roomTypeModelId);
-            this.collection = CollectionInstance.whereInCollections('roomsListCollection', undefined, 'suiteName', searchValue[0].suiteType);
-        } else {
-            // Get the first room type from the roomTypes collection and render the table data for that type!
-            searchValue = CollectionInstance.getCollections('roomTypes').data;
-            this.collection = CollectionInstance.whereInCollections('roomsListCollection', undefined, 'suiteName', searchValue[0].suiteType);
-        }
+        var selectedModel = this._getSelectedModel();
+        this.collection = CollectionInstance.whereInCollections('roomsListCollection', undefined, 'suiteName', selectedModel.suiteType);
     };
 
     componentDidUpdate(){

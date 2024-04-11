@@ -74,7 +74,7 @@ var tableViewConstants = Object.freeze({
   }),
 
   tableCreateMode: Object.freeze({
-    tableCreateModeAllowedKeys: ['voucherTracker', 'multipleLogin']
+    tableCreateModeAllowedKeys: ['voucherTracker', 'multipleLogin', 'roomAction']
   })
 
 });

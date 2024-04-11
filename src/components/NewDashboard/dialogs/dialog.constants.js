@@ -18,7 +18,7 @@ var dialogConstants = Object.freeze({
           primaryBtn: 'Create',
           secondaryBtn: 'Cancel'
       },
-      tableCreateModeAllowedKeys: ['voucherTracker', 'multipleLogin']
+      tableCreateModeAllowedKeys: ['voucherTracker', 'multipleLogin', 'roomAction']
     },
 
     TABLE_EDIT: {
@@ -106,7 +106,8 @@ var dialogConstants = Object.freeze({
             },
             suiteName: {
                 placeholder: 'Suite Type',
-                label: 'Suite Type'
+                label: 'Suite Type',
+                readOnly: true
             },
             extraBedPrice: {
                 label: 'Extra Bed Price',

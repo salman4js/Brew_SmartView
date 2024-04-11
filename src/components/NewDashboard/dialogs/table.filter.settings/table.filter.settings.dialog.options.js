@@ -1,12 +1,12 @@
+import _ from "lodash";
 import lang from "../dialog.constants";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
-import _ from "lodash";
 import {getStorage} from "../../../../Controller/Storage/Storage";
 
 const isMultipleLoginEnabled = JSON.parse(getStorage('multipleLogin'));
 
 function getMultipleLoginUser(){
-    return isMultipleLoginEnabled ? _.map(CollectionInstance.getModel('widgetTileCollections', 'multipleLogin'), 'username') : [];
+    return isMultipleLoginEnabled ? _.map(CollectionInstance.getCollections('multipleLogin').data, 'username') : [];
 };
 
 function historyTableFilterOptions(){
