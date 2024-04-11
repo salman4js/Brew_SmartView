@@ -57,7 +57,7 @@ connector.delete = function(url, options){
              "x-access-token": options?.accessToken || document.cookie,
          }
      };
-     connector.delete(url, options).then((result) => {
+     origConnector.delete(url, options).then((result) => {
          resolve(result);
      }).catch((err) => {
          reject(err);

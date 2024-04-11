@@ -104,6 +104,9 @@ var commandsConstant = Object.freeze({
        multipleLogin: {
            successMessage: 'Account has been deleted successfully!'
        },
+       roomAction: {
+           successMessage: 'Room entry has been deleted successfully!'
+       },
        deleteControllerError: 'Something went wrong, Please try again later!'
     }),
 
@@ -114,6 +117,9 @@ var commandsConstant = Object.freeze({
         },
         multipleLogin: {
             successMessage: 'Account details updated!'
+        },
+        roomAction: {
+            successMessage: 'Room details updated!'
         },
         editControllerError: 'Something went wrong, please try again later!'
     }),
@@ -174,11 +180,11 @@ var commandsConstant = Object.freeze({
         exportToExcel: ['history', 'afterCheckin', 'voucherTracker'],
         moreDetails: ['history'],
         selectedModel: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned', 'inCleaning',
-        'history', 'paymentTrackerView', 'voucherTracker', 'multipleLogin', 'createRoomAction'],
+        'history', 'paymentTrackerView', 'voucherTracker', 'multipleLogin', 'roomAction'],
         generateReceipt: ['paymentTrackerView', 'logTable'],
         moveToNextState: ['afterCheckedout', 'inCleaning'],
-        deleteAction: ['voucherTracker', 'multipleLogin'],
-        editAction: ['voucherTracker', 'multipleLogin', 'createRoomAction'],
+        deleteAction: ['voucherTracker', 'multipleLogin', 'roomAction'],
+        editAction: ['voucherTracker', 'multipleLogin', 'roomAction'],
         userSettings: ['app-header'],
         connect: ['app-header'],
         logOut: ['user-preference'],

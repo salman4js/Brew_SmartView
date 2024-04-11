@@ -1,8 +1,10 @@
+import _ from "lodash";
 import TableView from "../table.view/table.view";
-import createRoomActionTableConstants from "./create.room.action.table.constants";
+import createRoomActionTableConstants from "./room.action.table.constants";
+import {_updateRoomListCollection} from "../../dashboard.utils.helper/form.utils.helper";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 
-class CreateRoomActionTableWrapper extends TableView{
+class RoomActionTableWrapper extends TableView{
     constructor(props) {
         super(props);
         this.state = {
@@ -38,7 +40,26 @@ class CreateRoomActionTableWrapper extends TableView{
     async setExpandedTableView(){
         this.roomConstant = createRoomActionTableConstants.tableInfoMessage.PROPERTY_STATUS_KEY;
         this._prepareTableHeaderState();
-        return this._prepareTableCellState();
+        this._prepareTableCellState();
+        return this.collection;
+    };
+
+    updateModelFromTableCollection(updatedModel) {
+        var indexToUpdate = _.findIndex(this.collection, (model) => {
+            return model._id === updatedModel._id;
+        });
+        if(indexToUpdate !== -1){
+            _.assign(this.collection[indexToUpdate], updatedModel);
+        }
+        updatedModel['roomId'] = updatedModel._id;
+        _updateRoomListCollection(updatedModel, 'EDIT');
+    };
+
+    removeFromTableCollection(selectedNodes) {
+        this.props.dashboardController({reloadSidepanel: {silent: true, removeModelFromCollection: {modelIds: selectedNodes}}});
+        _.remove(this.collection, (model) => {
+           return selectedNodes.includes(model._id);
+        });
     };
 
     _prepareTableHeaderState(){
@@ -50,11 +71,11 @@ class CreateRoomActionTableWrapper extends TableView{
         var searchValue;
         if(this.state.adminAction){
             searchValue = CollectionInstance.whereInCollections('roomTypes', undefined, '_id', this.state.adminAction.roomTypeModelId);
-            return CollectionInstance.whereInCollections('roomsListCollection', undefined, 'suiteName', searchValue[0].suiteType);
+            this.collection = CollectionInstance.whereInCollections('roomsListCollection', undefined, 'suiteName', searchValue[0].suiteType);
         } else {
             // Get the first room type from the roomTypes collection and render the table data for that type!
             searchValue = CollectionInstance.getCollections('roomTypes').data;
-            return CollectionInstance.whereInCollections('roomsListCollection', undefined, 'suiteName', searchValue[0].suiteType);
+            this.collection = CollectionInstance.whereInCollections('roomsListCollection', undefined, 'suiteName', searchValue[0].suiteType);
         }
     };
 
@@ -65,4 +86,4 @@ class CreateRoomActionTableWrapper extends TableView{
     };
 }
 
-export default CreateRoomActionTableWrapper;
+export default RoomActionTableWrapper;

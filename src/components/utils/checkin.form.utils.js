@@ -1,3 +1,4 @@
+import CommonCrudController from "../NewDashboard/common.crud.controller/common.crud.controller";
 import {_updateInsightsCount} from "../NewDashboard/dashboard.utils.helper/form.utils.helper";
 
 import connector from "../utils/connector";;
@@ -86,13 +87,19 @@ export async function editOccupiedUserModel(data){
 
 // Edit existing room model and also update the roomsListCollection.
 export async function editRoomModel(data){
-  const result = await connector.post(`${Variables.Variables.hostId}/${data.lodgeId}/roomupdater`, data);
-  if(result.data.success){
+  var options = {
+    accId: data.lodgeId,
+    selectedNodes: data.roomId,
+    widgetName: 'roomAction',
+    data: data
+  }
+  const res = await CommonCrudController.EditController(options);
+  if(res.data.success){
     // Modify the result.data.updatedData just to update the room list collections.
-    result.data.updatedData['roomId'] = data.roomId;
-    _updateRoomListCollection(result.data.updatedData, 'EDIT');
+    res.data.result['roomId'] = data.roomId;
+    _updateRoomListCollection(res.data.result, 'EDIT');
   };
-  return result;
+  return res;
 };
 
 // Delete the existing room model.

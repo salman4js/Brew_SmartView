@@ -14,7 +14,7 @@ import VoucherTableWrapper from "./voucher.table.wrapper/voucher.table.wrapper";
 import PropertyReadView from "./property.base.view/property.read.view/property.read.view";
 import PropertyEditView from "./property.base.view/property.edit.view/property.edit.view";
 import InsightsTableWrapper from "./insights.table.wrapper/insights.table.wrapper";
-import CreateRoomActionTableWrapper from "./create.room.action.table.wrapper/create.room.action.table.wrapper";
+import RoomActionTableWrapper from "./room.action.table.wrapper/room.action.table.wrapper";
 import propertyContainerConstants from './property.container.constants';
 import {
   extractQueryParams,
@@ -218,8 +218,8 @@ const PropertyContainer = (props) => {
       notifyStateRouter = {() => notifyStateRouter()} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     }
 
-    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.createRoomAction){
-      return <CreateRoomActionTableWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.roomAction){
+      return <RoomActionTableWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     }
 

@@ -42,7 +42,7 @@ class PropertyBaseView extends React.Component {
         // Get response model key.
             urlStates = extractQueryParams();
         modalOptions.onHideOptions[urlStates.clientModelKey] = options.data[urlStates.serverModelKey];
-        modalOptions.header = options.data.message;
+        modalOptions.header = options.data.message || modalOptions.header;
         modalOptions.onHide = () => this._updateCustomModal({show: false}, () => this.props.dashboardController(modalOptions.onHideOptions));
         return modalOptions;
     };

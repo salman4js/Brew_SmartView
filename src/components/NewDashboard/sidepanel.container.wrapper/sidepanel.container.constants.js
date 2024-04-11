@@ -51,7 +51,8 @@ var sidepanelConstants = Object.freeze({
         },
         price: {
             placeholder: 'Price Per Day',
-            label: 'Price Per Day'
+            label: 'Price Per Day',
+            readOnly: true
         },
         extraBedPrice: {
             placeholder: 'Extra Bed Price',
@@ -59,8 +60,8 @@ var sidepanelConstants = Object.freeze({
             readOnly: true
         },
         suiteName: {
-            placeholder: 'Room Type',
-            label: 'Room Type',
+            placeholder: 'Suite Type',
+            label: 'Suite Type',
             attribute: 'listField',
             options: undefined
         },
