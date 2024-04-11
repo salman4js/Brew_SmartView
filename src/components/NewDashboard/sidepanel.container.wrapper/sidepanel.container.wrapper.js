@@ -439,6 +439,15 @@ const SidepanelWrapper = (props, ref) => {
     setSidepanel(prevState => ({...prevState, height: undefined, selectedId: []}));
   };
 
+  // Remove model from the collection!
+  function _removeModelFromCollection(modelIds){
+    const currentCollectionData = sidepanel.childData;
+    _.remove(currentCollectionData, (model) => {
+      return modelIds.includes(model._id)
+    });
+    setSidepanel(prevState => ({...prevState, childData: currentCollectionData}));
+  }
+
   // Update the child model on every silent true state update!
   function updateModel(){
     if(props.selectedModelData.roomModel !== undefined){ // this condition is added here because when we click on cancel on the property container 
@@ -483,6 +492,9 @@ const SidepanelWrapper = (props, ref) => {
       fetchRoomsTypes();
     } else {
       updateModel();
+    }
+    if(props.controller.reloadSidepanel.silent && props.controller.reloadSidepanel.removeModelFromCollection){
+      _removeModelFromCollection(props.controller.reloadSidepanel.removeModelFromCollection.modelIds);
     }
     _resetClientData();
     updateSidePanelHeight(props.data.height);

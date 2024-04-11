@@ -7,16 +7,16 @@ var defaultViewConstants = Object.freeze({
     voucherTracker: 'Voucher Tracker',
     insights: 'Insights',
     multipleLogin: 'Manage Accounts',
-    createRoomAction: 'Create Properties'
+    roomAction: 'Create Properties'
   }),
 
   CLIENT_WIDGET_TILE: Object.freeze({
-    createRoomAction: {noCountWidget: true}
+    roomAction: {noCountWidget: true}
   }),
 
   CLIENT_WIDGET_TILE_VIEWCLASS: Object.freeze({
     multipleLogin: 'bi bi-book widget-tile-body widget-icon',
-    createRoomAction: 'bi bi-building widget-tile-body widget-icon'
+    roomAction: 'bi bi-building widget-tile-body widget-icon'
   }),
 
   dashboardMode: Object.freeze({
@@ -34,9 +34,9 @@ var defaultViewConstants = Object.freeze({
       sidepanelOptions: {silent: true, mode: 'insightsSearchForm'},
       dashboardMode: 'insights'
     },
-    createRoomAction: {
+    roomAction: {
       sidepanelOptions: {silent: true, mode: 'roomTypeListPanel'},
-      dashboardMode: 'createRoomAction'
+      dashboardMode: 'roomAction'
     }
   }),
 

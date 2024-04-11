@@ -20,11 +20,15 @@ class CommandsDelete {
       this.status.eventHelpers.triggerCommandExecution();
       this.status.eventHelpers.triggerTableLoader(true, true);
       this.status.eventHelpers.updateCheckboxSelection(); // This will empty the checkboxSelection so when loader comes, commands will be disabled.
-      this._initiateDeleteAction().then(() => {
-          this.status.eventHelpers.removeFromTableCollection(this.status.nodes);
+      this._initiateDeleteAction().then((result) => {
           this.status.eventHelpers.triggerTableLoader(false);
-          this.status.eventHelpers.triggerCustomModel({header: lang.DELETE_CONTROLLER[this.status.roomConstantKey].successMessage, centered: false});
-      }).catch((err) => {
+          if(result.status === 204){
+              this.status.eventHelpers.removeFromTableCollection(this.status.nodes);
+              this.status.eventHelpers.triggerCustomModel({header: lang.DELETE_CONTROLLER[this.status.roomConstantKey].successMessage, centered: false});
+          } else {
+              this.status.eventHelpers.triggerCustomModel({header: result.data.message, centered: false});
+          }
+      }).catch(() => {
           this.status.eventHelpers.triggerTableLoader(false);
           this.status.eventHelpers.triggerCustomModel({header: lang.DELETE_CONTROLLER.deleteControllerError, centered: false});
       });
@@ -35,9 +39,7 @@ class CommandsDelete {
           CommonCrudController.DeleteController({widgetName: this.status.roomConstantKey,
              selectedNodes: this.status.nodes, accId: this.status.params.accIdAndName[0]})
          .then((result) => {
-             if(result.status === 204){
-                 resolve();
-             }
+             resolve(result);
          }).catch((err) => {
              reject(err);
              // Let the user know that the operation has been failed for some reason.

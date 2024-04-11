@@ -36,10 +36,13 @@ class TableEditActionDialog {
               this.status.eventHelpers.collapseCustomModal();
               this.status.eventHelpers.updateCheckboxSelection();
               this.status.eventHelpers.onEdit(options).then((response) => {
-                  if(response.data.statusCode === 200){
+                  if(response.data.statusCode === 200 && response.data.success){
                       this.status.eventHelpers.updateModelFromTableCollection(response.data.result);
                       this.status.eventHelpers.triggerTableLoader(false);
                       this.status.eventHelpers.triggerCustomModel({header: CommandsLang.EDIT_CONTROLLER[this.status.roomConstantKey].successMessage, centered: false});
+                  } else {
+                      this.status.eventHelpers.triggerTableLoader(false);
+                      this.status.eventHelpers.triggerCustomModel({header: response.data.message, centered: false});
                   }
               }).catch((err) => {
                  console.warn(err);

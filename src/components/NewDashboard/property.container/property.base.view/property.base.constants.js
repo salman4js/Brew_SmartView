@@ -18,7 +18,7 @@ var propertyBaseConstants = Object.freeze({
             centered: false,
             restrictBody: true,
             footerEnabled: false,
-            header: undefined,
+            header: 'Room entry updated!',
             onHide: undefined,
             onHideOptions: {reloadSidepanel: {silent: true}, action: 'EDIT'}
         },

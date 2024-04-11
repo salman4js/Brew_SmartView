@@ -27,13 +27,13 @@ var dialogConstants = Object.freeze({
             primaryBtn: 'Edit',
             secondaryBtn: 'Cancel'
         },
-        tableEditModeAllowedKeys: ['voucherTracker', 'multipleLogin', 'createRoomAction']
+        tableEditModeAllowedKeys: ['voucherTracker', 'multipleLogin', 'roomAction']
     },
 
     HEADER_OPTIONS: {
         voucherTracker: 'Voucher',
         multipleLogin: 'Account',
-        createRoomAction: 'Room'
+        roomAction: 'Room'
     },
 
     TABLE_FILTER_DIALOG: {
@@ -95,20 +95,30 @@ var dialogConstants = Object.freeze({
                 }]
             }
         },
-        createRoomAction: {
+        roomAction: {
             roomno: {
+                label: 'Room Number',
                 placeholder: 'Enter Room Number'
             },
             floorNo: {
+                label: 'Floor Number',
                 placeholder: 'Enter Floor Number'
             },
+            suiteName: {
+                placeholder: 'Suite Type',
+                label: 'Suite Type'
+            },
             extraBedPrice: {
+                label: 'Extra Bed Price',
                 placeholder: 'Enter Extra Bed Price'
             },
             price: {
-                placeholder: 'Enter Room Price'
+                label: 'Room Price',
+                placeholder: 'Enter Room Price',
+                readOnly: true
             },
             bedCount: {
+                label: 'Bed Count',
                 placeholder: 'Enter Bed Count'
             }
         }

@@ -2,6 +2,11 @@ import CollectionInstance from '../../../global.collection/widgettile.collection
 const _ = require('lodash');
 const brewDate = require('brew-date');
 
+// Check if the widget is enabled or not.
+function isWidgetEnabled(widgetName){
+  return CollectionInstance.getModel('widgetTileCollections', 'widgetTileModelCount')[widgetName];
+};
+
 // check for payment tracker data.
 export function checkForPaymentTrackerData(data, action){
   var amountFor = {'check-in': 'Initial-Checkin', 'check-out': 'While CheckOut'};
@@ -15,7 +20,7 @@ export function checkForPaymentTrackerData(data, action){
   return data;
 };
 
-// Function to check if we need to add the usermodel to the collection instance!
+// Function to check if we need to add the user-model to the collection instance!
 export function shouldAddToCollections(data, action){
   var dateSelection = {
     'check-in': data.checkout,
@@ -53,7 +58,7 @@ export function removeModelsFromCollections(modelName, data, options){
   };
 };
 
-// Update the room list collection --> Delete the prebookUserId from the room model when the prebook has been cancelled.
+// Update the room list collection --> Delete the prebookUserId from the room model when prebook has been cancelled.
 export function _updateRoomListCollection(data, action, performer){
   // Get the roomList Collections.
   var roomListCollection = CollectionInstance.getCollections('roomsListCollection').data;
@@ -67,8 +72,8 @@ export function _updateRoomListCollection(data, action, performer){
       _.remove(roomListCollection, function(model){
         return model._id === data.roomId;
       });
-      if(performer === 'pre-book'){ // If the performer is prebook then we would have to delete the prebook entry from the roomsListCollection model.
-        // Otherwise roomModel will still have prebook entries stored which will lead to some misbehavior in almost all aspects.
+      if(performer === 'pre-book'){ // If the performer is prebooked then we would have to delete the prebook entry from the roomsListCollection model.
+        // Otherwise, roomModel will still have prebooked entries stored which will lead to some misbehavior in almost all aspects.
         // Delete the prebook user id from the filtered room model.
         _.remove(filteredModel.prebookuser, function(value){
           return value === data.prebookUserId;
@@ -97,7 +102,7 @@ export function _updateRoomListCollection(data, action, performer){
       // Add the updated data into the roomsListCollection.
       _updateRoomListCollection(data, 'ADD');
     };
-    // Atlast, update the room list collections.
+    // Atlas, update the room list collections.
     CollectionInstance.updateCollections('roomsListCollection', roomListCollection);
   };
 };
@@ -105,7 +110,7 @@ export function _updateRoomListCollection(data, action, performer){
 // Update widgetTileCollections data based on the model --> this method handles for all widgetTileCollections.
 // Conditions param will take only condition in the form of array of objects.
 export function _updateWidgetTileCollections(modelName, data, action, conditions){
-  // Get the widgettile collections.
+  // Get the widget collections.
   var widgetTileCollections = _.clone(CollectionInstance.getModel('widgetTileCollections', modelName));
   if(action === 'DELETE'){
     // Delete the prebook entry from the widget tile collection to keep the data in sync for default.view (New Dashboard).
@@ -137,17 +142,22 @@ export function _updateWidgetTileCollections(modelName, data, action, conditions
 };
 
 export function _updateInsightsCount(model, action){
-  var widgetTileCollections = _.clone(CollectionInstance.getModel('widgetTileCollections', 'widgetTileModelCount')),
-      insightsCollections = widgetTileCollections.insights.value[model],
-      updateCount = true;
-  if(action === 'INC') insightsCollections.count++;
-  if(action === 'DEC'){
-    if((insightsCollections.count--) === 0){
-      updateCount = false;
+  // Check if the specific widget is enabled or not.
+  if(isWidgetEnabled('insights')){
+    var widgetTileCollections = _.clone(CollectionInstance.getModel('widgetTileCollections', 'widgetTileModelCount')),
+        insightsCollections = widgetTileCollections.insights.value[model],
+        updateCount = true;
+    if(action === 'INC') insightsCollections.count++;
+    if(action === 'DEC'){
+      if((insightsCollections.count--) === 0){
+        updateCount = false;
+      }
     }
+    // When the widgetTileModel Count is updated, Update the entire widgetTileModelCount in the collection instance.
+    updateCount && CollectionInstance.updateModel('widgetTileCollections', 'widgetTileModelCount', widgetTileCollections);
+  } else {
+
   }
-  // When the widgetTileModel Count is updated, Update the entire widgetTileModelCount in the collection instance.
-  updateCount && CollectionInstance.updateModel('widgetTileCollections', 'widgetTileModelCount', widgetTileCollections);
 };
 
 // Update widget tile model count for upcomingCheckout and upcomingPrebook.
