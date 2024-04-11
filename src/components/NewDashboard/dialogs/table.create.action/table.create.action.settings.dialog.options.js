@@ -142,17 +142,12 @@ function roomAction(options){
             inlineMessage: 'Please provide a valid payment.'
         }
     }, {
-        value: options?.suiteName,
+        value: options?.suiteType,
         placeholder: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.placeholder,
         label: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.label,
         name: 'suiteName',
-        attribute: 'listField',
-        options: CollectionInstance.getAttribute('roomTypes', 'suiteType'),
-        isRequired: true,
-        inlineToast: {
-            isShow: false,
-            inlineMessage: 'Please provide a valid payment.'
-        }
+        attribute: 'textField',
+        readOnly: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.readOnly
     }, {
         value: options?.extraBedPrice,
         placeholder: lang.TABLE_CREATE_DIALOG.roomAction.extraBedPrice.placeholder,
@@ -170,12 +165,7 @@ function roomAction(options){
         label: lang.TABLE_CREATE_DIALOG.roomAction.price.label,
         name: 'price',
         attribute: 'textField',
-        readOnly: lang.TABLE_CREATE_DIALOG.roomAction.price.readOnly,
-        isRequired: true,
-        inlineToast: {
-            isShow: false,
-            inlineMessage: 'Please provide a valid payment.'
-        }
+        readOnly: lang.TABLE_CREATE_DIALOG.roomAction.price.readOnly
     }, {
         value: options?.bedCount,
         placeholder: lang.TABLE_CREATE_DIALOG.roomAction.bedCount.placeholder,

@@ -1,4 +1,5 @@
 import dialogCreateOptions from "../table.create.action/table.create.action.settings.dialog.options";
+import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 
 function voucherTrackerEditOptions(options){
     return dialogCreateOptions['voucherTracker'](options);
@@ -9,7 +10,15 @@ function multipleLoginEditOptions(options){
 };
 
 function roomActionEditOptions(options){
-  return dialogCreateOptions['roomAction'](options);
+  var dialogOptions = dialogCreateOptions['roomAction'](options);
+  dialogOptions.map((options) => {
+      if(options.name === 'suiteName'){
+          options.attribute = 'listField';
+          options.readOnly = false;
+          options.options = CollectionInstance.getAttribute('roomTypes', 'suiteType')
+      }
+  });
+  return dialogOptions;
 };
 
 var dialogEditOptions = {

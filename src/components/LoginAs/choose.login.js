@@ -8,6 +8,7 @@ import { activityLoader } from '../common.functions/common.functions.view';
 import { validateFieldData, nodeConvertor } from '../common.functions/node.convertor';
 import CollectionInstance from '../../global.collection/widgettile.collection/widgettile.collection';
 import {getStorage, setStorage, defaultStorage} from '../../Controller/Storage/Storage'
+import {getAccountDetails} from "../utils/manage.recep.utils";
 
 const ChooseLogin = () => {
   
@@ -148,6 +149,12 @@ const ChooseLogin = () => {
       const permissionLevel = getStorage("permissionLevel");
       const accessGranted = (permissionLevel === result.data.permissionLevel);
       if(result.data.success && accessGranted){
+        if(!(CollectionInstance.getCollections('multipleLogin'))){
+          var allUserLoginResult = await getAccountDetails({accId: splitedIds[0]});
+          if(allUserLoginResult.data.statusCode === 200){
+            CollectionInstance.setCollections('multipleLogin', allUserLoginResult.data.result);
+          }
+        }
         const storageData = {
           "loggedInUser": result.data.loggedInUser,
           "loggedInAsRecep": result.data.loggedInAsRecep

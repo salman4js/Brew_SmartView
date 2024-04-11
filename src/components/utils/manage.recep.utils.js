@@ -3,7 +3,7 @@ const Variables = require("../Variables");
 
 // Get account details!
 export async function getAccountDetails(options){
-  return await connector.get(`${Variables.Variables.hostId}/${options.accId}/getlogins`);
+  return await connector.get(`${Variables.Variables.hostId}/${options.accId}/get-logins`);
 }
 
 // Add new account details!

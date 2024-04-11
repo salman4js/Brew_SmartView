@@ -42,7 +42,7 @@ class TableCreateActionDialog {
     };
 
     getCustomBodyViewOptions(){
-        return dialogCreateOptions[this.status.roomConstantKey]();
+        return dialogCreateOptions[this.status.roomConstantKey](this.status.selectedModel);
     };
 
     getDialogOptions(){
