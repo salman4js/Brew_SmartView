@@ -5,6 +5,12 @@ connector.getCookies = function(){
   return document.cookie.split('=')[1];
 };
 
+connector.isAuthenticated = function(result){
+    if(!result.data.notAuthorized){
+        window.location.pathname = '/rejected';
+    }
+};
+
 connector.post = function(url, body, options){
     return new Promise((resolve, reject) => {
         options = {
@@ -13,6 +19,7 @@ connector.post = function(url, body, options){
             }
         };
         origConnector.post(url, body, options).then((result) => {
+            this.isAuthenticated(result);
             resolve(result);
         }).catch((err) => {
             reject(err);
@@ -28,7 +35,8 @@ connector.get = function(url, options){
          }
      };
      origConnector.get(url, options).then((result) => {
-        resolve(result);
+         this.isAuthenticated(result);
+         resolve(result);
      }).catch((err) => {
          reject(err);
      })
@@ -43,6 +51,7 @@ connector.patch = function(url, body, options){
            }
        };
        origConnector.patch(url, body, options).then((result) => {
+           this.isAuthenticated(result);
            resolve(result);
        }).catch((err) => {
           reject(err);
@@ -58,6 +67,7 @@ connector.delete = function(url, options){
          }
      };
      origConnector.delete(url, options).then((result) => {
+         this.isAuthenticated(result);
          resolve(result);
      }).catch((err) => {
          reject(err);

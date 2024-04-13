@@ -2,16 +2,10 @@ import React from 'react';
 import CustomModal from "../../fields/customModalField/custom.modal.view";
 import CommandHelper from '../../fields/commandField/command.helper.field'
 import {activityLoader} from '../../common.functions/common.functions.view'
-import { getClassName } from '../../common.functions/common.functions';
 import Button from 'react-bootstrap/Button'
 
 
 const CardView = (props) => {
-
-  // Get className for the footer buttons!
-  function getClass(variant){
-    return getClassName(variant)
-  }
   
   // Get card child view style!
   function getChildViewStyle(){

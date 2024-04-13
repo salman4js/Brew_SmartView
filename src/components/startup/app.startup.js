@@ -12,6 +12,7 @@ import {appStartupTemplate} from "./app.startup.template";
 import {nodeConvertor, validateFieldData} from "../common.functions/node.convertor";
 import CustomModal from "../fields/customModalField/custom.modal.view";
 import BlockActions from "../fields/block.actions.view/block.actions.view";
+import {_checkForSecureConnections} from "../common.functions/common.functions";
 
 class AppStartup extends React.Component {
     constructor(props) {
@@ -177,6 +178,12 @@ class AppStartup extends React.Component {
             </>
         )
     };
+
+    componentDidUpdate() {
+        if(_checkForSecureConnections()){
+            this.props.options.navigate('/rejected', {replace: true});
+        }
+    }
 }
 
 function AppStartUpWrapper(){

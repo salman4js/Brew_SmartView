@@ -1,5 +1,4 @@
 import { formatDate } from "../../../common.functions/common.functions";
-import {universalLang} from "../../../universalLang/universalLang";
 import brewDate from "brew-date";
 
 var checkoutViewConstants = Object.freeze({
@@ -127,7 +126,7 @@ var checkoutViewConstants = Object.freeze({
       restrictShow: true
     },
     amountFor: {
-      value: universalLang.editCustomerDetailsAdvance,
+      value: "In between advance payment",
       attribute: 'textField',
       restrictShow: true
     },
@@ -139,7 +138,14 @@ var checkoutViewConstants = Object.freeze({
   }),
   checkoutViewPerspectiveConstant: 'property-container',
   checkoutFailureError: 'Checkout failed, please try again!',
-  constantKey: 'bill-preview'
+  constantKey: 'bill-preview',
+  paymentConstantLang: {
+    InitialPayment: "Initial check-in payment",
+    editCustomerDetailsAdvance: "In between advance payment",
+    prebookInBetweenAdvance: "In between prebook advance payment",
+    InitialPrebookPayment: "Initial prebook advance payment",
+    prebookCancelAlertMessage: "This prebook user has paid some amount, Cannot cancel the prebooking without refunding"
+  }
 });
 
 export default checkoutViewConstants;
