@@ -9,7 +9,7 @@ class CommonCrudController {
     };
 
     static async EditController(options){
-        return await connector.put(`${Variables.Variables.hostId}/${options.accId}/${options.selectedNodes}/${options.widgetName}/edit`, options.data);
+        return await connector.patch(`${Variables.Variables.hostId}/${options.accId}/${options.selectedNodes}/${options.widgetName}/edit`, options.data);
     };
 
     static async CreateController(options){

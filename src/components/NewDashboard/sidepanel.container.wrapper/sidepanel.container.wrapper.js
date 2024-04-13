@@ -177,6 +177,7 @@ const SidepanelWrapper = (props, ref) => {
     var options = {
       dashboardController: (opts) => props.dashboardController(opts),
       height: sidepanel.height,
+      params: props.params,
       adminAction: props.selectedModelData.adminAction
     }
     return <SidepanelContainerRoomslistView options = {options}/>

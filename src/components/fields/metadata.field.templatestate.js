@@ -34,6 +34,21 @@ var metadataFieldTemplateState = Object.freeze({
         label: undefined,
         isLabelFirst: true,
         customStyle: {}
+    },
+    customModal: {
+        show: false,
+        header: undefined,
+        modalSize: 'medium', // 'xl', 'sm'
+        restrictBody: false,
+        showBodyItemView: function(){
+            // Return a view here!
+        },
+        footerEnabled: false,
+        footerButtons: [{
+            btnId: undefined,
+            variant: 'success', // 'secondary', 'primary', 'danger', 'dark'
+            onClick: null
+        }]
     }
 });
 

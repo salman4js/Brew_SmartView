@@ -38,7 +38,7 @@ function voucherTrackerCreateOptions(options){
         {
             value: options?.cashMode,
             placeholder: lang.TABLE_CREATE_DIALOG.voucherTracker.cashMode,
-            label: lang.TABLE_CREATE_DIALOG.voucherTracker.cashMode,
+            label: lang.TABLE_CREATE_DIALOG.voucherTracker.particulars,
             name: 'cashMode',
             attribute: 'textField',
             isRequired: true,
@@ -142,31 +142,6 @@ function roomAction(options){
             inlineMessage: 'Please provide a valid payment.'
         }
     }, {
-        value: options?.suiteType,
-        placeholder: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.placeholder,
-        label: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.label,
-        name: 'suiteName',
-        attribute: 'textField',
-        readOnly: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.readOnly
-    }, {
-        value: options?.extraBedPrice,
-        placeholder: lang.TABLE_CREATE_DIALOG.roomAction.extraBedPrice.placeholder,
-        label: lang.TABLE_CREATE_DIALOG.roomAction.extraBedPrice.label,
-        name: 'extraBedPrice',
-        attribute: 'textField',
-        isRequired: true,
-        inlineToast: {
-            isShow: false,
-            inlineMessage: 'Please provide a valid payment.'
-        }
-    }, {
-        value: options?.price,
-        placeholder: lang.TABLE_CREATE_DIALOG.roomAction.price.placeholder,
-        label: lang.TABLE_CREATE_DIALOG.roomAction.price.label,
-        name: 'price',
-        attribute: 'textField',
-        readOnly: lang.TABLE_CREATE_DIALOG.roomAction.price.readOnly
-    }, {
         value: options?.bedCount,
         placeholder: lang.TABLE_CREATE_DIALOG.roomAction.bedCount.placeholder,
         label: lang.TABLE_CREATE_DIALOG.roomAction.bedCount.label,
@@ -177,6 +152,54 @@ function roomAction(options){
             isShow: false,
             inlineMessage: 'Please provide a valid payment.'
         }
+    },  {
+        value: options?.extraBedPrice,
+        placeholder: lang.TABLE_CREATE_DIALOG.roomAction.extraBedPrice.placeholder,
+        label: lang.TABLE_CREATE_DIALOG.roomAction.extraBedPrice.label,
+        name: 'extraBedPrice',
+        attribute: 'textField',
+        isRequired: true,
+        readOnly: true,
+        inlineToast: {
+            isShow: false,
+            inlineMessage: 'Please provide a valid payment.'
+        }
+    }, {
+        value: options?.suiteType,
+        placeholder: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.placeholder,
+        label: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.label,
+        name: 'suiteName',
+        attribute: 'textField',
+        readOnly: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.readOnly
+    }, {
+        value: options?.price,
+        placeholder: lang.TABLE_CREATE_DIALOG.roomAction.price.placeholder,
+        label: lang.TABLE_CREATE_DIALOG.roomAction.price.label,
+        name: 'price',
+        attribute: 'textField',
+        readOnly: lang.TABLE_CREATE_DIALOG.roomAction.price.readOnly
+    }]
+};
+
+function roomTypeAction(options){
+    return[{
+        value: options?.suiteType,
+        placeholder: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.placeholder,
+        label: lang.TABLE_CREATE_DIALOG.roomAction.suiteName.label,
+        name: 'suiteType',
+        attribute: 'textField',
+    }, {
+        value: options?.extraBedPrice,
+        placeholder: lang.TABLE_CREATE_DIALOG.roomAction.extraBedPrice.placeholder,
+        label: lang.TABLE_CREATE_DIALOG.roomAction.extraBedPrice.label,
+        name: 'extraBedPrice',
+        attribute: 'textField'
+    }, {
+        value: options?.price,
+        placeholder: lang.TABLE_CREATE_DIALOG.roomAction.price.placeholder,
+        label: lang.TABLE_CREATE_DIALOG.roomAction.price.label,
+        name: 'price',
+        attribute: 'textField',
     }]
 };
 
@@ -185,6 +208,7 @@ var dialogCreateOptions = {
     'voucherTracker': (options) => voucherTrackerCreateOptions(options),
     'multipleLogin': (options) => multipleLoginCreateOptions(options),
     'roomAction': (options) => roomAction(options),
+    'roomTypeAction': (options) => roomTypeAction(options),
     'onSave': (options) => CommonCrudController.CreateController(options)
 };
 

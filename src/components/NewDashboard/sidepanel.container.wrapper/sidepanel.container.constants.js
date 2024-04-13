@@ -26,14 +26,16 @@ var sidepanelConstants = Object.freeze({
         MORE_DETAILS_HEADER: ['Floor No', 'Bed Count', 'Ext Bed Rate', 'Room Price']
     }),
     voucherListParentCollection: Object.freeze({
-        // inflow: {
-        //     value: 'InFlow',
-        //     data: 'ROOM_LIST'
-        // },
         outflow: {
             value: 'OutFlow',
             data: 'VOUCHER_LIST'
         }
+    }),
+    roomActionCollection: Object.freeze({
+       roomTypeAction: {
+           value: 'Room Type Collection',
+           data: 'ROOM_TYPE_LIST'
+       }
     }),
     TEMPLATE_LABEL: Object.freeze({
         roomno: {
@@ -90,6 +92,23 @@ var sidepanelConstants = Object.freeze({
         footerButtons: {
             primaryBtn: 'Create',
             cancelBtn: 'Cancel'
+        }
+    }),
+    ROOM_TYPE_CREATION: Object.freeze({
+        dialogOptions: {
+            header: 'Create New Room Type',
+        },
+        footerButtons: {
+            primaryBtn: 'Create',
+            secondaryBtn: 'Cancel'
+        }
+    }),
+    ROOM_TYPE_UPDATE: Object.freeze({
+        dialogOptions: {
+            header: 'Edit Room Type'
+        },
+        footerButtons: {
+            primaryBtn: 'Edit'
         }
     })
 });

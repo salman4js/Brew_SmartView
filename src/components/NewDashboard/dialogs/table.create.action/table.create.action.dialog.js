@@ -1,6 +1,7 @@
 import lang from '../dialog.constants'
 import dialogCreateOptions from "./table.create.action.settings.dialog.options";
 import {extractQueryParams} from "../../../common.functions/node.convertor";
+import CommandsLang from "../../commands/commands.constants";
 
 class TableCreateActionDialog {
     constructor(signatureOptions) {
@@ -15,22 +16,23 @@ class TableCreateActionDialog {
         var options = {};
         this.status.eventHelpers.validateStateFields().then((result) => {
             if(result){
-                if(lang.widgetObjectId[this.status.roomConstantKey]){
-                    result[lang.widgetObjectId[this.status.roomConstantKey]] = extractQueryParams().widgetObjectId;
-                }
                 options['accId'] = this.status.params.accIdAndName[0];
                 options['data'] = result;
                 options['widgetName'] = this.status.roomConstantKey;
                 this.status.eventHelpers.triggerTableLoader(true, true);
                 this.status.eventHelpers.collapseCustomModal();
                 dialogCreateOptions.onSave(options).then((response) => {
-                    if(response.data.statusCode === 201){
+                    if(response.data.statusCode === 201 && response.data.success){
                         this.status.eventHelpers.addIntoTableCollection(response.data.result);
                         this.status.eventHelpers.triggerTableLoader(false);
+                        this.status.eventHelpers.triggerCustomModel({header: CommandsLang.CREATE_CONTROLLER[this.status.roomConstantKey].successMessage, centered: false});
+                    } else {
+                        this.status.eventHelpers.triggerTableLoader(false);
+                        this.status.eventHelpers.triggerCustomModel({header: response.data.message, centered: false});
                     }
                 }).catch((err) => {
                     console.warn(err);
-                    this.status.eventHelpers.collapseCustomModal();
+                    this.status.eventHelpers.triggerCustomModel({header: CommandsLang.CREATE_CONTROLLER.createControllerError, centered: false});
                     this.status.eventHelpers.triggerTableLoader(false);
                 });
             }

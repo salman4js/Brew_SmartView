@@ -35,14 +35,14 @@ connector.get = function(url, options){
   });
 };
 
-connector.put = function(url, body, options){
+connector.patch = function(url, body, options){
     return new Promise((resolve, reject) => {
        options = {
            headers: {
                "x-access-token": options?.accessToken || connector.getCookies(),
            }
        };
-       origConnector.put(url, body, options).then((result) => {
+       origConnector.patch(url, body, options).then((result) => {
            resolve(result);
        }).catch((err) => {
           reject(err);
@@ -54,7 +54,7 @@ connector.delete = function(url, options){
   return new Promise((resolve, reject) => {
      options = {
          headers: {
-             "x-access-token": options?.accessToken || document.cookie,
+             "x-access-token": options?.accessToken || document.getCookies(),
          }
      };
      origConnector.delete(url, options).then((result) => {

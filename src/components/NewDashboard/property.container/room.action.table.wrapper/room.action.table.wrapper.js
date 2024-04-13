@@ -30,7 +30,8 @@ class RoomActionTableWrapper extends TableView{
                         value: false,
                         attribute: "checkBoxField",
                         enableCellCheckbox: true,
-                        enableHeaderCheckbox: true
+                        enableHeaderCheckbox: true,
+                        selectedCheckboxIndex: []
                     }
                 ]
             }
@@ -39,27 +40,50 @@ class RoomActionTableWrapper extends TableView{
 
     async setExpandedTableView(){
         this.roomConstant = createRoomActionTableConstants.tableInfoMessage.PROPERTY_STATUS_KEY;
+        !this.isSelectedModelUpdatedInUrl && this._updateSelectedModelInUrl();
         this._prepareTableHeaderState();
         this._prepareTableCellState();
         return this.collection;
     };
 
-    updateModelFromTableCollection(updatedModel) {
-        var indexToUpdate = _.findIndex(this.collection, (model) => {
-            return model._id === updatedModel._id;
-        });
-        if(indexToUpdate !== -1){
-            _.assign(this.collection[indexToUpdate], updatedModel);
+    addIntoTableCollection(locallyCreatedModel){
+        if(locallyCreatedModel){
+            const isCreatedModelAlreadyExists = _.filter(this.collection, (model) => {
+                return model._id === locallyCreatedModel._id;
+            });
+            if(isCreatedModelAlreadyExists.length === 0){
+                this.collection.push(locallyCreatedModel);
+                locallyCreatedModel['roomId'] = locallyCreatedModel._id;
+                _updateRoomListCollection(locallyCreatedModel, 'ADD');
+            }
         }
-        updatedModel['roomId'] = updatedModel._id;
-        _updateRoomListCollection(updatedModel, 'EDIT');
+    };
+
+    updateModelFromTableCollection(updatedModel) {
+        if(updatedModel){
+            var indexToUpdate = _.findIndex(this.collection, (model) => {
+                return model._id === updatedModel._id;
+            });
+            if(indexToUpdate !== -1){
+                _.assign(this.collection[indexToUpdate], updatedModel);
+                updatedModel['roomId'] = updatedModel._id;
+                _updateRoomListCollection(updatedModel, 'EDIT');
+            }
+        }
     };
 
     removeFromTableCollection(selectedNodes) {
-        _.remove(this.collection, (model) => {
-           return selectedNodes.includes(model._id);
-        });
-        this.props.dashboardController({reloadSidepanel: {silent: true, mode: 'roomTypeListPanel', action: 'REMOVE', modelIds: selectedNodes}});
+        if(selectedNodes){
+            _.remove(this.collection, (model) => {
+                return selectedNodes.includes(model._id);
+            });
+            this.props.dashboardController({reloadSidepanel: {silent: true, mode: 'roomTypeListPanel', action: 'REMOVE', modelIds: selectedNodes}});
+        }
+    };
+
+    _updateSelectedModelInUrl(){
+      this.props.dashboardController({queryParams: [{key: 'widgetObjectId', value: this._getSelectedModel()._id}]});
+      this.isSelectedModelUpdatedInUrl = true;
     };
 
     _prepareTableHeaderState(){
@@ -75,8 +99,10 @@ class RoomActionTableWrapper extends TableView{
     };
 
     prepareTemplateHelpersData(){
-      super.prepareTemplateHelpersData();
-      this.templateHelpersData.options['selectedModel'] = this._getSelectedModel();
+        super.prepareTemplateHelpersData();
+        const selectedModel = this._getSelectedModel();
+        this.templateHelpersData.options['selectedModel'] = selectedModel;
+        this.templateHelpersData.options.selectedRoomConstant = selectedModel.suiteType;
     };
 
     _prepareTableCellState(){
@@ -87,7 +113,10 @@ class RoomActionTableWrapper extends TableView{
 
     componentDidUpdate(){
         if(this.state.adminAction !== this.props.data.adminAction){
-          this._updateComponentState({key: 'adminAction', value: this.props.data.adminAction}, () => this._toggleTableLoader(true, false));
+          this._updateComponentState({key: 'adminAction', value: this.props.data.adminAction}, () => {
+              this._toggleTableLoader(true, false);
+              this.isSelectedModelUpdatedInUrl = false;
+          });
         }
     };
 }

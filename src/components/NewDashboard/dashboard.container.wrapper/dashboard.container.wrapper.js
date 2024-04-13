@@ -231,7 +231,7 @@ const DashboardWrapper = (props, ref) => {
 
   // Update dashboard wrapper!
   function _updateDashboardWrapper(opts){
-    if(!opts.adminAction){
+    if(opts){
       opts.reloadSidepanel && _reloadSidepanel(opts);
       opts.queryParams && _updateQueryParams(opts.queryParams);
       opts.navigateToPropertyContainer && _navigateToPropertyContainer();
@@ -245,7 +245,6 @@ const DashboardWrapper = (props, ref) => {
       opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
       (opts.navigateToStatusTableView || opts.isVouchersModelSelectionUpdated || opts.isInsightsDataUpdated) && _updateSelectedModelState(opts);
       (opts.updateUserCollection || opts.updatedUserModel) && _updateUserCollection((opts.updateUserCollection || opts));
-    } else {
       opts.isAdminActionRoomTypeModelSelectionUpdated && _updateSelectedModelState(opts);
     }
   };

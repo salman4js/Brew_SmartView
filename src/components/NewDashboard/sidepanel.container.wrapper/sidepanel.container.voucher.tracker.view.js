@@ -140,7 +140,7 @@ class SidepanelContainerVoucherTrackerView extends React.Component {
                 )
             })
         } else {
-            return this.props.options.roomTreeView();
+                return this.props.options.roomTreeView();
         }
     };
 

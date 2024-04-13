@@ -5,7 +5,7 @@ import CommonCrudController from "../../common.crud.controller/common.crud.contr
 class CommandsEdit {
     constructor(signatureOptions) {
         this.status = signatureOptions;
-        this.isDisabled = this.enabled();
+        this.isDisabled = !this.enabled();
         this.defaults = {
             value: lang.EDIT_CONTROLLER.editController,
             disabled: this.isDisabled,
@@ -13,8 +13,8 @@ class CommandsEdit {
         }
     };
 
-    enabled(){
-        return !(lang.isCommandsEnabled.editAction.includes(this.status.roomConstantKey) && this.status.nodes.length === 1);
+    enabled() {
+        return (lang.isCommandsEnabled.editAction.includes(this.status.roomConstantKey) && this.status.nodes.length === 1);
     };
 
     onEdit(options){
