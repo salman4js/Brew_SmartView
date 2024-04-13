@@ -17,6 +17,7 @@ function App() {
           <Route path = "/:id/client-config" exact element = {<Client />} />
           <Route path = "/:id/choose-login" exact element = {<ChooseLogin /> } />
           <Route path = "/windowprint" element = {<WindowPrint />} />
+          {/*<Route path = "/rejected" element = {} />*/}
           <Route path = "/:id/dashboard-container" exact element = {<DashboardInitializer />} />
         </Routes>
       </Router>

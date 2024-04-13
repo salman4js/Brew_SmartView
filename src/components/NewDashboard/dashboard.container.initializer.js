@@ -3,9 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import AppHeaderView from "./app.header/app.header.view";
 import ModalAssist from "./dialogs/modal.assist/modal.assist.view";
 import DashboardWrapper from './dashboard.container.wrapper/dashboard.container.wrapper';
-import {getBaseUrl} from "../common.functions/node.convertor";
 
-const DashboardInitializer = (props) => {
+const DashboardInitializer = () => {
 
   // Get the ID params from the url!
   const { id } = useParams();

@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import _ from 'lodash';
 import brewDate from 'brew-date';
-import TableHead from "./table.view/table.head.view";
-import TableCell from "./table.view/table.cell.view";
 import MetadataTable from '../metadata.table.view/metadata.table.view';
 import { getStorage } from "../../Controller/Storage/Storage";
 import {convertQueryParamsIntoObjects} from "../common.functions/node.convertor";
@@ -268,7 +266,7 @@ const Invoice = (props) => {
                                     <th>
                                         Days Stayed
                                     </th>
-                                    {props.node && props.node.isGst && <TableHead text = "GST" />}
+                                    {props.node && props.node.isGst && <th>GST</th>}
                                     <th>
                                         Room No
                                     </th>
@@ -279,7 +277,7 @@ const Invoice = (props) => {
                                 <td>
                                     {props.node.stayedDays}
                                 </td>
-                                {props.node && props.node.isGst && <TableCell text = {props.node.gst} />}
+                                {props.node && props.node.isGst && <td>{props.node.gst}</td>}
                                 <td>
                                     {props.node.roomno}
                                 </td>
