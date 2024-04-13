@@ -124,6 +124,20 @@ var commandsConstant = Object.freeze({
         editControllerError: 'Something went wrong, please try again later!'
     }),
 
+    CREATE_CONTROLLER: Object.freeze({
+       createController: 'Create' ,
+        voucherTracker: {
+            successMessage: 'Voucher entry created!',
+        },
+        multipleLogin: {
+            successMessage: 'Account details created!'
+        },
+        roomAction: {
+            successMessage: 'New Room entry created!'
+        },
+        createControllerError: 'Something went wrong, please try again later!'
+    }),
+
     // TODO: Remove this later, when we have backend support for column customization.
     configuredTableHeaderAndKey: Object.freeze({
         history: [{

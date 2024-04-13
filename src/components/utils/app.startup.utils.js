@@ -13,13 +13,13 @@ class AppStartupUtils {
               if(res.data.success){
                   // Set isGst and isHourly basis in localstorage!
                   const data = {
+                      "loggedInID": this.options.accId,
                       "gstin" : res.data.object.gstin,
                       "pan" : res.data.object.pan,
                       "owner-name" : res.data.object.name,
                       "owner-number" : res.data.object.number,
                       "lodge-name": res.data.object.lodgename,
                       "redirectTo": res.data.object.redirectTo,
-                      "loggedInID": this.options.accId,
                       "multipleLogin" : res.data.object.multipleLogins,
                       "isGst" : res.data.object.isGst,
                       "isHourly" : res.data.object.isHourly,

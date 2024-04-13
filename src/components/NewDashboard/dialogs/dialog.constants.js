@@ -8,10 +8,6 @@ var dialogConstants = Object.freeze({
         tableFilterAllowedKeys: ['history', 'afterCleaned', 'afterCheckin']
     },
 
-    widgetObjectId: Object.freeze({
-       voucherTracker: 'voucherId'
-    }),
-
     TABLE_CREATE: {
       tableCreateLabel: (options) => `Create new ${options.headerValue}`,
       footerButtons: {
@@ -33,7 +29,8 @@ var dialogConstants = Object.freeze({
     HEADER_OPTIONS: {
         voucherTracker: 'Voucher',
         multipleLogin: 'Account',
-        roomAction: 'Room'
+        roomAction: 'Room',
+        roomTypeAction: 'Room Type'
     },
 
     TABLE_FILTER_DIALOG: {

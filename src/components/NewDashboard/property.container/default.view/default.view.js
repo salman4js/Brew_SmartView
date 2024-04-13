@@ -150,7 +150,8 @@ class DefaultView extends React.Component {
   // On widget tile click handler!
   onWidgetTileClick(value){
     var options = {navigateToStatusTableView: true, widgetTileModel: this.propertyDetailsModel,
-      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: defaultViewConstants.dashboardMode.tableView, userStatusMap: this.propertyStatusMap, selectedRoomConstant: value};
+      widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: defaultViewConstants.dashboardMode.tableView,
+      userStatusMap: this.propertyStatusMap, selectedRoomConstant: value};
     this._updateDashboardControllerOpts(options, value);
     this.props.dashboardController(options);
   };

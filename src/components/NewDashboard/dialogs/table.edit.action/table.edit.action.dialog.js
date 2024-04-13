@@ -1,6 +1,7 @@
 import lang from "../dialog.constants";
 import CommandsLang from '../../commands/commands.constants';
 import dialogEditOptions from "./table.edit.action.settings.dialog.options";
+import {extractQueryParams} from "../../../common.functions/node.convertor";
 
 class TableEditActionDialog {
     constructor(signatureOptions) {
@@ -25,9 +26,6 @@ class TableEditActionDialog {
       var options = {};
       this.status.eventHelpers.validateStateFields().then((result) => {
           if(result){
-              if(lang.widgetObjectId[this.status.roomConstantKey]){
-                  result[lang.widgetObjectId[this.status.roomConstantKey]] = this.status.nodes[0];
-              }
               options['accId'] = this.status.params.accIdAndName[0];
               options['selectedNodes'] = this.status.nodes[0];
               options['widgetName'] = this.status.roomConstantKey;

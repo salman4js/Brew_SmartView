@@ -22,10 +22,23 @@ function roomActionEditOptions(options){
   return dialogOptions;
 };
 
+function roomTypeActionEditOptions(options){
+    var dialogOptions = dialogCreateOptions['roomTypeAction'](options);
+    dialogOptions.map((dOptions) => {
+        if(dOptions.name === 'suiteType'){
+            dOptions.name = undefined
+            dOptions.value = options.suiteName;
+            dOptions.readOnly = true;
+        }
+    });
+    return dialogOptions;
+}
+
 var dialogEditOptions = {
     'voucherTracker': (options) => voucherTrackerEditOptions(options),
     'multipleLogin': (options) => multipleLoginEditOptions(options),
-    'roomAction': (options) => roomActionEditOptions(options)
+    'roomAction': (options) => roomActionEditOptions(options),
+    'roomTypeAction': (options) => roomTypeActionEditOptions(options)
 };
 
 export default dialogEditOptions;
