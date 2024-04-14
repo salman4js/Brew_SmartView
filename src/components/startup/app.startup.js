@@ -87,7 +87,7 @@ class AppStartup extends React.Component {
     };
 
     _openPerspective(options){
-        if(options.multipleLogins){
+        if(options['multipleLogins'] && options['multipleLogin'].length > 0){
             this.props.options.navigate(`/${options.hostId}-${options.username}/choose-login`, {replace: true});
         } else {
             this.props.options.navigate(`/${options.hostId}-${options.username}/dashboard-container`, {replace: true});
