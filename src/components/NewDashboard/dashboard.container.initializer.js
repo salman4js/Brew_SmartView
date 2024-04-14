@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import AppHeaderView from "./app.header/app.header.view";
 import ModalAssist from "./dialogs/modal.assist/modal.assist.view";
 import DashboardWrapper from './dashboard.container.wrapper/dashboard.container.wrapper';
+import CollectionInstance from "../../global.collection/widgettile.collection/widgettile.collection";
 
 const DashboardInitializer = () => {
 
@@ -19,6 +20,7 @@ const DashboardInitializer = () => {
     id: id,
     accIdAndName: splitedIds,
     navigateInto: (options) => _navigateInto(options),
+    _getWidgetTilePreference: (key) => getWidgetTilePreference(key),
     rejectPerspective: () => _navigateInto({path: '/rejected'})
   };
 
@@ -26,6 +28,10 @@ const DashboardInitializer = () => {
   function _navigateInto(options){
     navigate(`${options.path}`, {replace: true});
   };
+
+  function getWidgetTilePreference(key){
+    return CollectionInstance.getModel('widgetTileCollections', key);
+  }
   
   // Model assist model data!
   var [modalAssistData, setModalAssistData] = useState({

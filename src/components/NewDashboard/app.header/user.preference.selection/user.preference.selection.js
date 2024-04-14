@@ -46,6 +46,7 @@ class UserPreferenceSelection extends React.Component {
         var fieldValue = nodeConvertor(this.state.userPreferencesFields);
         fieldValue['accId'] = this.props.params.accIdAndName[0];
         _updateUserPreferences(fieldValue).then(() => {
+            this._setUpUserPreferenceFields();
             this._toggleLoader(false);
             this.props.refreshState();
         });
@@ -81,22 +82,37 @@ class UserPreferenceSelection extends React.Component {
         this._updateStateComponent({key: 'userPreferencesFields', value: updatedFields, nextFunc: () => this._toggleLoader(false)});
     };
 
+    _prepareFieldsForUserPreferenceSelection(preferenceKey){
+        const field = _.clone(MetadataFieldTemplateState.checkboxField);
+        field.name = preferenceKey;
+        field.label = UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].label;
+        field.customStyle = UserPreferenceSelectionConstants.userPreferenceCheckboxCustomStyle;
+        field.restrictShow = UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].restrictShow;
+        if(UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].restrictShow === false){
+            // Check for user permissions!
+            field.restrictShow = this.isLoggedInAsRecep();
+        }
+        if(UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].attribute){
+            field.attribute = UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].attribute;
+        }
+        return field;
+    }
+
     _setUpUserPreferenceFields(){
-        const userPreferenceField = [];
-        Object.keys(UserPreferenceSelectionConstants.userPreferenceFieldValue).map((preferenceKey) => {
-            const field = _.clone(MetadataFieldTemplateState.checkboxField);
-            field.name = preferenceKey;
-            field.label = UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].label;
-            field.customStyle = UserPreferenceSelectionConstants.userPreferenceCheckboxCustomStyle;
-            field.restrictShow = UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].restrictShow;
-            if(UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].restrictShow === false){
-                // Check for user permissions!
-                field.restrictShow = this.isLoggedInAsRecep();
+        const userPreferenceField = [],
+            me = this;
+        function _prepareFields(preferenceKey){
+            if(me.props.params._getWidgetTilePreference('administrativePageEnabled')){
+                if(UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].isAdminAction){
+                    return me._prepareFieldsForUserPreferenceSelection(preferenceKey);
+                }
+            } else {
+                return me._prepareFieldsForUserPreferenceSelection(preferenceKey);
             }
-            if(UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].attribute){
-                field.attribute = UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].attribute;
-            }
-            userPreferenceField.push(field);
+        }
+        Object.keys(UserPreferenceSelectionConstants.userPreferenceFieldValue).forEach((preferenceKey) => {
+            var field = _prepareFields(preferenceKey);
+            field && userPreferenceField.push(field);
         });
         const buttonField = _.clone(MetadataFieldTemplateState.buttonField);
         buttonField.btnValue = UserPreferenceSelectionConstants.preferenceSaveButtonKey;

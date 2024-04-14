@@ -33,7 +33,8 @@ var UserPreferenceSelectionConstants = Object.freeze({
         },
         administrativePageEnabled: {
             label: 'Switch to administrative landing page',
-            restrictShow: JSON.parse(getStorage('loggedInAsRecep'))
+            restrictShow: JSON.parse(getStorage('loggedInAsRecep')),
+            isAdminAction: true
         },
         datesBetweenCount: {
             label: 'Enable Dates Between',
