@@ -63,7 +63,7 @@ connector.delete = function(url, options){
   return new Promise((resolve, reject) => {
      options = {
          headers: {
-             "x-access-token": options?.accessToken || document.getCookies(),
+             "x-access-token": options?.accessToken || connector.getCookies(),
          }
      };
      origConnector.delete(url, options).then((result) => {

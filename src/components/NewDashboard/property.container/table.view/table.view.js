@@ -438,6 +438,7 @@ class TableView extends React.Component {
     });
     if(isCreatedModelAlreadyExists.length === 0){
       this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant].push(locallyCreatedModel);
+      this.rawRoomModel.push(locallyCreatedModel);
     }
   };
 
