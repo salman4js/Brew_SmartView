@@ -239,7 +239,7 @@ class DefaultView extends React.Component {
   makeWidgetTile(){
     if(this.state.data.isFetched && this.state.isComputed){
       var roomStatusConstants = getRoomStatusConstants(),
-        isAdministrativePageEnabled = this.state.selectedModel._getPreference('administrativePageEnabled'),
+        isAdministrativePageEnabled = this.state.selectedModel._getWidgetTilePreference('administrativePageEnabled'),
         cardViewCollectionProps = [],
         nonAddedStatusConstant = [],
         tempData = []; // This is to verify the non-added room status constant, and add them to the card body view with the count 0!

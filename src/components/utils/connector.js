@@ -6,7 +6,7 @@ connector.getCookies = function(){
 };
 
 connector.isAuthenticated = function(result){
-    if(!result.data.notAuthorized){
+    if(result.data['notAuthorized']){
         window.location.pathname = '/rejected';
     }
 };

@@ -33,7 +33,7 @@ const DashboardWrapper = (props, ref) => {
     vouchersModelId: undefined,
     adminAction: undefined,
     insightsData: undefined,
-    _getPreference: (key) => getPreference(key),
+    _getWidgetTilePreference: (key) => props.params._getWidgetTilePreference(key),
     propertyDataCallBackFunc: undefined
   });
 
@@ -61,11 +61,6 @@ const DashboardWrapper = (props, ref) => {
     dashboardModel: []
   });
 
-  // Method to get preference using preference key!
-  function getPreference(key){
-    return CollectionInstance.getModel('widgetTileCollections', key);
-  };
-  
   // Function to update property details!
   function _updatePropertyDetails(roomCollection, availability, roomStatus, userCollection){
     var totalCount = roomCollection.length,
