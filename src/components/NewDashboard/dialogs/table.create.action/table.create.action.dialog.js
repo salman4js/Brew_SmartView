@@ -19,6 +19,7 @@ class TableCreateActionDialog {
                 options['accId'] = this.status.params.accIdAndName[0];
                 options['data'] = result;
                 options['widgetName'] = this.status.roomConstantKey;
+                this.status.eventHelpers.extraParams && this.status.eventHelpers.extraParams(options);
                 this.status.eventHelpers.triggerTableLoader(true, true);
                 this.status.eventHelpers.collapseCustomModal();
                 dialogCreateOptions.onSave(options).then((response) => {

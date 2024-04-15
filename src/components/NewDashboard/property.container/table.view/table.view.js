@@ -438,6 +438,11 @@ class TableView extends React.Component {
     });
     if(isCreatedModelAlreadyExists.length === 0){
       this.widgetTileModel.data.widgetTileModel[this.widgetTileModel.data.selectedRoomConstant].push(locallyCreatedModel);
+    }
+    const isCreatedModelExistsInCollection = _.filter(this.rawRoomModel, function(model){
+      return model._id === locallyCreatedModel._id;
+    });
+    if(isCreatedModelExistsInCollection.length === 0){
       this.rawRoomModel.push(locallyCreatedModel);
     }
   };

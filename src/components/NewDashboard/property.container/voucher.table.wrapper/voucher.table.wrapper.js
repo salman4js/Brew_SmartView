@@ -109,15 +109,29 @@ class VoucherTableWrapper extends TableView {
         }
     };
 
+    _getVoucherModelId(){
+        var voucherModelId = this.state.data?.vouchersModelId || this.props.data?.vouchersModelId;
+        if(!voucherModelId){
+            voucherModelId = this.getFirstVoucherModelsId();
+        }
+        return voucherModelId;
+    };
+
     async setExpandedTableView(){
       // Get the first voucher model id from the collection instance,
       // Load the table view part of the voucher model.
-      var voucherModelId = this.state.data?.vouchersModelId || this.props.data?.vouchersModelId;
-      if(!voucherModelId){
-          voucherModelId = this.getFirstVoucherModelsId();
-      }
+      var voucherModelId = this._getVoucherModelId();
       !this.voucherModelFetchStarted && await this.fetchVoucherDetails(voucherModelId);
       return this.currentVoucherCollections;
+    };
+
+    addExtraParams(options){
+        options.data['voucherId'] = this._getVoucherModelId();
+    };
+
+    prepareTemplateHelpersData() {
+        super.prepareTemplateHelpersData();
+        this.templateHelpersData.options.eventHelpers['extraParams'] = (options) => this.addExtraParams(options);
     };
 
     // Update the component state with newly added value!
