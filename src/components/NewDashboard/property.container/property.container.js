@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import MetadataFields from '../../fields/metadata.fields.view';
 import TableViewTemplateHelpers from "./table.view/table.view.template";
 import CheckInForm from './checkin.view/checkin.form.view';
-import {formUtils} from "../../utils/checkin.form.utils";
+import {serverQueryUtils} from "../dashboard.utils.helper/server.query.utils";
 import CheckOutView from './checkout.view/checkout.form.view';
 import RoomStatusView from './room.status.view/room.status.view';
 import DefaultView from './default.view/default.view';
@@ -15,6 +15,7 @@ import PropertyReadView from "./property.base.view/property.read.view/property.r
 import PropertyEditView from "./property.base.view/property.edit.view/property.edit.view";
 import InsightsTableWrapper from "./insights.table.wrapper/insights.table.wrapper";
 import RoomActionTableWrapper from "./room.action.table.wrapper/room.action.table.wrapper";
+import BusinessToolkitWrapper from "./business.toolkit.wrapper/business.toolkit.wrapper";
 import propertyContainerConstants from './property.container.constants';
 import {
   extractQueryParams,
@@ -46,7 +47,11 @@ const PropertyContainer = (props) => {
   // On back click on table toolbar view for property container.
   function onBackClick(){
     props.routerController()._notifyStateRouter({routerOptions: {action: 'DELETE'}}).then((result) => {
-      props.dashboardController(getRouterOptions(result));
+      const options = getRouterOptions(result);
+      options.queryParams = []; // Changing the query params to empty on every back navigation!
+      options.isAdminAction = true; options.onPropertyBaseSave = true;
+      options.adminAction = undefined; options.propertyDataCallBackFunc = undefined;
+      props.dashboardController(options);
     })
   };
 
@@ -223,6 +228,11 @@ const PropertyContainer = (props) => {
       routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     }
 
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.businessToolKit){
+      return <BusinessToolkitWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
+      routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+    }
+
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyReadView){
       return <PropertyReadView data = {props.data} height = {props.propertyContainerHeight} routerController = {(opts) => props.routerController(opts)} params = {props.params} />
     }
@@ -270,6 +280,16 @@ const PropertyContainer = (props) => {
         attribute: 'buttonField'
     }];
 
+    var businessToolKitModel = [{
+      btnValue: propertyContainerConstants.BUTTON_FIELDS.cancelButton,
+      onClick: onCancel,
+      attribute: 'buttonField'
+    }, {
+      btnValue: propertyContainerConstants.BUTTON_FIELDS.saveConfigButton,
+      onClick: () => onFormAction({onPropertyBaseSave: true}),
+      attribute: 'buttonField'
+    }];
+
     var propertyReadViewModel = [{
       btnValue: propertyContainerConstants.BUTTON_FIELDS.editButton,
       onClick: switchToPropertyEditMode,
@@ -278,13 +298,13 @@ const PropertyContainer = (props) => {
 
     var propertyEditViewModel = [{
       btnValue: propertyContainerConstants.BUTTON_FIELDS.saveButton,
-      onClick: onEditProperties,
+      onClick: () => onFormAction({onPropertyBaseSave: true}),
       disabled: (props.data?.roomModel?.isOccupied === "true"),
       attribute: 'buttonField'
     }];
     
     return {edit: checkinFormModel, read: checkoutFormModel, roomStatus: roomStatusFormModel, default: emptyFormModel,
-      propertyReadView: propertyReadViewModel, propertyEditView: propertyEditViewModel};
+      propertyReadView: propertyReadViewModel, propertyEditView: propertyEditViewModel, businessToolKit: businessToolKitModel};
   };
 
   // Get panel field right side data!
@@ -322,14 +342,10 @@ const PropertyContainer = (props) => {
     props.dashboardController(options);
   };
 
-  // On Edit properties, Send the control to the property.edit.view along with the function that has to get called.
-  function onEditProperties(){
+  // Send the control to the respective caller view along with the function that has to be called.
+  function onFormAction(options){
     var funcMethodKey = extractQueryParams().method;
-    var options = {
-      onEditProperties: true,
-      propertyDataCallBackFunc: (data) => formUtils()[funcMethodKey](data) // Second parameter is the key
-      // which contains the actual model so that the key can be extracted.
-    }
+    options.propertyDataCallBackFunc = (data) => serverQueryUtils()[funcMethodKey](data);
     props.dashboardController(options);
   };
   

@@ -1,7 +1,6 @@
-import CommonCrudController from "../NewDashboard/common.crud.controller/common.crud.controller";
+import CommonUtils from "../NewDashboard/common.crud.controller/common.crud.controller";
 import {_updateInsightsCount} from "../NewDashboard/dashboard.utils.helper/form.utils.helper";
-
-import connector from "../utils/connector";;
+import connector from "../utils/connector";
 const Variables = require("../Variables");
 const {shouldAddToCollections, addToCollections, removeModelsFromCollections,
    _updateRoomListCollection, _updateWidgetTileCollections,  _updateWidgetTileCount, checkForPaymentTrackerData} = require('../NewDashboard/dashboard.utils.helper/form.utils.helper');
@@ -88,12 +87,13 @@ export async function editOccupiedUserModel(data){
 // Edit existing room model and also update the roomsListCollection.
 export async function editRoomModel(data){
   var options = {
-    accId: data.lodgeId,
+    accInfo: data.accInfo,
     selectedNodes: data.roomId,
     widgetName: 'roomAction',
-    data: data
+    data: data,
+    method: 'patch'
   }
-  const res = await CommonCrudController.EditController(options);
+  const res = await CommonUtils.dispatchRequest(options);
   if(res.data.success){
     // Modify the result.data.updatedData just to update the room list collections.
     res.data.result['roomId'] = data.roomId;
@@ -113,14 +113,6 @@ export async function deleteRoomModel(data){
 export const prebookExcludeDates = async (options) => {
   const res = await connector.get(`${Variables.Variables.hostId}/${options.roomModelId}/excludedates`);
   return res.data;
-};
-
-// Club all the above function and make it accessible to other parts of the program through unique key.
-export function formUtils(){
-  return{
-    'edit-room-model': (options) => editRoomModel(options),
-    'edit-user-model': (options) => editOccupiedUserModel(options)
-  }
 };
 
 

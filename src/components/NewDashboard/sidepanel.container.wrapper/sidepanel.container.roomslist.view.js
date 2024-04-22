@@ -3,7 +3,7 @@ import _ from "lodash";
 import CustomModal from "../../fields/customModalField/custom.modal.view";
 import PanelItemView from "../../SidePanelView/panel.item/panel.item.view";
 import CollectionView from "../../SidePanelView/collection.view/collection.view";
-import CommonCrudController from "../common.crud.controller/common.crud.controller";
+import CommonUtils from "../common.crud.controller/common.crud.controller";
 import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
 import sidepanelConstants from "./sidepanel.container.constants";
 import MetadataFieldTemplateState from "../../fields/metadata.field.templatestate";
@@ -54,10 +54,11 @@ class SidepanelContainerRoomListView extends React.Component {
                 this._toggleLoader(true);
                 var fieldData = {
                     data: nodeConvertor(this.state.metadataFields),
-                    accId: this.options.params.accIdAndName[0],
-                    widgetName: 'roomTypeAction'
+                    accInfo: this.options.params.accIdAndName,
+                    widgetName: 'roomTypeAction',
+                    method: 'post'
                 };
-                CommonCrudController.CreateController(fieldData).then((res) => {
+                CommonUtils.dispatchRequest(fieldData).then((res) => {
                    if(res.data.statusCode === 201 && res.data.success){
                        this.collection.push(res.data.result);
                        CollectionInstance.addToCollections('roomTypes', res.data.result);
@@ -77,9 +78,10 @@ class SidepanelContainerRoomListView extends React.Component {
             data: nodeConvertor(this.state.metadataFields),
             widgetName: 'roomTypeAction',
             selectedNodes: model._id,
-            accId: this.options.params.accIdAndName[0]
+            accInfo: this.options.params.accIdAndName,
+            method: 'patch'
         };
-        CommonCrudController.EditController(options).then((result) => {
+        CommonUtils.dispatchRequest(options).then((result) => {
             if(result.data.statusCode === 200 && result.data.success){
                 var indexToUpdate = _.findIndex(this.collection, (model) => {
                    return model._id === options.selectedNodes;
@@ -136,7 +138,7 @@ class SidepanelContainerRoomListView extends React.Component {
     onSelectType(id){
         this.state.selectedItem.push(id);
         this._updateComponentState({key: 'selectedItem', value: this.state.selectedItem});
-        this.options.dashboardController({isAdminActionRoomTypeModelSelectionUpdated: true,
+        this.options.dashboardController({isAdminAction: true,
         adminAction: {roomTypeModelId: this.state.selectedItem[this.state.selectedItem.length - 1]}})
     };
 

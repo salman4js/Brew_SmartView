@@ -83,7 +83,7 @@ class UserPreferenceSelection extends React.Component {
     };
 
     _prepareFieldsForUserPreferenceSelection(preferenceKey){
-        const field = _.clone(MetadataFieldTemplateState.checkboxField);
+        const field = _.clone(MetadataFieldTemplateState.checkBoxField);
         field.name = preferenceKey;
         field.label = UserPreferenceSelectionConstants.userPreferenceFieldValue[preferenceKey].label;
         field.customStyle = UserPreferenceSelectionConstants.userPreferenceCheckboxCustomStyle;

@@ -5,6 +5,7 @@ var metadataFieldTemplateState = Object.freeze({
         placeholder: undefined,
         label: undefined,
         name: undefined,
+        isChanged: false,
         readOnly: undefined,
         attribute: 'textField', // Default set to textField, this will change according to the field set.
         isRequired: true,
@@ -24,10 +25,11 @@ var metadataFieldTemplateState = Object.freeze({
         customClass: undefined,
         attribute: 'buttonField'
     },
-    checkboxField: {
+    checkBoxField: {
         select: null,
         value: undefined,
         name: undefined,
+        isChanged: false,
         attribute: 'checkBoxField',
         updateValue: true,
         restrictShow: false,

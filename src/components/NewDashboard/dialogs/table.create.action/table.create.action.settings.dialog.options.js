@@ -1,7 +1,6 @@
-import CommonCrudController from "../../common.crud.controller/common.crud.controller";
+import CommonUtils from "../../common.crud.controller/common.crud.controller";
 import {convertServerFormat, formatCustomIntoDateFormat} from "../../../common.functions/common.functions";
 import lang from "../dialog.constants";
-import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 
 function voucherTrackerCreateOptions(options){
     return [
@@ -209,7 +208,7 @@ var dialogCreateOptions = {
     'multipleLogin': (options) => multipleLoginCreateOptions(options),
     'roomAction': (options) => roomAction(options),
     'roomTypeAction': (options) => roomTypeAction(options),
-    'onSave': (options) => CommonCrudController.CreateController(options)
+    'onSave': (options) => CommonUtils.dispatchRequest(options)
 };
 
 export default dialogCreateOptions;

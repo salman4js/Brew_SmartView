@@ -1,6 +1,5 @@
 import lang from '../dialog.constants'
 import dialogCreateOptions from "./table.create.action.settings.dialog.options";
-import {extractQueryParams} from "../../../common.functions/node.convertor";
 import CommandsLang from "../../commands/commands.constants";
 
 class TableCreateActionDialog {
@@ -16,9 +15,10 @@ class TableCreateActionDialog {
         var options = {};
         this.status.eventHelpers.validateStateFields().then((result) => {
             if(result){
-                options['accId'] = this.status.params.accIdAndName[0];
+                options['accInfo'] = this.status.params.accIdAndName;
                 options['data'] = result;
                 options['widgetName'] = this.status.roomConstantKey;
+                options['method'] = 'post';
                 this.status.eventHelpers.extraParams && this.status.eventHelpers.extraParams(options);
                 this.status.eventHelpers.triggerTableLoader(true, true);
                 this.status.eventHelpers.collapseCustomModal();

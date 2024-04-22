@@ -30,6 +30,14 @@ var propertyBaseConstants = Object.freeze({
             header: undefined,
             onHide: undefined,
             onHideOptions: {reloadSidepanel: {silent: true}, action: 'EDIT'}
+        },
+        'business-toolkit': {
+            show: true,
+            centered: false,
+            restrictBody: true,
+            footerEnabled: false,
+            header: 'Config Updated!',
+            onHide: undefined
         }
     })
 });

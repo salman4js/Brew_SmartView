@@ -1,0 +1,15 @@
+.business-toolkit-controlcenter{
+    padding: 20px;
+    border-bottom: 1px solid black;
+}
+
+.business-toolkit-fieldcenter{
+    padding: 20px;
+    width: 650px;
+    border-right: 1px solid black;
+}
+
+.business-toolkit-fieldcenter-wrapper{
+    width: 100%;
+    border-bottom: 1px solid black;
+}

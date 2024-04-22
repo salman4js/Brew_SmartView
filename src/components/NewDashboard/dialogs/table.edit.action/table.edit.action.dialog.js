@@ -26,10 +26,11 @@ class TableEditActionDialog {
       var options = {};
       this.status.eventHelpers.validateStateFields().then((result) => {
           if(result){
-              options['accId'] = this.status.params.accIdAndName[0];
+              options['accInfo'] = this.status.params.accIdAndName;
               options['selectedNodes'] = this.status.nodes[0];
               options['widgetName'] = this.status.roomConstantKey;
               options['data'] = result;
+              options['method'] = 'patch';
               this.status.eventHelpers.triggerTableLoader(true, true);
               this.status.eventHelpers.collapseCustomModal();
               this.status.eventHelpers.updateCheckboxSelection();
