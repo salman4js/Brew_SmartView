@@ -34,11 +34,9 @@ class PropertyEditView extends PropertyBaseView {
         // Get unique key and selected model from the url.
             urlStates = extractQueryParams();
         // Add mandatory data into the fieldData.
-        this._addMandatoryFieldData(fieldData, {[urlStates.uniqueId]: urlStates.selectedModel, lodgeId: this.params.accIdAndName[0]});
+        this._addMandatoryFieldData(fieldData, {[urlStates.uniqueId]: urlStates.selectedModel, accInfo: this.params.accIdAndName});
         this.state.propertyDataCallBackFunc(fieldData).then((result) => {
-            var modalOptions = this._prepareModalOptions(result);
-            this._toggleComponentLoader(true);
-            this._triggerCustomModal(modalOptions);
+            this.propertyDataCallSuccess(result);
         });
     };
 

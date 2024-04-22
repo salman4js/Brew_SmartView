@@ -16,23 +16,7 @@ function getStyle(options){
   }
 }
 
-// Global Message
-export function globalMessage(opts){
-  return(
-    <Modal
-        show={opts.show}
-        onHide = {() => opts.onHide()}
-    >
-        <Modal.Header closeButton = {opts.closeButton}>
-            <Modal.Body className="text-center">
-                {opts.message}
-            </Modal.Body>
-        </Modal.Header>
-    </Modal>
-  )
-}
-
-// coomon label message!
+// common label message!
 export function commonLabel(opts){
   return(
     <div className = "common-label-message" style = {getStyle(opts)}>
@@ -45,8 +29,8 @@ export function commonLabel(opts){
 export function activityLoader(opts){
   return(
     <div>
-      <div class="text-center">
-        <div class="spinner-border" role="status" style = {getStyle(opts)}>
+      <div className = "text-center">
+        <div className = "spinner-border" role="status" style = {getStyle(opts)}>
         </div>
       </div>
     </div>

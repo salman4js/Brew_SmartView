@@ -2,9 +2,8 @@ import React from 'react';
 import _ from 'lodash';
 import {activityLoader} from "../../../common.functions/common.functions.view";
 import propertyBaseConstants from "./property.base.constants";
-import {extractQueryParams, getParsedUrl} from "../../../common.functions/node.convertor";
+import {extractQueryParams} from "../../../common.functions/node.convertor";
 import CommandsConnector from "../../commands/commands.connector";
-
 
 // This class will be holding on the methods which will be commonly used by property read and property edit.
 class PropertyBaseView extends React.Component {
@@ -41,7 +40,7 @@ class PropertyBaseView extends React.Component {
         var modalOptions = _.clone(propertyBaseConstants.PROPERTY_SAVE_MODAL_OPTS[this.model.selectedRoomConstant]),
         // Get response model key.
             urlStates = extractQueryParams();
-        modalOptions.onHideOptions[urlStates.clientModelKey] = options.data[urlStates.serverModelKey];
+        if(modalOptions.onHideOptions) modalOptions.onHideOptions[urlStates.clientModelKey] = options.data[urlStates.serverModelKey];
         modalOptions.header = options.data.message || modalOptions.header;
         modalOptions.onHide = () => this._updateCustomModal({show: false}, () => this.props.dashboardController(modalOptions.onHideOptions));
         return modalOptions;
@@ -109,20 +108,29 @@ class PropertyBaseView extends React.Component {
         })
     };
 
+    propertyDataCallSuccess(result){
+        var modalOptions = this._prepareModalOptions(result);
+        this._toggleComponentLoader(true);
+        this._triggerCustomModal(modalOptions);
+    };
+
+    _listenTo(){
+        // Listen for save event.
+        this.model = this.props.data;
+        if(this.props.data.propertyDataCallBackFunc !== this.state?.propertyDataCallBackFunc){
+            this.setPropertyDataCallBackFunc && this.setPropertyDataCallBackFunc(this.props.data.propertyDataCallBackFunc);
+        };
+    };
+
     render(){
         !this.isStateRouterNotified && this._notifyStateRouter();
         return this.templateHelpers();
     };
 
     componentDidUpdate(prevProps, prevState){
+        this._listenTo();
         if(this.props.data.propertyData !== this.state?.data){
-            this.model = this.props.data;
             this._updateComponentState({key: 'data', value: this.props.data.propertyData}, this.populateTemplateFieldOptsObject.bind(this));
-        };
-
-        // Listen for save event.
-        if(this.props.data.propertyDataCallBackFunc !== this.state?.propertyDataCallBackFunc){
-          this.setPropertyDataCallBackFunc && this.setPropertyDataCallBackFunc(this.props.data.propertyDataCallBackFunc);
         };
     };
 

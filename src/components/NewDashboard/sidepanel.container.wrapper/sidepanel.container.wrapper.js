@@ -19,12 +19,13 @@ import {activityLoader} from '../../common.functions/common.functions.view';
 import CustomModal from "../../fields/customModalField/custom.modal.view";
 import MetadataTableView from '../../metadata.table.view/metadata.table.view';
 import MetadataFields from '../../fields/metadata.fields.view';
-import MetadataFieldTemplateState from "../../fields/metadata.field.templatestate";
 import PanelView from '../../SidePanelView/panel.view';
 import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view';
+import SidepanelContainerRoomsListView from "./sidepanel.container.roomslist.view";
+import SidepanelContainerBusinessToolkit from "./sidepanel.container.business.toolkit/sidepanel.container.business.toolkit";
+import MetadataFieldTemplateState from "../../fields/metadata.field.templatestate";
 import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
-import SidepanelContainerRoomslistView from "./sidepanel.container.roomslist.view";
 
 const SidepanelWrapper = (props, ref) => {
 
@@ -45,7 +46,8 @@ const SidepanelWrapper = (props, ref) => {
     filterRoomPanel: false,
     voucherListPanel: false,
     insightsSearchForm: false,
-    roomTypeListPanel: false
+    roomTypeListPanel: false,
+    businessToolKit: false
   });
 
   // Filter input metadata fields!
@@ -140,6 +142,9 @@ const SidepanelWrapper = (props, ref) => {
     if(sidepanelView.roomTypeListPanel){
       return roomTypeListPanel();
     }
+    if(sidepanelView.businessToolKit){
+      return businessToolKitView();
+    }
   };
 
   // Sidepanel filter state view!
@@ -180,7 +185,17 @@ const SidepanelWrapper = (props, ref) => {
       params: props.params,
       adminAction: props.selectedModelData.adminAction
     }
-    return <SidepanelContainerRoomslistView options = {options}/>
+    return <SidepanelContainerRoomsListView options = {options}/>
+  };
+
+  // Business Tool Kit View!
+  function businessToolKitView(){
+    var options = {
+      dashboardController: (opts) => props.dashboardController(opts),
+      height: sidepanel.height,
+      params: props.params,
+    }
+    return <SidepanelContainerBusinessToolkit options = {options}/>
   };
 
   // Side-panel search bar view!
@@ -250,7 +265,10 @@ const SidepanelWrapper = (props, ref) => {
         _setInsightsSearchFormPanel(true);
         break;
       case sidepanelConstants.SIDE_PANEL_MODES.roomTypeListPanel:
-        _setroomTypeListPanel(true);
+        _setRoomTypeListPanel(true);
+        break;
+      case sidepanelConstants.SIDE_PANEL_MODES.businessToolKit:
+        _setBusinessToolKit(true);
         break;
       default:
         _setTreePanel(true);
@@ -277,9 +295,14 @@ const SidepanelWrapper = (props, ref) => {
   };
 
   // Enable create room action panel!
-  function _setroomTypeListPanel(value){
+  function _setRoomTypeListPanel(value){
     _toggleSidepanelView(({roomTypeListPanel: value}));
   };
+  
+  // Enable business tool kit panel!
+  function _setBusinessToolKit(value){
+    _toggleSidepanelView({businessToolKit: value});
+  }
 
   // Enable tree panel!
   function _setTreePanel(value){
@@ -302,10 +325,12 @@ const SidepanelWrapper = (props, ref) => {
     if(options.voucherListPanel) panelHeader = sidepanelConstants.panelHeader.VOUCHER_LISTS;
     if(options.insightsSearchForm) panelHeader = sidepanelConstants.panelHeader.INSIGHTS_SEARCH_FORM;
     if(options.roomTypeListPanel) panelHeader = sidepanelConstants.panelHeader.roomTypeListPanel;
+    if(options.businessToolKit) panelHeader = sidepanelConstants.panelHeader.businessToolKit;
     setSidepanel(prevState => ({...prevState, header: panelHeader}));
     setSidepanelView(prevState => ({roomListTreePanel: options.roomListTree,
       filterRoomPanel: options.filterPanel, voucherListPanel: options.voucherListPanel,
-      insightsSearchForm: options.insightsSearchForm, roomTypeListPanel: options.roomTypeListPanel}));
+      insightsSearchForm: options.insightsSearchForm, roomTypeListPanel: options.roomTypeListPanel,
+      businessToolKit: options.businessToolKit}));
   };
 
   // Item panel collection onClick!

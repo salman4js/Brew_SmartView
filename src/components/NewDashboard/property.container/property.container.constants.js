@@ -11,10 +11,11 @@ var propertyContainerConstants = Object.freeze({
     voucherTrackerView: 'voucherTrackerView',
     insights: 'insights',
     roomAction: 'roomAction',
+    businessToolKit: 'businessToolKit',
     propertyReadView: 'propertyReadView',
     propertyEditView: 'propertyEditView',
     customHTMLView: 'customHtmlView',
-    multipleLogin: 'multipleLogin'
+    multipleLogin: 'multipleLogin',
   }),
   TABLE_HEADERS: Object.freeze({
     logTableView: 'Guest Log Table',
@@ -31,13 +32,15 @@ var propertyContainerConstants = Object.freeze({
     checkoutButton: 'Other Options',
     transferButton: 'Transfer Room',
     editButton: 'Edit Properties',
-    saveButton: 'Save Properties'
+    saveButton: 'Save Properties',
+    saveConfigButton: 'Save Config'
   }),
   WIDGET_CONSTANTS: Object.freeze({
     customHtmlView: 'History Preview',
     propertyReadView: '',
     propertyEditView: '',
-    insights: 'Insights'
+    insights: 'Insights',
+    businessToolKit: 'Business Tool Kit'
   }),
   PROPERTY_VIEW: Object.freeze({
     propertyRoom: 'property-room',

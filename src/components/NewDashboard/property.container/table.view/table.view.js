@@ -184,7 +184,11 @@ class TableView extends React.Component {
   onBackClick(){
     // Before navigating back to the last router instance, Delete the current router / last router from the stateRouter model first.
     this.routerController()._notifyStateRouter({routerOptions: {action: 'DELETE'}}).then((result) => {
-      this.props.dashboardController(this.routerOptions[result.stateModel[result.stateModel.length - 1]]);
+      const options = this.routerOptions[result.stateModel[result.stateModel.length - 1]];
+      options.queryParams = []; // On every back navigation, clear off the query params.
+      options.isAdminAction = true; options.onPropertyBaseSave = true;
+      options.adminAction = undefined; options.propertyDataCallBackFunc = undefined;
+      this.props.dashboardController(options);
     });
   };
 

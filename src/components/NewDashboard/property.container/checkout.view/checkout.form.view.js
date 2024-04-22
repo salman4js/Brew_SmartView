@@ -377,15 +377,14 @@ class CheckOutView extends React.Component {
     // Calculate GST for exclusive calculation!
     getGSTForExclusive(){
       var amountForStayedDays = (this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) - this.state.billingDetails.discountPrice;
-      var exclusiveGSTAmount = Math.round(amountForStayedDays * determineGSTPercent(this.state.data.roomModel.price));
-      this.gstPrice = exclusiveGSTAmount;
+        this.gstPrice = Math.round(amountForStayedDays * determineGSTPercent(this.state.data.roomModel.price));
     };
 
     // Get room price only!
     getRoomPrice(){
-      var roomPrice = this.state.billingDetails.isChannel ? Number(this.state.billingDetails.totalAmount) : Number(this.state.data.roomModel.price); // Total amount being the updatePrice amount, If the price has been updated.
-      // Use the room price amount!
-      return roomPrice; 
+        // Total amount being the updatePrice amount, If the price has been updated.
+        // Use the room price amount!
+        return this.state.billingDetails.isChannel ? Number(this.state.billingDetails.totalAmount) : Number(this.state.data.roomModel.price);
     };
 
     // Get amount for stayed days!
@@ -419,7 +418,7 @@ class CheckOutView extends React.Component {
       await this.fetchUserDetails();
     };
     
-    // Get checkedin customer user details!
+    // Get checked-in customer user details!
     async fetchUserDetails(){
       var isHourly = this.getIsHourly();
       var params = {roomid: this.state.data.roomModel._id, isHourly};

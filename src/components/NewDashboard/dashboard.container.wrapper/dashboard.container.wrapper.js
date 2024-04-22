@@ -125,13 +125,18 @@ const DashboardWrapper = (props, ref) => {
 
   // Update the url query params!
   function _updateQueryParams(params){
+    const pathName = window.location.pathname;
+    if(params.length === 0){
+      navigate(pathName, {replace: true});
+      return;
+    }
     params.map((options) => {
       // Get the current query parameters
       const currentParams = getQueryParams();
       // Update the specified key with the new value
       currentParams.set(options.key, options.value);
       // Construct the new URL with updated search parameters
-      const newUrl = `${window.location.pathname}?${updateQueryParams(currentParams)}`;
+      const newUrl = `${pathName}?${updateQueryParams(currentParams)}`;
       // Use navigate to replace the current URL
       navigate(newUrl, { replace: true });
     });
@@ -139,7 +144,7 @@ const DashboardWrapper = (props, ref) => {
 
   // On edit properties from property.edit.view.
   // This method will assign the callback function in the selectedModel.
-  function onEditProperties(opts){
+  function onPropertyBaseSave(opts){
     setSelectedModel(prevState => ({...prevState, propertyDataCallBackFunc: opts.propertyDataCallBackFunc}));
   };
   
@@ -235,12 +240,12 @@ const DashboardWrapper = (props, ref) => {
       opts.updatedModel && _updateRoomModel(opts);
       opts.widgetTileModel && _updateWidgetTileModel(opts.widgetTileModel);
       opts.goToLocation && goToLocation(opts);
-      opts.onEditProperties && onEditProperties(opts);
+      opts.onPropertyBaseSave && onPropertyBaseSave(opts);
       opts.isRoomTransferCommand && onRoomTransfer(opts);
       opts.goToCustomHtmlContent && updateCustomHtmlContent(opts);
       (opts.navigateToStatusTableView || opts.isVouchersModelSelectionUpdated || opts.isInsightsDataUpdated) && _updateSelectedModelState(opts);
       (opts.updateUserCollection || opts.updatedUserModel) && _updateUserCollection((opts.updateUserCollection || opts));
-      opts.isAdminActionRoomTypeModelSelectionUpdated && _updateSelectedModelState(opts);
+      opts.isAdminAction && _updateSelectedModelState(opts);
     }
   };
 

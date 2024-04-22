@@ -1,6 +1,6 @@
 import lang from "../commands.constants";
 import TableEditActionDialog from "../../dialogs/table.edit.action/table.edit.action.dialog";
-import CommonCrudController from "../../common.crud.controller/common.crud.controller";
+import CommonUtils from "../../common.crud.controller/common.crud.controller";
 
 class CommandsEdit {
     constructor(signatureOptions) {
@@ -18,11 +18,11 @@ class CommandsEdit {
     };
 
     onEdit(options){
-      return CommonCrudController.EditController(options).then((result) => {
-          return result;
-      }).catch((err) => {
-          return err;
-      })
+        return CommonUtils.dispatchRequest(options).then((result) => {
+            return result;
+        }).catch((err) => {
+            return err;
+        });
     };
 
     execute(){

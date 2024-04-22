@@ -1,5 +1,5 @@
 import lang from "../commands.constants";
-import CommonCrudController from "../../common.crud.controller/common.crud.controller";
+import CommonUtils from "../../common.crud.controller/common.crud.controller";
 
 class CommandsDelete {
     constructor(signatureOptions) {
@@ -36,8 +36,8 @@ class CommandsDelete {
 
     _initiateDeleteAction(){
       return new Promise((resolve, reject) => {
-          CommonCrudController.DeleteController({widgetName: this.status.roomConstantKey,
-             selectedNodes: this.status.nodes, accId: this.status.params.accIdAndName[0]})
+          CommonUtils.dispatchRequest({widgetName: this.status.roomConstantKey,
+              selectedNodes: this.status.nodes, accInfo: this.status.params.accIdAndName, method: 'delete'})
          .then((result) => {
              resolve(result);
          }).catch((err) => {

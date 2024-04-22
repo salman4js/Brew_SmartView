@@ -131,11 +131,11 @@ function checkForAddsWith(options, status){
 };
 
 // Convert the data into server understandable format!
-export function nodeConvertor(status, fieldProp){ // fieldProp will take array as an input,
+export function nodeConvertor(status, fieldProp, convertOptions){ // fieldProp will take array as an input,
   // whatever values are there in the fieldProp will be returned in the result object.
   var valuesArr = fieldProp !== undefined ? fieldProp : [];
   const result = {};
-  status.map((options, index) => {
+  status.map((options) => {
     checkIfConversionNeeded(options);
     options.postValidateAction && checkForAddsWith(options, status);
     if(options.defaultValue && (options.value === undefined)){
@@ -147,6 +147,9 @@ export function nodeConvertor(status, fieldProp){ // fieldProp will take array a
     for(var value of valuesArr){
       result[value] = options[value];
     };
+    if(convertOptions?.onlyChanged){
+      !options.isChanged && delete result[options.name];
+    }
   })
   return result;
 };

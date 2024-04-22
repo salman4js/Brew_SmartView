@@ -11,7 +11,7 @@ export function templateHelpers(fieldData, updateFieldData, templateHelpers){
                   {templateHelpers.VIEW_HEADER}
               </div>
               <MetadataFields data={fieldData}
-                              updateData={(updatedData) => updateFieldData({key: 'data', value: updatedData})}/>
+              updateData={(updatedData) => updateFieldData({key: 'data', value: updatedData})}/>
           </div>
       </div>
   )

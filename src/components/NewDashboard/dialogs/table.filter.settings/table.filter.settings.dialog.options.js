@@ -3,10 +3,12 @@ import lang from "../dialog.constants";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 import {getStorage} from "../../../../Controller/Storage/Storage";
 
-const isMultipleLoginEnabled = JSON.parse(getStorage('multipleLogin'));
+function isMultipleLoginEnabled(){
+  return JSON.parse(getStorage('multipleLogin'));
+};
 
 function getMultipleLoginUser(){
-    return isMultipleLoginEnabled ? _.map(CollectionInstance.getCollections('multipleLogin').data, 'username') : [];
+    return isMultipleLoginEnabled() ? _.map(CollectionInstance.getCollections('multipleLogin').data, 'username') : [];
 };
 
 function historyTableFilterOptions(){
@@ -16,7 +18,7 @@ function historyTableFilterOptions(){
         name: 'checkoutBy',
         attribute: 'listField',
         options: getMultipleLoginUser(),
-        restrictShow: !isMultipleLoginEnabled,
+        restrictShow: !isMultipleLoginEnabled(),
         isRequired: false
     }, {
         value: undefined,
@@ -24,7 +26,7 @@ function historyTableFilterOptions(){
         name: 'checkinBy',
         attribute: 'listField',
         options: getMultipleLoginUser(),
-        restrictShow: !isMultipleLoginEnabled,
+        restrictShow: !isMultipleLoginEnabled(),
         isRequired: false
     }, {
         value: undefined,
@@ -122,7 +124,7 @@ function afterCheckinFilterOptions(){
         name: 'checkinBy',
         attribute: 'listField',
         options: getMultipleLoginUser(),
-        restrictShow: !isMultipleLoginEnabled,
+        restrictShow: !isMultipleLoginEnabled(),
         isRequired: false
     }, {
         value: undefined,
