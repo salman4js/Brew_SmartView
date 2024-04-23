@@ -29,14 +29,19 @@ class PropertyEditView extends PropertyBaseView {
     };
 
     saveEditedModel(){
-        // Get the metadataField values.
-        var fieldData = nodeConvertor(this.state.data),
-        // Get unique key and selected model from the url.
-            urlStates = extractQueryParams();
-        // Add mandatory data into the fieldData.
-        this._addMandatoryFieldData(fieldData, {[urlStates.uniqueId]: urlStates.selectedModel, accInfo: this.params.accIdAndName});
-        this.state.propertyDataCallBackFunc(fieldData).then((result) => {
-            this.propertyDataCallSuccess(result);
+        return new Promise((resolve, reject) => {
+            // Get the metadataField values.
+            var fieldData = nodeConvertor(this.state.data),
+                // Get unique key and selected model from the url.
+                urlStates = extractQueryParams();
+            // Add mandatory data into the fieldData.
+            this._addMandatoryFieldData(fieldData, {[urlStates.uniqueId]: urlStates.selectedModel, accInfo: this.params.accIdAndName});
+            this.state.propertyDataCallBackFunc(fieldData).then((result) => {
+                this.propertyDataCallSuccess(result);
+                resolve();
+            }).catch((err) => {
+               reject(err);
+            });
         });
     };
 

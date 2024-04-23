@@ -27,10 +27,17 @@ class BusinessToolkitWrapper extends PropertyBaseView {
         }
     };
 
+    _updateFieldCenterValue(options){
+        options.value.map((opts) => {
+           const indexToUpdated = _.findIndex(this.state[options.key], {name: opts.name});
+           this.state[options.key][indexToUpdated] = _.find(options.value, {name: opts.name});
+        });
+        this._updateComponentState({key: options.key, value: this.state[options.key]});
+    };
+
     _renderBusinessToolKitTemplate(){
-        var ToolKitTemplate = new BusinessToolkitWrapperTemplate({stateOptions: this.state,
-        height: this.options.height, stateUpdateOptions: (updatedData, templateName) => this._updateComponentState({key: templateName, value: updatedData})});
-        return ToolKitTemplate._renderBusinessToolKitFields();
+        return <BusinessToolkitWrapperTemplate data = {{stateOptions: this.state, makeFirstItemSelected: true,
+            height: this.options.height, stateUpdateOptions: (updatedData, templateName) => this._updateFieldCenterValue({key: templateName, value: updatedData})}}/>
     };
 
     _updateControlCenterTemplate(){
@@ -65,15 +72,21 @@ class BusinessToolkitWrapper extends PropertyBaseView {
     };
 
     saveEditedModel(){
-        const fieldData = {};
-        fieldData.data = this.fieldConvertor._prepareFieldValues(nodeConvertor(this._getFieldData(), [], {onlyChanged: true}));
-        if(!_.isEmpty(fieldData)){
-            this._addMandatoryFieldData(fieldData, {selectedNodes: [this.state.adminAction.modelId],
-                accInfo: this.options.params.accIdAndName, method: 'patch', widgetName: this.state.adminAction.configName});
-            this.state.propertyDataCallBackFunc(fieldData).then((result) => {
-               this.propertyDataCallSuccess(result);
-            });
-        }
+        return new Promise((resolve, reject) => {
+            const fieldData = {};
+            fieldData.data = this.fieldConvertor._prepareFieldValues(nodeConvertor(this._getFieldData(), [], {onlyChanged: true}));
+            _.isEmpty(fieldData.data) && delete fieldData.data;
+            if(!_.isEmpty(fieldData)){
+                this._addMandatoryFieldData(fieldData, {selectedNodes: [this.state.adminAction.modelId],
+                    accInfo: this.options.params.accIdAndName, method: 'patch', widgetName: this.state.adminAction.configName});
+                this.state.propertyDataCallBackFunc(fieldData).then((result) => {
+                    this.propertyDataCallSuccess(result);
+                    resolve();
+                }).catch((err) => {
+                    reject(err);
+                });
+            }
+        });
     };
 
     _fetchPropertyPage(){

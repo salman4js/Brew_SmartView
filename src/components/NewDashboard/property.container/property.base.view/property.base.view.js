@@ -15,7 +15,7 @@ class PropertyBaseView extends React.Component {
         this.params = this.props.params;
         this.isStateRouterNotified = false;
         this.routerController = this.props.routerController;
-        this._updateCustomModal = this.props.modalOptions;
+        this._updateCustomModal = (options) => this.props.modalOptions(options);
         this.model = undefined; // This model will be holding the current selected model entire state data.
     };
 
@@ -93,7 +93,9 @@ class PropertyBaseView extends React.Component {
     setPropertyDataCallBackFunc(callBackFunc){
       this._updateComponentState({key: 'propertyDataCallBackFunc', value: callBackFunc}, () => {
           this._toggleComponentLoader(false);
-          this.saveEditedModel && this.saveEditedModel();
+          this.saveEditedModel && this.saveEditedModel().then(() => {
+              this._toggleComponentLoader(true);
+          });
       })
     };
 

@@ -4,12 +4,35 @@
 }
 
 .business-toolkit-fieldcenter{
-    padding: 20px;
     width: 650px;
+    padding: 20px;
     border-right: 1px solid black;
 }
 
+.business-toolkit-field-control-center-wrapper{
+    flex: 1;
+}
+
+.business-toolkit-field-control-center{
+    padding: 20px;
+}
+
+.business-toolkit-fieldcenter-header{
+    color: black;
+    font-weight: bold;
+}
+
 .business-toolkit-fieldcenter-wrapper{
+    display: flex;
     width: 100%;
     border-bottom: 1px solid black;
+}
+
+.business-toolkit-field-options{
+    color: black;
+    padding: 10px;
+}
+
+.business-toolkit-fieldcenter .file-items:hover{
+    background-color: rgb(221, 221, 221);
 }

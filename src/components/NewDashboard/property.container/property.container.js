@@ -229,8 +229,8 @@ const PropertyContainer = (props) => {
     }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.businessToolKit){
-      return <BusinessToolkitWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
-      routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+      return <BusinessToolkitWrapper data = {props.data} height = {props.propertyContainerHeight} modalOptions = {(options, nextFunc) => _updateCustomModalOptions(options, nextFunc)}
+      routerController = {(opts) => props.routerController(opts)} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyReadView){
