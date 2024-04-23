@@ -4,6 +4,7 @@ import MetadataFieldTemplateState from "../../../fields/metadata.field.templates
 let fieldModule = function () {
     const me = {};
     me.customConfigCalc = {
+        fieldCenterTemplateValues: ['totalAmount', 'extraBedPrice', 'discount', 'advance'],
         _getTemplate: function(panelName){
             const template = {
                 controlCenterTemplate: [{
@@ -21,22 +22,25 @@ let fieldModule = function () {
                     }, attribute: 'checkBoxField'
                 }],
                 fieldCenterTemplate: [{
-                    name: 'totalAmount', placeholder: 'Enter custom formula for total amount', label: 'Total Amount Formula Customization', attribute: 'textField'
+                    name: 'totalAmount', placeholder: 'Enter custom formula for total amount',
+                    label: 'Formula Customization', attribute: 'textField', clientName: 'Total Amount'
                 }, {
-                    name: 'extraBedPrice', placeholder: 'Enter custom formula extra bed price', label: 'Extra Bed Price Formula Customization', attribute: 'textField'
+                    name: 'extraBedPrice', placeholder: 'Enter custom formula extra bed price',
+                    label: 'Formula Customization', attribute: 'textField', clientName: 'Extra Bed Price'
                 }, {
-                    name: 'discount', placeholder: 'Enter custom formula discount', label: 'Discount Formula Customization', attribute: 'textField'
+                    name: 'discount', placeholder: 'Enter custom formula discount',
+                    label: 'Formula Customization', attribute: 'textField', clientName: 'Discount'
                 }, {
-                    name: 'advance', placeholder: 'Enter custom formula advance', label: 'Advance Formula Customization', attribute: 'textField'
+                    name: 'advance', placeholder: 'Enter custom formula advance',
+                    label: 'Formula Customization', attribute: 'textField', clientName: 'Advance'
                 }]
             };
             return template[panelName];
         },
         _getTemplateValue: function(fieldOptions){
-            const fieldCenterTemplateValues = ['totalAmount', 'extraBedPrice', 'discount', 'advance'],
-                fieldOptionsKey = Object.keys(fieldOptions);
+            const fieldOptionsKey = Object.keys(fieldOptions);
             fieldOptionsKey.forEach((field) => {
-                if(fieldCenterTemplateValues.includes(field)){
+                if(this.fieldCenterTemplateValues.includes(field)){
                     if(!fieldOptions.fields) fieldOptions.fields = [];
                     fieldOptions.fields.push({
                         fieldName: field,
@@ -63,9 +67,11 @@ class BusinessToolkitFieldConvertor {
         fields.map((f) => {
            const fieldTemplate = _.clone(MetadataFieldTemplateState[f.attribute]);
            fieldTemplate.name = f.name;
+           if(fieldModule[this.options.configName].fieldCenterTemplateValues.includes(f.name)) fieldTemplate.width = '100%';
            fieldTemplate.value = this.options.fieldData[f.name];
            fieldTemplate.placeholder = f.placeholder;
            fieldTemplate.label = f.label;
+           fieldTemplate['clientName'] = f.clientName;
            if(f.customStyle){
                fieldTemplate.customStyle = f.customStyle;
            }

@@ -36,7 +36,7 @@ var propertyBaseConstants = Object.freeze({
             centered: false,
             restrictBody: true,
             footerEnabled: false,
-            header: 'Config Updated!',
+            header: 'Your configuration updated!',
             onHide: undefined
         }
     })

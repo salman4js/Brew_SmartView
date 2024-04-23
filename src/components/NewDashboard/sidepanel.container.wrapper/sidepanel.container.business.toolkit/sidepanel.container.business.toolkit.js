@@ -1,9 +1,9 @@
 import React from 'react';
 import _ from "lodash";
+import SidepanelContainerBusinessToolkitTemplate from "./sidepanel.container.business.toolkit.template";
 import BusinessToolkitAvailableConfigList from "./business.toolkit.available.config.list";
 import {activityLoader} from "../../../common.functions/common.functions.view";
 import CollectionView from "../../../SidePanelView/collection.view/collection.view";
-import businessToolkitAvailableConfigList from "./business.toolkit.available.config.list";
 import CommonUtils from "../../common.crud.controller/common.crud.controller";
 import PanelItemView from "../../../SidePanelView/panel.item/panel.item.view";
 
@@ -25,7 +25,7 @@ class SidepanelContainerBusinessToolkit extends React.Component {
       })
     };
 
-    _makeFirstItemAsSelected(){
+    _onNewConfigCreation(){
 
     };
 
@@ -85,8 +85,10 @@ class SidepanelContainerBusinessToolkit extends React.Component {
     _renderAvailableConfigLists(){
         return this.availableConfigList.map((configListName) => {
             return(
-                <CollectionView data = {businessToolkitAvailableConfigList[configListName].value} ignoreTreePref = {true}
-                options = {{isExpanded: true}} showCollectionChildView = {() => this._renderSelectedConfigLists(businessToolkitAvailableConfigList[configListName].data)}/>
+                <CollectionView data = {BusinessToolkitAvailableConfigList[configListName].value} ignoreTreePref = {true}
+                options = {{isExpanded: true, customInlineMenu:true, showInlineMenu: true, onMouseOverInlineAction: true,
+                inlineAction: () => this._renderCreationInlineAction(configListName)}}
+                showCollectionChildView = {() => this._renderSelectedConfigLists(BusinessToolkitAvailableConfigList[configListName].data)}/>
             )
         });
     };
@@ -107,6 +109,12 @@ class SidepanelContainerBusinessToolkit extends React.Component {
         } else {
             return this._renderAvailableConfigLists();
         }
+    };
+
+    _renderCreationInlineAction(configName){
+        const sidePanelBusinessHelperTemplate = new SidepanelContainerBusinessToolkitTemplate(
+            {configName: configName, onClickInlineMenu: () => this._onNewConfigCreation()});
+        return sidePanelBusinessHelperTemplate._renderInlineAction();
     };
 
     componentDidMount() {
