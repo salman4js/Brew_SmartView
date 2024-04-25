@@ -1,4 +1,5 @@
 import _ from "lodash";
+import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
 import PropertyBaseView from "../property.base.view/property.base.view";
 import BusinessToolkitWrapperTemplate from "./business.toolkit.wrapper.template";
 import BusinessToolkitFieldConvertor from "./business.toolkit.field.convertor";
@@ -73,6 +74,13 @@ class BusinessToolkitWrapper extends PropertyBaseView {
 
     saveEditedModel(){
         return new Promise((resolve, reject) => {
+            function parseResults(formulaFields){
+                const customFormula = {};
+                formulaFields.fields.map((opts) => {
+                    customFormula[opts.fieldName] = opts.fieldCustomFormula;
+                });
+                return customFormula;
+            }
             const fieldData = {};
             fieldData.data = this.fieldConvertor._prepareFieldValues(nodeConvertor(this._getFieldData(), [], {onlyChanged: true}));
             _.isEmpty(fieldData.data) && delete fieldData.data;
@@ -81,6 +89,14 @@ class BusinessToolkitWrapper extends PropertyBaseView {
                     accInfo: this.options.params.accIdAndName, method: 'patch', widgetName: this.state.adminAction.configName});
                 this.state.propertyDataCallBackFunc(fieldData).then((result) => {
                     this.propertyDataCallSuccess(result);
+                    if(this.fieldOptions.isSelectedConfig){
+                        const parsedResult = parseResults(result.data.result);
+                        if(CollectionInstance.getCollections('customizedFormula')?.data){
+                            CollectionInstance.updateCollections('customizedFormula', parsedResult);
+                        } else {
+                            CollectionInstance.setCollections('customizedFormula', parsedResult);
+                        }
+                    }
                     resolve();
                 }).catch((err) => {
                     reject(err);
