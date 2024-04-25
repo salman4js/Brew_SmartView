@@ -1,12 +1,12 @@
 .business-toolkit-controlcenter{
     padding: 20px;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid darkgrey;
 }
 
 .business-toolkit-fieldcenter{
     width: 650px;
     padding: 20px;
-    border-right: 1px solid black;
+    border-right: 1px solid darkgrey;
 }
 
 .business-toolkit-field-control-center-wrapper{
@@ -25,7 +25,7 @@
 .business-toolkit-fieldcenter-wrapper{
     display: flex;
     width: 100%;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid darkgrey;
 }
 
 .business-toolkit-field-options{

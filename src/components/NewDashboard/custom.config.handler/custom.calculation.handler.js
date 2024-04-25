@@ -1,0 +1,94 @@
+class CustomCalculationHandler {
+    constructor(options) {
+        this.options = options;
+        this.precedence = {
+            '+': 1,
+            '-': 1,
+            '*': 2,
+            '/': 2
+        }
+    };
+
+    shuntingYardAlgo(infix){
+        const outputQueue = [];
+        const operatorStack = [];
+
+        const tokens = infix.match(/(?:[A-Za-z0-9.]+)|[^\s]/g);
+
+        for (let i = 0; i < tokens.length; i++) {
+            const token = tokens[i];
+            if (!isNaN(parseFloat(token))) {
+                outputQueue.push(parseFloat(token));
+            } else if (token === '(') {
+                operatorStack.push(token);
+            } else if (token === ')') {
+                while (operatorStack[operatorStack.length - 1] !== '(') {
+                    outputQueue.push(operatorStack.pop());
+                }
+                operatorStack.pop();
+            } else {
+                while (
+                    operatorStack.length &&
+                    this.precedence[token] <= this.precedence[operatorStack[operatorStack.length - 1]]
+                    ) {
+                    outputQueue.push(operatorStack.pop());
+                }
+                operatorStack.push(token);
+            }
+        }
+
+        while (operatorStack.length) {
+            outputQueue.push(operatorStack.pop());
+        }
+
+        return outputQueue;
+    };
+
+    evaluatePostFix(postfix){
+        const stack = [];
+
+        postfix.forEach(token => {
+            if (!isNaN(parseFloat(token))) {
+                stack.push(parseFloat(token));
+            } else {
+                const operand2 = stack.pop();
+                const operand1 = stack.pop();
+                switch (token) {
+                    case '+':
+                        stack.push(operand1 + operand2);
+                        break;
+                    case '-':
+                        stack.push(operand1 - operand2);
+                        break;
+                    case '*':
+                        stack.push(operand1 * operand2);
+                        break;
+                    case '/':
+                        stack.push(operand1 / operand2);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        return stack[0];
+    };
+
+    generateCustomFormulaResult(options){
+        if(options.customizedFormula[options.field]){
+            const replacedFormula = options.customizedFormula[options.field]
+                .replace(/amountForStayedDays/g, options.amountForStayedDays)
+                .replace(/advance/g, options.advance)
+                .replace(/discount/g, options.discount)
+                .replace(/extraBedPrice/g, options.extraBedPrice);
+
+            const postfix = this.shuntingYardAlgo(replacedFormula);
+            return this.evaluatePostFix(postfix);
+        } else {
+            console.warn('Custom formula for requested field does not exist');
+        }
+    }
+}
+
+export default CustomCalculationHandler;

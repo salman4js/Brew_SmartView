@@ -22,17 +22,17 @@ let fieldModule = function () {
                     }, attribute: 'checkBoxField'
                 }],
                 fieldCenterTemplate: [{
-                    name: 'totalAmount', placeholder: 'Enter custom formula for total amount',
-                    label: 'Formula Customization', attribute: 'textField', clientName: 'Total Amount'
-                }, {
-                    name: 'extraBedPrice', placeholder: 'Enter custom formula extra bed price',
-                    label: 'Formula Customization', attribute: 'textField', clientName: 'Extra Bed Price'
-                }, {
-                    name: 'discount', placeholder: 'Enter custom formula discount',
-                    label: 'Formula Customization', attribute: 'textField', clientName: 'Discount'
-                }, {
                     name: 'advance', placeholder: 'Enter custom formula advance',
                     label: 'Formula Customization', attribute: 'textField', clientName: 'Advance'
+                },{
+                    name: 'discount', placeholder: 'Enter custom formula discount',
+                    label: 'Formula Customization', attribute: 'textField', clientName: 'Discount'
+                },{
+                    name: 'extraBedPrice', placeholder: 'Enter custom formula extra bed price',
+                    label: 'Formula Customization', attribute: 'textField', clientName: 'Extra Bed Price'
+                },{
+                    name: 'totalAmount', placeholder: 'Enter custom formula for total amount',
+                    label: 'Formula Customization', attribute: 'textField', clientName: 'Total Amount'
                 }]
             };
             return template[panelName];

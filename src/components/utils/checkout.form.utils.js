@@ -2,7 +2,7 @@ import CollectionInstance from "../../global.collection/widgettile.collection/wi
 import {checkoutFormValue} from "./checkin.form.utils";
 import {filterKeysInArr} from "../common.functions/node.convertor";
 import CommandsConnector from "../NewDashboard/commands/commands.connector";
-import connector from "../utils/connector";;
+import connector from "../utils/connector";
 const Variables = require("../Variables");
 
 class CheckoutUtils {
@@ -31,21 +31,18 @@ class CheckoutUtils {
       stayeddays: options.stayeddays, 
       roomid: options.roomid, lodgeid: options.lodgeid, 
       isHourly: options.isHourly, extraCalc: options.extraCalc};
-    var result = await connector.post(`${this.baseUrl}/generatebill`, data);
-    return result;
+    return await connector.post(`${this.baseUrl}/generatebill`, data);
   };
   
   // Checkout API!
   async onCheckout(data){
     data.lodgeId = this.options.accId;
-    var result = await checkoutFormValue(data);
-    return result;
+    return await checkoutFormValue(data);
   };
   
   // Add new log entry!
   async addNewLog(options){
-    var result = await connector.post(`${this.baseUrl}/addnewentry`, options);
-    return result;
+    return await connector.post(`${this.baseUrl}/addnewentry`, options);
   };
   
   // Fetch user defined maintainance log type!
