@@ -1,3 +1,9 @@
+.business-toolkit-container{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
 .business-toolkit-controlcenter{
     padding: 20px;
     border-bottom: 1px solid darkgrey;
@@ -35,4 +41,50 @@
 
 .business-toolkit-fieldcenter .file-items:hover{
     background-color: rgb(221, 221, 221);
+}
+
+.business-toolkit-info-wrapper{
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    flex: 1;
+    height: 100%;
+    overflow: auto;
+}
+
+.business-toolkit-info-container{
+    background-color: #80bdff;
+    flex: 1;
+    overflow: auto;
+}
+
+.business-toolkit-info-header{
+    background-color: #0c5460;
+    font-weight: bold;
+    padding: 10px;
+    color: white;
+}
+
+.business-toolkit-info-message{
+    color: darkslategrey;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 20px;
+    white-space: pre-wrap;
+}
+
+.business-toolkit-fieldcenter-inputarea{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.business-toolkit-fieldcenter-info-message{
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding-top: 25px;
+    padding-left: 10px;
+    color: black;
 }

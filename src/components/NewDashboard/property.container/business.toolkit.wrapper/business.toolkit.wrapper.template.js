@@ -41,22 +41,22 @@ class BusinessToolkitWrapperTemplate extends React.Component {
     _renderFieldCustomizableCenter(){
         return this.options.stateOptions.fieldCenterTemplate.map((fieldOptions) => {
            if(fieldOptions.name === this.state.currentFieldData?.name){
-               return(
-                   <MetadataFieldsView data = {[fieldOptions]} updateData = {(updatedData) => this.options.stateUpdateOptions(updatedData, 'fieldCenterTemplate')}/>
-               )
+               return <MetadataFieldsView data={[fieldOptions]}
+               updateData={(updatedData) => this.options.stateUpdateOptions(updatedData, 'fieldCenterTemplate')}/>
            }
         });
     };
 
-    _renderFieldControlCenter(){
+    _renderFieldControlCenter() {
         return (
-            <div className = 'business-toolkit-fieldcenter-wrapper'>
+            <div className='business-toolkit-fieldcenter-wrapper'>
                 <div className='business-toolkit-fieldcenter'>
-                    <div className = 'business-toolkit-fieldcenter-header text-center brew-cursor'>{lang.fieldControlTemplateHeader}</div>
+                    <div
+                        className='business-toolkit-fieldcenter-header text-center brew-cursor'>{lang[this.options.stateOptions.adminAction.configName].fieldControlTemplateHeader}</div>
                     {this.options.stateOptions.fieldCenterTemplate.map((fieldOptions) => {
                         return(
                             <PanelItemView data = {fieldOptions.clientName} _id = {fieldOptions.name} showIndentationArrow = {true}
-                            selectedItem = {this._getSelectedItem()} onClick = {() => this.onFieldClick(fieldOptions)}/>
+                                           selectedItem = {this._getSelectedItem()} onClick = {() => this.onFieldClick(fieldOptions)}/>
                         )
                     })}
                 </div>
@@ -69,14 +69,34 @@ class BusinessToolkitWrapperTemplate extends React.Component {
         )
     };
 
+    _renderInfoMessage(){
+        return(
+            <>
+                <div className='business-toolkit-info-header text-center'>
+                    {lang[this.options.stateOptions.adminAction.configName].infoMessageHeader}
+                </div>
+                <div className='business-toolkit-info-container'>
+                    <div className='business-toolkit-info-message'>
+                        <pre>
+                            {lang[this.options.stateOptions.adminAction.configName].infoMessage}
+                        </pre>
+                    </div>
+                </div>
+            </>
+        )
+    };
+
     render() {
         return (
-            <div className = 'business-toolkit-container' style = {{height: this.options.height + "px"}}>
+            <div className='business-toolkit-container' style={{height: this.options.height + "px"}}>
                 <div className='business-toolkit-controlcenter'>
                     <MetadataFieldsView data={this.options.stateOptions.controlCenterTemplate}
                     updateData = {(updatedData) => this.options.stateUpdateOptions(updatedData, 'controlCenterTemplate')} />
                 </div>
                 {this._renderFieldControlCenter()}
+                <div className= 'business-toolkit-info-wrapper'>
+                    {this.options.showInfo && this._renderInfoMessage()}
+                </div>
             </div>
         )
     };
