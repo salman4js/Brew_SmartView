@@ -249,6 +249,15 @@ const Client = () => {
         onChange: (isEnabled, node) => updateCustomHtmlContentConfig(isEnabled, node)
   });
 
+    // Custom Calculation configuration!
+    const [customAdminConfig, setCustomAdminConfig] = useState({
+       customCalc: {
+           label: 'Enable custom calc admin configuration',
+           isEnabled: false
+       },
+        onChange: (isEnabled, node) => updateCustomAdminConfig(isEnabled, node)
+    });
+
     // Custom HTML template configuration.
     const [customHistoryTemplate, setCustomHistoryTemplate] = useState([
         {
@@ -335,6 +344,16 @@ const Client = () => {
 
   function updateCustomHtmlContentConfig(isEnabled, node) {
       setCustomHtmlConfiguration(prevState => ({
+          ...prevState,
+          [node]: {
+              ...prevState[node],
+              isEnabled: isEnabled
+          }
+      }));
+  };
+
+  function updateCustomAdminConfig(isEnabled, node){
+      setCustomAdminConfig(prevState => ({
           ...prevState,
           [node]: {
               ...prevState[node],
@@ -460,7 +479,7 @@ const Client = () => {
                 if (res.data.success) {
                     setValue(res.data.message);
                 } else {
-                    //TODO : Erro handling!
+                    //TODO : Error handling!
                 }
             })
         setLoading(false);
@@ -498,6 +517,7 @@ const Client = () => {
                     _showFullDetailToggler(res.data.object.showFullDetails);
                     _linkVouchersWithLivixius(res.data.object.linkVouchersWithLivixius);
                     _updateCustomHtmlConfig(res.data.object.customHtmlContent);
+                    updateCustomAdminConfig(res.data.object.customAdminConfig);
                 }
             })
        setLoading(false)
@@ -637,7 +657,8 @@ const Client = () => {
             restrictAdvance: restrictAdvance.isEnabled,
             checkinDateEditable: editableOptions.isEnabled,
             showFullDetails: showFullDetails.isEnabled,
-            customHtmlContent: customHtmlConfiguration
+            customHtmlContent: customHtmlConfiguration,
+            customAdminConfig: customAdminConfig
         }
 
         connector.post(`${Variables.hostId}/${splitedIds[0]}/config-update-matrix`, data)
@@ -827,7 +848,8 @@ const Client = () => {
                                                   linkVouchersWithLivixius={linkWithLivixius}
                                                   restrictAdvance={restrictAdvance} editableOptions={editableOptions}
                                                   showFullDetails={showFullDetails}
-                                                  customHtmlConfiguration={customHtmlConfiguration}/>
+                                                  customHtmlConfiguration={customHtmlConfiguration}
+                                                  customAdminConfig = {customAdminConfig}/>
                                     <br/>
                                     <button className="btn btn-primary btn-center-config-matrix"
                                             onClick={() => changeMatrix()}>Update Changes

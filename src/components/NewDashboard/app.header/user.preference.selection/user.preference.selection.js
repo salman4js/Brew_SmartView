@@ -66,7 +66,7 @@ class UserPreferenceSelection extends React.Component {
         var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections'),
             collection = Object.keys(widgetTileCollection.data),
             updatedFields;
-        for (var model of collection){
+        for (const model of collection){
             if(typeof widgetTileCollection.data[model] === 'object'){
                 await updateMetadataFields(model, {value: true}, this.state.userPreferencesFields,
                     (updatedData) => {

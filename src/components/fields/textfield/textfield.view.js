@@ -1,4 +1,7 @@
 import React from 'react';
+import Tippy from '@tippy.js/react';
+import './textfield.view.css';
+import 'tippy.js/dist/tippy.css'; // optional
 
 class TextField extends React.Component {
   constructor(props) {
@@ -34,14 +37,26 @@ class TextField extends React.Component {
 
   // Text Field inline toast message!
   _showInlineToast(){
-    return(
-        this.props.data.inlineToast.isShow && (
-            <small className="inline-toast-view" style = {{color: this.props.data?.inlineToast?.inlineToastColor || 'red'}}>
-              {this.props.data.inlineToast.inlineMessage}
-            </small>
-  )
-    )
+      return(
+          this.props.data.inlineToast.isShow && (
+              <small className="inline-toast-view" style = {{color: this.props.data?.inlineToast?.inlineToastColor || 'red'}}>
+                {this.props.data.inlineToast.inlineMessage}
+              </small>
+          )
+      )
   };
+
+  _renderCustomFieldIcon(){
+      if(this.props.data.customFieldIconWithToolTip){
+        return(
+            <Tippy content = {this.props.data.customFieldIconToolTip}>
+              {this.props.data.showCustomFieldIcon()}
+            </Tippy>
+        )
+      } else {
+        return this.props.data.showCustomFieldIcon();
+      }
+  }
 
   // Get value for the input field!
   getValue(){
@@ -70,12 +85,19 @@ class TextField extends React.Component {
           {this.props.data.label && (
               <label style={{ color: "black" }}> {this.props.data.label} </label>
           )}
-          <input type={this.getType()} className="form-control" aria-describedby="input-field" value = {this.getValue()}
-                 placeholder={this.getValueForPlaceholder()} onKeyDown = {(event) => this.handleEvents(event)}
-                 onChange = {(event) => this.checkLimit(event)} readOnly = {this.props.data.readOnly}/>
-          {this.props.data?.inlineToast !== undefined && (
-              this._showInlineToast()
-          )}
+          <span className= 'text-field-region'>
+            <input type={this.getType()} className="form-control" aria-describedby="input-field" value = {this.getValue()}
+                   placeholder={this.getValueForPlaceholder()} onKeyDown = {(event) => this.handleEvents(event)}
+                   onChange = {(event) => this.checkLimit(event)} readOnly = {this.props.data.readOnly}/>
+            {this.props.data?.inlineToast !== undefined && (
+                this._showInlineToast()
+            )}
+            {this.props.data.customFieldIconWithToolTip && (
+                <span className = 'custom-field-icon'>
+                  {this._renderCustomFieldIcon()}
+                </span>
+            )}
+          </span>
         </div>
     )
   };

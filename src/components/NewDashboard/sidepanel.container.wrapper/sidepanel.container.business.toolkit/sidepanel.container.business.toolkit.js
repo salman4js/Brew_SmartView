@@ -1,11 +1,16 @@
 import React from 'react';
 import _ from "lodash";
-import SidepanelContainerBusinessToolkitTemplate from "./sidepanel.container.business.toolkit.template";
-import BusinessToolkitAvailableConfigList from "./business.toolkit.available.config.list";
-import {activityLoader} from "../../../common.functions/common.functions.view";
-import CollectionView from "../../../SidePanelView/collection.view/collection.view";
-import CommonUtils from "../../common.crud.controller/common.crud.controller";
 import PanelItemView from "../../../SidePanelView/panel.item/panel.item.view";
+import CollectionView from "../../../SidePanelView/collection.view/collection.view";
+import MetadataFieldsView from "../../../fields/metadata.fields.view";
+import CustomModal from "../../../fields/customModalField/custom.modal.view";
+import {activityLoader} from "../../../common.functions/common.functions.view";
+import CommonUtils from "../../common.crud.controller/common.crud.controller";
+import MetadataFieldTemplateState from "../../../fields/metadata.field.templatestate";
+import SidepanelContainerBusinessToolkitTemplate from "./sidepanel.container.business.toolkit.template";
+import BusinessToolkitConstants from "./business.toolkit.constants";
+import BusinessToolkitAvailableConfigList from "./business.toolkit.available.config.list";
+import {nodeConvertor, validateFieldData} from "../../../common.functions/node.convertor";
 
 class SidepanelContainerBusinessToolkit extends React.Component {
     constructor(props) {
@@ -14,7 +19,14 @@ class SidepanelContainerBusinessToolkit extends React.Component {
             isLoading: true,
             isChildLoading: true,
             selectedItem: [],
-            configLists: []
+            configLists: [],
+            customModal: {
+                show: false,
+                centered: false,
+                restrictBody: true,
+                onHide: () => this._onCancelCustomModal()
+            },
+            metadataFields: undefined
         }
         this.options = this.props.options;
     };
@@ -25,8 +37,71 @@ class SidepanelContainerBusinessToolkit extends React.Component {
       })
     };
 
-    _onNewConfigCreation(){
+    _triggerCustomModal(options){
+        this._updateComponentState({key: 'customModal', value: {...this.state.customModal, ...options}});
+    };
 
+    _createNewCustomConfig(){
+        validateFieldData(this.state.metadataFields,
+        (updatedData) => this._updateComponentState({key: 'metadataFields', value: updatedData})).then((isValid) => {
+           if(isValid.length === 0){
+               this._updateComponentState({key:'isChildLoading', value: true});
+               this._triggerCustomModal({show: false})
+               const fieldData = nodeConvertor(this.state.metadataFields);
+               CommonUtils.dispatchRequest({
+                   widgetName: this.currentConfigName,
+                   accInfo: this.options.params.accIdAndName,
+                   method: 'post',
+                   data: fieldData
+               }).then((response) => {
+                   if(response.data.success){
+                       this.state.configLists.push({value: this.currentConfigName,
+                           result: [{configName: response.data?.result?.configName, _id: response.data?.result?._id}]});
+                       this._triggerCustomModal({show: true, restrictBody: true, footerEnabled: false, centered: false,
+                           header: BusinessToolkitConstants.modalOptions[this.currentConfigName].creationSuccess})
+                   }
+               }).catch((err) => {
+                   this._triggerCustomModal({show: true, restrictBody: true, footerEnabled: false, centered: false,
+                       header: err.response.data.message || BusinessToolkitConstants.modalOptions[this.currentConfigName].creationFailure});
+               }).finally(() => {
+                   this._updateComponentState({key:'isChildLoading', value: false});
+               })
+           }
+        });
+    };
+
+    _onCancelCustomModal(){
+        this.state.customModal.show = false;
+        this._triggerCustomModal(this.state.customModal);
+    };
+
+    _showCustomModalBodyView(){
+        return <MetadataFieldsView data = {this.state.metadataFields}
+        updateData = {(updatedData) => this._updateComponentState({key: 'metadataFields', value: updatedData})}/>
+    };
+
+    _prepareCustomModalForConfigCreation(){
+        const customModalTemplate = _.clone(MetadataFieldTemplateState.customModal),
+            modalOptions = BusinessToolkitConstants.modalOptions[this.currentConfigName];
+        customModalTemplate.show = true;
+        customModalTemplate.header = modalOptions.header;
+        customModalTemplate.showBodyItemView = () => this._showCustomModalBodyView();
+        customModalTemplate.centered = modalOptions.centered;
+        customModalTemplate.footerEnabled = true;
+        customModalTemplate.footerButtons = modalOptions.footerButtons;
+        customModalTemplate.footerButtons.map((buttons) => {
+            buttons.onClick = () => this._createNewCustomConfig()
+        });
+        this._triggerCustomModal(customModalTemplate);
+    };
+
+    _metadataFieldsForConfigCreation(){
+          this._updateComponentState({key: 'metadataFields', value: BusinessToolkitConstants.fieldOptions[this.currentConfigName]});
+    };
+
+    _triggerConfigCreationDialog(){
+        this._prepareCustomModalForConfigCreation();
+        this._metadataFieldsForConfigCreation();
     };
 
     fetchConfigListForSelection(configName){
@@ -35,14 +110,20 @@ class SidepanelContainerBusinessToolkit extends React.Component {
         CommonUtils.dispatchRequest({accInfo: this.options.params.accIdAndName,
             widgetName: configName, query: {fields: 'configName'}, method: 'get'}).then((res) => {
             if(res.data.success){
-                this.state.configLists.push({value: configName, result: res.data.result});
-                this.pushIntoSelectedItems(res.data.result[0]._id);
-                this._updateComponentState({key: 'configLists', value: this.state.configLists});
+                if(res.data.result.length > 0){
+                    this.state.configLists.push({value: configName, result: res.data.result});
+                    this.pushIntoSelectedItems(res.data.result[0]._id);
+                    this._updateComponentState({key: 'configLists', value: this.state.configLists});
+                    this._informDashboardController(res.data.result[0]._id, configName);
+                }
                 this._updateComponentState({key: 'isChildLoading', value: false});
-                this.options.dashboardController({isAdminAction: true, adminAction: {configName: configName,
-                modelId: res.data.result[0]._id}, queryParams: [{key: 'method', value: 'admin-action-patch-custom-calc'}]});
             }
         });
+    };
+
+    _informDashboardController(id, configName){
+        this.options.dashboardController({isAdminAction: true, adminAction: {configName: configName,
+        modelId: id}, queryParams: [{key: 'method', value: BusinessToolkitAvailableConfigList[configName].method}]});
     };
 
     pushIntoSelectedItems(id){
@@ -52,6 +133,7 @@ class SidepanelContainerBusinessToolkit extends React.Component {
 
     onPanelItemClick(id) {
         this.pushIntoSelectedItems(id);
+        this._informDashboardController(id, this.currentConfigName);
     };
 
     getSelectedItem(){
@@ -113,8 +195,12 @@ class SidepanelContainerBusinessToolkit extends React.Component {
 
     _renderCreationInlineAction(configName){
         const sidePanelBusinessHelperTemplate = new SidepanelContainerBusinessToolkitTemplate(
-            {configName: configName, onClickInlineMenu: () => this._onNewConfigCreation()});
+            {configName: configName, onClickInlineMenu: () => this._triggerConfigCreationDialog()});
         return sidePanelBusinessHelperTemplate._renderInlineAction();
+    };
+
+    _renderCustomModal(){
+        return <CustomModal modalData = {this.state.customModal}/>
     };
 
     componentDidMount() {
@@ -122,7 +208,12 @@ class SidepanelContainerBusinessToolkit extends React.Component {
     };
 
     render(){
-      return this.templateHelpers();
+        return(
+            <>
+                {this.state.customModal.show && this._renderCustomModal()}
+                {this.templateHelpers()}
+            </>
+        )
     };
 }
 

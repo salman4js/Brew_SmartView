@@ -310,8 +310,8 @@ class CheckOutView extends React.Component {
     };
 
     // Update stayed days and fetch billing details!
-    updateStayedDays() {
-        var stayedDays = this.calculateStayedDays() + " Days";
+    updateStayedDays(){
+        const stayedDays = this.calculateStayedDays();
         this.setState({stayeddays: stayedDays}, async () => {
             await this.fetchBillingDetails();
         })
@@ -358,22 +358,30 @@ class CheckOutView extends React.Component {
 
     // Calculate GST for inclusive calculation!
     getGSTForInclusive() {
-        var amountForStayedDays = (this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) - this.state.billingDetails.discountPrice;
-        var inclusiveGSTAmount = Math.round(amountForStayedDays / (1 + determineGSTPercent(this.state.data.roomModel.price)));
-        this.gstPrice = amountForStayedDays - inclusiveGSTAmount;
+        if(this.getIsFormulaCustomizationEnabled() && this.customizedFormula && this.customizedFormula['gstPrice']){
+            this.gstPrice = this._customFormulaHandler(this.getCustomCalculationValues({field: 'gstPrice'}));
+        } else {
+            const amountForStayedDays = (this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) - this.state.billingDetails.discountPrice;
+            const inclusiveGSTAmount = Math.round(amountForStayedDays / (1 + determineGSTPercent(this.state.data.roomModel.price)));
+            this.gstPrice = amountForStayedDays - inclusiveGSTAmount;
+        }
     };
 
     // Calculate GST for exclusive calculation!
     getGSTForExclusive() {
-        var amountForStayedDays = (this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) - this.state.billingDetails.discountPrice;
-        this.gstPrice = Math.round(amountForStayedDays * determineGSTPercent(this.state.data.roomModel.price));
+        if(this.getIsFormulaCustomizationEnabled() && this.customizedFormula && this.customizedFormula['gstPrice']){
+            this.gstPrice = this._customFormulaHandler(this.getCustomCalculationValues({field: 'gstPrice'}));
+        } else {
+            const amountForStayedDays = (this.getAmountForStayedDays() + Number(this.getExtraBedPrice())) - this.state.billingDetails.discountPrice;
+            this.gstPrice = Math.round(amountForStayedDays * determineGSTPercent(this.state.data.roomModel.price));
+        }
     };
 
     // Get room price only!
     getRoomPrice() {
         // Total amount being the updatePrice amount, If the price has been updated.
         // Use the room price amount!
-        return this.state.billingDetails.isChannel ? Number(this.state.billingDetails.totalAmount) : Number(this.state.data.roomModel.price);
+        return this.state.billingDetails?.isChannel ? Number(this.state.billingDetails?.totalAmount) : Number(this.state.data.roomModel.price);
     };
 
     // Get amount for stayed days!
@@ -388,9 +396,9 @@ class CheckOutView extends React.Component {
             advanceAmount = Number(this.state.billingDetails.advanceCheckin),
             discountAmount = Number(this.state.billingDetails.discountPrice),
             extraBedPrice = Number(this.getExtraBedPrice());
-        if(!this.getIsFormulaCustomizationEnabled()){
-            return this.customFormulaValueGenerator.generateCustomFormulaResult({amountForStayedDays: amountForStayedDays,
-                advance: advanceAmount, discount: discountAmount, extraBedPrice: extraBedPrice, customizedFormula: this.customizedFormula, field: 'totalAmount'});
+        if(this.getIsFormulaCustomizationEnabled() && this.customizedFormula && this.customizedFormula['totalAmount']){
+            const customCalcOptions = this.getCustomCalculationValues({field: 'totalAmount'});
+            return this._customFormulaHandler(customCalcOptions);
         } else {
             return ((amountForStayedDays - advanceAmount - discountAmount) + extraBedPrice) + (this.getIsExclusive() ? this.gstPrice : 0);
         }
@@ -399,7 +407,7 @@ class CheckOutView extends React.Component {
     // Get extra bed price!
     getExtraBedPrice() {
         var isExtraCalcEnabled = this.getExtraBedCalcConfig(),
-            extraBedPricePerDay = Number(this.state.billingDetails.extraBedCount) * Number(this.state.billingDetails.extraBedPrice),
+            extraBedPricePerDay = Number(this.state.billingDetails?.extraBedCount) * Number(this.state.billingDetails?.extraBedPrice),
             extraBedPriceForStayedDays = this.state.stayeddays * extraBedPricePerDay;
         return isExtraCalcEnabled ? extraBedPriceForStayedDays : extraBedPricePerDay; // Here we are honoring the config for extra bed calculation!
         // Based on days or based on count only!
@@ -407,7 +415,7 @@ class CheckOutView extends React.Component {
 
     fetchCustomFormula() {
         // Check for customized formula in collection instance!
-        this.customizedFormula = CollectionInstance.getCollections('customizedFormula')?.data;
+        this.customizedFormula = CollectionInstance.getCollections('customConfigCalc')?.data;
         if(!this.customizedFormula){
             function parseResults(results){
                 const customFormula = {};
@@ -422,7 +430,7 @@ class CheckOutView extends React.Component {
             }).then((result) => {
                 if (result.data.success) {
                     this.customizedFormula = parseResults(result.data);
-                    CollectionInstance.setCollections('customizedFormula', this.customizedFormula);
+                    CollectionInstance.setCollections('customConfigCalc', this.customizedFormula);
                 }
             }).catch((err) => {
                 console.warn('Error occurred while fetching customized formula!', err);
@@ -433,7 +441,7 @@ class CheckOutView extends React.Component {
     // Fetch required details!
     async fetchDetails() {
         this._toggleLoader(true);
-        if(!this.getIsFormulaCustomizationEnabled()){
+        if(this.getIsFormulaCustomizationEnabled()){
             this.customFormulaValueGenerator = new CustomCalculationHandler();
             await this.fetchCustomFormula();
         }
@@ -450,7 +458,11 @@ class CheckOutView extends React.Component {
                 this.updateStayedDays();
             });
         }
+    };
 
+    _customFormulaHandler(options){
+        const customFormulaResult = this.customFormulaValueGenerator.generateCustomFormulaResult(options);
+        return customFormulaResult ? customFormulaResult : options[options.field];
     };
 
     // Get billing details data!
@@ -464,22 +476,18 @@ class CheckOutView extends React.Component {
         }
         const result = await this.checkoutUtils.fetchBillingDetails(params);
         if (result.data.success) {
-            result.data['amountForStayedDays'] = result.data.isChannel ? Number(result.data.totalAmount) : Number(this.state.data.roomModel.price)
-            result.data.advanceCheckin = this.customFormulaValueGenerator.generateCustomFormulaResult(
-                {advance: result.data.advanceCheckin, discount: result.data.discountPrice,
-                    amountForStayedDays: result.data.amountForStayedDays,
-                    field: 'advance', customizedFormula: this.customizedFormula}
-                );
-            result.data.discountPrice = this.customFormulaValueGenerator.generateCustomFormulaResult(
-                {advance: result.data.advanceCheckin, discount: result.data.discountPrice,
-                    amountForStayedDays: result.data.amountForStayedDays,
-                    field: 'discount', customizedFormula: this.customizedFormula}
-                );
-            result.data.extraBedPrice = this.customFormulaValueGenerator.generateCustomFormulaResult(
-                {advance: result.data.advanceCheckin, discount: result.data.discountPrice,
-                    amountForStayedDays: result.data.amountForStayedDays,
-                    field: 'extraBedPrice', customizedFormula: this.customizedFormula}
-            )
+            if(this.getIsFormulaCustomizationEnabled()){
+                result.data['amountForStayedDays'] = result.data.isChannel ? Number(result.data.totalAmount) : Number(this.state.data.roomModel.price)
+                result.data.advanceCheckin = this._customFormulaHandler({advance: result.data.advanceCheckin, discount: result.data.discountPrice,
+                    amountForStayedDays: result.data.amountForStayedDays, extraBedPrice: result.data.extraBedPrice,
+                    field: 'advance', customizedFormula: this.customizedFormula});
+                result.data.discountPrice = this._customFormulaHandler({advance: result.data.advanceCheckin, discount: result.data.discountPrice,
+                    amountForStayedDays: result.data.amountForStayedDays, extraBedPrice: result.data.extraBedPrice,
+                    field: 'discount', customizedFormula: this.customizedFormula});
+                result.data.extraBedPrice = this._customFormulaHandler({advance: result.data.advanceCheckin, discount: result.data.discountPrice,
+                    amountForStayedDays: result.data.amountForStayedDays, extraBedPrice: result.data.extraBedPrice,
+                    field: 'extraBedPrice', customizedFormula: this.customizedFormula})
+            }
             this.setState({billingDetails: result.data, isFetched: true}, () => {
                 this.calculateGSTPrice();
             });
@@ -657,7 +665,7 @@ class CheckOutView extends React.Component {
         this.formPrintDetailsObj(); // Form the printing details as an object
         var baseUrl = getBaseUrl(), queryParams = formQueryParams(this.printDetails);
         window.open(baseUrl + '/windowprint' + "?" + queryParams); // This will open a new tab along with the all the datas
-        // neccessary for print the data in the url.
+        // necessary for print the data in the url.
     };
 
     // Prompt maintainance log dialog!
@@ -698,7 +706,7 @@ class CheckOutView extends React.Component {
 
     };
 
-    // Fetch maintainance log type!
+    // Fetch maintenance log type!
     async fetchMaintainanceLogType() {
         var result = await this.checkoutUtils.fetchMaintainanceLogType();
         updateMetadataFields('priceType', {options: result}, this.state.maintainanceLog, (updatedData) => this._updateState(updatedData, this.state.maintainanceLog));
@@ -822,6 +830,20 @@ class CheckOutView extends React.Component {
         this.checkoutUtils._getHTMLContent(options).then((result) => {
             this.setState({htmlContent: {content: result}});
         });
+    };
+
+    // Prepare value object for custom calculation!
+    getCustomCalculationValues(options){
+      return{
+          advance: Number(this.state.billingDetails?.advanceCheckin) || 0,
+          discount: Number(this.state.billingDetails?.discountPrice) || 0,
+          extraBedPrice: Number(this.getExtraBedPrice()) || 0,
+          gst: this.gstPrice,
+          gstPercent: determineGSTPercent(this.state.data.roomModel.price),
+          amountForStayedDays: Number(this.getAmountForStayedDays()) || 0,
+          field: options.field,
+          customizedFormula: this.customizedFormula
+      }
     };
 
     // On update lifecyle method!

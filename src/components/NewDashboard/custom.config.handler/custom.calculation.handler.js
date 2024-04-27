@@ -75,14 +75,17 @@ class CustomCalculationHandler {
         return stack[0];
     };
 
-    generateCustomFormulaResult(options){
-        if(options.customizedFormula[options.field]){
-            const replacedFormula = options.customizedFormula[options.field]
-                .replace(/amountForStayedDays/g, options.amountForStayedDays)
-                .replace(/advance/g, options.advance)
-                .replace(/discount/g, options.discount)
-                .replace(/extraBedPrice/g, options.extraBedPrice);
+    replacePlaceholders(placeholder){
+        return this.options[placeholder] || 0;
+    };
 
+    generateCustomFormulaResult(options){
+        if(options.customizedFormula && options.customizedFormula[options.field]){
+            this.options = options;
+            // Get the keys of the values object and join them with '|' to create a regex pattern
+            const pattern = new RegExp('\\b(' + Object.keys(options).join('|') + ')\\b', 'g');
+            // Replace placeholders using regular expression
+            const replacedFormula = options.customizedFormula[options.field].replace(pattern, this.replacePlaceholders.bind(this));
             const postfix = this.shuntingYardAlgo(replacedFormula);
             return this.evaluatePostFix(postfix);
         } else {

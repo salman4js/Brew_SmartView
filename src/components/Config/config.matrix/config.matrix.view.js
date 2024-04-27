@@ -200,6 +200,14 @@ const ConfigMatrix = (props) => {
                     {props.customHtmlConfiguration.invoiceGeneration.label}
                 </label>
             </div>
+            <div className="form-check">
+                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                       checked={props.customAdminConfig.customCalc.isEnabled}
+                       onChange={() => props.customAdminConfig.onChange(!props.customAdminConfig.customCalc.isEnabled, 'customCalc')}/>
+                <label className="form-check-label dashboard-input" htmlFor="flexCheckDefault" style={{color: "black"}}>
+                    {props.customAdminConfig.customCalc.label}
+                </label>
+            </div>
             <div className="modal-gap"></div>
             <div className="table-view-bill-line"></div>
             <div className="form-check">

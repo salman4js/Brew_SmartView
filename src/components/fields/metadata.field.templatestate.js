@@ -7,6 +7,11 @@ var metadataFieldTemplateState = Object.freeze({
         name: undefined,
         isChanged: false,
         readOnly: undefined,
+        customFieldIconWithToolTip: false,
+        showCustomFieldIcon: function(){
+          // return the view for custom field here!
+        },
+        customFieldIconToolTip: undefined,
         attribute: 'textField', // Default set to textField, this will change according to the field set.
         isRequired: true,
         inlineToast: {

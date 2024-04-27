@@ -3,15 +3,16 @@ import CollectionInstance from "../../../../global.collection/widgettile.collect
 import PropertyBaseView from "../property.base.view/property.base.view";
 import BusinessToolkitWrapperTemplate from "./business.toolkit.wrapper.template";
 import BusinessToolkitFieldConvertor from "./business.toolkit.field.convertor";
-import {activityLoader} from "../../../common.functions/common.functions.view";
 import CommonUtils from "../../common.crud.controller/common.crud.controller";
+import {activityLoader} from "../../../common.functions/common.functions.view";
 import {nodeConvertor} from "../../../common.functions/node.convertor";
+import BusinessToolKitConstants from "./business.toolkit.constants";
 
 class BusinessToolkitWrapper extends PropertyBaseView {
     constructor(props) {
         super(props);
         this.state = {
-            isTemplateFieldOptionsPopulated: false,
+            isTemplateFieldOptionsPopulated: true,
             adminAction: undefined,
             controlCenterTemplate: undefined,
             fieldCenterTemplate: undefined
@@ -24,7 +25,11 @@ class BusinessToolkitWrapper extends PropertyBaseView {
         if(!this.state.isTemplateFieldOptionsPopulated){
             return activityLoader({color: 'black', textCenter: true, marginTop: this.options.height / 2.2 + "px"});
         } else {
-            return this._renderBusinessToolKitTemplate();
+            if(this.state.fieldCenterTemplate && this.state.isTemplateFieldOptionsPopulated){
+                return this._renderBusinessToolKitTemplate();
+            } else {
+                return this._renderNoConfigTemplate();
+            }
         }
     };
 
@@ -36,29 +41,25 @@ class BusinessToolkitWrapper extends PropertyBaseView {
         this._updateComponentState({key: options.key, value: this.state[options.key]});
     };
 
+    _renderNoConfigTemplate(){
+        return <div className='text-center' style = {{marginTop: this.props.height / 2.5 + 'px', color: 'black'}}>{BusinessToolKitConstants.noConfigTemplate}</div>
+    };
+
     _renderBusinessToolKitTemplate(){
         return <BusinessToolkitWrapperTemplate data = {{stateOptions: this.state, makeFirstItemSelected: true,
-            height: this.options.height, stateUpdateOptions: (updatedData, templateName) => this._updateFieldCenterValue({key: templateName, value: updatedData})}}/>
+        showInfo: (this.state.adminAction ? BusinessToolKitConstants[this.state.adminAction?.configName].showInfo : null),
+        height: this.options.height, stateUpdateOptions: (updatedData, templateName) => this._updateFieldCenterValue({key: templateName, value: updatedData})}}/>
     };
 
     _updateControlCenterTemplate(){
         _.forEach(this.templates, (template) => {
-            this.fieldConvertor = new BusinessToolkitFieldConvertor({configName: this.state.adminAction.configName,
-            panel: template, fieldData: this.fieldOptions});
-            let templateFields = this.fieldConvertor._prepareFields();
+            let templateFields = this.fieldConvertor._prepareFields({panel: template, fieldData: this.fieldOptions});
             this._updateComponentState({key: template, value: templateFields});
         });
     };
 
     _convertResponseIntoFields(fieldOptions){
-        this.fieldOptions = {};
-        fieldOptions.map((options) => {
-            this.fieldOptions['configName'] = options['configName'];
-            this.fieldOptions['isSelectedConfig'] = options['isSelectedConfig'];
-            options.fields.map((opts) => {
-               this.fieldOptions[opts.fieldName] = opts['fieldCustomFormula'];
-            });
-        });
+        this.fieldOptions = this.fieldConvertor._convertResponseIntoFields(fieldOptions);
     };
 
     _getFieldData(){
@@ -91,10 +92,10 @@ class BusinessToolkitWrapper extends PropertyBaseView {
                     this.propertyDataCallSuccess(result);
                     if(this.fieldOptions.isSelectedConfig){
                         const parsedResult = parseResults(result.data.result);
-                        if(CollectionInstance.getCollections('customizedFormula')?.data){
-                            CollectionInstance.updateCollections('customizedFormula', parsedResult);
+                        if(CollectionInstance.getCollections(this.state.adminAction.configName)?.data){
+                            CollectionInstance.updateCollections(this.state.adminAction.configName, parsedResult);
                         } else {
-                            CollectionInstance.setCollections('customizedFormula', parsedResult);
+                            CollectionInstance.setCollections(this.state.adminAction.configName, parsedResult);
                         }
                     }
                     resolve();
@@ -111,9 +112,11 @@ class BusinessToolkitWrapper extends PropertyBaseView {
         CommonUtils.dispatchRequest({widgetName: this.state.adminAction.configName, accInfo: this.options.params.accIdAndName,
         query: {selectedNodes: encodeURIComponent(JSON.stringify([this.state.adminAction.modelId]))}, method: 'get'}).then((res) => {
             if(res.data.success){
+                this.fieldConvertor = new BusinessToolkitFieldConvertor({configName: this.state.adminAction.configName});
                 this._convertResponseIntoFields(res.data.result);
                 this._updateControlCenterTemplate();
                 this._toggleComponentLoader(true);
+                this.isPropertyPageFetching = false;
             }
         })
     };

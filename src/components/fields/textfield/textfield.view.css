@@ -1,0 +1,9 @@
+.text-field-region{
+    display: flex;
+    flex-direction: row;
+}
+
+.custom-field-icon{
+    flex: 1;
+    padding-left: 10px;
+}
