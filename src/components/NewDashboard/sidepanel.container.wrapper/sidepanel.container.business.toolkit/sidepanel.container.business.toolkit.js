@@ -178,7 +178,7 @@ class SidepanelContainerBusinessToolkit extends React.Component {
     _getAvailableCustomConfigLists(){
         this.availableConfigList = [];
         Object.keys(BusinessToolkitAvailableConfigList).forEach((availableAction) => {
-            if(!availableAction.restrictShow){
+            if(!(BusinessToolkitAvailableConfigList[availableAction].restrictShow())){
               this.availableConfigList.push(availableAction);
             }
         });
