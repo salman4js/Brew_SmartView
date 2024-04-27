@@ -352,6 +352,15 @@ const Client = () => {
       }));
   };
 
+  function _updateCustomAdminConfig(customAdminConfig){
+      if(customAdminConfig){
+          const adminConfig = Object.keys(customAdminConfig);
+          for(const aConfig of adminConfig){
+              updateCustomAdminConfig(customAdminConfig[aConfig].isEnabled, aConfig);
+          }
+      }
+  }
+
   function updateCustomAdminConfig(isEnabled, node){
       setCustomAdminConfig(prevState => ({
           ...prevState,
@@ -517,7 +526,7 @@ const Client = () => {
                     _showFullDetailToggler(res.data.object.showFullDetails);
                     _linkVouchersWithLivixius(res.data.object.linkVouchersWithLivixius);
                     _updateCustomHtmlConfig(res.data.object.customHtmlContent);
-                    updateCustomAdminConfig(res.data.object.customAdminConfig);
+                    _updateCustomAdminConfig(res.data.object.customAdminConfig);
                 }
             })
        setLoading(false)

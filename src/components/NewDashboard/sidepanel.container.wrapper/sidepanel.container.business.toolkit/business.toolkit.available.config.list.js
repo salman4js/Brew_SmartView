@@ -5,7 +5,9 @@ var BusinessToolkitAvailableConfigList = Object.freeze({
         value: 'Custom Config Calculation',
         data: 'customConfigCalc',
         method: 'admin-action-patch-custom-calc',
-        restrictShow: JSON.parse(getStorage('isFormulaCustomizationEnabled'))
+        restrictShow: () => {
+            return !(JSON.parse(getStorage('isFormulaCustomizationEnabled')))
+        }
     }
 });
 
