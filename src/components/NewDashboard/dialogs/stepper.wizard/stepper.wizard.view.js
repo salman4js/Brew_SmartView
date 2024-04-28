@@ -11,6 +11,7 @@ class StepperWizard extends React.Component {
       data: props.data,
       bodyView: props.bodyView
     };
+    this.footerViewRef = React.createRef()
   };
   
   // Template helpers!
@@ -26,7 +27,7 @@ class StepperWizard extends React.Component {
       closeWizard: this.closeWizardOnClick.bind(this),
       callFooter: this.renderPassedFooter.bind(this),
       callBodyView: this.renderBodyView.bind(this),
-      bodyViewHeight: window.innerHeight
+      bodyViewHeight: window.innerHeight - (this.footerViewRef?.current?.offsetHeight + 40)
     };
   };
   
@@ -45,8 +46,13 @@ class StepperWizard extends React.Component {
   
   // Render passed footer view!
   renderPassedFooter(){
+    this.state.data.enableFooter && !this.state.isFooterViewRendered && this.setState({isFooterViewRendered: true});
     if(this.state.data.enableFooter){
-      return this.state.data.footerView();
+      return(
+          <div ref = {this.footerViewRef}>
+            {this.state.data.footerView()}
+          </div>
+      )
     }
   };
   

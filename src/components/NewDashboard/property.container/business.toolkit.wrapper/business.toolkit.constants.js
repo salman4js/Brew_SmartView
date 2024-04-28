@@ -34,7 +34,8 @@ const BusinessToolKitConstants = Object.freeze({
             'For example, consider the expression 3+5×23+5×2. If you don\'t follow the BODMAS rule and simply solve from left to right, ' +
             '\nyou might get 16 instead of the correct answer, 13, which you get by following the BODMAS rule.\n' +
             '\n' +
-            'So, BODMAS provides a clear sequence of steps to follow when solving mathematical expressions, ensuring consistency and accuracy in mathematical calculations.'
+            'So, BODMAS provides a clear sequence of steps to follow when solving mathematical expressions, ' +
+            '\nensuring consistency and accuracy in mathematical calculations.',
     }
 });
 
