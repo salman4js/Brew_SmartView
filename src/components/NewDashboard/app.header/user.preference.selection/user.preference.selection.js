@@ -63,7 +63,7 @@ class UserPreferenceSelection extends React.Component {
     };
 
     async _setValueForUserPreferenceFields(){
-        var widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections'),
+        let widgetTileCollection = CollectionInstance.getCollections('widgetTileCollections'),
             collection = Object.keys(widgetTileCollection.data),
             updatedFields;
         for (const model of collection){

@@ -10,7 +10,7 @@ export function templateHelpers(options){
             </span>
             <span className="stepper-wizard-close" onClick = {(event) => options.closeWizard(event)}>&times;</span>
           </div>
-          <div className = 'stepper-wizard-body' style = {{height: options.bodyViewHeight - 100}}>
+          <div className = 'stepper-wizard-body' style = {{height: options.bodyViewHeight}}>
             {options.callBodyView()}
           </div>
           <div className = 'stepper-wizard-footer'>
