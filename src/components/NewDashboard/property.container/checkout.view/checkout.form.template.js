@@ -1,46 +1,261 @@
 import {renderCustomHTMLContent} from "../../../common.functions/node.convertor";
 import checkoutViewConstants from "./checkout.form.constants";
+import MetadataFieldsView from "../../../fields/metadata.fields.view";
 
 // Populate replacements objects!
-function populateReplacementObject(state){
+function populateReplacementObject(state, templateHelperLabel, configOptions){
   // Define replacements
   return {
-    'username': state.userModel.username,
-    'phonenumber': state.userModel.phonenumber,
-    'secondphonenumber': state.userModel.secondphonenumber,
-    'aadharcard': state.userModel.aadharcard,
-    'adults': state.userModel.adults,
-    'childrens': state.userModel.childrens,
-    'dateofcheckin': state.userModel.dateofcheckin,
-    'checkinTime': state.userModel.checkinTime,
-    'currentCheckoutDate': state.userModel.currentCheckoutDate,
-    'currentTime': state.userModel.currentTime,
-    'extraBedCount': state.billingDetails.extraBedCount,
-    'extraBedCollection': state.billingDetails.extraBedCollection,
-    'stayeddays': state.stayeddays + " Days",
-    'oldRoomNo': state.userModel.oldRoomNo,
-    'oldRoomStayDays': state.userModel.oldRoomStayDays + " Days",
-    'oldRoomPrice': Number(state.userModel.oldRoomPrice) + ' Rs',
-    'roomPrice': state.billingInfo.roomPrice,
-    'roomPricePerStays': state.billingInfo.roomPricePerStays + ' Rs',
-    'gstPrice': state.billingInfo.gstPrice + ' Rs',
-    'advanceAmount': state.billingInfo.advanceAmount + ' Rs',
-    'discountAmount': state.billingInfo.discountAmount + ' Rs',
-    'withoutGST': state.billingInfo.withoutGST + ' Rs',
-    'totalPrice': Math.abs(Number(state.billingInfo.totalPrice)) + ' Rs',
-    'totalPrice + oldRoomPrice': (Number(state.billingInfo.totalPrice) + Number(state.userModel.oldRoomPrice)) + 'Rs'
+    'username': {
+      value: state?.userModel?.username,
+      label: templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerNameLabel,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'customerTemplate'
+    },
+    'phonenumber': {
+      value: state?.userModel?.phonenumber,
+      label: templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerPhoneNumberLabel,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'customerTemplate'
+    },
+    'aadharcard': {
+      value: state?.userModel?.aadharcard,
+      label: templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerIdNumber,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'customerTemplate'
+    },
+    'address': {
+      value: state?.userModel?.address,
+      label: templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerAddress,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'customerTemplate'
+    },
+    'adults': {
+      value: state?.userModel?.adults,
+      label: templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.adultsHeadCount,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'customerTemplate'
+    },
+    'childrens': {
+      value: state?.userModel?.childrens,
+      label: templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.childrensHeadCount,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'customerTemplate'
+    },
+    'dateofcheckin': {
+      value: state?.userModel?.dateofcheckin,
+      label: templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.dateOfCheckinHeader,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'stayedDetailsTemplate'
+    },
+    'checkinTime': {
+      value: state?.userModel?.checkinTime,
+      label: templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.timeOfCheckinHeader,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'stayedDetailsTemplate'
+    },
+    'currentCheckoutDate': {
+      value: state?.userModel?.currentCheckoutDate,
+      label: templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.dateOfCheckoutHeader,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'stayedDetailsTemplate'
+    },
+    'currentTime': {
+      value: state?.userModel?.currentTime,
+      label: templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.timeOfCheckoutHeader,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'stayedDetailsTemplate'
+    },
+    'extraBedCount': {
+      value: state?.billingDetails?.extraBedCount,
+      label: templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedCountHeader,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'stayedDetailsTemplate'
+    },
+    'extraBedCollection': {
+      value: state?.billingDetails?.extraBedCollection,
+      label: configOptions.isExtraCalc ? templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedPriceHeaderWithExtraCalc :
+          templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedPriceHeaderWithoutExtraCalc,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'stayedDetailsTemplate'
+    },
+    'stayeddays': {
+      value: state?.stayeddays + " Days",
+      label: templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.stayedDaysHeader,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'stayedDetailsTemplate'
+    },
+    'oldRoomNo': {
+      value: state?.userModel?.oldRoomNo,
+      label: templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.oldRoomNo,
+      attribute: 'labelField',
+      restrictShow: !state?.userModel?.isRoomTransfered,
+      template: 'roomTransferTemplate'
+    },
+    'oldRoomStayDays': {
+      value: state?.userModel?.oldRoomStayDays + " Days",
+      label: templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.oldRoomStayDays,
+      attribute: 'labelField',
+      restrictShow: !state?.userModel?.isRoomTransfered,
+      template: 'roomTransferTemplate'
+    },
+    'oldRoomPrice': {
+      value: Number(state?.userModel?.oldRoomPrice) + ' Rs',
+      label: templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.oldRoomPrice,
+      attribute: 'labelField',
+      restrictShow: !state?.userModel?.isRoomTransfered,
+      template: 'roomTransferTemplate'
+    },
+    'roomPrice': {
+      value: state?.billingInfo?.roomPrice,
+      label: templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.roomPriceHeader,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'billingDetailsTemplate'
+    },
+    'roomPricePerStays': {
+      value: state?.billingInfo?.roomPricePerStays + ' Rs',
+      label: templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.roomPricePerStays,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'billingDetailsTemplate'
+    },
+    'gstPrice': {
+      value: state?.billingInfo?.gstPrice + ' Rs',
+      label: templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.gstDedeuction,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'billingDetailsTemplate'
+    },
+    'advanceAmount': {
+      value: state?.billingInfo?.advanceAmount + ' Rs',
+      label: configOptions.isAdvanceRestricted ? templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.advanceAmount :
+          templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.cashAndDeposit,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'billingDetailsTemplate'
+    },
+    'discountAmount': {
+      value: state?.billingInfo?.discountAmount + ' Rs',
+      label: templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.discountAmount,
+      attribute: 'labelField',
+      restrictShow: false,
+      template: 'billingDetailsTemplate'
+    },
+    'withoutGST': {
+      value: state?.billingInfo?.withoutGST + ' Rs',
+      label: templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.balWithoutGST,
+      attribute: 'labelField',
+      restrictShow: state?.billingInfo?.isNegativeValue,
+      template: 'billingDetailsTemplate'
+    },
+    'totalPrice': {
+      value: Math.abs(Number(state?.billingInfo?.totalPrice)) + ' Rs',
+      label: templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.balWithGST,
+      attribute: 'labelField',
+      restrictShow: state?.billingInfo?.isNegativeValue,
+      template: 'billingDetailsTemplate'
+    },
+    'totalPriceWithoutRoomTransfer': {
+      value: Math.abs(Number(state?.billingInfo?.totalPrice)) + ' Rs',
+      label: templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.totalPayableAmount,
+      attribute: 'labelField',
+      customStyle: {
+        label: {
+          color: 'green',
+          fontWeight: 'bold'
+        },
+        value: {
+          color: 'green',
+          fontWeight: 'bold'
+        }
+      },
+      restrictShow: state?.userModel?.isRoomTransfered,
+      template: 'billingDetailsTemplate'
+    },
+    'totalPrice + oldRoomPrice': {
+      value: (Number(state?.billingInfo?.totalPrice) + Number(state?.userModel?.oldRoomPrice)) + 'Rs',
+      label: templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.totalPayableAmountWithRoomTransfer,
+      attribute: 'labelField',
+      restrictShow: !state?.userModel?.isRoomTransfered,
+      template: 'billingDetailsTemplate'
+    },
+    'refundAmount': {
+      value: Math.abs(Number(state?.billingInfo?.totalPrice)) + ' Rs',
+      label: templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.refundAmount,
+      attribute: 'labelField',
+      customStyle: {
+        label: {
+          color: 'red',
+          fontWeight: 'bold'
+        },
+        value: {
+          color: 'red',
+          fontWeight: 'bold'
+        }
+      },
+      restrictShow: !state?.billingInfo?.isNegativeValue,
+      template: 'billingDetailsTemplate'
+    }
   };
 };
 
+// Prepare metadata label fields for checkout.template!
+function _prepareLabelFieldsWithValues(templateCollection, templateHelpersLabel){
+    const metadataField = {},
+        populatedObject = populateReplacementObject({}, templateHelpersLabel, {});
+    Object.keys(templateCollection).forEach((templateModel) => {
+        const field = {};
+        if(!Array.isArray(metadataField[templateCollection[templateModel].template || populatedObject[templateModel]?.template])){
+          metadataField[templateCollection[templateModel].template || populatedObject[templateModel]?.template] = [];
+        }
+        field['value'] = templateCollection[templateModel].value !== undefined ?
+            templateCollection[templateModel].value : (typeof templateCollection[templateModel] === 'object' ?
+                templateCollection[templateModel].value : templateCollection[templateModel]);
+        field['label'] = templateCollection[templateModel].label || populatedObject[templateModel]?.label;
+        field['attribute'] = templateCollection[templateModel].attribute || populatedObject[templateModel]?.attribute;
+        field['restrictShow'] = templateCollection[templateModel].restrictShow || populatedObject[templateModel]?.restrictShow;
+        if(templateCollection[templateModel]?.customStyle || populatedObject[templateModel]?.customStyle){
+           field['customStyle'] = templateCollection[templateModel].customStyle || populatedObject[templateModel].customStyle;
+        }
+        metadataField[templateCollection[templateModel].template || populatedObject[templateModel]?.template].push(field);
+    });
+    return metadataField;
+};
+
+// Prepare custom template replacements!
+function _prepareCustomTemplateReplacements(replacements){
+    const customTemplateReplacements = {};
+    Object.keys(replacements).forEach((val) => {
+        customTemplateReplacements[val] = replacements[val].value;
+    });
+    return customTemplateReplacements;
+};
+
 export function templateHelpers(state, configOptions, replacements, propertyContainerHeight) {
-  var userModel = state.userModel || replacements,
-      billingInfo = state.billingInfo || replacements,
+  const userModel = state.userModel || replacements,
       templateHelperLabel = state.templateConstants || checkoutViewConstants,
       htmlContent = state.htmlContent;
-  replacements = replacements || populateReplacementObject(state);
+  replacements = replacements || populateReplacementObject(state, templateHelperLabel, configOptions);
+
+  const labelFields = _prepareLabelFieldsWithValues(replacements, templateHelperLabel);
 
   if(state?.htmlContent?.content){
-      return renderCustomHTMLContent(htmlContent, replacements, propertyContainerHeight);
+      const customTemplateReplacements = _prepareCustomTemplateReplacements(replacements);
+      return renderCustomHTMLContent(htmlContent, customTemplateReplacements, propertyContainerHeight);
   } else {
     return (
         <div className = "dashboard-container-fields-view">
@@ -50,77 +265,14 @@ export function templateHelpers(state, configOptions, replacements, propertyCont
               <div className='dashboard-container-fields-header'>
                 {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerDetailsHeaders}
               </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerNameLabel} </label>
-                <p style={{color: 'black'}}> {replacements.username} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerPhoneNumberLabel} </label>
-                <p style={{color: 'black'}}> {replacements.phonenumber} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerSecondNumberLabel} </label>
-                <p style={{color: 'black'}}> {replacements.secondphonenumber} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.customerIdNumber} </label>
-                <p style={{color: 'black'}}> {replacements.aadharcard} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.adultsHeadCount} </label>
-                <p style={{color: 'black'}}> {replacements.adults} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_CUSTOMER_DETAILS.childrensHeadCount} </label>
-                <p style={{color: 'black'}}> {replacements.childrens} </p>
-              </div>
+              <MetadataFieldsView data = {labelFields['customerTemplate']} />
             </div>
             {/* Stayed Details */}
             <div className='col'>
               <div className='dashboard-container-fields-header'>
                 {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.stayedDetailsHeader}
               </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.dateOfCheckinHeader} </label>
-                <p style={{color: 'black'}}> {replacements.dateofcheckin} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.timeOfCheckinHeader} </label>
-                <p style={{color: 'black'}}> {replacements.checkinTime} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.dateOfCheckoutHeader} </label>
-                <p style={{color: 'black'}}> {replacements.currentCheckoutDate} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.timeOfCheckoutHeader} </label>
-                <p style={{color: 'black'}}> {replacements.currentTime} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedCountHeader} </label>
-                <p style={{color: 'black'}}> {replacements.extraBedCount} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {configOptions.isExtraCalc ? templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedPriceHeaderWithExtraCalc : templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.extraBedPriceHeaderWithoutExtraCalc} </label>
-                <p style={{color: 'black'}}> {replacements.extraBedCollection} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_STAYED_DETAILS.stayedDaysHeader} </label>
-                <p style={{color: 'black'}}> {replacements.stayeddays} </p>
-              </div>
+              <MetadataFieldsView data = {labelFields['stayedDetailsTemplate']}/>
             </div>
             {/* Room Transfer Details */}
             {userModel.isRoomTransfered && (
@@ -128,21 +280,7 @@ export function templateHelpers(state, configOptions, replacements, propertyCont
                   <div className='dashboard-container-fields-header'>
                     {templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.roomTransferDetailsHeader}
                   </div>
-                  <div className='modal-gap'>
-                    <label
-                        style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.oldRoomNo} </label>
-                    <p style={{color: 'black'}}> {replacements.oldRoomNo} </p>
-                  </div>
-                  <div className='modal-gap'>
-                    <label
-                        style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.oldRoomStayDays} </label>
-                    <p style={{color: 'black'}}> {replacements.oldRoomStayDays} </p>
-                  </div>
-                  <div className='modal-gap'>
-                    <label
-                        style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_ROOM_TRANSFER_DETAILS.oldRoomPrice} </label>
-                    <p style={{color: 'black'}}> {replacements.oldRoomPrice} </p>
-                  </div>
+                  <MetadataFieldsView data = {labelFields['roomTransferTemplate']}/>
                 </div>
             )}
             {/* Bill Details */}
@@ -150,86 +288,7 @@ export function templateHelpers(state, configOptions, replacements, propertyCont
               <div className='dashboard-container-fields-header'>
                 {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.billDetailsHeader}
               </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.roomPriceHeader} </label>
-                <p style={{color: 'black'}}> {replacements.roomPrice} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.roomPricePerStays} </label>
-                <p style={{color: 'black'}}> {replacements.roomPricePerStays} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.gstDedeuction} </label>
-                <p style={{color: 'black'}}> {replacements.gstPrice} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {configOptions.isAdvanceRestricted ? templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.advanceAmount : templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.cashAndDeposit} </label>
-                <p style={{color: 'black'}}> {replacements.advanceAmount} </p>
-              </div>
-              <div className='modal-gap'>
-                <label
-                    style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.discountAmount} </label>
-                <p style={{color: 'black'}}> {replacements.discountAmount} </p>
-              </div>
-              {!billingInfo.isNegativeValue && (
-                  <>
-                    <div className='modal-gap'>
-                      <label
-                          style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.balWithoutGST} </label>
-                      <p style={{color: 'black'}}> {replacements.withoutGST} </p>
-                    </div>
-                    <div className='modal-gap'>
-                      <label
-                          style={{color: 'black'}}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.balWithGST} </label>
-                      <p style={{color: 'black'}}> {replacements.totalPrice} </p>
-                    </div>
-                    {userModel.isRoomTransfered && (
-                        <div className='modal-gap'>
-                          <label style={{
-                            color: 'green',
-                            fontWeight: 'bold'
-                          }}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.totalPayableAmountWithRoomTransfer} </label>
-                          {replacements.isCheckedOut && (
-                              <p style={{
-                                color: 'green',
-                                fontWeight: 'bold'
-                              }}> {replacements.totalPrice + replacements.oldRoomPrice} </p>
-                          )}
-                          {/** If it's not checked out don't render oldRoomPrice data**/}
-                          {!replacements.isCheckedOut && (
-                              <p style={{
-                                color: 'green',
-                                fontWeight: 'bold'
-                              }}> {replacements.totalPrice} </p>
-                          )}
-                        </div>
-                    )}
-                    {!userModel.isRoomTransfered && (
-                        <div className='modal-gap'>
-                          <label style={{
-                            color: 'green',
-                            fontWeight: 'bold'
-                          }}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.totalPayableAmount} </label>
-                          <p style={{color: 'green', fontWeight: 'bold'}}> {replacements.totalPrice} </p>
-                        </div>
-                    )}
-                  </>
-              )}
-              {billingInfo.isNegativeValue && (
-                  <>
-                    <div className='modal-gap'>
-                      <label style={{
-                        color: 'red',
-                        fontWeight: 'bold'
-                      }}> {templateHelperLabel.TEMPLATE_LABEL_BILL_DETAILS.refundAmount} </label>
-                      <p style={{color: 'red', fontWeight: 'bold'}}> {(replacements.totalPrice)} </p>
-                    </div>
-                  </>
-              )}
+              <MetadataFieldsView data = {labelFields['billingDetailsTemplate']}/>
             </div>
           </div>
         </div>

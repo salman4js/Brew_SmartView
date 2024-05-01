@@ -151,7 +151,7 @@ const MetadataFields = (props) => {
               )
             }
             
-            if(field.attribute === 'labelFields' && field.restrictShow !== true){
+            if(field.attribute === 'labelField' && field.restrictShow !== true){
               return (
                 <LabelField data = {field} />
               )
