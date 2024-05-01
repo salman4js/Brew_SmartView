@@ -8,6 +8,7 @@ var checkoutViewConstants = Object.freeze({
     customerPhoneNumberLabel: 'Customer Phone Number',
     customerSecondNumberLabel: 'Customer Second Number',
     customerIdNumber: 'Customer ID Number',
+    customerAddress: 'Customer Address',
     adultsHeadCount: 'Adult Head Count',
     childrensHeadCount: 'Childrens Head Count'
   }),

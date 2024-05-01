@@ -109,6 +109,7 @@ class CommandsMoreDetails {
         replacements['currentCheckoutDate'] = replacements.dateofcheckout;
         replacements['currentTime'] = replacements.checkoutTime;
         replacements['extraBedCount'] = replacements.extraBeds;
+        replacements['extraBedCollection'] = replacements.extraBedPrice;
         replacements['stayeddays'] = replacements.stayedDays;
         replacements['roomPrice'] = this._getRoomPrice();
         replacements['roomPricePerStays'] = replacements.totalAmount;
@@ -117,10 +118,22 @@ class CommandsMoreDetails {
         replacements['discountAmount'] = this.historyNode.discount ? replacements.discount + ' Rs': replacements.discount;
         replacements['withoutGST'] = this.historyNode.bill ? replacements.bill + ' Rs': replacements.bill;
         replacements['totalPrice'] = replacements.totalAmount === "" ?  lang.MORE_DETAILS.replacementsForEmptyData.totalAmount : Number(replacements.totalAmount) + ' Rs';
+        replacements['totalPriceWithoutRoomTransfer'] = replacements.totalAmount === "" ?  lang.MORE_DETAILS.replacementsForEmptyData.totalAmount : Number(replacements.totalAmount) + ' Rs';
         replacements['isNegativeValue'] = Number(this.selectedNodeData.totalAmount) < 0; // Populate replacements object to blend in with checkout.view.template.
         replacements.currentCheckoutDate = replacements.dateofcheckout === "" ? lang.MORE_DETAILS.replacementsForEmptyData.dateofcheckout : replacements.dateofcheckout;
         replacements.checkoutTime = replacements.checkoutTime === "" ? lang.MORE_DETAILS.replacementsForEmptyData.checkoutTime : replacements.checkoutTime;
         replacements.roomPricePerStays = replacements.roomPricePerStays === "" ? lang.MORE_DETAILS.replacementsForEmptyData.roomPricePerStays : replacements.roomPricePerStays + ' Rs';
+        delete replacements.stayedDays; // Stayed days is already there in the replacements object, removing the duplicate key to avoid errors!
+        delete replacements.bill;
+        delete replacements.stayGst;
+        delete replacements.totalAmount;
+        delete replacements.dateofcheckout;
+        delete replacements.checkoutTime;
+        delete replacements.extraBeds;
+        delete replacements.extraBedPrice;
+        delete replacements.advance;
+        delete replacements.discount;
+        delete replacements._id;
         return replacements;
     };
 
@@ -139,7 +152,7 @@ class CommandsMoreDetails {
           customHtmlContent: {
               content: htmlContent
           },
-          replacements: this.selectedNodeData
+          replacements: _.clone(this.selectedNodeData)
       }
       this.dashboardController.replacements['isCheckedOut'] = this.selectedNodeData.totalAmount !== "";
       this.dashboardController.replacements = this.populateReplacements(this.dashboardController.replacements);
