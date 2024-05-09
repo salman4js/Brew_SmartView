@@ -479,13 +479,13 @@ class CheckOutView extends React.Component {
             if(this.getIsFormulaCustomizationEnabled()){
                 result.data['amountForStayedDays'] = result.data.isChannel ? Number(result.data.totalAmount) : Number(this.state.data.roomModel.price)
                 result.data.advanceCheckin = this._customFormulaHandler({advance: result.data.advanceCheckin, discount: result.data.discountPrice,
-                    amountForStayedDays: result.data.amountForStayedDays, extraBedPrice: result.data.extraBedPrice,
+                    amountForStayedDays: result.data.amountForStayedDays, extraBedPrice: result.data.extraBedPrice, noOfStayedDays: this.state.stayeddays,
                     field: 'advance', customizedFormula: this.customizedFormula});
                 result.data.discountPrice = this._customFormulaHandler({advance: result.data.advanceCheckin, discount: result.data.discountPrice,
-                    amountForStayedDays: result.data.amountForStayedDays, extraBedPrice: result.data.extraBedPrice,
+                    amountForStayedDays: result.data.amountForStayedDays, extraBedPrice: result.data.extraBedPrice, noOfStayedDays: this.state.stayeddays,
                     field: 'discount', customizedFormula: this.customizedFormula});
                 result.data.extraBedPrice = this._customFormulaHandler({advance: result.data.advanceCheckin, discount: result.data.discountPrice,
-                    amountForStayedDays: result.data.amountForStayedDays, extraBedPrice: result.data.extraBedPrice,
+                    amountForStayedDays: result.data.amountForStayedDays, extraBedPrice: result.data.extraBedPrice, noOfStayedDays: this.state.stayeddays,
                     field: 'extraBedPrice', customizedFormula: this.customizedFormula})
             }
             this.setState({billingDetails: result.data, isFetched: true}, () => {
@@ -841,6 +841,7 @@ class CheckOutView extends React.Component {
           gst: this.gstPrice,
           gstPercent: determineGSTPercent(this.state.data.roomModel.price),
           amountForStayedDays: Number(this.getAmountForStayedDays()) || 0,
+          noOfStayedDays: this.state.stayeddays,
           field: options.field,
           customizedFormula: this.customizedFormula
       }
