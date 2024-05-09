@@ -92,7 +92,7 @@ class RoomActionTableWrapper extends TableView{
 
     _getSelectedModel(){
         if(this.state.adminAction){
-            return CollectionInstance.whereInCollections('roomTypes', undefined, '_id', this.state.adminAction.modelId)[0];
+            return CollectionInstance.whereInCollections('roomTypes', undefined, '_id', this.state.adminAction.roomTypeModelId)[0];
         } else {
             return CollectionInstance.getCollections('roomTypes').data[0];
         }
@@ -106,7 +106,7 @@ class RoomActionTableWrapper extends TableView{
     };
 
     _prepareTableCellState(){
-        // Get the roomType from the collection by modelId.
+        // Get the roomType from the collection by roomTypeModelId.
         var selectedModel = this._getSelectedModel();
         this.collection = CollectionInstance.whereInCollections('roomsListCollection', undefined, 'suiteName', selectedModel.suiteType);
     };
