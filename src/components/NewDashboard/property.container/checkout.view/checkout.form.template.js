@@ -258,7 +258,7 @@ export function templateHelpers(state, configOptions, replacements, propertyCont
       return renderCustomHTMLContent(htmlContent, customTemplateReplacements, propertyContainerHeight);
   } else {
     return (
-        <div className = "dashboard-container-fields-view">
+        <div className = "dashboard-container-fields-view" style = {{height: propertyContainerHeight}}>
           <div className='row'>
             {/* Customer Details */}
             <div className='col'>
