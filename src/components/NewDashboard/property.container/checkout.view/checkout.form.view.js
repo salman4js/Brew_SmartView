@@ -462,7 +462,7 @@ class CheckOutView extends React.Component {
 
     _customFormulaHandler(options){
         const customFormulaResult = this.customFormulaValueGenerator.generateCustomFormulaResult(options);
-        return customFormulaResult ? customFormulaResult : options[options.field];
+        return (customFormulaResult || customFormulaResult === 0) ? customFormulaResult : options[options.field];
     };
 
     // Get billing details data!
