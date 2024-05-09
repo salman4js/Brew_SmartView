@@ -8,6 +8,7 @@ const BusinessToolKitConstants = Object.freeze({
         infoMessageForCustomFormula: 'Values for customized formula:\n ' +
             '\nAdvance: advance' +
             '\nDiscount: discount' +
+            '\nNo Of Stayed Days: noOfStayedDays' +
             '\nExtra Bed Price: extraBedPrice' +
             '\nGST percent: gstPercent' +
             '\nGST price: gst' +
