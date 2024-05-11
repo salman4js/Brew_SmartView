@@ -4,6 +4,27 @@ const BusinessToolKitConstants = Object.freeze({
     customConfigCalc: {
         showInfo: true,
         fieldControlTemplateHeader: 'Customizable Fields',
+        fieldControlCenter: [{
+            name: 'advance', placeholder: 'Enter custom formula advance',
+            label: 'Formula Customization', attribute: 'textField', clientName: 'Advance',
+            customFieldIconWithToolTip: true
+        }, {
+            name: 'discount', placeholder: 'Enter custom formula discount',
+            label: 'Formula Customization', attribute: 'textField', clientName: 'Discount',
+            customFieldIconWithToolTip: true
+        }, {
+            name: 'extraBedPrice', placeholder: 'Enter custom formula extra bed price',
+            label: 'Formula Customization', attribute: 'textField', clientName: 'Extra Bed Price',
+            customFieldIconWithToolTip: true
+        },{
+            name: 'gstPrice', placeholder: "Enter custom formula for GST calculation",
+            label: 'Formula Customization', attribute: 'textField', clientName: 'GST',
+            customFieldIconWithToolTip: true
+        },{
+            name: 'totalAmount', placeholder: 'Enter custom formula for total amount',
+            label: 'Formula Customization', attribute: 'textField', clientName: 'Total Amount',
+            customFieldIconWithToolTip: true
+        }],
         infoMessageHeader: 'IMPORTANT NOTE OF FORMULA CUSTOMIZATION:',
         infoMessageForCustomFormula: 'Values for customized formula:\n ' +
             '\nAdvance: advance' +
@@ -37,6 +58,45 @@ const BusinessToolKitConstants = Object.freeze({
             '\n' +
             'So, BODMAS provides a clear sequence of steps to follow when solving mathematical expressions, ' +
             '\nensuring consistency and accuracy in mathematical calculations.',
+    },
+    customConfigReport: {
+        fieldControlTemplateHeader: 'Customizable Fields',
+        customFieldCreationHeader: 'Customizable Fields Creation',
+        fieldControlCenter: [{
+            name: 'username', value: false, label: 'Customer Name', attribute: 'checkBoxField'
+        }, {
+            name: 'phonenumber', value: false, label: 'Guest Phone Number', attribute: 'checkBoxField'
+        }, {
+            name: 'aadhar', value: false, label: 'Guest ID Number', attribute: 'checkBoxField'
+        }, {
+            name: 'address', value: false, label: 'Guest Address', attribute: 'checkBoxField'
+        }, {
+            name: 'dateofcheckin', value: false, label: 'Date Of Checkin', attribute: 'checkBoxField'
+        }, {
+            name: 'dateofcheckout', value: false, label: 'Date Of Checkout', attribute: 'checkBoxField'
+        }, {
+            name: 'checkinTime', value: false, label: 'Time Of Checkin', attribute: 'checkBoxField'
+        }, {
+            name: 'checkoutTime', value: false, label: 'Time Of Checkout', attribute: 'checkBoxField'
+        }, {
+            name: 'totalAmount', value: false, label: 'Total Amount', attribute: 'checkBoxField'
+        }],
+        createFieldOptions: {
+            fieldName: {
+                placeholder: 'Enter custom field name',
+                label: 'Custom field name'
+            },
+            fieldCustomFormula: {
+                placeholder: 'Enter custom field formula',
+                label: 'Custom field formula'
+            },
+            createField: {
+                btnValue: 'Create field'
+            },
+            resetFields: {
+                btnValue: 'Reset form data'
+            }
+        }
     }
 });
 

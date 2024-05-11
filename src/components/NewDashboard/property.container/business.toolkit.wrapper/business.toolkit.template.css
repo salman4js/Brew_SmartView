@@ -10,8 +10,10 @@
 }
 
 .business-toolkit-fieldcenter{
-    width: 650px;
+    width: 550px;
     padding: 20px;
+    height: 16em;
+    overflow-x: hidden;
     border-right: 1px solid darkgrey;
 }
 

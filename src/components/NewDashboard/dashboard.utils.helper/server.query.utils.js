@@ -5,6 +5,7 @@ export function serverQueryUtils(){
     return {
         'edit-room-model': (options) => editRoomModel(options),
         'edit-user-model': (options) => editOccupiedUserModel(options),
-        'admin-action-patch-custom-calc': (options) => CommonUtils.dispatchRequest(options)
+        'admin-action-patch-custom-calc': (options) => CommonUtils.dispatchRequest(options),
+        'admin-action-patch-custom-report': (options) => CommonUtils.dispatchRequest(options)
     }
 };

@@ -8,6 +8,14 @@ var BusinessToolkitAvailableConfigList = Object.freeze({
         restrictShow: () => {
             return !(JSON.parse(getStorage('isFormulaCustomizationEnabled')))
         }
+    },
+    customConfigReport: {
+        value: 'Custom Report Generation',
+        data: 'customConfigReport',
+        method: 'admin-action-patch-custom-report',
+        restrictShow: () => {
+            return false;
+        }
     }
 });
 
