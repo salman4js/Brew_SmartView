@@ -4,61 +4,32 @@ import MetadataFieldTemplateState from "../../../fields/metadata.field.templates
 
 let fieldModule = function () {
     const me = {};
+    me._getTemplateValue = function(fieldOptions, configName){
+        const fieldOptionsKey = Object.keys(fieldOptions);
+        fieldOptionsKey.forEach((field) => {
+            if(me[configName].fieldCenterTemplateValues.includes(field)){
+                if(!fieldOptions.fields) fieldOptions.fields = [];
+                fieldOptions.fields.push({
+                    fieldName: field,
+                    fieldCustomFormula: fieldOptions[field]
+                });
+                delete fieldOptions[field];
+            }
+        });
+        return fieldOptions;
+    }
     me.customConfigCalc = {
         fieldCenterTemplateValues: ['totalAmount', 'extraBedPrice', 'discount', 'advance', 'gstPrice'],
-        _getTemplate: function(panelName){
+        _getTemplate: function(options, configName){
             const template = {
                 controlCenterTemplate: [{
                     name: 'configName', placeholder: 'Enter Configuration Name', label: 'Configuration Name', attribute: 'textField'
                 }, {
-                    name: 'isSelectedConfig', label: 'Select as a default configuration', customStyle: {
-                        color: 'black',
-                        border: '1px solid grey',
-                        backgroundColor: '#EDEADE',
-                        padding: '5px 5px 5px 5px',
-                        borderRadius: '5px',
-                        marginTop: '10px',
-                        width: '500px',
-                        marginBottom: '10px'
-                    }, attribute: 'checkBoxField'
+                    name: 'isSelectedConfig', label: 'Select as a default configuration', attribute: 'checkBoxField'
                 }],
-                fieldCenterTemplate: [{
-                    name: 'advance', placeholder: 'Enter custom formula advance',
-                    label: 'Formula Customization', attribute: 'textField', clientName: 'Advance',
-                    customFieldIconWithToolTip: true
-                }, {
-                    name: 'discount', placeholder: 'Enter custom formula discount',
-                    label: 'Formula Customization', attribute: 'textField', clientName: 'Discount',
-                    customFieldIconWithToolTip: true
-                }, {
-                    name: 'extraBedPrice', placeholder: 'Enter custom formula extra bed price',
-                    label: 'Formula Customization', attribute: 'textField', clientName: 'Extra Bed Price',
-                    customFieldIconWithToolTip: true
-                },{
-                    name: 'gstPrice', placeholder: "Enter custom formula for GST calculation",
-                    label: 'Formula Customization', attribute: 'textField', clientName: 'GST',
-                    customFieldIconWithToolTip: true
-                },{
-                    name: 'totalAmount', placeholder: 'Enter custom formula for total amount',
-                    label: 'Formula Customization', attribute: 'textField', clientName: 'Total Amount',
-                    customFieldIconWithToolTip: true
-                }]
+                fieldCenterTemplate: lang[configName].fieldControlCenter
             };
-            return template[panelName];
-        },
-        _getTemplateValue: function(fieldOptions){
-            const fieldOptionsKey = Object.keys(fieldOptions);
-            fieldOptionsKey.forEach((field) => {
-                if(this.fieldCenterTemplateValues.includes(field)){
-                    if(!fieldOptions.fields) fieldOptions.fields = [];
-                    fieldOptions.fields.push({
-                        fieldName: field,
-                        fieldCustomFormula: fieldOptions[field]
-                    });
-                    delete fieldOptions[field];
-                }
-            });
-            return fieldOptions;
+            return template[options.panel];
         },
         _convertResponseIntoFields: function(fieldOptions){
             const parsedFields = {};
@@ -87,6 +58,50 @@ let fieldModule = function () {
                 </pre>
             )
         }
+    };
+    me.customConfigReport = {
+        fieldCenterTemplateValues: [],
+        _convertResponseIntoFields: function(fieldOptions){
+            const parsedFields = {};
+            parsedFields.fields = [];
+            fieldOptions.map((options) => {
+                parsedFields['configName'] = options['configName'];
+                options.fields.map((opts) => {
+                    const fieldsObj = {};
+                    fieldsObj['name'] = opts['fieldName'];
+                    fieldsObj['customFormula'] = opts['fieldCustomFormula'];
+                    fieldsObj['isCustomField'] = opts['isCustomField'] || false;
+                    fieldsObj['isSelected'] = opts['isSelected'] || false;
+                    parsedFields.fields.push(fieldsObj);
+                });
+            });
+            return parsedFields;
+        },
+        _getTemplate: function(options, configName){
+            const template = {
+                controlCenterTemplate: [{
+                    name: 'configName', placeholder: 'Enter configuration name', label: 'Configuration Name', attribute: 'textField'
+                }],
+                fieldCenterTemplate: lang[configName].fieldControlCenter
+            }
+            if(options.panel === 'fieldCenterTemplate'){
+                options.fieldData.fields.map((opts) => {
+                    // Check if any of the default field has been selected...
+                    const indexToBeChecked = _.findIndex(template.fieldCenterTemplate, {name: opts.name});
+                    if(indexToBeChecked !== -1){
+                        delete template.fieldCenterTemplate[indexToBeChecked];
+                    }
+                    const fieldCenter = {};
+                    fieldCenter['name'] = opts.name;
+                    fieldCenter['value'] = opts.isSelected || false;
+                    fieldCenter['label'] = opts.name;
+                    fieldCenter['isCustomField'] = opts.isCustomField || false;
+                    fieldCenter['attribute'] = 'checkBoxField';
+                    template.fieldCenterTemplate.push(fieldCenter);
+                });
+            }
+            return template[options.panel];
+        }
     }
     return me;
 }();
@@ -99,19 +114,19 @@ class BusinessToolkitFieldConvertor {
 
     _prepareFields(options){
         const fieldModuleInstance = fieldModule[this.options.configName],
-            fields = fieldModuleInstance._getTemplate(options.panel),
+            fields = fieldModuleInstance._getTemplate(options, this.options.configName),
             metadataFields = [];
         fields.map((f) => {
            const fieldTemplate = _.clone(MetadataFieldTemplateState[f.attribute]);
            fieldTemplate.name = f.name;
            if(fieldModuleInstance.fieldCenterTemplateValues.includes(f.name)) fieldTemplate.width = '100%';
-           fieldTemplate.value = options.fieldData[f.name];
+           fieldTemplate.value = f.value || options.fieldData[f.name];
            fieldTemplate.placeholder = f.placeholder;
            fieldTemplate.label = f.label;
            fieldTemplate['clientName'] = f.clientName;
-           if(f.customStyle){
-               fieldTemplate.customStyle = f.customStyle;
-           }
+           if(f.customStyle) fieldTemplate.customStyle = f.customStyle;
+           if(f.isCustomField) fieldTemplate['isCustomField'] = f.isCustomField;
+           if(f.isLabelFirst !== undefined) fieldTemplate.isLabelFirst = f.isLabelFirst;
            if(f.customFieldIconWithToolTip){
                fieldTemplate.customFieldIconWithToolTip = f.customFieldIconWithToolTip;
                fieldTemplate.customFieldIconToolTip = fieldModuleInstance._getToolTipMessage();
@@ -125,7 +140,7 @@ class BusinessToolkitFieldConvertor {
     };
 
     _prepareFieldValues(fieldOptions) {
-        return fieldModule[this.options.configName]._getTemplateValue(fieldOptions);
+        return fieldModule._getTemplateValue(fieldOptions, this.options.configName);
     };
 
     _convertResponseIntoFields(fieldOptions) {

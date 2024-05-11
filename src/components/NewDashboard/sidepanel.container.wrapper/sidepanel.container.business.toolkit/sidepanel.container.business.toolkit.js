@@ -27,7 +27,10 @@ class SidepanelContainerBusinessToolkit extends React.Component {
                 onHide: () => this._onCancelCustomModal()
             },
             metadataFields: undefined
-        }
+        };
+        this.selectedConfigListFetching = {
+
+        };
         this.options = this.props.options;
     };
 
@@ -41,7 +44,7 @@ class SidepanelContainerBusinessToolkit extends React.Component {
         this._updateComponentState({key: 'customModal', value: {...this.state.customModal, ...options}});
     };
 
-    _createNewCustomConfig(){
+    _createNewCustomConfig(configName){
         validateFieldData(this.state.metadataFields,
         (updatedData) => this._updateComponentState({key: 'metadataFields', value: updatedData})).then((isValid) => {
            if(isValid.length === 0){
@@ -49,13 +52,13 @@ class SidepanelContainerBusinessToolkit extends React.Component {
                this._triggerCustomModal({show: false})
                const fieldData = nodeConvertor(this.state.metadataFields);
                CommonUtils.dispatchRequest({
-                   widgetName: this.currentConfigName,
+                   widgetName: configName,
                    accInfo: this.options.params.accIdAndName,
                    method: 'post',
                    data: fieldData
                }).then((response) => {
                    if(response.data.success){
-                       this.state.configLists.push({value: this.currentConfigName,
+                       this.state.configLists.push({value: configName,
                            result: [{configName: response.data?.result?.configName, _id: response.data?.result?._id}]});
                        this._triggerCustomModal({show: true, restrictBody: true, footerEnabled: false, centered: false,
                            header: BusinessToolkitConstants.modalOptions[this.currentConfigName].creationSuccess})
@@ -80,9 +83,9 @@ class SidepanelContainerBusinessToolkit extends React.Component {
         updateData = {(updatedData) => this._updateComponentState({key: 'metadataFields', value: updatedData})}/>
     };
 
-    _prepareCustomModalForConfigCreation(){
+    _prepareCustomModalForConfigCreation(configName){
         const customModalTemplate = _.clone(MetadataFieldTemplateState.customModal),
-            modalOptions = BusinessToolkitConstants.modalOptions[this.currentConfigName];
+            modalOptions = BusinessToolkitConstants.modalOptions[configName];
         customModalTemplate.show = true;
         customModalTemplate.header = modalOptions.header;
         customModalTemplate.showBodyItemView = () => this._showCustomModalBodyView();
@@ -90,23 +93,22 @@ class SidepanelContainerBusinessToolkit extends React.Component {
         customModalTemplate.footerEnabled = true;
         customModalTemplate.footerButtons = modalOptions.footerButtons;
         customModalTemplate.footerButtons.map((buttons) => {
-            buttons.onClick = () => this._createNewCustomConfig()
+            buttons.onClick = () => this._createNewCustomConfig(configName)
         });
         this._triggerCustomModal(customModalTemplate);
     };
 
-    _metadataFieldsForConfigCreation(){
-          this._updateComponentState({key: 'metadataFields', value: BusinessToolkitConstants.fieldOptions[this.currentConfigName]});
+    _metadataFieldsForConfigCreation(configName){
+          this._updateComponentState({key: 'metadataFields', value: BusinessToolkitConstants.fieldOptions[configName]});
     };
 
-    _triggerConfigCreationDialog(){
-        this._prepareCustomModalForConfigCreation();
-        this._metadataFieldsForConfigCreation();
+    _triggerConfigCreationDialog(configName){
+        this._prepareCustomModalForConfigCreation(configName);
+        this._metadataFieldsForConfigCreation(configName);
     };
 
     fetchConfigListForSelection(configName){
-        this.currentConfigName = configName;
-        this.selectedConfigListFetching = true;
+        this.selectedConfigListFetching[configName] = true;
         CommonUtils.dispatchRequest({accInfo: this.options.params.accIdAndName,
             widgetName: configName, query: {fields: 'configName'}, method: 'get'}).then((res) => {
             if(res.data.success){
@@ -131,37 +133,38 @@ class SidepanelContainerBusinessToolkit extends React.Component {
         this._updateComponentState({key: 'selectedItem', value: this.state.selectedItem});
     };
 
-    onPanelItemClick(id) {
+    onPanelItemClick(id, configName) {
         this.pushIntoSelectedItems(id);
-        this._informDashboardController(id, this.currentConfigName);
+        this._informDashboardController(id, configName);
     };
 
     getSelectedItem(){
       return this.state.selectedItem;
     };
 
-    _renderConfigNameLists(collection){
+    _renderConfigNameLists(collection, configName){
         return collection.map((model) => {
            return <PanelItemView data = {model['configName']} _id = {model._id} showIndentationArrow = {true}
-           onClick = {(id) => this.onPanelItemClick(id)} selectedItem = {this.getSelectedItem()}/>
+           onClick = {(id) => this.onPanelItemClick(id, configName)} selectedItem = {this.getSelectedItem()}/>
         });
     };
 
-    _showSelectedConfigLists(){
+    _showSelectedConfigLists(configName){
       if(this.state.isChildLoading){
           return activityLoader({color: 'black', textCenter: true});
       } else {
         return this.state.configLists.map((configLists) => {
             if(configLists.value === this.currentConfigName){
-               return this._renderConfigNameLists(configLists.result);
+               return this._renderConfigNameLists(configLists.result, configName);
             }
         })
       }
     };
 
     _renderSelectedConfigLists(configName){
-        !this.selectedConfigListFetching && this.fetchConfigListForSelection(configName);
-        return this._showSelectedConfigLists();
+        this.currentConfigName = configName;
+        !this.selectedConfigListFetching[configName] && this.fetchConfigListForSelection(configName);
+        return this._showSelectedConfigLists(configName);
     };
 
     _renderAvailableConfigLists(){
@@ -195,8 +198,8 @@ class SidepanelContainerBusinessToolkit extends React.Component {
 
     _renderCreationInlineAction(configName){
         const sidePanelBusinessHelperTemplate = new SidepanelContainerBusinessToolkitTemplate(
-            {configName: configName, onClickInlineMenu: () => this._triggerConfigCreationDialog()});
-        return sidePanelBusinessHelperTemplate._renderInlineAction();
+            {configName: configName, onClickInlineMenu: (configName) => this._triggerConfigCreationDialog(configName)});
+        return sidePanelBusinessHelperTemplate._renderInlineAction(configName);
     };
 
     _renderCustomModal(){

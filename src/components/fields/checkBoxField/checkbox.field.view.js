@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import _ from 'lodash';
 
 const CheckBox = (props) => {
 
@@ -22,7 +23,21 @@ const CheckBox = (props) => {
             return checkbox.isChecked;
         }
     }
-    
+
+    // Get default checkbox styles!
+    function getDefaultCheckboxStyles(){
+        return {
+            color: 'black',
+            border: '1px solid grey',
+            backgroundColor: '#EDEADE',
+            padding: '5px 5px 5px 5px',
+            borderRadius: '5px',
+            marginTop: '10px',
+            width: '500px',
+            marginBottom: '10px'
+        }
+    }
+
     // Update the entire checkbox state1
     function updateCheckboxState(){
       const checkboxState = checkbox;
@@ -36,7 +51,7 @@ const CheckBox = (props) => {
     }, [props.data, props.data.value])
   
   return(
-    <div className = "metadata-field-checkbox" style = {props.data.customStyle}>
+    <div className = "metadata-field-checkbox" style = {(_.isEmpty(props.data.customStyle) ? getDefaultCheckboxStyles() : props.data.customStyle) }>
       {props.data.isLabelFirst ? (
         <>
           {props.data.label && (
