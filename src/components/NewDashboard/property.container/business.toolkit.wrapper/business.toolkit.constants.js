@@ -84,18 +84,22 @@ const BusinessToolKitConstants = Object.freeze({
         createFieldOptions: {
             fieldName: {
                 placeholder: 'Enter custom field name',
-                label: 'Custom field name'
+                label: 'Custom field name',
+                invalidArguments: 'Please provide a valid arguments'
             },
             fieldCustomFormula: {
                 placeholder: 'Enter custom field formula',
-                label: 'Custom field formula'
+                label: 'Custom field formula',
+                invalidArguments: 'Please provide a valid arguments'
             },
             createField: {
                 btnValue: 'Create field'
             },
             resetFields: {
                 btnValue: 'Reset form data'
-            }
+            },
+            successMessage: 'Custom report field has been created!',
+            errorMessage: 'Some internal error occurred, Please try again later!'
         }
     }
 });

@@ -89,15 +89,15 @@ class TextField extends React.Component {
             <input type={this.getType()} className="form-control" aria-describedby="input-field" value = {this.getValue()}
                    placeholder={this.getValueForPlaceholder()} onKeyDown = {(event) => this.handleEvents(event)}
                    onChange = {(event) => this.checkLimit(event)} readOnly = {this.props.data.readOnly}/>
-            {this.props.data?.inlineToast !== undefined && (
-                this._showInlineToast()
-            )}
             {this.props.data.customFieldIconWithToolTip && (
                 <span className = 'custom-field-icon'>
                   {this._renderCustomFieldIcon()}
                 </span>
             )}
           </span>
+          {this.props.data?.inlineToast !== undefined && (
+              this._showInlineToast()
+          )}
         </div>
     )
   };
