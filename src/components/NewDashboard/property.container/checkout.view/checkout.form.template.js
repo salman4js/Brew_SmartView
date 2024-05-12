@@ -227,7 +227,8 @@ function _prepareLabelFieldsWithValues(templateCollection, templateHelpersLabel)
                 templateCollection[templateModel].value : templateCollection[templateModel]);
         field['label'] = templateCollection[templateModel].label || populatedObject[templateModel]?.label;
         field['attribute'] = templateCollection[templateModel].attribute || populatedObject[templateModel]?.attribute;
-        field['restrictShow'] = templateCollection[templateModel].restrictShow || populatedObject[templateModel]?.restrictShow;
+        field['restrictShow'] = templateCollection[templateModel].restrictShow !== undefined ? templateCollection[templateModel].restrictShow
+            : populatedObject[templateModel]?.restrictShow;
         if(templateCollection[templateModel]?.customStyle || populatedObject[templateModel]?.customStyle){
            field['customStyle'] = templateCollection[templateModel].customStyle || populatedObject[templateModel].customStyle;
         }

@@ -48,7 +48,9 @@ class BusinessToolkitWrapper extends PropertyBaseView {
     _renderBusinessToolKitTemplate(){
         return <BusinessToolkitWrapperTemplate data = {{stateOptions: this.state, makeFirstItemSelected: true,
         showInfo: (this.state.adminAction ? BusinessToolKitConstants[this.state.adminAction?.configName].showInfo : null),
-        height: this.options.height, stateUpdateOptions: (updatedData, templateName) => this._updateFieldCenterValue({key: templateName, value: updatedData})}}/>
+        _addMandatoryValues: (fieldOptions, additionalValues) => this._addMandatoryFieldData(fieldOptions, additionalValues),
+        accInfo: this.options.params.accIdAndName, height: this.options.height, modalOptions: (modalOpts) => this.options.modalOptions(modalOpts),
+        stateUpdateOptions: (updatedData, templateName) => this._updateFieldCenterValue({key: templateName, value: updatedData})}}/>
     };
 
     _updateControlCenterTemplate(){
@@ -75,13 +77,6 @@ class BusinessToolkitWrapper extends PropertyBaseView {
 
     saveEditedModel(){
         return new Promise((resolve, reject) => {
-            function parseResults(formulaFields){
-                const customFormula = {};
-                formulaFields.fields.map((opts) => {
-                    customFormula[opts.fieldName] = opts.fieldCustomFormula;
-                });
-                return customFormula;
-            }
             const fieldData = {};
             fieldData.data = this.fieldConvertor._prepareFieldValues(nodeConvertor(this._getFieldData(), [], {onlyChanged: true}));
             _.isEmpty(fieldData.data) && delete fieldData.data;
@@ -90,20 +85,24 @@ class BusinessToolkitWrapper extends PropertyBaseView {
                     accInfo: this.options.params.accIdAndName, method: 'patch', widgetName: this.state.adminAction.configName});
                 this.state.propertyDataCallBackFunc(fieldData).then((result) => {
                     this.propertyDataCallSuccess(result);
-                    if(this.fieldOptions.isSelectedConfig){
-                        const parsedResult = parseResults(result.data.result);
-                        if(CollectionInstance.getCollections(this.state.adminAction.configName)?.data){
-                            CollectionInstance.updateCollections(this.state.adminAction.configName, parsedResult);
-                        } else {
-                            CollectionInstance.setCollections(this.state.adminAction.configName, parsedResult);
-                        }
-                    }
+                    this._updateCollectionInstance(result.data.result);
                     resolve();
                 }).catch((err) => {
                     reject(err);
                 });
             }
         });
+    };
+
+    _updateCollectionInstance(result){
+        if(result?.isSelectedConfig || this.fieldOptions.isSelectedConfig){
+            const parsedResult = this.fieldConvertor.parseResults(result);
+            if(CollectionInstance.getCollections(this.state.adminAction.configName)?.data){
+                CollectionInstance.updateCollections(this.state.adminAction.configName, parsedResult);
+            } else {
+                CollectionInstance.setCollections(this.state.adminAction.configName, parsedResult);
+            }
+        }
     };
 
     _fetchPropertyPage(){

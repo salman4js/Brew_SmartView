@@ -364,7 +364,7 @@ const PropertyContainer = (props) => {
     setCustomModal(prevState => ({...prevState,
       show: opts.show,
       header: opts.header,
-      onHide: () => opts.onHide(),
+      onHide: () => opts.onHide ? opts.onHide() : _onCustomModalHide(),
       restrictBody: opts.restrictBody,
       centered: opts.centered,
       footerEnabled: opts.footerEnabled,
@@ -373,6 +373,11 @@ const PropertyContainer = (props) => {
     if(nextFunc){
       nextFunc();
     }
+  };
+
+  // Destroy custom modal!
+  function _onCustomModalHide(){
+      setCustomModal(prevState => ({...prevState, show: false}));
   };
 
   // Should show modal alert!

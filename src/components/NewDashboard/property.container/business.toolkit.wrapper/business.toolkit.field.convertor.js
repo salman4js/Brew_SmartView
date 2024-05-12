@@ -25,7 +25,16 @@ let fieldModule = function () {
                 controlCenterTemplate: [{
                     name: 'configName', placeholder: 'Enter Configuration Name', label: 'Configuration Name', attribute: 'textField'
                 }, {
-                    name: 'isSelectedConfig', label: 'Select as a default configuration', attribute: 'checkBoxField'
+                    name: 'isSelectedConfig', label: 'Select as a default configuration', attribute: 'checkBoxField', customStyle: {
+                        color: 'black',
+                        border: '1px solid grey',
+                        backgroundColor: '#EDEADE',
+                        padding: '5px 5px 5px 5px',
+                        borderRadius: '5px',
+                        marginTop: '10px',
+                        width: '500px',
+                        marginBottom: '10px'
+                    }
                 }],
                 fieldCenterTemplate: lang[configName].fieldControlCenter
             };
@@ -57,10 +66,18 @@ let fieldModule = function () {
                     {lang.customConfigCalc.infoMessageForCustomFormula}
                 </pre>
             )
+        },
+        _parseResults: function(formulaFields){
+            const customFormula = {};
+            customFormula.isSelectedConfig = formulaFields.isSelectedConfig;
+            formulaFields.fields.map((opts) => {
+                customFormula[opts.fieldName] = opts.fieldCustomFormula;
+            });
+            return customFormula;
         }
     };
     me.customConfigReport = {
-        fieldCenterTemplateValues: [],
+        fieldCenterTemplateValues: ['fieldName', 'fieldCustomFormula'],
         _convertResponseIntoFields: function(fieldOptions){
             const parsedFields = {};
             parsedFields.fields = [];
@@ -85,6 +102,18 @@ let fieldModule = function () {
                 fieldCenterTemplate: lang[configName].fieldControlCenter
             }
             if(options.panel === 'fieldCenterTemplate'){
+                template.fieldCenterTemplate.map((fieldCenterTemplate) => {
+                    fieldCenterTemplate['customStyle'] = {
+                        color: 'black',
+                        border: '1px solid grey',
+                        backgroundColor: '#EDEADE',
+                        padding: '5px 5px 5px 5px',
+                        borderRadius: '5px',
+                        marginTop: '10px',
+                        width: '500px',
+                        marginBottom: '10px'
+                    }
+                })
                 options.fieldData.fields.map((opts) => {
                     // Check if any of the default field has been selected...
                     const indexToBeChecked = _.findIndex(template.fieldCenterTemplate, {name: opts.name});
@@ -97,10 +126,26 @@ let fieldModule = function () {
                     fieldCenter['label'] = opts.name;
                     fieldCenter['isCustomField'] = opts.isCustomField || false;
                     fieldCenter['attribute'] = 'checkBoxField';
+                    fieldCenter['customStyle'] = {
+                        color: 'black',
+                        border: '1px solid grey',
+                        backgroundColor: '#EDEADE',
+                        padding: '5px 5px 5px 5px',
+                        borderRadius: '5px',
+                        marginTop: '10px',
+                        width: '500px',
+                        marginBottom: '10px'
+                    }
                     template.fieldCenterTemplate.push(fieldCenter);
                 });
             }
             return template[options.panel];
+        },
+        _getCustomFieldTemplateValue(fieldOptions){
+           const fieldValue = {};
+           fieldValue.fields = [];
+           fieldValue.fields.push(fieldOptions);
+           return fieldValue;
         }
     }
     return me;
@@ -143,8 +188,16 @@ class BusinessToolkitFieldConvertor {
         return fieldModule._getTemplateValue(fieldOptions, this.options.configName);
     };
 
+    _getCustomFieldTemplateValue(fieldOptions){
+        return fieldModule[this.options.configName]._getCustomFieldTemplateValue(fieldOptions);
+    };
+
     _convertResponseIntoFields(fieldOptions) {
         return fieldModule[this.options.configName]._convertResponseIntoFields(fieldOptions);
+    };
+
+    parseResults(formulaFields){
+        return fieldModule[this.options.configName]._parseResults(formulaFields);
     };
 }
 

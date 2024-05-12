@@ -416,6 +416,10 @@ class CheckOutView extends React.Component {
     fetchCustomFormula() {
         // Check for customized formula in collection instance!
         this.customizedFormula = CollectionInstance.getCollections('customConfigCalc')?.data;
+        if(this.customizedFormula && !this.customizedFormula.isSelectedConfig){
+            this.customizedFormula = undefined;
+            return;
+        }
         if(!this.customizedFormula){
             function parseResults(results){
                 const customFormula = {};
