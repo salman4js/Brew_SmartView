@@ -15,15 +15,17 @@ class TableViewTemplateHelpers {
     renderLeftSideController(){
         return(
             <div>
-                <span className = "brew-tabletemplate-left-toolbar">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
-                         className="bi bi-arrow-left" viewBox="0 0 16 16" onClick={() => this.data.options.onBack()}>
-                    <path fillRule="evenodd"
-                          d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                    </svg>
-                </span>
+                {this.data.options.allowGoBack && (
+                    <span className="brew-tabletemplate-left-toolbar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                             className="bi bi-arrow-left" viewBox="0 0 16 16" onClick={() => this.data.options.onBack()}>
+                        <path fillRule="evenodd"
+                              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                        </svg>
+                    </span>
+                )}
                 {this.data.options.allowTableFilterMode && (
-                    <span className = 'brew-tabletemplate-left-toolbar'
+                    <span className='brew-tabletemplate-left-toolbar'
                           onClick={() => this.data.options.onClickTableFilterMode()}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              className="bi bi-funnel-fill" viewBox="0 0 16 16">
@@ -42,19 +44,21 @@ class TableViewTemplateHelpers {
                         </svg>
                     </span>
                 )}
-                <span className='brew-statustableview-lefttoolbar-header' id = 'anchor-element'>
+                {this.data.options.allowTableHeader && (
+                    <span className='brew-statustableview-lefttoolbar-header' id='anchor-element'>
                     {this.data.options.selectedRoomConstant}
-                    {this.data.options.allowHeaderControl && (
-                        this._renderPopOverMenu()
-                    )}
+                        {this.data.options.allowHeaderControl && (
+                            this._renderPopOverMenu()
+                        )}
                 </span>
+                )}
             </div>
         );
     };
 
     // Render popover menu for the corresponding element.
-    _renderPopOverMenu(){
-      return <PopoverField data = {{options: this.data.options}}/>
+    _renderPopOverMenu() {
+        return <PopoverField data={{options: this.data.options}}/>
     };
 
     // Render table toolbar menu action items.

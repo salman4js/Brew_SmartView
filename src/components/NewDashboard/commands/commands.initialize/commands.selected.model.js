@@ -78,20 +78,28 @@ class CommandsSelectedModel {
         return <MetadataTable data = {this.tableState} />
     };
 
+    _getFooterButtons(){
+        if(this.status['selectedModelFooterButtons']){
+            return this.status['selectedModelFooterButtons'];
+        } else {
+            return [{
+                btnId: lang.SELECTED_MODELS.footerButtons.primaryBtn,
+                variant: 'primary',
+                onClick: () => this.onChangesApply()
+            }]
+        }
+    };
+
     _prepareDialogOptions(){
         this.dialogOptions = {
             centered: true,
             restrictBody: false,
             renderCustomBodyView: true,
             customComponent: this._prepareCustomModalBodyView(),
-            header: lang.SELECTED_MODELS.selectedModelsLabel,
+            header: this.status['selectedModelHeader'] || lang.SELECTED_MODELS.selectedModelsLabel,
             modalSize: 'xl',
             footerEnabled: true,
-            footerButtons: [{
-                btnId: lang.SELECTED_MODELS.footerButtons.primaryBtn,
-                variant: 'primary',
-                onClick: () => this.onChangesApply()
-            }]
+            footerButtons: this._getFooterButtons()
         };
     };
 }

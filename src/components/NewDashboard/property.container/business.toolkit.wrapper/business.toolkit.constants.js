@@ -62,25 +62,10 @@ const BusinessToolKitConstants = Object.freeze({
     customConfigReport: {
         fieldControlTemplateHeader: 'Customizable Fields',
         customFieldCreationHeader: 'Customizable Fields Creation',
-        fieldControlCenter: [{
-            name: 'username', value: false, label: 'Customer Name', attribute: 'checkBoxField'
-        }, {
-            name: 'phonenumber', value: false, label: 'Guest Phone Number', attribute: 'checkBoxField'
-        }, {
-            name: 'aadhar', value: false, label: 'Guest ID Number', attribute: 'checkBoxField'
-        }, {
-            name: 'address', value: false, label: 'Guest Address', attribute: 'checkBoxField'
-        }, {
-            name: 'dateofcheckin', value: false, label: 'Date Of Checkin', attribute: 'checkBoxField'
-        }, {
-            name: 'dateofcheckout', value: false, label: 'Date Of Checkout', attribute: 'checkBoxField'
-        }, {
-            name: 'checkinTime', value: false, label: 'Time Of Checkin', attribute: 'checkBoxField'
-        }, {
-            name: 'checkoutTime', value: false, label: 'Time Of Checkout', attribute: 'checkBoxField'
-        }, {
-            name: 'totalAmount', value: false, label: 'Total Amount', attribute: 'checkBoxField'
-        }],
+        fieldControlCenter: ['Customer Name', 'Guest Phone Number', 'Guest ID Number', 'Date of Checkin',
+            'Date of Checkout', 'Time of Checkin', 'Time of Checkout', 'Total Amount'],
+        fieldControlCenterSequence: ['_id', 'fieldName', 'fieldCustomFormula', 'createdBy', 'enabledBy', 'comments'],
+        defaultFieldsCreateBy: 'Livixius',
         createFieldOptions: {
             fieldName: {
                 placeholder: 'Enter custom field name',
@@ -100,7 +85,17 @@ const BusinessToolKitConstants = Object.freeze({
             },
             successMessage: 'Custom report field has been created!',
             errorMessage: 'Some internal error occurred, Please try again later!'
+        },
+        selectFieldOptions: {
+            modalHeader: 'Add Custom Fields',
+            dialog: {
+                btnValue: 'Apply & Save'
+            }
         }
+    },
+    routerOptions: {
+        currentRouter: 'business-toolkit',
+        dashboardMode: 'businessToolKit'
     }
 });
 

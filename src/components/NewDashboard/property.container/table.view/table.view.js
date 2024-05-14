@@ -142,13 +142,13 @@ class TableView extends React.Component {
     this.getPaginationCountFromCurrentCollection = false;
     this.fetchableWidgetSelectedTableModel = [];
     this.routerController = () => this.props.routerController();
-    this.isStateRouterNotified = false;
     this.tablePerspectiveConstant = tableViewConstants.tablePerspectiveConstant;
     this.paginationConstants = tableViewConstants.paginationConstants;
     this.propertyStatusTableHeader = tableViewConstants.PropertyStatusTableHeader;
     this.propertyStatusRequiredKey = tableViewConstants.PropertyStatusRequiredKey;
     this.convertableConstants = tableViewConstants.convertableConstants;
     this.fetchableWidgets = tableViewConstants.fetchableWidgetTiles;
+    this.isStateRouterNotified = (this.props['isStateRouterNotified'] === true);
     this.filterOptions = {};
     this.tableViewTemplate = new TableViewTemplateHelpers();
   };
@@ -383,6 +383,8 @@ class TableView extends React.Component {
       allowHeaderControl: true,
       allowTableFilterMode: this.checkForTableFilterMode(),
       allowCreateMode: this.checkForTableCreateMode(),
+      allowGoBack: true,
+      allowTableHeader: true,
       onBack: () => this.onBackClick(),
       onClickTableFilterMode: () => this.onFilterTableIconClicked(),
       onClickTableCreateMode: () => this.onCreateModeTableIconClicked(),
