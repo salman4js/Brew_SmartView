@@ -202,13 +202,12 @@ function roomTypeAction(options){
     }]
 };
 
-
 var dialogCreateOptions = {
     'voucherTracker': (options) => voucherTrackerCreateOptions(options),
     'multipleLogin': (options) => multipleLoginCreateOptions(options),
     'roomAction': (options) => roomAction(options),
     'roomTypeAction': (options) => roomTypeAction(options),
-    'onSave': (options) => CommonUtils.dispatchRequest(options)
+    'onSave': (options) => CommonUtils.dispatchRequest(options),
 };
 
 export default dialogCreateOptions;

@@ -40,6 +40,30 @@ let fieldModule = function () {
             };
             return template[options.panel];
         },
+        _prepareFields: function(fields, fieldModuleInstance, options){
+            var metadataFields = [];
+            fields.map((f) => {
+                const fieldTemplate = _.clone(MetadataFieldTemplateState[f.attribute]);
+                fieldTemplate.name = f.name;
+                if(fieldModuleInstance.fieldCenterTemplateValues.includes(f.name)) fieldTemplate.width = '100%';
+                fieldTemplate.value = f.value || options.fieldData[f.name];
+                fieldTemplate.placeholder = f.placeholder;
+                fieldTemplate.label = f.label;
+                fieldTemplate['clientName'] = f.clientName;
+                if(f.customStyle) fieldTemplate.customStyle = f.customStyle;
+                if(f.isCustomField) fieldTemplate['isCustomField'] = f.isCustomField;
+                if(f.isLabelFirst !== undefined) fieldTemplate.isLabelFirst = f.isLabelFirst;
+                if(f.customFieldIconWithToolTip){
+                    fieldTemplate.customFieldIconWithToolTip = f.customFieldIconWithToolTip;
+                    fieldTemplate.customFieldIconToolTip = fieldModuleInstance._getToolTipMessage();
+                    fieldTemplate.showCustomFieldIcon = function(){
+                        return fieldModuleInstance._getFieldIcon();
+                    }
+                }
+                metadataFields.push(fieldTemplate);
+            });
+            return metadataFields;
+        },
         _convertResponseIntoFields: function(fieldOptions){
             const parsedFields = {};
             fieldOptions.map((options) => {
@@ -84,60 +108,29 @@ let fieldModule = function () {
             fieldOptions.map((options) => {
                 parsedFields['configName'] = options['configName'];
                 options.fields.map((opts) => {
-                    const fieldsObj = {};
-                    fieldsObj['name'] = opts['fieldName'];
-                    fieldsObj['customFormula'] = opts['fieldCustomFormula'];
-                    fieldsObj['isCustomField'] = opts['isCustomField'] || false;
-                    fieldsObj['isSelected'] = opts['isSelected'] || false;
-                    parsedFields.fields.push(fieldsObj);
+                    if(!opts['comments']) opts.comments = '';
+                    opts.isCustomField && delete opts.isCustomField;
+                    parsedFields.fields.push(opts);
                 });
             });
             return parsedFields;
+        },
+        _prepareFields: function(fields, fieldModuleInstance, options){
+            if(options.panel !== 'controlCenterTemplate'){
+                return fields;
+            } else {
+                return me.customConfigCalc._prepareFields(fields, fieldModuleInstance, options);
+            }
         },
         _getTemplate: function(options, configName){
             const template = {
                 controlCenterTemplate: [{
                     name: 'configName', placeholder: 'Enter configuration name', label: 'Configuration Name', attribute: 'textField'
                 }],
-                fieldCenterTemplate: lang[configName].fieldControlCenter
+                fieldCenterTemplate: []
             }
             if(options.panel === 'fieldCenterTemplate'){
-                template.fieldCenterTemplate.map((fieldCenterTemplate) => {
-                    fieldCenterTemplate['customStyle'] = {
-                        color: 'black',
-                        border: '1px solid grey',
-                        backgroundColor: '#EDEADE',
-                        padding: '5px 5px 5px 5px',
-                        borderRadius: '5px',
-                        marginTop: '10px',
-                        width: '500px',
-                        marginBottom: '10px'
-                    }
-                })
-                options.fieldData.fields.map((opts) => {
-                    // Check if any of the default field has been selected...
-                    const indexToBeChecked = _.findIndex(template.fieldCenterTemplate, {name: opts.name});
-                    if(indexToBeChecked !== -1){
-                        delete template.fieldCenterTemplate[indexToBeChecked];
-                    }
-                    const fieldCenter = {};
-                    fieldCenter['name'] = opts.name;
-                    fieldCenter['value'] = opts.isSelected || false;
-                    fieldCenter['label'] = opts.name;
-                    fieldCenter['isCustomField'] = opts.isCustomField || false;
-                    fieldCenter['attribute'] = 'checkBoxField';
-                    fieldCenter['customStyle'] = {
-                        color: 'black',
-                        border: '1px solid grey',
-                        backgroundColor: '#EDEADE',
-                        padding: '5px 5px 5px 5px',
-                        borderRadius: '5px',
-                        marginTop: '10px',
-                        width: '500px',
-                        marginBottom: '10px'
-                    }
-                    template.fieldCenterTemplate.push(fieldCenter);
-                });
+                return options.fieldData.fields;
             }
             return template[options.panel];
         },
@@ -159,29 +152,8 @@ class BusinessToolkitFieldConvertor {
 
     _prepareFields(options){
         const fieldModuleInstance = fieldModule[this.options.configName],
-            fields = fieldModuleInstance._getTemplate(options, this.options.configName),
-            metadataFields = [];
-        fields.map((f) => {
-           const fieldTemplate = _.clone(MetadataFieldTemplateState[f.attribute]);
-           fieldTemplate.name = f.name;
-           if(fieldModuleInstance.fieldCenterTemplateValues.includes(f.name)) fieldTemplate.width = '100%';
-           fieldTemplate.value = f.value || options.fieldData[f.name];
-           fieldTemplate.placeholder = f.placeholder;
-           fieldTemplate.label = f.label;
-           fieldTemplate['clientName'] = f.clientName;
-           if(f.customStyle) fieldTemplate.customStyle = f.customStyle;
-           if(f.isCustomField) fieldTemplate['isCustomField'] = f.isCustomField;
-           if(f.isLabelFirst !== undefined) fieldTemplate.isLabelFirst = f.isLabelFirst;
-           if(f.customFieldIconWithToolTip){
-               fieldTemplate.customFieldIconWithToolTip = f.customFieldIconWithToolTip;
-               fieldTemplate.customFieldIconToolTip = fieldModuleInstance._getToolTipMessage();
-               fieldTemplate.showCustomFieldIcon = function(){
-                   return fieldModuleInstance._getFieldIcon();
-               }
-           }
-            metadataFields.push(fieldTemplate);
-        });
-        return metadataFields;
+            fields = fieldModuleInstance._getTemplate(options, this.options.configName);
+        return fieldModuleInstance._prepareFields(fields, fieldModuleInstance, options);
     };
 
     _prepareFieldValues(fieldOptions) {

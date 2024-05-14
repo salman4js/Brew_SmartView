@@ -45,7 +45,15 @@ class TableCreateActionDialog {
     };
 
     getCustomBodyViewOptions(){
-        return dialogCreateOptions[this.status.roomConstantKey](this.status.selectedModel);
+        if(!lang.TABLE_CREATE.customComponentKeys.includes(this.status.roomConstantKey)){
+            return dialogCreateOptions[this.status.roomConstantKey](this.status.selectedModel);
+        }
+    };
+
+    getCustomBodyComponent(){
+        if(lang.TABLE_CREATE.customComponentKeys.includes(this.status.roomConstantKey)){
+            return dialogCreateOptions[this.status.roomConstantKey](this.status);
+        }
     };
 
     getDialogOptions(){
@@ -54,6 +62,7 @@ class TableCreateActionDialog {
             restrictBody: false,
             renderCustomBodyView: true,
             customBodyViewOptions: this.getCustomBodyViewOptions(),
+            customComponent: this.getCustomBodyComponent(),
             footerEnabled: true,
             footerButtons: [
                 {

@@ -15,7 +15,8 @@ var tableViewConstants = Object.freeze({
     logTable: ['Log Type', 'Log Comments', 'Log Paid', 'Log Date & Time', 'Log Price'],
     paymentTrackerView: ['Amount', 'Amount For', 'Date & Time', 'Mode'],
     multipleLogin: ['Username', 'Password', 'Permission Level'],
-    roomAction: ['Floor No', 'Room No', 'Room type', 'Bed Count', 'Extra Bed Price Per Day', 'Price Per Day']
+    roomAction: ['Floor No', 'Room No', 'Room type', 'Bed Count', 'Extra Bed Price Per Day', 'Price Per Day'],
+    customReport: ['Field Name', 'Field Formula', 'Created By', 'Enabled By', 'Comments']
   }),
 
   PropertyStatusRequiredKey: Object.freeze({
@@ -32,7 +33,8 @@ var tableViewConstants = Object.freeze({
     paymentTrackerView: ['paymentTrackerId', 'amount', 'amountFor', 'dateTime', 'isPrebook'],
     voucherTracker: ['_id', 'vNo', 'dateTime', 'particulars', 'cashMode', 'receipt', 'payment'],
     multipleLogin: ['_id', 'username', 'password', 'loginAs'],
-    roomAction: ['_id','floorNo', 'roomno', 'suiteName', 'bedCount', 'extraBedPrice', 'price']
+    roomAction: ['_id','floorNo', 'roomno', 'suiteName', 'bedCount', 'extraBedPrice', 'price'],
+    customReport: ['_id', 'fieldName', 'fieldCustomFormula', 'createdBy', 'enabledBy', 'comments']
   }),
 
   tableInfoMessage: Object.freeze({

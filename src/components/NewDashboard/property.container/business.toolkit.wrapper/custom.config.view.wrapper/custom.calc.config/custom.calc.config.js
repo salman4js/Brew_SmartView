@@ -1,12 +1,16 @@
+import React from "react";
 import PanelItemView from "../../../../../SidePanelView/panel.item/panel.item.view";
-import CustomConfigViewWrapper from "../custom.config.view.wrapper";
 import lang from "../../business.toolkit.constants";
 import MetadataFieldsView from "../../../../../fields/metadata.fields.view";
-import React from "react";
 
-class CustomCalcConfig extends CustomConfigViewWrapper{
-    constructor(options) {
-        super(options);
+class CustomCalcConfig extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedPanelItem: [],
+            currentFieldData: undefined
+        }
+        this.options = props.options.options;
     };
 
     onFieldClick(fieldOptions){
@@ -62,6 +66,10 @@ class CustomCalcConfig extends CustomConfigViewWrapper{
                 </div>
             </div>
         )
+    };
+
+    render(){
+        return this.templateHelpers();
     };
 }
 

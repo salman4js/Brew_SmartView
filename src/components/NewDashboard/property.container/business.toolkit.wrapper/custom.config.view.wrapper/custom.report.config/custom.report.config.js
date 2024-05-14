@@ -1,14 +1,22 @@
 import React from 'react';
-import _ from "lodash";
-import CustomConfigViewWrapper from "../custom.config.view.wrapper";
+import _ from 'lodash';
+import TableView from "../../../table.view/table.view";
 import MetadataFieldsView from "../../../../../fields/metadata.fields.view";
-import {extractStateValue} from "../../../../../common.functions/node.convertor";
-import {activityLoader} from "../../../../../common.functions/common.functions.view";
+import {
+    arrangeObj,
+    createMetadataFieldsWithBaseObj, extractQueryParams,
+    extractStateValue, nodeConvertor,
+    validateFieldData
+} from "../../../../../common.functions/node.convertor";
+import BusinessToolkitFieldConvertor from "../../business.toolkit.field.convertor";
+import MetadataFieldTemplateState from "../../../../../fields/metadata.field.templatestate";
+import {serverQueryUtils} from "../../../../dashboard.utils.helper/server.query.utils";
 import lang from "../../business.toolkit.constants";
+import CommandsSelectedModel from "../../../../commands/commands.initialize/commands.selected.model";
 
-class CustomReportConfig extends CustomConfigViewWrapper{
-    constructor(options) {
-        super(options);
+class CustomReportConfig extends TableView{
+    constructor(props) {
+        super(props);
         this.state = {
             ...this.state,
             fieldCenterHeight: undefined,
@@ -54,12 +62,8 @@ class CustomReportConfig extends CustomConfigViewWrapper{
                 attribute: 'buttonField'
             }]
         };
-        this.view = React.createRef();
-        this.fieldCenterRef = React.createRef();
-    };
-
-    _updateStateComponent(updatedData){
-          this.updateStateComponent({key: 'createFieldState', value: updatedData});
+        this.state.metadataTableState.tableLoader = true;
+        this.options = this.props;
     };
 
     resetFormData(fieldState){
@@ -88,41 +92,113 @@ class CustomReportConfig extends CustomConfigViewWrapper{
         !isToastVisible && this.setState({fieldCenterHeight: this.fieldCenterRef.current.offsetHeight + 20});
         this._validateAndCreateNewField().then((options) => {
             const locallyCreatedField = _.find(options.serverResult.fields, options.fieldData.data.fields[0]);
-
+            // Convert the locally created field into checkBoxField template!
+            const templateState = _.clone(MetadataFieldTemplateState.checkBoxField);
+            console.log(createMetadataFieldsWithBaseObj(locallyCreatedField, {}, templateState));
         });
     };
 
     _createCustomFieldsView(){
-        return <MetadataFieldsView data = {this.state.createFieldState} updateData = {(updatedData) => this._updateStateComponent(updatedData)}/>
+        return <MetadataFieldsView data = {this.state.createFieldState} updateData = {(updatedData) => this._updateComponentState(updatedData)}/>
     };
 
-    templateHelpers(){
-        if(this.state.isLoading){
-            const opts = {
-                color: 'black',
-                textCenter: true,
-                marginTop: (this.view?.current?.offsetHeight / 2) + 'px',
-                marginBottom: (this.view?.current?.offsetHeight / 2) + 'px'
+    prepareFieldValues(fieldOption){
+        const businessToolKitFieldConvertor = new BusinessToolkitFieldConvertor({configName: this.options.stateOptions.adminAction.configName})  ;
+        return businessToolKitFieldConvertor._getCustomFieldTemplateValue(fieldOption)
+    };
+    
+    _validateAndCreateNewField(){
+        return new Promise((resolve, reject) => {
+            validateFieldData(this.state.createFieldState, (updatedData) => this._updateComponentState(updatedData)).then((isNotValid) => {
+                if(isNotValid.length === 0){
+                    this._toggleTableLoader(true);
+                    const fieldData = {};
+                    fieldData.data = this.prepareFieldValues(_.omitBy(nodeConvertor(this.state.createFieldState), _.isNil));
+                    this.options._addMandatoryValues(fieldData, {selectedNodes: [this.options.stateOptions.adminAction.modelId],
+                        accInfo: this.options.params.accIdAndName, method: 'patch', widgetName: this.options.stateOptions.adminAction.configName});
+                    const funcMethodKey = extractQueryParams().method;
+                    serverQueryUtils()[funcMethodKey](fieldData).then((resp) => {
+                        this.options.modalOptions({show: true, restrictBody: true,
+                            header: resp.data.statusCode === 200 ? lang[this.options.stateOptions.adminAction.configName].createFieldOptions.successMessage: resp.data.message,
+                            centered: false, footerEnabled: false});
+                        this._toggleTableLoader(false);
+                        resolve({serverResult: resp.data.result, fieldData: fieldData});
+                    }).catch((err) => {
+                        this.options.modalOptions({show: true, restrictBody: true,
+                            header: lang[this.options.stateOptions.adminAction.configName].createFieldOptions.errorMessage,
+                            centered: false, footerEnabled: false});
+                        this._toggleTableLoader(false);
+                        reject(err);
+                    });
+                }
+            });
+        })
+    }
+
+    _resetFormData(fieldState){
+        this.state[fieldState].map((field) => {
+            field.value = undefined;
+            if(field?.inlineToast){
+                field.inlineToast.isShow = false;
             }
-            return activityLoader(opts);
-        } else {
-            return(
-                <div className='business-toolkit-fieldcenter-wrapper' ref = {this.view}>
-                    <div className='business-toolkit-fieldcenter' style = {{height: this.state.fieldCenterHeight}} ref = {this.fieldCenterRef}>
-                        <div
-                            className='business-toolkit-fieldcenter-header text-center brew-cursor'>{lang[this.options.stateOptions.adminAction.configName].fieldControlTemplateHeader}</div>
-                        <MetadataFieldsView data={this.options.stateOptions.fieldCenterTemplate}/>
-                    </div>
-                    <div className='business-toolkit-field-control-center-wrapper'>
-                        <div className='business-toolkit-field-control-center'>
-                            <div
-                                className='business-toolkit-fieldcenter-header text-center brew-cursor'>{lang[this.options.stateOptions.adminAction.configName].customFieldCreationHeader}</div>
-                            {this._createCustomFieldsView()}
-                        </div>
-                    </div>
-                </div>
-            )
-        }
+        });
+        this._updateComponentState({key: fieldState, value: this.state[fieldState]});
+    };
+
+    _getDefaultReportFields(){
+          const defaultReportFields = [];
+          lang.customConfigReport.fieldControlCenter.map((fieldName) => {
+              const fields = {};
+              fields['_id'] = '';
+              fields['fieldName'] = fieldName;
+              fields['fieldCustomFormula'] = '';
+              fields['createdBy'] = lang.customConfigReport.defaultFieldsCreateBy;
+              fields['enabledBy'] = '';
+              fields['comments'] = '';
+              defaultReportFields.push(fields);
+          });
+          return defaultReportFields;
+    };
+
+    getNodePickerTableCollection(){
+        const defaultReportFields = this._getDefaultReportFields();
+        this.options.configModel.stateOptions.fieldCenterTemplate.map((fieldCenter) => {
+            const inSequenceOrder = arrangeObj(fieldCenter, lang.customConfigReport.fieldControlCenterSequence);
+            defaultReportFields.push(inSequenceOrder);
+        });
+        return defaultReportFields;
+    };
+
+    onSelectNewFields(){
+        console.log(this.commandSelectedModalView.statusNodes);
+    };
+
+    _getSelectFieldDialogFooterOptions(){
+        return[{
+            btnId: lang.customConfigReport.selectFieldOptions.dialog.btnValue,
+            variant: 'secondary',
+            onClick: () => this.onSelectNewFields()
+        }]
+    };
+
+    onCreateModeTableIconClicked(){
+        this.templateHelpersData.options.selectedModelHeader = lang.customConfigReport.selectFieldOptions.modalHeader;
+        this.templateHelpersData.options.selectedModelFooterButtons = this._getSelectFieldDialogFooterOptions();
+        this.commandSelectedModalView = new CommandsSelectedModel(this.templateHelpersData.options)
+        return this.commandSelectedModalView.execute();
+    };
+
+    prepareTemplateHelpersData() {
+        super.prepareTemplateHelpersData();
+        this.templateHelpersData.options.eventHelpers.getTableCollection = () => this.getNodePickerTableCollection();
+        this.templateHelpersData.options.allowGoBack = false;
+        this.templateHelpersData.options.allowCreateMode = true;
+        this.templateHelpersData.options.allowTableHeader = false;
+    };
+
+    setExpandedTableView(){
+        this.roomConstant = 'customReport';
+        return this.options.configModel.stateOptions.fieldCenterTemplate;
     };
 }
 

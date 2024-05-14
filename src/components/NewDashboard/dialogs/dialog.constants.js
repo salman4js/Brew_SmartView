@@ -14,7 +14,8 @@ var dialogConstants = Object.freeze({
           primaryBtn: 'Create',
           secondaryBtn: 'Cancel'
       },
-      tableCreateModeAllowedKeys: ['voucherTracker', 'multipleLogin', 'roomAction']
+      tableCreateModeAllowedKeys: ['voucherTracker', 'multipleLogin', 'roomAction', 'customReport'],
+      customComponentKeys: []
     },
 
     TABLE_EDIT: {

@@ -46,10 +46,10 @@ class BusinessToolkitWrapper extends PropertyBaseView {
     };
 
     _renderBusinessToolKitTemplate(){
-        return <BusinessToolkitWrapperTemplate data = {{stateOptions: this.state, makeFirstItemSelected: true,
-        showInfo: (this.state.adminAction ? BusinessToolKitConstants[this.state.adminAction?.configName].showInfo : null),
-        _addMandatoryValues: (fieldOptions, additionalValues) => this._addMandatoryFieldData(fieldOptions, additionalValues),
-        accInfo: this.options.params.accIdAndName, height: this.options.height, modalOptions: (modalOpts) => this.options.modalOptions(modalOpts),
+        return <BusinessToolkitWrapperTemplate data = {{stateOptions: this.state, makeFirstItemSelected: true, tableData: this.options.data,
+        stateRouter: this.options.stateRouter, showInfo: (this.state.adminAction ? BusinessToolKitConstants[this.state.adminAction?.configName].showInfo : null),
+        routerController: (opts) => this.options.routerController(opts), _addMandatoryValues: (fieldOptions, additionalValues) => this._addMandatoryFieldData(fieldOptions, additionalValues),
+        params: this.options.params, height: this.options.height, modalOptions: (modalOpts) => this.options.modalOptions(modalOpts),
         stateUpdateOptions: (updatedData, templateName) => this._updateFieldCenterValue({key: templateName, value: updatedData})}}/>
     };
 
@@ -123,7 +123,7 @@ class BusinessToolkitWrapper extends PropertyBaseView {
     componentDidUpdate() {
         this._listenTo();
         this.model.selectedRoomConstant = 'business-toolkit';
-        if(this.state.adminAction !== this.props.data.adminAction){
+        if(this.props.data.adminAction !== undefined && (this.state.adminAction !== this.props.data.adminAction)){
             this._updateComponentState({key: 'adminAction', value: this.props.data.adminAction}, () => {
                 !this.isPropertyPageFetching && this._fetchPropertyPage();
             });

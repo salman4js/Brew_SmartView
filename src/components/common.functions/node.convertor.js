@@ -395,7 +395,7 @@ export function createMetadataFieldsWithBaseObj(obj, metadataAttribute, metadata
     var fieldObj = _.clone(metadataFields);
     fieldObj['name'] = key;
     fieldObj['value'] = obj[key];
-    Object.keys(metadataAttribute[key]).forEach((k) => {
+    Object.keys(_.isEmpty(metadataAttribute) ? [] : metadataAttribute[key]).forEach((k) => {
       fieldObj[k] = metadataAttribute[key][k];
     });
     metadataFieldArray.push(fieldObj);

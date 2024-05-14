@@ -41,16 +41,16 @@ const PropertyContainer = (props) => {
 
   // Table view template initializer.
   var TableViewTemplate = new TableViewTemplateHelpers(
-      {options: {onBack: ()=> onBackClick(),
+      {options: {allowGoBack: true,onBack: ()=> onBackClick(),
           selectedRoomConstant: propertyContainerConstants.WIDGET_CONSTANTS[props.data.dashboardMode]}});
 
   // On back click on table toolbar view for property container.
   function onBackClick(){
     props.routerController()._notifyStateRouter({routerOptions: {action: 'DELETE'}}).then((result) => {
       const options = getRouterOptions(result);
-      options.queryParams = []; // Changing the query params to empty on every back navigation!
-      options.isAdminAction = true; options.onPropertyBaseSave = true;
-      options.adminAction = undefined; options.propertyDataCallBackFunc = undefined;
+      options['queryParams'] = []; // Changing the query params to empty on every back navigation!
+      options['isAdminAction'] = true; options['onPropertyBaseSave'] = true;
+      options['adminAction'] = undefined; options['propertyDataCallBackFunc'] = undefined;
       props.dashboardController(options);
     })
   };
@@ -81,7 +81,7 @@ const PropertyContainer = (props) => {
       'payment-tracker-table-view': extendedTableOptions,
       'log-table-view': extendedTableOptions
     };
-    return options[stateRouter.stateModel[stateRouter.stateModel.length -  1]];
+    return options[stateRouter.stateModel[stateRouter.stateModel.length -  1]] || extendedTableOptions;
   };
   
   // Get panel field data!
@@ -230,7 +230,7 @@ const PropertyContainer = (props) => {
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.businessToolKit){
       return <BusinessToolkitWrapper data = {props.data} height = {props.propertyContainerHeight} modalOptions = {(options, nextFunc) => _updateCustomModalOptions(options, nextFunc)}
-      routerController = {(opts) => props.routerController(opts)} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+      routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     }
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.propertyReadView){

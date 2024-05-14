@@ -7,7 +7,9 @@ import CustomReportConfig from "./custom.config.view.wrapper/custom.report.confi
 
 const CustomConfigView = {
     customConfigCalc: (options) => <CustomCalcConfig options = {options} />,
-    customConfigReport: (options) => <CustomReportConfig options = {options}/>
+    customConfigReport: (options) => <CustomReportConfig data = {options.options.tableData} height = {options.options.height}
+    stateRouter = {options.options.stateRouter} routerController= {(opts) => options.options.routerController(opts)}
+    configModel = {options.options} isStateRouterNotified = {true} params = {options.options.params}/>
 }
 
 class BusinessToolkitWrapperTemplate extends React.Component {
