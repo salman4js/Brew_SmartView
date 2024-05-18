@@ -26,6 +26,10 @@ class CustomReportConfig extends TableView{
         }
     };
 
+    addIntoTableCollection(locallyCreatedModel){
+        this.options.configModel._updateStateTemplate({key: 'fieldCenterTemplate', updatedData: locallyCreatedModel.fields, action: 'REPLACE'});
+    };
+
     _removeFromTableCollection(nodes){
         this.options.configModel.stateOptions.fieldCenterTemplate.map((model) => {
             if(nodes.includes(model._id)){
