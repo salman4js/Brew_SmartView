@@ -26,8 +26,8 @@ const CheckBox = (props) => {
 
     // Is checkbox disabled.
     function isCheckboxDisabled(){
-        if(props.checkboxIndex && props.data.selectedCheckboxIndex){
-            return props.data.selectedCheckboxIndex.includes(props.checkboxIndex);
+        if(props.checkboxIndex && props.data.disabledCheckboxIndex){
+            return props.data.disabledCheckboxIndex.includes(props.checkboxIndex);
         } else {
             return false;
         }
