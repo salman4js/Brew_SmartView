@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from "lodash";
 import setupCommandsInstances from "../commands/base.commands.setup";
 import TableToolbarTemplate from "./table.toolbar.template";
 
@@ -13,12 +14,16 @@ class TableToolbarView extends React.Component {
 
     _prepareCommands(){
         this.baseCommands = setupCommandsInstances(this.state.options);
-        this.commands = this.baseCommands._getCommands();
+        this.commands = this.baseCommands._getCommands(this.state.options.commandSignature);
     };
 
     templateHelpers(){
         this.template = new TableToolbarTemplate(this.commands);
-        return this.template._renderTableMenuActionsView();
+        if(this.props.customMenuActionView && _.isFunction(this.props.customMenuActionView)){
+            return this.props.customMenuActionView(this.commands);
+        } else {
+            return this.template._renderTableMenuActionsView();
+        }
     };
 
     _updateState(updatedData){

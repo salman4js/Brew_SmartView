@@ -9,7 +9,8 @@ class CommandsExportToExcel {
         this.defaults = {
             value: lang.EXPORT_TO_EXCEL.exportToExcelLabel,
             disabled: !this.isDisabled,
-            onClick: () => this.execute()
+            onClick: () => this.execute(),
+            signature: 'Command-Export'
         };
         this.exportDialogFieldOptions = [{
             value: undefined,

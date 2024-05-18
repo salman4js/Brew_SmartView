@@ -23,7 +23,7 @@ class TableCreateActionDialog {
                 this.status.eventHelpers.triggerTableLoader(true, true);
                 this.status.eventHelpers.collapseCustomModal();
                 dialogCreateOptions.onSave(options).then((response) => {
-                    if(response.data.statusCode === 201 && response.data.success){
+                    if((response.data.statusCode === 201 || response.data.statusCode === 200) && response.data.success){
                         this.status.eventHelpers.addIntoTableCollection(response.data.result);
                         this.status.eventHelpers.triggerTableLoader(false);
                         this.status.eventHelpers.triggerCustomModel({header: CommandsLang.CREATE_CONTROLLER[this.status.roomConstantKey].successMessage, centered: false});

@@ -202,11 +202,49 @@ function roomTypeAction(options){
     }]
 };
 
+function customConfigReportCreateAction(options){
+    return[{
+        value: options?.fieldName,
+        name: 'fieldName',
+        label: lang.TABLE_CREATE_DIALOG.customConfigReport.fieldName.label,
+        placeholder: lang.TABLE_CREATE_DIALOG.customConfigReport.fieldName.placeholder,
+        attribute: 'textField',
+        isRequired: true,
+        inlineToast: {
+            isShow: false,
+            inlineMessage: 'Please provide a valid payment.'
+        }
+    }, {
+        value: options?.fieldCustomFormula,
+        name: 'fieldCustomFormula',
+        label: lang.TABLE_CREATE_DIALOG.customConfigReport.fieldCustomFormula.label,
+        placeholder: lang.TABLE_CREATE_DIALOG.customConfigReport.fieldCustomFormula.placeholder,
+        attribute: 'textField',
+        isRequired: true,
+        inlineToast: {
+            isShow: false,
+            inlineMessage: 'Please provide a valid payment.'
+        }
+    }, {
+        value: options?.comments,
+        name: 'comments',
+        label: lang.TABLE_CREATE_DIALOG.customConfigReport.comments.label,
+        placeholder: lang.TABLE_CREATE_DIALOG.customConfigReport.comments.placeholder,
+        attribute: 'textField',
+        isRequired: true,
+        inlineToast: {
+            isShow: false,
+            inlineMessage: 'Please provide a valid payment.'
+        }
+    }]
+};
+
 var dialogCreateOptions = {
     'voucherTracker': (options) => voucherTrackerCreateOptions(options),
     'multipleLogin': (options) => multipleLoginCreateOptions(options),
     'roomAction': (options) => roomAction(options),
     'roomTypeAction': (options) => roomTypeAction(options),
+    'customConfigReport': (options) => customConfigReportCreateAction(options),
     'onSave': (options) => CommonUtils.dispatchRequest(options),
 };
 

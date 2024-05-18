@@ -9,7 +9,8 @@ class CommandsSwitchAccount {
         this.defaults = {
             value: lang.SWITCH_ACCOUNT.switchAccount,
             disabled: this.isDisabled,
-            onClick: () => this.execute()
+            onClick: () => this.execute(),
+            signature: 'Command-Switch-Account'
         }
     };
 

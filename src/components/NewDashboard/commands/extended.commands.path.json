@@ -1,4 +1,8 @@
 [
+  "./commands.initialize/commands.go.back.js",
+  "./commands.initialize/commands.create.js",
+  "./commands.initialize/commands.filter.js",
+  "./commands.initialize/commands.picker.js",
   "./commands.initialize/commands.selected.model.js",
   "./commands.initialize/commands.go.to.js",
   "./commands.initialize/commands.room.transfer.js",
@@ -12,5 +16,6 @@
   "./commands.initialize/commands.connect.js",
   "./commands.initialize/commands.user.settings.js",
   "./commands.initialize/commands.switch.account.js",
-  "./commands.initialize/commands.logout.js"
+  "./commands.initialize/commands.logout.js",
+  "./commands.initialize/commands.custom.config/commands.remove.js"
 ]

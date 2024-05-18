@@ -10,9 +10,10 @@ class CommandsGenerateReceipt {
       this.status = signatureOptions;
       this.isDisabled = this.enabled();
       this.defaults = {
-        value: lang.GENERATE_RECEIPT.generateReceipt,
-        disabled: this.isDisabled,
-        onClick: () => this.execute()
+          value: lang.GENERATE_RECEIPT.generateReceipt,
+          disabled: this.isDisabled,
+          onClick: () => this.execute(),
+          signature: 'Command-Generate-Receipt'
       };
       this.baseUrl = {
           clientSide: getBaseUrl(),

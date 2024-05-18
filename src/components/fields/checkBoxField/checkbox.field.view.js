@@ -24,6 +24,15 @@ const CheckBox = (props) => {
         }
     }
 
+    // Is checkbox disabled.
+    function isCheckboxDisabled(){
+        if(props.checkboxIndex && props.data.selectedCheckboxIndex){
+            return props.data.selectedCheckboxIndex.includes(props.checkboxIndex);
+        } else {
+            return false;
+        }
+    };
+
     // Update the entire checkbox state1
     function updateCheckboxState(){
       const checkboxState = checkbox;
@@ -45,12 +54,12 @@ const CheckBox = (props) => {
               {props.data.label}
             </label>
           )}
-          <input class="text-center" style = {{marginTop: "6px", float: 'right'}} type="checkbox" value="" checked={isCheckboxSelected()}
+          <input className="text-center" style = {{marginTop: "6px", float: 'right'}} type="checkbox" disabled = {isCheckboxDisabled()} value="" checked={isCheckboxSelected()}
           onChange = {() => _toggleCheckbox(!isCheckboxSelected())} />
         </>
       ) : (
         <>
-          <input class="text-center" style = {{marginTop: "6px"}} type="checkbox" value="" checked={isCheckboxSelected()}
+          <input className="text-center" style = {{marginTop: "6px"}} type="checkbox" disabled = {isCheckboxDisabled()} value="" checked={isCheckboxSelected()}
           onChange = {() => _toggleCheckbox(!isCheckboxSelected())} />
           {props.data.label && (
             <label className = "form-check-label metadata-checkbox-label" style = {{color: props.data.labelColor}}>

@@ -9,7 +9,8 @@ class CommandsEdit {
         this.defaults = {
             value: lang.EDIT_CONTROLLER.editController,
             disabled: this.isDisabled,
-            onClick: () => this.execute()
+            onClick: () => this.execute(),
+            signature: 'Command-Edit'
         }
     };
 

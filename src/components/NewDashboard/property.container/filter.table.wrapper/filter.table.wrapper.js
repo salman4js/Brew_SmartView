@@ -21,6 +21,7 @@ import {getIsExclusive, getTimeDate} from '../../../common.functions/common.func
 import CheckoutUtils from "../../../utils/checkout.form.utils";
 import {checkInFormValue} from "../../../utils/checkin.form.utils";
 import CollectionInstance from '../../../../global.collection/widgettile.collection/widgettile.collection';
+import CommandsGoBack from "../../commands/commands.initialize/commands.go.back";
 
 class FilterTable extends TableView {
   
@@ -446,6 +447,11 @@ class FilterTable extends TableView {
   _checkInFavoritesGuest(){
     this.state.data.onFormSave = true;
     this._updateStateValue(this.state.data);
+  };
+
+  // On back click command.
+  onBackClick(){
+      return new CommandsGoBack(this.templateHelpersData).execute();
   };
   
   // trigger error message on customModal!

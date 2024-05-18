@@ -9,7 +9,8 @@ class CommandsLogout {
       this.defaults = {
           value: lang.LOG_OUT.logOut,
           disabled: this.isDisabled,
-          onClick: () => this.execute()
+          onClick: () => this.execute(),
+          signature: 'Command-Logout'
       }
     };
 

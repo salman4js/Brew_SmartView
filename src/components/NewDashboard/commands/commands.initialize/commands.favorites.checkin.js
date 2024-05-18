@@ -10,7 +10,8 @@ class CommandsFavoritesCheckin extends CommandsRoomTransfer {
         this.defaults = {
             value: lang.FAVORITES_CHECKIN.favoritesCheckin,
             disabled: this.isDisabled,
-            onClick: () => this.execute()
+            onClick: () => this.execute(),
+            signature: 'Command-FavCheckin'
         }
     };
 

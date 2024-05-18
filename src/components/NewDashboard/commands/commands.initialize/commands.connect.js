@@ -11,7 +11,8 @@ class CommandsConnect {
         this.defaults = {
             icon: () => this._getUserSettingsIcon(),
             disabled: this.isDisabled,
-            onClick: () => this.execute()
+            onClick: () => this.execute(),
+            signature: 'Command-Connect'
         }
     };
 

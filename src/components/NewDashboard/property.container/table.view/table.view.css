@@ -1,0 +1,10 @@
+.brew-tabletemplate-left-toolbar{
+    padding-right: 10px;
+}
+
+.brew-statustableview-lefttoolbar-header {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: bold;
+}

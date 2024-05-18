@@ -1,4 +1,5 @@
 import React from 'react';
+import './table.view.css';
 import _ from 'lodash';
 import TableViewTemplateHelpers from './table.view.template';
 import Variables from "../../../Variables";
@@ -13,9 +14,7 @@ import {
 } from '../../../common.functions/node.convertor';
 import tableViewConstants from './table.view.constants';
 import MetadataFields from '../../../fields/metadata.fields.view';
-import TableFilterSettingsDialog from "../../dialogs/table.filter.settings/table.filter.settings.dialog";
 import CollectionInstance from "../../../../global.collection/widgettile.collection/widgettile.collection";
-import TableCreateActionDialog from "../../dialogs/table.create.action/table.create.action.dialog";
 
 class TableView extends React.Component {
 
@@ -115,16 +114,6 @@ class TableView extends React.Component {
     this.params = props.params;
     this.stateRouter = props.stateRouter;
     /**
-     Router options for the table view. Options that has to be passed to the dashboard controller defines the previous perspective.
-     Those options based on the last router will be defined as the object here.
-     **/
-    this.routerOptions = {
-      'default-view': {reloadSidepanel: {silent: true}, navigateToPropertyContainer: true},
-      'property-container': {reloadSidepanel: {silent: true}, persistStatusView:true, updatedModel: this.widgetTileModel.data.roomModel},
-      'table-view': {reloadSidepanel: {silent: true}, navigateToStatusTableView: true, dashboardMode: this.stateRouter.dashboardModel[this.stateRouter.dashboardModel.length - 1],
-        selectedRoomConstant: this.stateRouter.tableModel[this.stateRouter.tableModel.length - 1]}
-    };
-    /**
      Keep local track of selected checkbox value,
      So that when the table renders again because of pagination, We can populate the selectedCheckboxIndex into state again.
     **/
@@ -180,25 +169,13 @@ class TableView extends React.Component {
     }
   };
 
-  // Handle back action triggered on left side controller!
-  onBackClick(){
-    // Before navigating back to the last router instance, Delete the current router / last router from the stateRouter model first.
-    this.routerController()._notifyStateRouter({routerOptions: {action: 'DELETE'}}).then((result) => {
-      const options = this.routerOptions[result.stateModel[result.stateModel.length - 1]];
-      options.queryParams = []; // On every back navigation, clear off the query params.
-      options.isAdminAction = true; options.onPropertyBaseSave = true;
-      options.adminAction = undefined; options.propertyDataCallBackFunc = undefined;
-      this.props.dashboardController(options);
-    });
-  };
-
   // Reset checkbox selection!
   _resetCheckboxSelection(){
     this.state.metadataTableState.checkbox[0].selectedCheckboxIndex = [];
   };
 
   // Restore checkbox selection when the page changes.
-  _restoreCheckboxSelection(options){
+  _restoreOrUpdateCheckboxSelection(options){
     if(options?.checkboxSelection){
       this.selectedCheckboxIndex = options.checkboxSelection;
       if(this.isFetchableWidget()){
@@ -225,7 +202,7 @@ class TableView extends React.Component {
   _updateCheckboxSelection(value, checkBoxIndex){
     if(checkBoxIndex){
       // Check for any checkbox selection, If there is any, Populate it in the state.
-      this._restoreCheckboxSelection();
+      this._restoreOrUpdateCheckboxSelection();
       if(value){
         this.state.metadataTableState.checkbox[0].selectedCheckboxIndex.push(checkBoxIndex);
       } else {
@@ -352,42 +329,14 @@ class TableView extends React.Component {
     })
   };
 
-  // Check if the table filter mode is enabled for the roomConstantKey.
-  checkForTableFilterMode(){
-    return this.roomConstant && tableViewConstants.tableFilterSettings.tableFilterAllowedKeys.includes(this.roomConstant);
-  };
-
-  // Check if the current table mode is enabled for create operation.
-  checkForTableCreateMode(){
-    return this.roomConstant && tableViewConstants.tableCreateMode.tableCreateModeAllowedKeys.includes(this.roomConstant);
-  };
-
-  // Execute action when table filter model triggered.
-  onFilterTableIconClicked(){
-    this.isActionExecutedFromCommands = true; // Need to keep track of this flag to prevent changing the table data to empty when re-renders happens through customModalBodyViewOptions.
-    // When the filter action is triggered, initialize the custom modal with the table dialog options from command table filter settings.
-    this._prepareCustomModal(TableFilterSettingsDialog.execute(this.templateHelpersData.options));
-  };
-
-  // Execute action when table create mode is triggered.
-  onCreateModeTableIconClicked(){
-    this.isActionExecutedFromCommands = true;
-    this._prepareCustomModal(TableCreateActionDialog.execute(this.templateHelpersData.options));
-  };
-  
   // Template helpers data!
   prepareTemplateHelpersData(){
     this.templateHelpersData.options = {
+      originatingView: this,
       selectedRoomConstant: this.widgetTileModel.data.selectedRoomConstant,
       roomConstantKey: this.roomConstant,
       allowHeaderControl: true,
-      allowTableFilterMode: this.checkForTableFilterMode(),
-      allowCreateMode: this.checkForTableCreateMode(),
-      allowGoBack: true,
       allowTableHeader: true,
-      onBack: () => this.onBackClick(),
-      onClickTableFilterMode: () => this.onFilterTableIconClicked(),
-      onClickTableCreateMode: () => this.onCreateModeTableIconClicked(),
       params: this.params,
       nodes: this.state.metadataTableState.checkbox[0].selectedCheckboxIndex,
       eventHelpers: {
@@ -399,7 +348,7 @@ class TableView extends React.Component {
           this.isActionExecutedFromCommands = true
         },
         updateCheckboxSelection: (value, checkboxIndex) => this._updateCheckboxSelection(value, checkboxIndex),
-        restoreOrUpdateCheckboxSelection: (options) => this._restoreCheckboxSelection(options),
+        restoreOrUpdateCheckboxSelection: (options) => this._restoreOrUpdateCheckboxSelection(options),
         triggerCustomModel: (options) => this._prepareCustomModal(options),
         prepareFilterOptions: (options) => this._prepareFilterOptions(options),
         prepareFacetOptions: (options) => this._prepareFacetOptions(options),
@@ -412,7 +361,7 @@ class TableView extends React.Component {
         addIntoTableCollection: (model) => this.addIntoTableCollection(model),
         updateModelFromTableCollection: (model) => this.updateModelFromTableCollection(model),
         updateSelectedModel: (options) => this.props.updateSelectedModel(options)
-      }
+      },
     }
   };
 
@@ -624,7 +573,7 @@ class TableView extends React.Component {
     this.shouldFetchForWidget && await this.fetchNextNode();
     if(this.rawRoomModel){
       convertedCollection = this._getTableCollection();
-      this._restoreCheckboxSelection();
+      this._restoreOrUpdateCheckboxSelection();
       this.filterCollection(convertedCollection);
       this.state.metadataTableState.cellValues = this.filteredCollection;
       this._checkAndEnablePaginationView(convertedCollection);
@@ -696,7 +645,7 @@ class TableView extends React.Component {
   
   // Base table view toolbar item view.
   renderTableToolbarView(){
-    this.tableViewTemplateHelpers = new TableViewTemplateHelpers(this.templateHelpersData);
+    this.tableViewTemplateHelpers = new TableViewTemplateHelpers({templateHelpers: this.templateHelpersData});
     // If the checkbox selection is greater than 0,
     // then render tha table menu action items.
     if(!this.state.metadataTableState.checkbox[0].selectedCheckboxIndex) {

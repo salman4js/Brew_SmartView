@@ -23,6 +23,7 @@ import {
   renderCustomHTMLContent,
 } from '../../common.functions/node.convertor';
 
+
 const PropertyContainer = (props) => {
 
   // Panel fields state handler!
@@ -40,9 +41,20 @@ const PropertyContainer = (props) => {
   })
 
   // Table view template initializer.
-  var TableViewTemplate = new TableViewTemplateHelpers(
-      {options: {allowGoBack: true,onBack: ()=> onBackClick(),
-          selectedRoomConstant: propertyContainerConstants.WIDGET_CONSTANTS[props.data.dashboardMode]}});
+  var TableViewTemplate = new TableViewTemplateHelpers({templateHelpers:
+        {
+          options: {
+            allowTableHeader: true,
+            selectedRoomConstant: propertyContainerConstants.WIDGET_CONSTANTS[props.data.dashboardMode],
+            roomConstantKey: 'property-container', params: props.params,
+            eventHelpers: {
+              routerController: () => props.routerController(),
+              getRouterOptions: (options) => getRouterOptions(options),
+              dashboardController: (opts) => props.dashboardController(opts)
+            }
+          }
+        }
+  });
 
   // On back click on table toolbar view for property container.
   function onBackClick(){
