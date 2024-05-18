@@ -148,13 +148,36 @@ let fieldModule = function () {
             result['fields'] = fieldOptions.fieldCenterTemplate;
             return result;
         },
+        _getDefaultFields: function(){
+            const defaultFields = lang.customConfigReport.defaultFields,
+                result = [];
+            defaultFields.map((field, index) => {
+                const fields = {};
+                fields['_id'] = new Date().getTime() + index;
+                fields['fieldName'] = field;
+                fields['fieldCustomFormula'] = '';
+                fields['createdBy'] = 'Livixius';
+                fields['enabledBy'] = '';
+                fields['comments'] = '';
+                result.push(fields);
+            });
+            return result;
+        },
         _getCustomFieldTemplateValues(fieldOptions){
+
+            function isTimestamp(id) {
+                return /^\d{13}$/.test(id);
+            }
+
             const data = {},
             controlCenterTemplate = _.filter(fieldOptions, (model) => {
                 return model['panel'] === 'controlCenterTemplate';
             }),
             fieldCenterTemplate = _.filter(fieldOptions, (model) => {
-               return model['panel'] === 'fieldCenterTemplate';
+                if(model['panel'] === 'fieldCenterTemplate' && !_.isNil(_.get(model, 'isSelected'))){
+                    if(isTimestamp(model['_id'])) delete model['_id'];
+                    return true;
+                }
             }),
             controlCenterData = nodeConvertor(controlCenterTemplate, [], {onlyChanged: true});
             if(!_.isEmpty(controlCenterData)){
@@ -189,6 +212,10 @@ class BusinessToolkitFieldConvertor {
 
     _convertResponseIntoFields(fieldOptions) {
         return fieldModule[this.options.configName]._convertResponseIntoFields(fieldOptions);
+    };
+
+    _getDefaultFields(){
+        return fieldModule[this.options.configName]._getDefaultFields();
     };
 
     parseResults(formulaFields){

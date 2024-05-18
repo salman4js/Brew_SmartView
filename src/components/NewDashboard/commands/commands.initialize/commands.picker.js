@@ -1,3 +1,4 @@
+import _ from "lodash";
 import CommandsSelectedModel from "./commands.selected.model";
 import lang from "../commands.constants";
 
@@ -15,8 +16,8 @@ class CommandsPicker extends CommandsSelectedModel {
         this.tableState = {
             ...this.tableState
         }
-        this.tableState.checkbox[0].selectedCheckboxIndex = this.status.selectedCheckboxIndex || [];
-        this.tableState.checkbox[0].isCheckboxDisabled = this.status.selectedCheckboxIndex || [];
+        this.tableState.checkbox[0].disabledCheckboxIndex = _.clone(this.status.disabledCheckboxIndex) || [];
+        this.tableState.checkbox[0].selectedCheckboxIndex = _.clone(this.status.disabledCheckboxIndex) || [];
     };
 
     enabled(){
@@ -29,6 +30,17 @@ class CommandsPicker extends CommandsSelectedModel {
     execute(){
         super.execute();
     };
+
+    _onUpdateCheckboxSelection(value, checkboxIndex){
+        super._onUpdateCheckboxSelection(value, checkboxIndex);
+        if(value){
+            this.tableState.checkbox[0].selectedCheckboxIndex.push(checkboxIndex);
+        } else {
+            _.remove(this.tableState.checkbox[0].selectedCheckboxIndex, (node) => {
+               return node === checkboxIndex;
+            });
+        }
+    }
 
     onChangesApply() {
         this.status.eventHelpers.onChangesApply({checkboxSelection: this.statusNodes});
