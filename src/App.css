@@ -1135,17 +1135,6 @@ td {
   margin-left: 200px;
 }
 
-.brew-statustableview-lefttoolbar-header {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-weight: bold;
-}
-
-.brew-tabletemplate-left-toolbar{
-  padding-right: 10px;
-}
-
 .metadata-table-view-dashboard-container{
   overflow: auto;
 }

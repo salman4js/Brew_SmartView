@@ -8,7 +8,8 @@ class CommandsDelete {
         this.defaults = {
             value: lang.DELETE_CONTROLLER.deleteController,
             disabled: !this.isDisabled,
-            onClick: () => this.execute()
+            onClick: () => this.execute(),
+            signature: 'Command-Delete'
         }
     };
 

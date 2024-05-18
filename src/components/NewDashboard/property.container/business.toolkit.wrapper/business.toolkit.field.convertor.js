@@ -1,23 +1,10 @@
 import _ from "lodash";
 import lang from './business.toolkit.constants';
 import MetadataFieldTemplateState from "../../../fields/metadata.field.templatestate";
+import {nodeConvertor} from "../../../common.functions/node.convertor";
 
 let fieldModule = function () {
     const me = {};
-    me._getTemplateValue = function(fieldOptions, configName){
-        const fieldOptionsKey = Object.keys(fieldOptions);
-        fieldOptionsKey.forEach((field) => {
-            if(me[configName].fieldCenterTemplateValues.includes(field)){
-                if(!fieldOptions.fields) fieldOptions.fields = [];
-                fieldOptions.fields.push({
-                    fieldName: field,
-                    fieldCustomFormula: fieldOptions[field]
-                });
-                delete fieldOptions[field];
-            }
-        });
-        return fieldOptions;
-    }
     me.customConfigCalc = {
         fieldCenterTemplateValues: ['totalAmount', 'extraBedPrice', 'discount', 'advance', 'gstPrice'],
         _getTemplate: function(options, configName){
@@ -39,6 +26,20 @@ let fieldModule = function () {
                 fieldCenterTemplate: lang[configName].fieldControlCenter
             };
             return template[options.panel];
+        },
+        _getTemplateValue: function(fieldOptions){
+            const fieldOptionsKey = Object.keys(fieldOptions);
+            fieldOptionsKey.forEach((field) => {
+                if(this.fieldCenterTemplateValues.includes(field)){
+                    if(!fieldOptions.fields) fieldOptions.fields = [];
+                    fieldOptions.fields.push({
+                        fieldName: field,
+                        fieldCustomFormula: fieldOptions[field]
+                    });
+                    delete fieldOptions[field];
+                }
+            });
+            return fieldOptions;
         },
         _prepareFields: function(fields, fieldModuleInstance, options){
             var metadataFields = [];
@@ -91,6 +92,9 @@ let fieldModule = function () {
                 </pre>
             )
         },
+        _getCustomFieldTemplateValues(fieldOptions) {
+            return nodeConvertor(fieldOptions, [], {onlyChanged: true});
+        },
         _parseResults: function(formulaFields){
             const customFormula = {};
             customFormula.isSelectedConfig = formulaFields.isSelectedConfig;
@@ -122,7 +126,7 @@ let fieldModule = function () {
                 return me.customConfigCalc._prepareFields(fields, fieldModuleInstance, options);
             }
         },
-        _getTemplate: function(options, configName){
+        _getTemplate: function(options){
             const template = {
                 controlCenterTemplate: [{
                     name: 'configName', placeholder: 'Enter configuration name', label: 'Configuration Name', attribute: 'textField'
@@ -134,11 +138,30 @@ let fieldModule = function () {
             }
             return template[options.panel];
         },
-        _getCustomFieldTemplateValue(fieldOptions){
-           const fieldValue = {};
-           fieldValue.fields = [];
-           fieldValue.fields.push(fieldOptions);
-           return fieldValue;
+        _getTemplateValue: function(fieldOptions){
+            const result = {};
+            if(fieldOptions.controlCenterTemplate){
+                Object.keys(fieldOptions.controlCenterTemplate).forEach((fieldName) => {
+                   result[fieldName] = fieldOptions.controlCenterTemplate[fieldName];
+                });
+            }
+            result['fields'] = fieldOptions.fieldCenterTemplate;
+            return result;
+        },
+        _getCustomFieldTemplateValues(fieldOptions){
+            const data = {},
+            controlCenterTemplate = _.filter(fieldOptions, (model) => {
+                return model['panel'] === 'controlCenterTemplate';
+            }),
+            fieldCenterTemplate = _.filter(fieldOptions, (model) => {
+               return model['panel'] === 'fieldCenterTemplate';
+            }),
+            controlCenterData = nodeConvertor(controlCenterTemplate, [], {onlyChanged: true});
+            if(!_.isEmpty(controlCenterData)){
+                data['controlCenterTemplate'] = controlCenterData
+            }
+            data['fieldCenterTemplate'] = fieldCenterTemplate;
+            return data;
         }
     }
     return me;
@@ -157,11 +180,11 @@ class BusinessToolkitFieldConvertor {
     };
 
     _prepareFieldValues(fieldOptions) {
-        return fieldModule._getTemplateValue(fieldOptions, this.options.configName);
+        return fieldModule[this.options.configName]._getTemplateValue(fieldOptions);
     };
 
-    _getCustomFieldTemplateValue(fieldOptions){
-        return fieldModule[this.options.configName]._getCustomFieldTemplateValue(fieldOptions);
+    _getCustomFieldTemplateValues(fieldOptions){
+        return fieldModule[this.options.configName]._getCustomFieldTemplateValues(fieldOptions);
     };
 
     _convertResponseIntoFields(fieldOptions) {

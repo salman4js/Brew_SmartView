@@ -8,7 +8,8 @@ class CommandsGoTo {
         this.defaults = {
             value: lang.goToLocationCommand,
             disabled: this.isDisabled,
-            onClick: () => this.execute()
+            onClick: () => this.execute(),
+            signature: 'Command-GoTo'
         }
     };
 

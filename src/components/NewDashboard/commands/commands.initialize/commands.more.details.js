@@ -12,7 +12,8 @@ class CommandsMoreDetails {
       this.defaults = {
           value: lang.MORE_DETAILS.moreDetails,
           disabled: this.isDisabled,
-          onClick: () => this.execute()
+          onClick: () => this.execute(),
+          signature: 'Command-More-Details'
       };
       this.customHtmlContentFileName = this.status.params.accIdAndName[1] + '-' + this.status.roomConstantKey + '.html';
       this.defaultMoreDetailsTemplate = false;

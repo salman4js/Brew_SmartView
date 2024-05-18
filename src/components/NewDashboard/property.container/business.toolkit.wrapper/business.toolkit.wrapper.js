@@ -5,7 +5,6 @@ import BusinessToolkitWrapperTemplate from "./business.toolkit.wrapper.template"
 import BusinessToolkitFieldConvertor from "./business.toolkit.field.convertor";
 import CommonUtils from "../../common.crud.controller/common.crud.controller";
 import {activityLoader} from "../../../common.functions/common.functions.view";
-import {nodeConvertor} from "../../../common.functions/node.convertor";
 import BusinessToolKitConstants from "./business.toolkit.constants";
 
 class BusinessToolkitWrapper extends PropertyBaseView {
@@ -41,6 +40,34 @@ class BusinessToolkitWrapper extends PropertyBaseView {
         this._updateComponentState({key: options.key, value: this.state[options.key]});
     };
 
+    _updateStateTemplate(options){
+        switch(options.action){
+            case 'ADD':
+                if(Array.isArray(options.updatedData)){
+                    options.updatedData.forEach((model) => {
+                       this.state[options.key].push(model);
+                    });
+                } else {
+                    this.state[options.key].push(options.updatedData);
+                }
+                break;
+            case 'REMOVE':
+                _.remove(this.state[options.key], (model) => {
+                   return options.nodes.includes(model._id);
+                });
+                break;
+            case 'UPDATE':
+                break;
+            case 'REPLACE':
+                this.state[options.key] = options.updatedData;
+                break;
+            default:
+                console.warn('Action required');
+                break;
+        }
+        this._updateComponentState({key: options.key, value: this.state[options.key]});
+    };
+
     _renderNoConfigTemplate(){
         return <div className='text-center' style = {{marginTop: this.props.height / 2.5 + 'px', color: 'black'}}>{BusinessToolKitConstants.noConfigTemplate}</div>
     };
@@ -50,7 +77,8 @@ class BusinessToolkitWrapper extends PropertyBaseView {
         stateRouter: this.options.stateRouter, showInfo: (this.state.adminAction ? BusinessToolKitConstants[this.state.adminAction?.configName].showInfo : null),
         routerController: (opts) => this.options.routerController(opts), _addMandatoryValues: (fieldOptions, additionalValues) => this._addMandatoryFieldData(fieldOptions, additionalValues),
         params: this.options.params, height: this.options.height, modalOptions: (modalOpts) => this.options.modalOptions(modalOpts),
-        stateUpdateOptions: (updatedData, templateName) => this._updateFieldCenterValue({key: templateName, value: updatedData})}}/>
+        stateUpdateOptions: (updatedData, templateName) => this._updateFieldCenterValue({key: templateName, value: updatedData}),
+        _updateStateTemplate: (options) => this._updateStateTemplate(options)}}/>
     };
 
     _updateControlCenterTemplate(){
@@ -67,18 +95,24 @@ class BusinessToolkitWrapper extends PropertyBaseView {
     _getFieldData(){
         const state = [];
         this.state.controlCenterTemplate.forEach((template) => {
+            template.panel = 'controlCenterTemplate';
             state.push(template);
         });
         this.state.fieldCenterTemplate.forEach((template) => {
+            template.panel = 'fieldCenterTemplate';
             state.push(template);
         });
         return state;
     };
 
+    _getCustomFieldTemplateValues(){
+        return this.fieldConvertor._getCustomFieldTemplateValues(this._getFieldData());
+    };
+
     saveEditedModel(){
         return new Promise((resolve, reject) => {
             const fieldData = {};
-            fieldData.data = this.fieldConvertor._prepareFieldValues(nodeConvertor(this._getFieldData(), [], {onlyChanged: true}));
+            fieldData.data = this.fieldConvertor._prepareFieldValues(this._getCustomFieldTemplateValues());
             _.isEmpty(fieldData.data) && delete fieldData.data;
             if(!_.isEmpty(fieldData)){
                 this._addMandatoryFieldData(fieldData, {selectedNodes: [this.state.adminAction.modelId],

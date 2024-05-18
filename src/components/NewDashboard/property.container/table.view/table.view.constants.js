@@ -16,7 +16,7 @@ var tableViewConstants = Object.freeze({
     paymentTrackerView: ['Amount', 'Amount For', 'Date & Time', 'Mode'],
     multipleLogin: ['Username', 'Password', 'Permission Level'],
     roomAction: ['Floor No', 'Room No', 'Room type', 'Bed Count', 'Extra Bed Price Per Day', 'Price Per Day'],
-    customReport: ['Field Name', 'Field Formula', 'Created By', 'Enabled By', 'Comments']
+    customConfigReport: ['Field Name', 'Field Formula', 'Created By', 'Enabled By', 'Comments']
   }),
 
   PropertyStatusRequiredKey: Object.freeze({
@@ -34,7 +34,7 @@ var tableViewConstants = Object.freeze({
     voucherTracker: ['_id', 'vNo', 'dateTime', 'particulars', 'cashMode', 'receipt', 'payment'],
     multipleLogin: ['_id', 'username', 'password', 'loginAs'],
     roomAction: ['_id','floorNo', 'roomno', 'suiteName', 'bedCount', 'extraBedPrice', 'price'],
-    customReport: ['_id', 'fieldName', 'fieldCustomFormula', 'createdBy', 'enabledBy', 'comments']
+    customConfigReport: ['_id', 'fieldName', 'fieldCustomFormula', 'createdBy', 'enabledBy', 'comments']
   }),
 
   tableInfoMessage: Object.freeze({
@@ -73,10 +73,6 @@ var tableViewConstants = Object.freeze({
 
   tableFilterSettings: Object.freeze({
     tableFilterAllowedKeys: ['history', 'afterCleaned', 'afterCheckin']
-  }),
-
-  tableCreateMode: Object.freeze({
-    tableCreateModeAllowedKeys: ['voucherTracker', 'multipleLogin', 'roomAction']
   })
 
 });

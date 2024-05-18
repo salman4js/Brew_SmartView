@@ -1,13 +1,26 @@
 import React from "react";
 import TableToolbarView from "../../NewDashboard/table.toolbar.view/table.toolbar.view";
+import _ from "lodash";
 
 class PopoverFieldTemplate {
     constructor(signatureOptions) {
         this.status = signatureOptions;
     };
 
+    _renderMenuActions(commands){
+        return commands && commands?.map((options) => {
+            if(!options.disabled && !_.isFunction(options.icon)){
+                return(
+                    <span className = "brew-tabletemplate-left-toolbar" onClick = {() => options.onClick(options)}>
+                        {options.value}
+                    </span>
+                )
+            }
+        })
+    };
+
     _renderCommandOptions(){
-        return <TableToolbarView options = {this.status.originatingViewOptions}/>
+        return <TableToolbarView options = {this.status.originatingViewOptions} customMenuActionView = {(commands) => this._renderMenuActions(commands)}/>
     };
 
     _renderPopOverFieldTemplate(){

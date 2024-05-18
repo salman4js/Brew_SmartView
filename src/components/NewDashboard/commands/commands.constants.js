@@ -96,6 +96,10 @@ var commandsConstant = Object.freeze({
         defaultGreetings: 'Hey there, Give me any room no to get details'
     }),
 
+    CUSTOM_CONFIG: Object.freeze({
+        customConfigReport: 'Remove'
+    }),
+
     DELETE_CONTROLLER: Object.freeze({
        deleteController: 'Delete',
        voucherTracker: {
@@ -133,7 +137,10 @@ var commandsConstant = Object.freeze({
             successMessage: 'Account details created!'
         },
         roomAction: {
-            successMessage: 'New Room entry created!'
+            successMessage: 'New Room Entry created!'
+        },
+        customConfigReport: {
+            successMessage: 'New Custom Field Created!'
         },
         createControllerError: 'Something went wrong, please try again later!'
     }),
@@ -188,6 +195,12 @@ var commandsConstant = Object.freeze({
     }),
 
     isCommandsEnabled: Object.freeze({
+        goBack: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned', 'inCleaning',
+            'history', 'paymentTrackerView', 'voucherTracker', 'multipleLogin', 'roomAction'],
+        create: ['voucherTracker', 'multipleLogin', 'roomAction', 'customConfigReport'],
+        picker: ['customConfigReport'],
+        customConfigRemove: ['customConfigReport'],
+        filter: ['history', 'afterCleaned', 'afterCheckin'],
         goToLocation: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned', 'inCleaning'],
         roomTransfer: ['afterCheckin', 'upcomingCheckout'],
         favoritesCheckin: ['favorites'],

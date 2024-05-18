@@ -4,8 +4,9 @@ class BaseCommandClass {
         this.defaults = [];
     };
 
-    _getCommands(){
+    _getCommands(commandSignature){
         this.commands = _.flatten(this.defaults);
+        if(commandSignature) return [_.filter(this.commands, commandSignature)];
         return this.commands;
     };
 
@@ -19,8 +20,8 @@ class BaseCommandClass {
         this.registerDefaults(instance.defaults);
     };
 
-    setupInstancesFromConfig(config, signatureOptions) {
-        config.map((classPath) => this.setupInstance(classPath, signatureOptions));
+    setupInstancesFromConfig(commandsPath, signatureOptions) {
+        commandsPath.map((classPath) => this.setupInstance(classPath, signatureOptions));
     };
 }
 

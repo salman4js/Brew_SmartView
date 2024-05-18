@@ -10,7 +10,8 @@ class CommandsRoomTransfer extends CheckoutFormView{
         this.defaults = {
             value: lang.roomTransferCommand,
             disabled: this.isDisabled,
-            onClick: () => this.execute()
+            onClick: () => this.execute(),
+            signature: 'Command-Transfer'
         }
     };
 

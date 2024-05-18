@@ -10,7 +10,8 @@ class CommandsSelectedModel {
         this.defaults = {
             icon: () => this.getSelectedModelsTemplate(),
             disabled: !this.isDisabled,
-            onClick: () => this.execute()
+            onClick: () => this.execute(),
+            signature: 'Command-SelectedModel'
         };
         this.statusNodes = _.clone(this.status.nodes);
         this.tableState = {
@@ -75,7 +76,11 @@ class CommandsSelectedModel {
     };
 
     _prepareCustomModalBodyView(){
-        return <MetadataTable data = {this.tableState} />
+        return(
+            <div style = {{maxHeight: window.innerHeight - 300 + 'px', overflowX: 'auto'}}>
+                <MetadataTable data = {this.tableState} />
+            </div>
+        )
     };
 
     _getFooterButtons(){

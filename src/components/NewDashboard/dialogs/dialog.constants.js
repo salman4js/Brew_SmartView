@@ -14,7 +14,7 @@ var dialogConstants = Object.freeze({
           primaryBtn: 'Create',
           secondaryBtn: 'Cancel'
       },
-      tableCreateModeAllowedKeys: ['voucherTracker', 'multipleLogin', 'roomAction', 'customReport'],
+      tableCreateModeAllowedKeys: ['voucherTracker', 'multipleLogin', 'roomAction', 'customConfigReport'],
       customComponentKeys: []
     },
 
@@ -31,7 +31,8 @@ var dialogConstants = Object.freeze({
         voucherTracker: 'Voucher',
         multipleLogin: 'Account',
         roomAction: 'Room',
-        roomTypeAction: 'Room Type'
+        roomTypeAction: 'Room Type',
+        customConfigReport: 'Custom Field'
     },
 
     TABLE_FILTER_DIALOG: {
@@ -119,6 +120,20 @@ var dialogConstants = Object.freeze({
             bedCount: {
                 label: 'Bed Count',
                 placeholder: 'Enter Bed Count'
+            }
+        },
+        customConfigReport: {
+            fieldName: {
+                label: 'Enter Custom Field Name',
+                placeholder: 'Custom Field Name'
+            },
+            fieldCustomFormula: {
+                label: 'Enter Custom Field Formula',
+                placeholder: 'Custom Field Formula'
+            },
+            comments: {
+                label: 'Any descriptions/comments',
+                placeholder: 'Any descriptions/comments'
             }
         }
     })

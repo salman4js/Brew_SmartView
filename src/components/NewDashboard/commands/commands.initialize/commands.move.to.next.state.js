@@ -8,7 +8,8 @@ class CommandsMoveToNextState {
         this.defaults = {
             value: lang.MOVE_TO_NEXT_STATE.moveToNextState,
             disabled: this.isDisabled,
-            onClick: () => this.execute()
+            onClick: () => this.execute(),
+            signature: 'Command-MoveToNextState'
         };
     };
 
