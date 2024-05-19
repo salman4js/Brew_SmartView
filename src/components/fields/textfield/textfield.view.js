@@ -49,7 +49,7 @@ class TextField extends React.Component {
   _renderCustomFieldIcon(){
       if(this.props.data.customFieldIconWithToolTip){
         return(
-            <Tippy content = {this.props.data.customFieldIconToolTip}>
+            <Tippy content = {this.props.data.customFieldIconToolTip} placement= {this.props.data.customFieldIconToolTipPlacement || 'bottom'}>
               {this.props.data.showCustomFieldIcon()}
             </Tippy>
         )

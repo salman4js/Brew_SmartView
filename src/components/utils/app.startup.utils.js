@@ -49,6 +49,7 @@ class AppStartupUtils {
                       'customTemplateForBill': res.data.object?.customHtmlContent?.billGeneration?.isEnabled || false,
                       'customTemplateForInvoice': res.data.object?.customHtmlContent?.invoiceGeneration?.isEnabled || false,
                       'isFormulaCustomizationEnabled': res.data.object?.customAdminConfig?.customCalc?.isEnabled || false,
+                      'isCustomReportEnabled': res.data.object?.customAdminConfig.customReport?.isEnabled || false,
                       'config-value': res.data['actionItems'] ? JSON.stringify(res.data['actionItems']) : false
                   };
                   defaultStorage(data);

@@ -78,6 +78,7 @@ class CustomReportConfig extends TableView{
 
     prepareTemplateHelpersData() {
         super.prepareTemplateHelpersData();
+        this.templateHelpersData.options['modalSize'] = 'xl';
         this.templateHelpersData.options['disabledCheckboxIndex'] = this._getSelectedFieldsNodeId();
         this.templateHelpersData.options['selectedModelHeader'] = lang.selectFieldsModalHeader;
         this.templateHelpersData.options.eventHelpers['extraParams'] = (options) => this.addExtraParams(options);

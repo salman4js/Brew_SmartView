@@ -255,6 +255,10 @@ const Client = () => {
            label: 'Enable custom calc admin configuration',
            isEnabled: false
        },
+       customReport: {
+           label: 'Enable custom report admin configuration',
+           isEnabled: false
+       },
         onChange: (isEnabled, node) => updateCustomAdminConfig(isEnabled, node)
     });
 

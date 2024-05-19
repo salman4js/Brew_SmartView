@@ -61,6 +61,7 @@ class TableCreateActionDialog {
             header: lang.TABLE_CREATE.tableCreateLabel({headerValue: this.getDialogHeaderOptions()}),
             restrictBody: false,
             renderCustomBodyView: true,
+            modalSize: this.status.modalSize || 'md',
             customBodyViewOptions: this.getCustomBodyViewOptions(),
             customComponent: this.getCustomBodyComponent(),
             footerEnabled: true,
