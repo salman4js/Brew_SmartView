@@ -14,7 +14,7 @@ var BusinessToolkitAvailableConfigList = Object.freeze({
         data: 'customConfigReport',
         method: 'admin-action-patch-custom-report',
         restrictShow: () => {
-            return false;
+            return !(JSON.parse(getStorage('isCustomReportEnabled')));
         }
     }
 });

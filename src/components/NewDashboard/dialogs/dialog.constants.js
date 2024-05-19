@@ -1,3 +1,5 @@
+import customReportLang from "../property.container/business.toolkit.wrapper/custom.config.view.wrapper/custom.report.config/custom.report.config.constants";
+
 var dialogConstants = Object.freeze({
     TABLE_FILTER: {
         tableFilterLabel: 'Filter Options',
@@ -134,6 +136,13 @@ var dialogConstants = Object.freeze({
             comments: {
                 label: 'Any descriptions/comments',
                 placeholder: 'Any descriptions/comments'
+            },
+            toolTipOptions: {
+                _getToolTipMessage: (
+                    <pre style = {{color: 'white'}}>
+                        {customReportLang.createFieldsToolTipMessage}
+                    </pre>
+                )
             }
         }
     })

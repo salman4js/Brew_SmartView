@@ -208,6 +208,14 @@ const ConfigMatrix = (props) => {
                     {props.customAdminConfig.customCalc.label}
                 </label>
             </div>
+            <div className="form-check">
+                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                       checked={props.customAdminConfig.customReport.isEnabled}
+                       onChange={() => props.customAdminConfig.onChange(!props.customAdminConfig.customReport.isEnabled, 'customReport')}/>
+                <label className="form-check-label dashboard-input" htmlFor="flexCheckDefault" style={{color: "black"}}>
+                    {props.customAdminConfig.customReport.label}
+                </label>
+            </div>
             <div className="modal-gap"></div>
             <div className="table-view-bill-line"></div>
             <div className="form-check">
