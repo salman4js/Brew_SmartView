@@ -151,15 +151,15 @@ let fieldModule = function () {
         _getDefaultFields: function(){
             const defaultFields = lang.customConfigReport.defaultFields,
                 result = [];
-            defaultFields.map((field, index) => {
-                const fields = {};
-                fields['_id'] = new Date().getTime() + index;
-                fields['fieldName'] = field;
-                fields['fieldCustomFormula'] = '';
-                fields['createdBy'] = 'Livixius';
-                fields['enabledBy'] = '';
-                fields['comments'] = '';
-                result.push(fields);
+            Object.keys(defaultFields).forEach((field, index) => {
+                const fieldResult = {};
+                fieldResult['_id'] = new Date().getTime() + index;
+                fieldResult['fieldName'] = defaultFields[field];
+                fieldResult['fieldCustomFormula'] = '';
+                fieldResult['createdBy'] = 'Livixius';
+                fieldResult['enabledBy'] = '';
+                fieldResult['comments'] = '';
+                result.push(fieldResult);
             });
             return result;
         },
@@ -175,7 +175,12 @@ let fieldModule = function () {
             }),
             fieldCenterTemplate = _.filter(fieldOptions, (model) => {
                 if(model['panel'] === 'fieldCenterTemplate' && !_.isNil(_.get(model, 'isSelected'))){
-                    if(isTimestamp(model['_id'])) delete model['_id'];
+                    if(isTimestamp(model['_id'])){
+                        model['objectName'] = _.findKey(lang.customConfigReport.defaultFields, (m) => {
+                            return m === model['fieldName'];
+                        });
+                        delete model['_id']
+                    }
                     return true;
                 }
             }),
