@@ -62,8 +62,16 @@ const BusinessToolKitConstants = Object.freeze({
     customConfigReport: {
         fieldControlTemplateHeader: 'Customizable Fields',
         customFieldCreationHeader: 'Customizable Fields Creation',
-        defaultFields: ['Customer Name', 'Guest Phone Number', 'Guest ID Number', 'Date of Checkin',
-            'Date of Checkout', 'Time of Checkin', 'Time of Checkout', 'Total Amount'],
+        defaultFields: {
+            username: 'Customer Name',
+            phonenumber: 'Guest Phone Number',
+            aadharcard: 'Guest ID Number',
+            dateofcheckin: 'Date of Checkin',
+            dateofcheckout: 'Date of Checkout',
+            checkinTime: 'Time of Checkin',
+            checkoutTime: 'Time of Checkout',
+            totalAmount: 'Total Amount'
+        },
         fieldControlCenterSequence: ['_id', 'fieldName', 'fieldCustomFormula', 'createdBy', 'enabledBy', 'comments'],
         defaultFieldsCreateBy: 'Livixius',
         createFieldOptions: {
