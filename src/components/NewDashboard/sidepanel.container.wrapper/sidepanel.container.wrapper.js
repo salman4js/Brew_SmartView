@@ -6,6 +6,9 @@ import SidepanelContainerSearchView from "./sidepanel.container.search.view";
 import SidepanelContainerVoucherTrackerView from "./sidepanel.container.voucher.tracker.view";
 import SidepanelContainerInsightsSearchView
   from "./sidepanel.container.insights.search.view/sidepanel.container.insights.search.view";
+import SidepanelContainerRoomsListView from "./sidepanel.container.roomslist.view";
+import SidepanelContainerBusinessToolkit from "./sidepanel.container.business.toolkit/sidepanel.container.business.toolkit";
+import SidepanelContainerReportGeneration from "./sidepanel.container.report.generation/sidepanel.container.report.generation";
 import {getAvailableRoomTypes, getUserModel} from '../../utils/sidepanel.container.utils';
 import {getRoomList} from "../../utils/user.preference.utils";
 import {formatDate, getStatusCodeColor} from '../../common.functions/common.functions';
@@ -22,8 +25,6 @@ import MetadataFields from '../../fields/metadata.fields.view';
 import PanelView from '../../SidePanelView/panel.view';
 import PanelItemView from '../../SidePanelView/panel.item/panel.item.view';
 import CollectionView from '../../SidePanelView/collection.view/collection.view';
-import SidepanelContainerRoomsListView from "./sidepanel.container.roomslist.view";
-import SidepanelContainerBusinessToolkit from "./sidepanel.container.business.toolkit/sidepanel.container.business.toolkit";
 import MetadataFieldTemplateState from "../../fields/metadata.field.templatestate";
 import CollectionInstance from "../../../global.collection/widgettile.collection/widgettile.collection";
 
@@ -145,6 +146,9 @@ const SidepanelWrapper = (props, ref) => {
     if(sidepanelView.businessToolKit){
       return businessToolKitView();
     }
+    if(sidepanelView.customReport){
+      return reportGenerationView();
+    }
   };
 
   // Sidepanel filter state view!
@@ -196,6 +200,16 @@ const SidepanelWrapper = (props, ref) => {
       params: props.params,
     }
     return <SidepanelContainerBusinessToolkit options = {options}/>
+  };
+
+  // Report generation view!
+  function reportGenerationView(){
+    var options = {
+      dashboardController: (opts) => props.dashboardController(opts),
+      height: sidepanel.height,
+      params: props.params,
+    }
+    return <SidepanelContainerReportGeneration options = {options} />
   };
 
   // Side-panel search bar view!
@@ -270,6 +284,9 @@ const SidepanelWrapper = (props, ref) => {
       case sidepanelConstants.SIDE_PANEL_MODES.businessToolKit:
         _setBusinessToolKit(true);
         break;
+      case sidepanelConstants.SIDE_PANEL_MODES.customReport:
+        _setReportGeneration(true);
+        break;
       default:
         _setTreePanel(true);
         break;
@@ -304,6 +321,11 @@ const SidepanelWrapper = (props, ref) => {
     _toggleSidepanelView({businessToolKit: value});
   }
 
+  // Enable report generation panel!
+  function _setReportGeneration(value){
+    _toggleSidepanelView({customReport: value});
+  }
+
   // Enable tree panel!
   function _setTreePanel(value){
     _toggleSidepanelView({roomListTree: value});
@@ -326,11 +348,12 @@ const SidepanelWrapper = (props, ref) => {
     if(options.insightsSearchForm) panelHeader = sidepanelConstants.panelHeader.INSIGHTS_SEARCH_FORM;
     if(options.roomTypeListPanel) panelHeader = sidepanelConstants.panelHeader.roomTypeListPanel;
     if(options.businessToolKit) panelHeader = sidepanelConstants.panelHeader.businessToolKit;
+    if(options.customReport) panelHeader = sidepanelConstants.panelHeader.customReport;
     setSidepanel(prevState => ({...prevState, header: panelHeader}));
     setSidepanelView(prevState => ({roomListTreePanel: options.roomListTree,
       filterRoomPanel: options.filterPanel, voucherListPanel: options.voucherListPanel,
       insightsSearchForm: options.insightsSearchForm, roomTypeListPanel: options.roomTypeListPanel,
-      businessToolKit: options.businessToolKit}));
+      businessToolKit: options.businessToolKit, customReport: options.customReport}));
   };
 
   // Item panel collection onClick!

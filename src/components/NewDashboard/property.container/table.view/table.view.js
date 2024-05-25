@@ -91,6 +91,9 @@ class TableView extends React.Component {
         isFacetsEnabled: false,
         facetsHeight: undefined
       },
+      customHeaderView: {
+        isEnabled: false
+      },
       customModal: {
         show: false,
         onHide: this.onCloseCustomModal.bind(this),
@@ -156,6 +159,11 @@ class TableView extends React.Component {
   // Render Facets Panel!
   _renderFacetsPanel(){
     return this.tableViewTemplate._renderFacetContainer(this.widgetTileModel.facetOptions);
+  };
+
+  // Render custom header view!
+  _renderCustomHeaderView(){
+    // This method has to be overridden by table.view extenders if any custom view has to be rendered in table header region!
   };
 
   // Table view allows other components or commands model to render custom modal body view.
@@ -550,8 +558,8 @@ class TableView extends React.Component {
     var convertedCollection = [];
     tableCollection.map((tableModel) => {
       var clonedData = _.clone(tableModel);
-      var convertedModel = filterKeysInObj(clonedData, this.propertyStatusRequiredKey[this.roomConstant]);
-      var arrangedObj = arrangeObj(convertedModel, this.propertyStatusRequiredKey[this.roomConstant]);
+      var convertedModel = filterKeysInObj(clonedData, this.propertyStatusRequiredKey[this.roomConstant] || this.requiredCellValue);
+      var arrangedObj = arrangeObj(convertedModel, this.propertyStatusRequiredKey[this.roomConstant] || this.cellValueOrder);
       convertedCollection.push(this._checkForConvertableConstant(arrangedObj));
     });
     return convertedCollection;
@@ -664,6 +672,7 @@ class TableView extends React.Component {
       <>
         <MetadataFields data = {this.panelFieldState} />
         {this.state.facets?.isFacetsEnabled && this._renderFacetsPanel()}
+        {this.state.customHeaderView?.isEnabled && this._renderCustomHeaderView()}
         {this.templateHelpers()}
         {this.state.customModal?.show && this._renderCustomModal()}
       </>

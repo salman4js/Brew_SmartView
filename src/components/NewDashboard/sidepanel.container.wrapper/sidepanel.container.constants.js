@@ -5,7 +5,8 @@ var sidepanelConstants = Object.freeze({
         voucherList: 'VOUCHER_LIST',
         insightsSearchForm: 'INSIGHTS_SEARCH_FORM',
         roomTypeListPanel: 'CREATE_ROOM_ACTION',
-        businessToolKit: 'BUSINESS_TOOL_KIT'
+        businessToolKit: 'BUSINESS_TOOL_KIT',
+        customReport: 'REPORT_GENERATION'
     }),
     panelHeader: Object.freeze({
         FILTER_PANEL: 'Filter Panel',
@@ -13,7 +14,8 @@ var sidepanelConstants = Object.freeze({
         VOUCHER_LISTS: 'Vouchers Model',
         INSIGHTS_SEARCH_FORM: 'Insights Form',
         roomTypeListPanel: 'Room Type List',
-        businessToolKit: 'My Config Lists'
+        businessToolKit: 'My Config Lists',
+        customReport: 'Customized Reports List'
     }),
     formMode: Object.freeze({
         READ_MODE: 'read',

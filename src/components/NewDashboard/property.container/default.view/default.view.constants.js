@@ -8,18 +8,21 @@ var defaultViewConstants = Object.freeze({
     insights: 'Insights',
     multipleLogin: 'Manage Accounts',
     roomAction: 'Create Properties',
-    businessToolKit: 'Business Tool-Kit'
+    businessToolKit: 'Business Tool-Kit',
+    customReport: 'Report Section'
   }),
 
   CLIENT_WIDGET_TILE: Object.freeze({
     roomAction: {noCountWidget: true},
-    businessToolKit: {noCountWidget: true}
+    businessToolKit: {noCountWidget: true},
+    customReport: {noCountWidget: true}
   }),
 
   CLIENT_WIDGET_TILE_VIEWCLASS: Object.freeze({
     multipleLogin: 'bi bi-book widget-tile-body widget-icon',
     roomAction: 'bi bi-building widget-tile-body widget-icon',
-    businessToolKit: 'bi bi-terminal-plus'
+    businessToolKit: 'bi bi-terminal-plus',
+    customReport: 'bi bi-journal-check'
   }),
 
   dashboardMode: Object.freeze({
@@ -44,6 +47,10 @@ var defaultViewConstants = Object.freeze({
     businessToolKit: {
       sidepanelOptions: {silent: true, mode: 'businessToolKit'},
       dashboardMode: 'businessToolKit'
+    },
+    customReport: {
+      sidepanelOptions: {silent: true, mode: 'customReport'},
+      dashboardMode: 'customReport'
     }
   }),
 

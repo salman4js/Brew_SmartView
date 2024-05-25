@@ -63,7 +63,7 @@ class CustomReportConfig extends TableView{
             this.onCloseCustomModal();
             const selectedFields = _.filter(this.options.configModel.stateOptions.fieldCenterTemplate, (model) => {
                 if(nodes.checkboxSelection.includes(model['_id'])){
-                    model['isSelected'] = true; model['isChanged'] = true;
+                    model['isSelected'] = true; model['isChanged'] = true; model['enabledBy'] = getCurrentUser();
                     return true;
                 }
                 return false;

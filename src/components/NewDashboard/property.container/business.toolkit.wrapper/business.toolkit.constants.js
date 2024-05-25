@@ -64,8 +64,8 @@ const BusinessToolKitConstants = Object.freeze({
         customFieldCreationHeader: 'Customizable Fields Creation',
         defaultFields: {
             username: 'Customer Name',
-            phonenumber: 'Guest Phone Number',
-            aadharcard: 'Guest ID Number',
+            phonenumber: 'Phone Number',
+            aadharcard: 'ID Number',
             dateofcheckin: 'Date of Checkin',
             dateofcheckout: 'Date of Checkout',
             checkinTime: 'Time of Checkin',

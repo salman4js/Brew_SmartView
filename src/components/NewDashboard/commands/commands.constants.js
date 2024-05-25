@@ -196,7 +196,7 @@ var commandsConstant = Object.freeze({
 
     isCommandsEnabled: Object.freeze({
         goBack: ['afterCheckin',  'upcomingCheckout', 'upcomingPrebook', 'afterCheckedout', 'afterCleaned', 'inCleaning',
-            'history', 'paymentTrackerView', 'voucherTracker', 'multipleLogin', 'roomAction'],
+            'history', 'paymentTrackerView', 'voucherTracker', 'multipleLogin', 'roomAction', 'customReport'],
         create: ['voucherTracker', 'multipleLogin', 'roomAction', 'customConfigReport'],
         picker: ['customConfigReport'],
         customConfigRemove: ['customConfigReport'],

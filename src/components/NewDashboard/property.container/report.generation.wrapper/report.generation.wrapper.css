@@ -1,0 +1,13 @@
+.report-generation-selection-field-wrapper{
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}
+
+.report-generation-selection-searchbtn-field{
+    width: 200px;
+    height: 30px;
+    margin-top: 35px;
+    color: white;
+    border: 1px solid black;
+}
