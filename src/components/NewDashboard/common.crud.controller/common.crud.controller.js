@@ -1,7 +1,7 @@
 import connector from "../../utils/connector";
 const Variables = require('../../Variables');
 
-class CommonUtils {
+class CommonDispatchController {
 
     constructor(options) {
         this.options = options;
@@ -31,9 +31,9 @@ class CommonUtils {
     };
 
     static async dispatchRequest(options){
-        const utilsInstance = new CommonUtils(options);
+        const utilsInstance = new CommonDispatchController(options);
         return await connector[options.method](utilsInstance.buildUrl(), options.data);
     };
 }
 
-export default CommonUtils;
+export default CommonDispatchController;

@@ -34,7 +34,7 @@ const MetadataTableHeader = (props) => {
         )}
           {props.data.map((options, key) => {
             return(
-              <th className = "text-center" style = {{width: props.width}}>
+              <th style = {{width: props.width}}>
                 {options}
               </th>
             )

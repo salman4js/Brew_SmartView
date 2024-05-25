@@ -294,8 +294,12 @@
 table,
 th,
 td {
-  border: 1px solid black;
+  cursor: pointer;
   word-break: break-all;
+}
+
+tbody tr:hover {
+  background-color: #b2bec5 !important;
 }
 
 .sidebar {
@@ -854,7 +858,7 @@ td {
 
 .metadata-table-checkbox{
   width: 30px;
-  color: "black"
+  color: black;
 }
 
 .metadata-tablecell-view{

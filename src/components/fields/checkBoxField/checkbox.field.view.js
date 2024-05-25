@@ -46,7 +46,7 @@ const CheckBox = (props) => {
     }, [props.data, props.data.value])
   
   return(
-    <div className = "metadata-field-checkbox" style = {props.data.customStyle}>
+    <div className = "metadata-field-checkbox brew-cursor" style = {props.data.customStyle}>
       {props.data.isLabelFirst ? (
         <>
           {props.data.label && (
@@ -54,12 +54,12 @@ const CheckBox = (props) => {
               {props.data.label}
             </label>
           )}
-          <input className="text-center" style = {{marginTop: "6px", float: 'right'}} type="checkbox" disabled = {isCheckboxDisabled()} value="" checked={isCheckboxSelected()}
+          <input className="text-center brew-cursor" style = {{marginTop: "6px", float: 'right'}} type="checkbox" disabled = {isCheckboxDisabled()} value="" checked={isCheckboxSelected()}
           onChange = {() => _toggleCheckbox(!isCheckboxSelected())} />
         </>
       ) : (
         <>
-          <input className="text-center" style = {{marginTop: "6px"}} type="checkbox" disabled = {isCheckboxDisabled()} value="" checked={isCheckboxSelected()}
+          <input className="text-center brew-cursor" style = {{marginTop: "6px"}} type="checkbox" disabled = {isCheckboxDisabled()} value="" checked={isCheckboxSelected()}
           onChange = {() => _toggleCheckbox(!isCheckboxSelected())} />
           {props.data.label && (
             <label className = "form-check-label metadata-checkbox-label" style = {{color: props.data.labelColor}}>

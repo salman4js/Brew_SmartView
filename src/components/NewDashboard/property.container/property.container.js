@@ -16,6 +16,7 @@ import PropertyEditView from "./property.base.view/property.edit.view/property.e
 import InsightsTableWrapper from "./insights.table.wrapper/insights.table.wrapper";
 import RoomActionTableWrapper from "./room.action.table.wrapper/room.action.table.wrapper";
 import BusinessToolkitWrapper from "./business.toolkit.wrapper/business.toolkit.wrapper";
+import ReportGenerationWrapper from "./report.generation.wrapper/report.generation.wrapper";
 import propertyContainerConstants from './property.container.constants';
 import {
   extractQueryParams,
@@ -242,6 +243,11 @@ const PropertyContainer = (props) => {
 
     if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.businessToolKit){
       return <BusinessToolkitWrapper data = {props.data} height = {props.propertyContainerHeight} modalOptions = {(options, nextFunc) => _updateCustomModalOptions(options, nextFunc)}
+      routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
+    }
+
+    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.customReport){
+      return <ReportGenerationWrapper data = {props.data} propertyDetails = {props.propertyDetails} height = {props.propertyContainerHeight} getRouterOptions = {(stateModel) => getRouterOptions(stateModel)}
       routerController = {(opts) => props.routerController(opts)} stateRouter = {props.stateRouter} dashboardController = {(opts) => props.dashboardController(opts)} params = {props.params} />
     }
 

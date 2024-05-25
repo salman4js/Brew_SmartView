@@ -25,7 +25,7 @@ const MetadataTable = (props) => {
     } else {
       // Get the options header and put it in the object!
       return(
-        <table className = "text-center metadata-content-table cheat-code">
+        <table className = "metadata-content-table cheat-code">
           {_renderTableHeader()}
         </table>
       )
