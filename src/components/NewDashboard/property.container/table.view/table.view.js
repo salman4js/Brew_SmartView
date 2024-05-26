@@ -28,6 +28,7 @@ class TableView extends React.Component {
       allowPagination: false,
       isHeightAdjustedForPagination: false,
       isHeightAdjustedForFacets: false,
+      isHeightAdjustedForCustomHeaderView: false,
       facetOptions: undefined,
       paginationData: {
         count: tableViewConstants.paginationConstants.PAGINATION_DEFAULT_COUNT,
@@ -92,7 +93,8 @@ class TableView extends React.Component {
         facetsHeight: undefined
       },
       customHeaderView: {
-        isEnabled: false
+        isEnabled: false,
+        customHeaderViewHeight: undefined
       },
       customModal: {
         show: false,
@@ -249,6 +251,23 @@ class TableView extends React.Component {
       this.widgetTileModel.height = this.widgetTileModel.height + this.paginationConstants.PAGINATION_VIEW_HEIGHT;
       this.widgetTileModel.isHeightAdjustedForPagination = false;
     }
+  };
+
+  // This method can be used by the table.view extender when the extender table view height has to be adjusted for custom header view!
+  _adjustHeightForCustomHeaderView(){
+    if(this.state.customHeaderView.isEnabled && this.state.customHeaderView.customHeaderViewHeight && !this.widgetTileModel.isHeightAdjustedForCustomHeaderView){
+      this.widgetTileModel.height = this.widgetTileModel.height - this.state.customHeaderView.customHeaderViewHeight;
+      this.widgetTileModel.isHeightAdjustedForCustomHeaderView = true;
+    } else if (this.widgetTileModel.isHeightAdjustedForCustomHeaderView) {
+      this.widgetTileModel.height = this.props.height - this.state.customHeaderView.customHeaderViewHeight;
+      this.widgetTileModel.isHeightAdjustedForCustomHeaderView = false;
+    }
+  };
+
+  _setHeightForCustomHeaderView(options){
+    this._updateComponentState({key: 'customHeaderView', value: {isEnabled: true,
+        customHeaderViewHeight: options.customHeaderViewHeight}}, () => this._adjustHeightForCustomHeaderView());
+
   };
 
   _adjustHeightForFacets(){
@@ -515,7 +534,7 @@ class TableView extends React.Component {
     this._prepareFilterOptions();
     this.nextNode = await fetch(this.fetchableWidgets[this.roomConstant](this.filterOptions));
     this.nextNodeData = await this.nextNode.json();
-    this.rawRoomModel = this.nextNodeData.data.result;
+    this.rawRoomModel = this.nextNodeData?.data?.result;
     // Commented this line because when we change it to false, NextNode will not get fetched when the data changes,
     // For example, When we perform export to excel command, when the modal renders, getWidgetTileTableCollectionData function will execute, that time
     // getNextNode will be false, so that only the initial 15 data will persist which will cause the length of filteredCollection to zero.
