@@ -5,8 +5,9 @@ function facetsItemsFieldTemplate(options){
         if(opts.facetPosition === 'body'){
             return(
                 <div className = "facets-items">
-                    <CollectionView data = {opts.name} options = {{customInlineMenu: true, showInlineMenu: true,
-                    inlineAction: () => _renderCustomInlineMenu()}} showCollectionChildView = {() => opts.view && opts.view()}/>
+                    <CollectionView data = {opts.name} options = {{customInlineMenu: true, showInlineMenu: true, ignoreTreePref: opts.ignoreTreePref || false,
+                    onClickCallBack: (val) => opts.onClickCallBack && opts.onClickCallBack(val) ,inlineAction: () => _renderCustomInlineMenu()}}
+                    showCollectionChildView = {(isExpanded) => opts.view && opts.view(isExpanded)}/>
                 </div>
             )
         }

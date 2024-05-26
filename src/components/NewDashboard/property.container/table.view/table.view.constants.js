@@ -61,6 +61,22 @@ var tableViewConstants = Object.freeze({
         });
       }
       return url;
+    },
+    customReport: (options) => {
+      let url = `${options.baseUrl}/${options.accInfo[0]}/${options.accInfo[1]}/`;
+      // Check for selectedNodes and form url accordingly!
+      if(options.selectedNodes){
+        url += encodeURIComponent(JSON.stringify(this.options.selectedNodes)) + "/";
+      }
+      url += options.widgetName + "/" + options.endPoint;
+      // Check a condition and add query parameters accordingly
+      if (options.query) {
+        url += '?';
+        Object.keys(options.query).forEach((query) => {
+          url += `${query}=${options.query[query]}&`;
+        });
+      }
+      return url;
     }
   }),
 

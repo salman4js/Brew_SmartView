@@ -1,3 +1,4 @@
+import React from 'react';
 import bwt from "brew-date";
 import TableView from "../table.view/table.view";
 import FacetsItemsFieldView from "../../../fields/facetItemsField/facets.items.field.view";
@@ -60,9 +61,15 @@ class ReportGenerationWrapper extends TableView{
         this.state.metadataTableState.tableLoader = true;
         this.state.metadataTableState.enableCheckbox = false;
         this.state.metadataTableState.infoMessage = lang.zeroStateMessage;
+        this.widgetTileModel.data.widgetTileModelCount = {
+            ...this.widgetTileModel.data.widgetTileModelCount,
+            customReport: 0
+        }
         this.roomConstant = lang.widgetName;
         this.options = this.props;
         this.shouldFetch = true;
+        this.selectionFieldViewRef = React.createRef();
+        this.selectionFieldViewWrapperRef = React.createRef();
     };
 
     _getSelectionDates(){
@@ -78,18 +85,20 @@ class ReportGenerationWrapper extends TableView{
     };
 
     fetchCustomReportsLists(modelId){
-        this.shouldFetch = false;
+        this.shouldFetch = false; this.isFetching = true;
         const reportId = encodeURIComponent(JSON.stringify([modelId])),
             dates = this._getSelectionDates();
         return CommonCrudController.dispatchRequest({widgetName: this.roomConstant, accInfo: this.options.params.accIdAndName,
             method: 'get', query: {selectedNodes: reportId, fromDate: dates.fromDate, toDate: dates.toDate}}).then((response) => {
             if (response.data.success && response.data.statusCode === 200) {
+                this.widgetTileModel.data.widgetTileModelCount.customReport = response.data.result.totalCount;
                 this.requiredCellValue = response.data.result['customReportFields'].length > 0 && Object.keys(response.data.result['customReportFields'][0]);
                 this.cellValueOrder = this.requiredCellValue;
                 this.cellValues = response.data.result['customReportFields'];
                 if(this.requiredCellValue.length > 0){
                     this.headerValues = Object.values(arrangeObj(response.data.result['customReportHeader'], this.requiredCellValue))
                 }
+                this.isFetching = false;
             }
         }).catch((err) => {
             this._prepareCustomModal({centered: false, header: lang.reportErrorMessage});
@@ -115,7 +124,26 @@ class ReportGenerationWrapper extends TableView{
     };
 
     async setExpandedTableView(){
-        return await this._prepareTableCellData();
+        return await this._prepareTableCellData() || (!this.shouldFetch && !this.isFetching && this.cellValues);
+    };
+
+    _prepareFilterOptions() {
+        const dates = this._getSelectionDates(),
+            queryOptions = {selectedNodes: encodeURIComponent(JSON.stringify([this.state.modelId])),
+            fromDate: dates.fromDate, toDate: dates.toDate, skipCount: this.widgetTileModel.paginationData.skipCount,
+            limitCount: this.widgetTileModel.paginationData.limitCount};
+        super._prepareFilterOptions(); // Don't send query in the params of this _prepareFilterOptions method because
+        // _prepareFilterOptions method would consider as a table filter action and would check for pagination only based on the filtered collection length.
+        this.filterOptions['accInfo'] = this.params.accIdAndName;
+        this.filterOptions['widgetName'] = this.roomConstant;
+        this.filterOptions['endPoint'] = 'read';
+        this.filterOptions['query'] = queryOptions;
+    };
+
+    async fetchNextNode(){
+        await super.fetchNextNode();
+        this.rawRoomModel = this.nextNodeData.result['customReportFields'];
+        this.widgetTileModel.data.widgetTileModelCount.customReport = this.nextNodeData.result.totalCount;
     };
 
     _prepareCustomHeaderViewTemplateData(){
@@ -123,9 +151,22 @@ class ReportGenerationWrapper extends TableView{
         return [{
             name: 'Refine Report By Date',
             facetPosition: 'body',
+            onClickCallBack: function(isExpanded){
+                !self.selectionFieldViewRef.current && self._toggleTableLoader(true, true);
+                setTimeout(() => {
+                    if(!isExpanded){
+                        self.widgetTileModel.isHeightAdjustedForCustomHeaderView = false;
+                        self._setHeightForCustomHeaderView({customHeaderViewHeight: self.selectionFieldViewRef.current?.offsetHeight})
+                    } else {
+                        self.widgetTileModel.isHeightAdjustedForPagination = false;
+                        self._setHeightForCustomHeaderView({customHeaderViewHeight: self.selectionFieldViewWrapperRef.current?.offsetHeight})
+                    }
+                    self._toggleTableLoader(true, false);
+                }, 0);
+            },
             view: function(){
                 return(
-                    <div className = 'report-generation-selection-field-wrapper'>
+                    <div className = 'report-generation-selection-field-wrapper' ref = {self.selectionFieldViewRef}>
                         <MetadataFieldsView data = {self.state.selectionFieldState} updateData = {(updatedData) => self._updateComponentState({key: 'selectedFieldState', value: updatedData})}/>
                     </div>
                 )
@@ -135,7 +176,13 @@ class ReportGenerationWrapper extends TableView{
 
     _renderCustomHeaderView(){
         const customHeaderViewTemplateData = this._prepareCustomHeaderViewTemplateData();
-        return <FacetsItemsFieldView options = {{bodyOptions: customHeaderViewTemplateData, isFooterEnabled: false}}/>
+        this.state.customHeaderView.isEnabled && this.state.customHeaderView.customHeaderViewHeight === undefined
+        && this._setHeightForCustomHeaderView({customHeaderViewHeight: this.selectionFieldViewWrapperRef.current?.offsetHeight});
+        return(
+            <div ref = {this.selectionFieldViewWrapperRef}>
+                <FacetsItemsFieldView options = {{bodyOptions: customHeaderViewTemplateData, isFooterEnabled: false, ignoreTreePref: true}}/>
+            </div>
+        )
     };
 
     componentDidUpdate(){

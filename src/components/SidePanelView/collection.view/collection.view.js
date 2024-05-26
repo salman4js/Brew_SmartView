@@ -11,6 +11,7 @@ const CollectionView = (props) => {
   // Expand Action!
   function expandCollapseAction(){
     setIsExpanded(!isExpanded);
+    props.options.onClickCallBack && props.options.onClickCallBack(isExpanded); // Sending the current mode i.e. expanded or not.
     setUserPreference(props.data, !isExpanded);
   };
   
@@ -26,9 +27,11 @@ const CollectionView = (props) => {
   // Enable sub child view!
   function _showSubChildView(){
     var userPreference = getUserPreference(); // User preference for expansion!
+    // By the time when sub child view renders, isExpanded flag would be already set to true, So sending the opposite value to the
+    // caller to let the other view know if the collection view has been expanded or not.
     return(
       userPreference && (
-        <CollectionPanelView showCollectionChildView = {() => props.showCollectionChildView()}  />
+        <CollectionPanelView showCollectionChildView = {() => props.showCollectionChildView(!isExpanded)}  />
       )
     )
   };
