@@ -14,8 +14,7 @@ var defaultViewConstants = Object.freeze({
 
   CLIENT_WIDGET_TILE: Object.freeze({
     roomAction: {noCountWidget: true},
-    businessToolKit: {noCountWidget: true},
-    customReport: {noCountWidget: true}
+    businessToolKit: {noCountWidget: true}
   }),
 
   CLIENT_WIDGET_TILE_VIEWCLASS: Object.freeze({
