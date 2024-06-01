@@ -1,4 +1,6 @@
-var metadataFieldTemplateState = Object.freeze({
+import {convertServerFormat, formatCustomIntoDateFormat} from "../common.functions/common.functions";
+
+const metadataFieldTemplateState = Object.freeze({
     textField: {
         value: undefined,
         width: '500px',
@@ -8,8 +10,8 @@ var metadataFieldTemplateState = Object.freeze({
         isChanged: false,
         readOnly: undefined,
         customFieldIconWithToolTip: false,
-        showCustomFieldIcon: function(){
-          // return the view for custom field here!
+        showCustomFieldIcon: function () {
+            // return the view for custom field here!
         },
         customFieldIconToolTip: undefined,
         attribute: 'textField', // Default set to textField, this will change according to the field set.
@@ -20,9 +22,34 @@ var metadataFieldTemplateState = Object.freeze({
             inlineMessage: 'Please provide a valid input.'
         }
     },
+    labelField: {
+        value: undefined,
+        label: undefined,
+        attribute: 'labelField',
+        restrictShow: false,
+    },
+    dateField: {
+        value: new Date(),
+        defaultValue: new Date(),
+        placeholder: undefined,
+        label: undefined,
+        name: undefined,
+        attribute: 'dateField',
+        conversionInFieldConvertor: false,
+        conversionInNodeConvertor: true,
+        conversionMethod: function (value) {
+            return convertServerFormat(formatCustomIntoDateFormat(value));
+        },
+        isRequired: false,
+        inlineToast: {
+            isShow: false,
+            inlineMessage: 'Please provide a valid input.'
+        }
+    },
     buttonField: {
+        id: '',
         btnValue: '',
-        onClick: function(){
+        onClick: function () {
 
         },
         isDark: true,
@@ -47,7 +74,7 @@ var metadataFieldTemplateState = Object.freeze({
         header: undefined,
         modalSize: 'medium', // 'xl', 'sm'
         restrictBody: false,
-        showBodyItemView: function(){
+        showBodyItemView: function () {
             // Return a view here!
         },
         footerEnabled: false,

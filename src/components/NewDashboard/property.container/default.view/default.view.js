@@ -13,6 +13,7 @@ import {
   _renderListFieldTemplateHelpers, _renderCustomFieldTemplateHelpers
 } from './default.view.template';
 import propertyContainerConstants from "../property.container.constants";
+import setupCommandsInstances from "../../commands/base.commands.setup";
 
 
 class DefaultView extends React.Component {
@@ -135,15 +136,20 @@ class DefaultView extends React.Component {
     }
   };
 
+  getConstantKey(value){
+      return _.findKey(this.propertyStatusMap, (val) => {
+        return val === value;
+      });
+  };
+
   // Sometimes, we want to update the dashboard controller options based on the widget tile is being triggered.
   // this method will be handy for that use-case.
   _updateDashboardControllerOpts(options, value){
-    var  constantKey = _.findKey(options.userStatusMap, (val) => {
-      return val === value;
-    });
-    if(Object.keys(defaultViewConstants.reloadSidePanelOptions).includes(constantKey)){
-      options['reloadSidepanel'] = defaultViewConstants.reloadSidePanelOptions[constantKey].sidepanelOptions;
-      options.dashboardMode = defaultViewConstants.reloadSidePanelOptions[constantKey].dashboardMode
+    const constantKey = this.getConstantKey(value);
+    if(Object.keys(defaultViewConstants.reloadDashboardOptions).includes(constantKey)){
+      options['reloadSidepanel'] = defaultViewConstants.reloadDashboardOptions[constantKey].sidepanelOptions;
+      options.dashboardMode = defaultViewConstants.reloadDashboardOptions[constantKey].dashboardMode;
+      options.commandKey = defaultViewConstants.reloadDashboardOptions[constantKey].commandKey;
     }
   };
   
@@ -153,6 +159,12 @@ class DefaultView extends React.Component {
       widgetTileModelCount: this.widgetTileCollection.widgetTileModelCount, dashboardMode: defaultViewConstants.dashboardMode.tableView,
       userStatusMap: this.propertyStatusMap, selectedRoomConstant: value};
     this._updateDashboardControllerOpts(options, value);
+    if(!options.dashboardMode){
+      const baseCommands = setupCommandsInstances({widgetTileModel: options.widgetTileModel, userStatusMap: options.userStatusMap}),
+          widgetCommands = baseCommands._getCommands(options.commandKey),
+          commandViewData = widgetCommands[0].onClick(); // Always has to be a single command.
+      options['stepperWizardData'] = {bodyView: commandViewData.steps.bodyView, options: commandViewData.options}
+    }
     this.props.dashboardController(options);
   };
 
@@ -215,9 +227,7 @@ class DefaultView extends React.Component {
         this.widgetTileCollection[preference] = widgetTileCollections.data[preference];
       }
     };
-    if(isAdministrativePageEnabled){
-      this._addClientSideWidgetTile();
-    }
+    this._addClientSideWidgets(isAdministrativePageEnabled ? defaultViewConstants.ADMIN_ACTION_CLIENT_WIDGET_TILE : defaultViewConstants.USER_ACTION_CLIENT_WIDGET_TILE);
     this.prepareUpcomingNotifications();
   };
   
@@ -226,13 +236,18 @@ class DefaultView extends React.Component {
       
   };
 
-  // Add client side widget tiles!
-  _addClientSideWidgetTile(){
-    var clientSideWidgets = Object.keys(defaultViewConstants.CLIENT_WIDGET_TILE);
+  // Add Admin action based client side widget tiles!
+  _addClientSideWidgets(widgetTiles){
+    var clientSideWidgets = Object.keys(widgetTiles);
     clientSideWidgets.forEach((widget) => {
       this.widgetTileCollection[widget] = [];
-      this.widgetTileCollection.widgetTileModelCount[widget] = defaultViewConstants.CLIENT_WIDGET_TILE[widget];
+      this.widgetTileCollection.widgetTileModelCount[widget] = widgetTiles[widget];
     });
+  };
+
+  // Add User action based client side widget tiles!
+  _addUserClientSideWidget(){
+
   };
 
   // Widget tile render functions!
@@ -283,6 +298,7 @@ class DefaultView extends React.Component {
     var cardViewProps = this.getCardViewProps();
     cardViewProps.customData.push(model.roomStatus);
     cardViewProps.header = model.roomStatus;
+    cardViewProps.headerLessWidget = model.headerLessWidget;
     cardViewProps._showBodyChildView = () => this.cardBodyChildView(model.roomStatusConstant);
     cardViewProps.onClick = (value) => this.onWidgetTileClick(value);
     cardViewCollectionProps.push(cardViewProps);
@@ -333,17 +349,30 @@ class DefaultView extends React.Component {
 
   // Add widget collection to the widget tiles!
   addFeatureWidgetCollection(cardViewCollectionProps){
-    var widgetTileCollectionsKey = Object.keys(this.widgetTileCollection);
-    for(const widgetTile of widgetTileCollectionsKey){
-      var model = {}; // Create an object with a key which is identical to prepareWidgetTile to reuse that function!
-      model.roomStatus = this.configurableWidgetTiles[widgetTile];
-      model.roomStatusConstant = widgetTile;
-      var isWidgetAuthorized = this._checkForUserWidgetPermission(widgetTile);
-      if(isWidgetAuthorized && model.roomStatus){ // This will only render the array of object widgetTileModel.
-        this._updatePropertyStatusMap(model); // Update property status map!
-        this.prepareWidgetTile(model, cardViewCollectionProps);
+      const self = this;
+
+      // Remove header for header less widget tiles!
+      function removeHeaderForHeaderLessWidgets(model){
+          const widgetKey = _.findKey(self.configurableWidgetTiles, (val) => {
+            return val === model.roomStatus;
+          });
+          if(defaultViewConstants.HEADERLESS_WIDGETS.includes(widgetKey)){
+              model.headerLessWidget = true;
+          }
       }
-    }
+
+      var widgetTileCollectionsKey = Object.keys(this.widgetTileCollection);
+      for(const widgetTile of widgetTileCollectionsKey){
+        var model = {}; // Create an object with a key which is identical to prepareWidgetTile to reuse that function!
+        model.roomStatus = this.configurableWidgetTiles[widgetTile];
+        model.roomStatusConstant = widgetTile;
+        var isWidgetAuthorized = this._checkForUserWidgetPermission(widgetTile);
+        if(isWidgetAuthorized && model.roomStatus){ // This will only render the array of object widgetTileModel.
+          this._updatePropertyStatusMap(model); // Update property status map!
+          removeHeaderForHeaderLessWidgets(model);
+          this.prepareWidgetTile(model, cardViewCollectionProps);
+        }
+      }
   };
 
   // Add non added status constant to the cardViewCollectionProps!

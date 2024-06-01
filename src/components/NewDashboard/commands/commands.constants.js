@@ -145,6 +145,41 @@ var commandsConstant = Object.freeze({
         createControllerError: 'Something went wrong, please try again later!'
     }),
 
+    RESERVE_COMMAND: Object.freeze({
+        selectDate: [{
+            placeholder: 'Select Check-In Date',
+            label: 'Select Check-In Date',
+            name: 'checkin',
+            attribute: 'dateField',
+            isRequired: true
+        }, {
+            placeholder: 'Select Check-Out Date',
+            label: 'Select Check-Out Date',
+            name: 'checkout',
+            attribute: 'dateField',
+            isRequired: true
+        }],
+        footerStep: [[{
+            id: 'next',
+            btnValue: 'Next',
+            attribute: 'buttonField'
+        }], [{
+            id: 'back',
+            btnValue: 'Back',
+            isDark: true,
+            occupyFullSpace: true,
+            attribute: 'buttonField'
+        }, {
+            id: 'next',
+            btnValue: 'Next',
+            isDark: true,
+            occupyFullSpace: true,
+            attribute: 'buttonField'
+        }]],
+        selectRoomViewLabel: 'Select Room',
+        stepperWizardHeader: 'New Reservation'
+    }),
+
     // TODO: Remove this later, when we have backend support for column customization.
     configuredTableHeaderAndKey: Object.freeze({
         history: [{

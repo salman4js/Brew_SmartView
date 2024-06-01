@@ -17,7 +17,7 @@ class CommandsGenerateReceipt {
       };
       this.baseUrl = {
           clientSide: getBaseUrl(),
-          serverSide: Variables.hostId + "/" + this.status.params.accIdAndName[0]
+          serverSide: Variables.hostId + "/" + this.status.params?.accIdAndName[0]
       };
       this.receiptOptions = {};
     };

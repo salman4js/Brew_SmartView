@@ -6,6 +6,7 @@ import sidepanelConstants from "../sidepanel.container.wrapper/sidepanel.contain
 import PropertyContainer from '../property.container/property.container';
 import CollectionInstance from '../../../global.collection/widgettile.collection/widgettile.collection';
 import {getQueryParams, updateQueryParams} from "../../common.functions/node.convertor";
+import StepperWizard from "../dialogs/stepper.wizard/stepper.wizard.view";
 
 const DashboardWrapper = (props, ref) => {
 
@@ -33,6 +34,7 @@ const DashboardWrapper = (props, ref) => {
     vouchersModelId: undefined,
     adminAction: undefined,
     insightsData: undefined,
+    stepperWizardData: undefined,
     _getWidgetTilePreference: (key) => props.params._getWidgetTilePreference(key),
     propertyDataCallBackFunc: undefined
   });
@@ -246,6 +248,7 @@ const DashboardWrapper = (props, ref) => {
       (opts.navigateToStatusTableView || opts.isVouchersModelSelectionUpdated || opts.isInsightsDataUpdated) && _updateSelectedModelState(opts);
       (opts.updateUserCollection || opts.updatedUserModel) && _updateUserCollection((opts.updateUserCollection || opts));
       opts.isAdminAction && _updateSelectedModelState(opts);
+      opts.stepperWizardData && _updateSelectedModelState(opts);
     }
   };
 
@@ -370,6 +373,11 @@ const DashboardWrapper = (props, ref) => {
     setSelectedModel(prevState => ({...prevState, onCheckout: false}));
     opts && _updateDashboardWrapper(opts);
   };
+
+  // Render stepper wizard...
+  function _renderStepperWizard(){
+      return <StepperWizard data = {selectedModel.stepperWizardData.options} bodyView = {selectedModel.stepperWizardData.bodyView}/>
+  };
   
   // Expose child component function to the parent component ie DashboardWrapper!
   React.useImperativeHandle(ref, () => ({
@@ -378,27 +386,43 @@ const DashboardWrapper = (props, ref) => {
   
   //  Whole dashboard wrapper!
   function _dashboardWrapper(){
-    return(
-      <div className = "sidepanel-wrapper">
-        <div className = "flex-1">
-          <SidepanelWrapper ref = {sidePanelRef} controller = {propertyController} data = {props.modalAssistData} params = {props.params} selectedModelData = {selectedModel}
-          dashboardController = {(opts) => _updateDashboardWrapper(opts)} selectedModel = {(options) => updateSelectedModel(options)} updateFilterData = {(value) => _updateFilterData(value)}
-          updatePropertyDetails = {(roomCollection, availability, roomStatus, userCollection) => _updatePropertyDetails(roomCollection, availability, roomStatus, userCollection)} />
-        </div>
-        <div className = "flex-2">
-          <div className = "dashboard-property-container">
-            <PropertyContainer data = {selectedModel} htmlContent = {htmlContent} propertyContainerHeight = {props.modalAssistData.height} stateRouter = {customStateRouter}
-            routerController = {(opts) => _routerController(opts)} propertyDetails = {propertyDetails} onSave = {(value) => onFormSave(value)}
-            onCancel = {(opts) => onFormCancel(opts)} dashboardController = {(opts) => _updateDashboardWrapper(opts)}
-            updateSelectedModel = {(options) => updateSelectedModel(options)}
-            onCheckout = {(value) => onCheckout(value)} cancelCheckoutPrompt = {(opts) => onCancelCheckoutPrompt(opts)} params = {props.params} />
-          </div>
-        </div>
-      </div>
-    )
+      return(
+          <>
+            <div className="sidepanel-wrapper">
+                <div className="flex-1">
+                    <SidepanelWrapper ref={sidePanelRef} controller={propertyController} data={props.modalAssistData}
+                                      params={props.params} selectedModelData={selectedModel}
+                                      dashboardController={(opts) => _updateDashboardWrapper(opts)}
+                                      selectedModel={(options) => updateSelectedModel(options)}
+                                      updateFilterData={(value) => _updateFilterData(value)}
+                                      updatePropertyDetails={(roomCollection, availability, roomStatus, userCollection) => _updatePropertyDetails(roomCollection, availability, roomStatus, userCollection)}/>
+                </div>
+                <div className="flex-2">
+                    <div className="dashboard-property-container">
+                        <PropertyContainer data={selectedModel} htmlContent={htmlContent}
+                                           propertyContainerHeight={props.modalAssistData.height}
+                                           stateRouter={customStateRouter}
+                                           routerController={(opts) => _routerController(opts)}
+                                           propertyDetails={propertyDetails} onSave={(value) => onFormSave(value)}
+                                           onCancel={(opts) => onFormCancel(opts)}
+                                           dashboardController={(opts) => _updateDashboardWrapper(opts)}
+                                           updateSelectedModel={(options) => updateSelectedModel(options)}
+                                           onCheckout={(value) => onCheckout(value)}
+                                           cancelCheckoutPrompt={(opts) => onCancelCheckoutPrompt(opts)}
+                                           params={props.params}/>
+                    </div>
+                </div>
+            </div>
+          </>
+      )
   };
-  
-  return _dashboardWrapper();
+
+  return (
+      <>
+        {_dashboardWrapper()}
+        {selectedModel.stepperWizardData?.options?.show && _renderStepperWizard()}
+      </>
+  )
 }
 
 export default React.forwardRef(DashboardWrapper);

@@ -15,6 +15,9 @@ class TableToolbarView extends React.Component {
     _prepareCommands(){
         this.baseCommands = setupCommandsInstances(this.state.options);
         this.commands = this.baseCommands._getCommands(this.state.options.commandSignature);
+        if(!_.isArray(this.commands)){
+            _.isObject(this.commands) && (this.commands = [this.commands]);
+        }
     };
 
     templateHelpers(){
