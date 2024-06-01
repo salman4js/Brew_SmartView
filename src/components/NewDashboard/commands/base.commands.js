@@ -6,7 +6,7 @@ class BaseCommandClass {
 
     _getCommands(commandSignature){
         this.commands = _.flatten(this.defaults);
-        if(commandSignature) return [_.filter(this.commands, commandSignature)];
+        if(commandSignature) return _.filter(this.commands, commandSignature);
         return this.commands;
     };
 
@@ -16,7 +16,7 @@ class BaseCommandClass {
 
     setupInstance(classPath, signatureOptions) {
         const ExtendedClass = require(`${classPath}`).default;
-        const instance = new ExtendedClass(signatureOptions);
+        const instance = new ExtendedClass(signatureOptions || {});
         this.registerDefaults(instance.defaults);
     };
 

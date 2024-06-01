@@ -19,16 +19,18 @@ class LabelField extends React.Component {
         <div>
           <label style={this.props.data?.customStyle?.label || {color: 'black'}}> {this.state.labelData.label} </label>
         </div>
-        <div>
-          <label style={this.props.data?.customStyle?.value || {color: 'black'}}> {this.state.labelData.value} </label>
-        </div>
+          {this.state.labelData.value && (
+              <div>
+                  <label style={this.props.data?.customStyle?.value || {color: 'black'}}> {this.state.labelData.value} </label>
+              </div>
+          )}
       </div>
     )
   };
 
-  componentDidUpdate(){
-      if(this.state.labelData !== this.props.data){
-          this._updateStateComponent({key: 'labelData', value: this.props.data});
+    componentDidUpdate() {
+        if (this.state.labelData !== this.props.data) {
+            this._updateStateComponent({key: 'labelData', value: this.props.data});
       }
   };
 }

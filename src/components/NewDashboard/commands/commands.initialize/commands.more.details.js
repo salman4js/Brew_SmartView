@@ -15,7 +15,7 @@ class CommandsMoreDetails {
           onClick: () => this.execute(),
           signature: 'Command-More-Details'
       };
-      this.customHtmlContentFileName = this.status.params.accIdAndName[1] + '-' + this.status.roomConstantKey + '.html';
+      this.customHtmlContentFileName = this.status.params?.accIdAndName[1] + '-' + this.status?.roomConstantKey + '.html';
       this.defaultMoreDetailsTemplate = false;
     };
 

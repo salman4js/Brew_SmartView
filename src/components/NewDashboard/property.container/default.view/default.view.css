@@ -48,3 +48,7 @@
 .widget-tile-listitem-body .widget-tile-body .brew-list-view-template-options:hover{
     background-color: black;
 }
+
+.reserve-icon-align{
+    padding-top: 0.25em;
+}

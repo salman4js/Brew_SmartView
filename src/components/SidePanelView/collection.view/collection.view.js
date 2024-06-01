@@ -11,7 +11,7 @@ const CollectionView = (props) => {
   // Expand Action!
   function expandCollapseAction(){
     setIsExpanded(!isExpanded);
-    props.options.onClickCallBack && props.options.onClickCallBack(isExpanded); // Sending the current mode i.e. expanded or not.
+    props?.options?.onClickCallBack && props?.options?.onClickCallBack(isExpanded); // Sending the current mode i.e. expanded or not.
     setUserPreference(props.data, !isExpanded);
   };
   

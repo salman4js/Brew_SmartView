@@ -1,14 +1,14 @@
 .sidepanel{
   background: #f1f1f1;
   position: relative;
-  width: 300px;
+  width: 18.75em;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
 .workspace-title{
   background-color: grey;
-  width: 300px;
+  width: 18.75em;
 }
 
 .explorer{

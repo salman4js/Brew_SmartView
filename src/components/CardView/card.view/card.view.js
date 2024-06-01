@@ -71,7 +71,7 @@ const CardView = (props) => {
   
   return(
       <div className="card" style = {{height: props.data?.height, width: props.data?.width}}>
-        {props.data.header !== undefined && (
+        {!props.data.headerLessWidget && props.data.header !== undefined && (
             <div className="card-header text-handler text-center brew-cursor" onClick = {() => props.data.allowHeaderClick && onCardBodyViewClick()}>
             {props.data?.header}
           </div>

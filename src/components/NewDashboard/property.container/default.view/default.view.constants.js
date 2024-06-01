@@ -9,19 +9,27 @@ var defaultViewConstants = Object.freeze({
     multipleLogin: 'Manage Accounts',
     roomAction: 'Create Properties',
     businessToolKit: 'Business Tool-Kit',
-    customReport: 'Report Section'
+    customReport: 'Report Section',
+    reserveAction: 'New Reservation'
   }),
 
-  CLIENT_WIDGET_TILE: Object.freeze({
+  ADMIN_ACTION_CLIENT_WIDGET_TILE: Object.freeze({
     roomAction: {noCountWidget: true},
     businessToolKit: {noCountWidget: true}
   }),
+
+  USER_ACTION_CLIENT_WIDGET_TILE: Object.freeze({
+    reserveAction: {noCountWidget: true}
+  }),
+
+  HEADERLESS_WIDGETS: ['reserveAction'],
 
   CLIENT_WIDGET_TILE_VIEWCLASS: Object.freeze({
     multipleLogin: 'bi bi-book widget-tile-body widget-icon',
     roomAction: 'bi bi-building widget-tile-body widget-icon',
     businessToolKit: 'bi bi-terminal-plus',
-    customReport: 'bi bi-journal-check'
+    customReport: 'bi bi-journal-check',
+    reserveAction: 'bi bi-plus-lg reserve-icon-align'
   }),
 
   dashboardMode: Object.freeze({
@@ -30,7 +38,7 @@ var defaultViewConstants = Object.freeze({
     tableView: 'statusTableView'
   }),
 
-  reloadSidePanelOptions: Object.freeze({
+  reloadDashboardOptions: Object.freeze({
     voucherTracker: {
       sidepanelOptions: {silent: true, mode: 'voucherList'},
       dashboardMode: 'voucherTrackerView'
@@ -50,6 +58,10 @@ var defaultViewConstants = Object.freeze({
     customReport: {
       sidepanelOptions: {silent: true, mode: 'customReport'},
       dashboardMode: 'customReport'
+    },
+    reserveAction: {
+      dashboardMode: undefined,
+      commandKey: {signature: 'Command-Reserve'}
     }
   }),
 

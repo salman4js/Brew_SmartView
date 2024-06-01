@@ -63,7 +63,7 @@ class CheckOutView extends React.Component {
             templateConstants: checkoutViewConstants,
             maintainanceLog: MetadataModelState.maintainanceLogInput,
             htmlContent: {
-                content: undefined, filename: props.params.accIdAndName[1] + '-bill.html'
+                content: undefined, filename: props.params?.accIdAndName[1] + '-bill.html'
             }
         };
         this.propertyController = {
@@ -75,7 +75,7 @@ class CheckOutView extends React.Component {
         };
         this.routerController = props.routerController;
         this.isStateRouterNotified = false;
-        this.checkoutUtils = new CheckoutUtils({accId: props.params.accIdAndName[0]});
+        this.checkoutUtils = new CheckoutUtils({accId: props.params?.accIdAndName[0]});
     };
 
     // Update state with state name!

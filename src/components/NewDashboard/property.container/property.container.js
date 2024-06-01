@@ -200,7 +200,7 @@ const PropertyContainer = (props) => {
       dashboardController = {(opts) => props.dashboardController(opts)} routerController = {(opts) => props.routerController(opts)} />
     }
     
-    if(props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.default){
+    if(!props.data.dashboardMode || props.data.dashboardMode === propertyContainerConstants.DASHBOARD_MODE.default){
       return <DefaultView data = {props.propertyDetails} selectedModel = {props.data} params = {props.params} height = {props.propertyContainerHeight}
       dashboardController = {(opts) => props.dashboardController(opts)} routerController = {(opts) => props.routerController(opts)} />
     }
@@ -374,7 +374,7 @@ const PropertyContainer = (props) => {
   
   // Should show panel field and for statusTableView we render panel field separately!
   function shouldShowPanelField(){
-    return !propertyContainerConstants.IGNORE_PANEL_FIELD.includes(props.data.dashboardMode);
+    return props.data.dashboardMode ? !propertyContainerConstants.IGNORE_PANEL_FIELD.includes(props.data.dashboardMode) : false;
   };
 
   // Update custom modal options!
